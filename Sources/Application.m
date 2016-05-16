@@ -103,7 +103,7 @@
     //NSString* phpPath=@"/usr/local/php5/bin/php";
     NSString* phpPath=@"/usr/bin/php";
     
-    if (![[NSFileManager defaultManager] fileExistsAtPath:phpPath])
+    if (![[NSFileManager defaultManager] fileExistsAtPath:phpPath] || ![[NSFileManager defaultManager] fileExistsAtPath:@"/usr/local/lib/php/extensions/dio.so"])
     {
         dispatch_sync(dispatch_get_main_queue(), ^{
             [webView setMainFrameURL:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/web/driver/php.html"]];
@@ -111,17 +111,19 @@
         
         NSString* output = nil;
         NSString* processErrorDescription = nil;
+        
+        //BOOL success = [self runProcessAsAdministrator:@"ditto" withArguments:[NSArray arrayWithObjects: [NSString stringWithFormat:@"'%@'",[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dio/dio.so"]], @"/usr/local/lib/php/extensions", nil] output:&output errorDescription:&processErrorDescription];
         BOOL success = [self runProcessAsAdministrator:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/install"] withArguments:[NSArray arrayWithObjects:@"", nil] output:&output errorDescription:&processErrorDescription];
         if (!success)
         {
-            //NSLog(processErrorDescription);
+            NSLog(processErrorDescription);
             dispatch_sync(dispatch_get_main_queue(), ^{
-                [webView setMainFrameURL:@"http://localhost:8080/driver/error2.html"];
+                [webView setMainFrameURL:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/web/driver/error2.html"]];
             });
         }
         else
         {
-            //NSLog(output);
+            NSLog(output);
             [self startPHP];
         }
         
