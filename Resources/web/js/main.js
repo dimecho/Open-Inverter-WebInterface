@@ -1,0 +1,155 @@
+$(document).ready(function()
+{
+    $('#menu').slicknav();
+    $('.tooltip').tooltipster();
+});
+
+function loadJSON()
+{
+    $.ajax("tty.php?i=json",{
+    //$.ajax("test/json.data",{
+        async: false,
+        //contentType: "application/text",
+        beforeSend: function (req) {
+          req.overrideMimeType('text/plain; charset=x-user-defined');
+        },
+        success: function(data)
+        {
+            //console.log(data);
+            buildMenu(JSON.parse(data.slice(5))); //cut out command 'json....' from beginning
+        },
+        error: function(xhr, textStatus, errorThrown){
+        }
+    });
+}
+
+function buildMenu(json)
+{
+    //var length = 0;
+    //for(var k in json) if(json.hasOwnProperty(k))    length++;
+
+    var i = 0;
+    var name = [];
+    for(var k in json)
+        name.push(k);
+
+    //======================
+    var parameters = [];
+    var description = [];
+ 
+    $.ajax("description.csv",{
+        async: false,
+        //contentType: "application/text",
+        beforeSend: function (req) {
+          req.overrideMimeType('text/plain; charset=x-user-defined');
+        },
+        //dataType: 'text',
+        success: function(data)
+        {
+            var row = data.split("\n");
+
+            for (var i = 0; i < row.length; ++i)
+            {
+                var split = row[i].split(",");
+                var d;
+
+                if(split.length > 6){
+                    for (var c = 5; c < split.length; ++c)
+                        d += split[c];
+                }else{
+                    d = split[5];
+                }
+
+                parameters.push(split[0]);
+                description.push(d);
+            }
+        },
+        error: function(xhr, textStatus, errorThrown){
+        }
+    });
+    //=================
+    var menu = $("#parameters tbody").empty();
+
+    $.each(json, function()
+    {
+        console.log(this)
+
+        if(name[i] == "version")
+        {
+            var title = $("#title h3").empty();
+            title.append("Inverter Console v" + this.value);
+        }
+        else
+        {
+            var tooltip = "";
+            var x = parameters.indexOf(name[i]);
+            if(x !=-1)
+                tooltip = description[x];
+
+            var a = $("<a>", { href:"#", id:name[i], "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":this.unit + " ("+ this.default + ")"}).append(this.value);
+            var tr = $("<tr>");
+            var td1 = $("<td>", { title:tooltip}).append(name[i]);
+            var td2 = $("<td>").append(a);
+            var td3 = $("<td>").append(this.unit);
+   
+            menu.append(tr.append(td1).append(td2).append(td3));
+        }
+        i++;
+    });
+}
+
+function startInverter()
+{
+    $.ajax("tty.php?start=2",{
+        success: function(data)
+        {
+            //console.log(data);
+
+            var span = $("#titleStatus").empty();
+            span.removeClass('label-success');
+            span.removeClass('label-warning');
+            span.removeClass('label-danger');
+            span.text('started');
+
+            if(data.indexOf("Inverter started") != -1)
+            {
+                span.addClass('label-success');
+            }else{
+                span.addClass('label-danger');
+            }
+        }
+    });
+}
+
+function stopInverter()
+{
+    $.ajax("tty.php?stop=1",{
+        success: function(data)
+        {
+            //console.log(data);
+
+            var span = $("#titleStatus").empty();
+            span.removeClass('label-success');
+            span.removeClass('label-warning');
+            span.removeClass('label-danger');
+            span.text('stopped');
+
+            if(data.indexOf("Inverter hated") != -1)
+            {
+                span.addClass('label-warning');
+            }else{
+                span.addClass('label-danger');
+            }
+        }
+    });
+}
+
+function uploadSnapshot()
+{
+
+}
+
+function saveGraph()
+{
+
+}

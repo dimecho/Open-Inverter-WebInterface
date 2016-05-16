@@ -1,0 +1,337 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 47;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		320FC55A1CE8444100F6D2E9 /* dio in Resources */ = {isa = PBXBuildFile; fileRef = 320FC5591CE8444100F6D2E9 /* dio */; };
+		3230085F1CE9284D006D79A4 /* DownloadDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3230085E1CE9284D006D79A4 /* DownloadDelegate.m */; };
+		323008621CE92853006D79A4 /* PolicyDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 323008611CE92852006D79A4 /* PolicyDelegate.m */; };
+		326849BB1CE709C100A2AF66 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 326849BA1CE709C100A2AF66 /* WebKit.framework */; };
+		326849BD1CE7152400A2AF66 /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 326849BC1CE7152400A2AF66 /* icon.icns */; };
+		32793CD61CE7AE9900A5349E /* web in Resources */ = {isa = PBXBuildFile; fileRef = 32793CD51CE7AE9900A5349E /* web */; };
+		32793CD81CE7B1A600A5349E /* install in Resources */ = {isa = PBXBuildFile; fileRef = 32793CD71CE7B1A600A5349E /* install */; };
+		32C5504D1CE7F38E0045DBD6 /* Main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 32C5504B1CE7F38E0045DBD6 /* Main.xib */; };
+		32EEA3831CE79B6E00CAEF6D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EEA3821CE79B6E00CAEF6D /* main.m */; };
+		84B4349E0F91511700913D12 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = 84B434960F91511700913D12 /* Application.m */; };
+		84B434A00F91511700913D12 /* serial.c in Sources */ = {isa = PBXBuildFile; fileRef = 84B4349A0F91511700913D12 /* serial.c */; };
+		84B434A10F91511700913D12 /* Terminal.m in Sources */ = {isa = PBXBuildFile; fileRef = 84B4349D0F91511700913D12 /* Terminal.m */; };
+		84B434A80F91516800913D12 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B434A70F91516800913D12 /* IOKit.framework */; };
+		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
+		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		320FC5591CE8444100F6D2E9 /* dio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = dio; path = Resources/dio; sourceTree = "<group>"; };
+		3230085D1CE9284D006D79A4 /* DownloadDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadDelegate.h; sourceTree = "<group>"; };
+		3230085E1CE9284D006D79A4 /* DownloadDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadDelegate.m; sourceTree = "<group>"; };
+		323008601CE92852006D79A4 /* PolicyDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolicyDelegate.h; sourceTree = "<group>"; };
+		323008611CE92852006D79A4 /* PolicyDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PolicyDelegate.m; sourceTree = "<group>"; };
+		326849BA1CE709C100A2AF66 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		326849BC1CE7152400A2AF66 /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = icon.icns; path = Icons/icon.icns; sourceTree = "<group>"; };
+		32793CD51CE7AE9900A5349E /* web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = web; path = Resources/web; sourceTree = "<group>"; };
+		32793CD71CE7B1A600A5349E /* install */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = install; path = Resources/install; sourceTree = "<group>"; };
+		32793CE91CE7F1CF00A5349E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		32C5504C1CE7F38E0045DBD6 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Main.xib; sourceTree = "<group>"; };
+		32EEA3821CE79B6E00CAEF6D /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		84B434950F91511700913D12 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
+		84B434960F91511700913D12 /* Application.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Application.m; sourceTree = "<group>"; };
+		84B4349A0F91511700913D12 /* serial.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = serial.c; sourceTree = "<group>"; };
+		84B4349B0F91511700913D12 /* serial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = serial.h; sourceTree = "<group>"; };
+		84B4349C0F91511700913D12 /* Terminal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Terminal.h; sourceTree = "<group>"; };
+		84B4349D0F91511700913D12 /* Terminal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Terminal.m; sourceTree = "<group>"; };
+		84B434A70F91516800913D12 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8D1107320486CEB800E47090 /* Huebner Inverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Huebner Inverter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D11072E0486CEB800E47090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				326849BB1CE709C100A2AF66 /* WebKit.framework in Frameworks */,
+				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				84B434A80F91516800913D12 /* IOKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107320486CEB800E47090 /* Huebner Inverter.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* Serial Tools */ = {
+			isa = PBXGroup;
+			children = (
+				84B434940F91511700913D12 /* Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = "Serial Tools";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				32793CD71CE7B1A600A5349E /* install */,
+				320FC5591CE8444100F6D2E9 /* dio */,
+				32793CD51CE7AE9900A5349E /* web */,
+				326849BC1CE7152400A2AF66 /* icon.icns */,
+				8D1107310486CEB800E47090 /* Info.plist */,
+				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+				32C5504B1CE7F38E0045DBD6 /* Main.xib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				326849BA1CE709C100A2AF66 /* WebKit.framework */,
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+				84B434A70F91516800913D12 /* IOKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		32EEA3811CE799D800CAEF6D /* SerialTools */ = {
+			isa = PBXGroup;
+			children = (
+				84B4349B0F91511700913D12 /* serial.h */,
+				84B4349A0F91511700913D12 /* serial.c */,
+				84B4349C0F91511700913D12 /* Terminal.h */,
+				84B4349D0F91511700913D12 /* Terminal.m */,
+			);
+			name = SerialTools;
+			sourceTree = "<group>";
+		};
+		84B434940F91511700913D12 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				32EEA3821CE79B6E00CAEF6D /* main.m */,
+				84B434950F91511700913D12 /* Application.h */,
+				84B434960F91511700913D12 /* Application.m */,
+				3230085D1CE9284D006D79A4 /* DownloadDelegate.h */,
+				3230085E1CE9284D006D79A4 /* DownloadDelegate.m */,
+				323008601CE92852006D79A4 /* PolicyDelegate.h */,
+				323008611CE92852006D79A4 /* PolicyDelegate.m */,
+				32EEA3811CE799D800CAEF6D /* SerialTools */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D1107260486CEB800E47090 /* Huebner Inverter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Huebner Inverter" */;
+			buildPhases = (
+				8D1107290486CEB800E47090 /* Resources */,
+				8D11072C0486CEB800E47090 /* Sources */,
+				8D11072E0486CEB800E47090 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Huebner Inverter";
+			productInstallPath = "$(HOME)/Applications";
+			productName = "Serial Tools";
+			productReference = 8D1107320486CEB800E47090 /* Huebner Inverter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				TargetAttributes = {
+					8D1107260486CEB800E47090 = {
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Huebner Inverter" */;
+			compatibilityVersion = "Xcode 6.3";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+				de,
+				ja,
+				en,
+			);
+			mainGroup = 29B97314FDCFA39411CA2CEA /* Serial Tools */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8D1107260486CEB800E47090 /* Huebner Inverter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D1107290486CEB800E47090 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+				32793CD61CE7AE9900A5349E /* web in Resources */,
+				326849BD1CE7152400A2AF66 /* icon.icns in Resources */,
+				320FC55A1CE8444100F6D2E9 /* dio in Resources */,
+				32C5504D1CE7F38E0045DBD6 /* Main.xib in Resources */,
+				32793CD81CE7B1A600A5349E /* install in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D11072C0486CEB800E47090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84B4349E0F91511700913D12 /* Application.m in Sources */,
+				3230085F1CE9284D006D79A4 /* DownloadDelegate.m in Sources */,
+				323008621CE92853006D79A4 /* PolicyDelegate.m in Sources */,
+				84B434A00F91511700913D12 /* serial.c in Sources */,
+				84B434A10F91511700913D12 /* Terminal.m in Sources */,
+				32EEA3831CE79B6E00CAEF6D /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				32793CE91CE7F1CF00A5349E /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		32C5504B1CE7F38E0045DBD6 /* Main.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				32C5504C1CE7F38E0045DBD6 /* en */,
+			);
+			name = Main.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C01FCF4B08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_NAME = "Huebner Inverter";
+			};
+			name = Debug;
+		};
+		C01FCF4C08A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = "";
+				GENERATE_MASTER_OBJECT_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_NAME = "Huebner Inverter";
+				SDKROOT = macosx;
+				VALID_ARCHS = "i386 x86_64";
+			};
+			name = Release;
+		};
+		C01FCF4F08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		C01FCF5008A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Huebner Inverter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4B08A954540054247B /* Debug */,
+				C01FCF4C08A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Huebner Inverter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B /* Debug */,
+				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}

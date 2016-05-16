@@ -1,0 +1,32 @@
+
+
+body {
+  /*background-color: #666666;*/
+  background-attachment: fixed;
+  background-image:url(../img/background.jpg);
+
+}
+
+a, u {
+    text-decoration: none;
+}
+
+#menu {
+  display:none;
+}
+
+.js #menu {
+  display:none;
+}
+
+.js .slicknav_menu {
+  display:block;
+}
+
+#title h3 {
+   color: #fafafa;
+   font-size: 30px;
+   font-weight: 400;
+   font-style:normal;
+   text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+}

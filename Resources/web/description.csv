@@ -1,0 +1,45 @@
+Name,Unit,Minimum,Maximum,Default,Description
+boost,dig,0,37813,1700,0 Hz Boost in digit. 1000 digit ~ 2.5%
+fweak,Hz,0,400,67,Frequency where V/Hz reaches its peak
+fpconst,Hz,0,400,400,Frequency where slip frequency is derated to form a constant power region. Only has an effect when < fweak
+fslipmin,Hz,0,100,1,Slip frequency at minimum throttle
+fslipmax,Hz,0,100,3,Slip frequency at maximum throttle
+polepairs,,1,16,2,Pole pairs of motor (4-pole motor: 2 pole pairs)
+ampmin,%,0,100,50,Relative sine amplitude at minimum throttle
+encflt,,0,16,4,Filter constant between pulse encoder and speed calculation. Makes up for slightly uneven pulse distribution
+fmin,Hz,0,400,1,Below this frequency no voltage is generated
+fmax,Hz,0,400,200,At this frequency slip is commanded 0 to avoid further acceleration
+pwmfrq,,0,3,2,"PWM frequency. 0=17.6kHz, 1=8.8kHz, 2=4.4kHz, 3=2.2kHz"
+pwmpol,,0,1,0,"PWM polarity. 0=active high, 1=active low. DO NOT PLAY WITH THIS!"
+deadtime,dig,0,255,28,"Deadtime between highside and lowside pulse. 28=800ns, 56=1.5µs. Not always linear, consult STM32 manual"
+numimp,Imp/rev,8,8192,60,Pulse encoder pulses per turn
+potmin,dig,0,4095,0,"Value of ""pot"" when pot isn't pressed at all"
+potmax,dig,0,4095,4095,"Value of ""pot"" when pot is pushed all the way in"
+pot2min,dig,0,4095,4095,"Value of ""pot2"" when regen pot is in 0 position"
+pot2max,dig,0,4095,4095,"Value of ""pot2"" when regen pot is in full on position"
+idlespeed,rpm,-100,1000,-100,Motor idle speed. Set to -100 to disable idle function.
+speedkp,Hz,0,100,1,Speed controller gain (Cruise and idle speed). Decrease if speed oscillates. Increase for faster load regulation
+cruisemode,,0,1,0,"0=button (set when button pressed, reset with brake pedal), 1=switch (set when switched on, reset when switched off or brake pedal)"
+speedflt,dig,0,16,1,Filter before cruise controller
+bmslimhigh,%,0,100,50,Positive throttle limit on BMS under voltage
+bmslimlow,%,-100,0,-1,Regen limit on BMS over voltage
+brknompedal,%,-100,0,-50,Foot on break pedal regen torque
+brknom,%,0,100,30,Regen padel travel
+brkmax,%,0,100,30,Foot-off regen torque
+brkrampstr,Hz,0,400,10,Below this frequency the regen torque is reduced linearly with the frequency
+udcsw,V,0,1000,330,Voltage at which the DC contactor is allowed to close
+udcmin,V,0,1000,450,Low voltage at which a voltage warning light comes on
+udcmax,V,0,1000,520,High voltage at which a voltage warning light comes on
+udclim,V,0,1000,540,High voltage at which the PWM is shut down
+ocurlim,A,-500,500,100,Hardware over current limit. RMS-current times sqrt(2) + some slack
+minpulse,dig,0,4095,1000,"Narrowest or widest pulse, all other mapped to full off or full on, respectively"
+il1gain,dig/A,0,4095,3.09,Digits per A of current sensor L1
+il2gain,dig/A,0,4095,3.09,Digits per A of current sensor L2
+udcgain,dig/V,0,4095,6.15,Digits per V of DC link
+pwmfunc,,0,2,0,"Quantity that controls the PWM output. 0=tmpm, 1=tmphs, 2=speed"
+pwmgain,dig/C,0,65535,100,Gain of PWM output
+pwmofs,dig,-65535,65535,0,"Offset of PWM output, 4096=full on"
+snshs,,0,1,0,"Heatsink temperature sensor. 0=JCurve, 1=Semikron"
+snsm,,2,3,2,"Motor temperature sensor. 2=KTY83, 3=KTY84"
+fslipspnt,Hz,-100,100,0,Slip setpoint in mode 2. Written by software in mode 1
+ampnom,%,0,100,0,Nominal amplitude in mode 2. Written by software in mode 1
