@@ -2,8 +2,6 @@
 
 cd "$(dirname "$0")"
 
-pwd
-
 if [ -f /usr/bin/php ]; then
     if [ ! -f /usr/local/lib/php/extensions/dio.so ]; then
         ditto ./dio/dio.so /usr/local/lib/php/extensions/dio.so
@@ -11,19 +9,6 @@ if [ -f /usr/bin/php ]; then
     if grep -lr "extension=dio.so" /etc/php.ini; then
         cat "extension_dir=/usr/local/lib/php/extensions/" >> /etc/php.ini
         cat "extension=dio.so" >> /etc/php.ini
-    fi
-else
-    if [ ! -f /usr/local/php5/bin/php ]; then
-        curl -s http://php-osx.liip.ch/install.sh | bash -s 5.6
-        rm -rf /usr/local/packager/registry.log
-        #export PATH=/usr/local/php5/bin:$PATH
-    fi
-
-    if [ ! -f /usr/local/php5/lib/php/extensions/no-debug-non-zts-20131226/dio.so ]; then
-        #sudo /usr/local/php5/bin/pecl install dio-0.0.7
-        ditto ./dio/dio.so /usr/local/php5/lib/php/extensions/no-debug-non-zts-20121212/dio.so
-        cat "extension_dir=/usr/local/php5/lib/php/extensions/no-debug-non-zts-20131226" >> /usr/local/php5/php.d/dio.ini
-        cat "extension=dio.so" >> /usr/local/php5/php.d/dio.ini
     fi
 fi
 

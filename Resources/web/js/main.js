@@ -109,13 +109,14 @@ function startInverter()
             span.removeClass('label-success');
             span.removeClass('label-warning');
             span.removeClass('label-danger');
-            span.text('started');
 
             if(data.indexOf("Inverter started") != -1)
             {
                 span.addClass('label-success');
+                span.text('started');
             }else{
                 span.addClass('label-danger');
+                span.text('error');
             }
         }
     });
@@ -132,13 +133,14 @@ function stopInverter()
             span.removeClass('label-success');
             span.removeClass('label-warning');
             span.removeClass('label-danger');
-            span.text('stopped');
-
+           
             if(data.indexOf("Inverter hated") != -1)
             {
                 span.addClass('label-warning');
+                span.text('stopped');
             }else{
                 span.addClass('label-danger');
+                span.text('error');
             }
         }
     });

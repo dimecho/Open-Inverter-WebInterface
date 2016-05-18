@@ -1,0 +1,25 @@
+#!/bin/sh
+
+cd "$(dirname "$0")"
+
+hdiutil attach ~/Downloads/Inkscape-0.91-1-x11-10.7-x86_64.dmg
+
+x=1
+while [ $x -le 30 ]
+do
+    if [ -f /Applications/Inkscape.app/Contents/MacOSX/Inkscape ]; then
+        cp ./web/encoder/encoder_disk_generator.py /Applications/Inkscape.app/Contents/Resources/share/inkscape/extensions/encoder_disk_generator.py
+        cp ./web/encoder/encoder_disk_generator.inx /Applications/Inkscape.app/Contents/Resources/share/inkscape/extensions/encoder_disk_generator.inx
+        break
+    fi
+    x=$(( $x + 1 ))
+    sleep 4
+done
+
+if grep -lr "dgkelectronics.com.encoder.disk.generator" ~/.config/inkscape/preferences.xml; then
+    cp ./web/encoder/preferences.xml ~/.config/inkscape/preferences.xml
+fi
+
+#python /Applications/Inkscape.app/Contents/Resources/share/inkscape/extensions/encoder_disk_generator.py (--param=value) | inkscape
+
+#hdiutil detach /dev/disk2

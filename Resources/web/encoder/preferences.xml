@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<inkscape
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1">
+  <group
+     id="extensions"
+     dgkelectronics.com.encoder.disk.generator.diameter="200"
+     dgkelectronics.com.encoder.disk.generator.hole_diameter="50"
+     dgkelectronics.com.encoder.disk.generator.segments="64"
+     dgkelectronics.com.encoder.disk.generator.outer_encoder_diameter="190"
+     dgkelectronics.com.encoder.disk.generator.outer_encoder_width="50"
+     dgkelectronics.com.encoder.disk.generator.inner_encoder_diameter="0"
+     dgkelectronics.com.encoder.disk.generator.inner_encoder_width="1"
+     dgkelectronics.com.encoder.disk.generator.brgc_diameter="0"
+     dgkelectronics.com.encoder.disk.generator.brgc_hole_diameter="0"
+     dgkelectronics.com.encoder.disk.generator.bits="1"
+     dgkelectronics.com.encoder.disk.generator.encoder_diameter="1"
+     dgkelectronics.com.encoder.disk.generator.track_width="1"
+     dgkelectronics.com.encoder.disk.generator.track_distance="0"
+     dgkelectronics.com.encoder.disk.generator.stgc_diameter="0"
+     dgkelectronics.com.encoder.disk.generator.stgc_hole_diameter="0"
+     dgkelectronics.com.encoder.disk.generator.cutouts="1"
+     dgkelectronics.com.encoder.disk.generator.sensors="1"
+     dgkelectronics.com.encoder.disk.generator.stgc_encoder_diameter="1"
+     dgkelectronics.com.encoder.disk.generator.stgc_track_width="1" />
+</inkscape>

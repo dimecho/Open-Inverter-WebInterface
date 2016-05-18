@@ -6,13 +6,13 @@
         <plugIn identifier="com.apple.WebKitIBPlugin" version="10117"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
+        <customObject id="-2" userLabel="File's Owner">
             <connections>
                 <outlet property="delegate" destination="494" id="495"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customObject id="-3" userLabel="Application"/>
         <window title="Huebner Inverter" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -36,7 +36,7 @@
             </view>
             <point key="canvasLocation" x="293" y="423"/>
         </window>
-        <customObject id="494" userLabel="App Delegate" customClass="Application">
+        <customObject id="494" userLabel="Application Delegate" customClass="Application">
             <connections>
                 <outlet property="webView" destination="536" id="553"/>
                 <outlet property="window" destination="371" id="532"/>

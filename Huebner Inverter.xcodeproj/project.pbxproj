@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		320F3DB91CEAB48900A393E6 /* Download.xib in Resources */ = {isa = PBXBuildFile; fileRef = 320F3DB81CEAB48900A393E6 /* Download.xib */; };
+		320F3DBC1CEAB62F00A393E6 /* Download.m in Sources */ = {isa = PBXBuildFile; fileRef = 320F3DBB1CEAB62F00A393E6 /* Download.m */; };
 		320FC55A1CE8444100F6D2E9 /* dio in Resources */ = {isa = PBXBuildFile; fileRef = 320FC5591CE8444100F6D2E9 /* dio */; };
-		3230085F1CE9284D006D79A4 /* DownloadDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3230085E1CE9284D006D79A4 /* DownloadDelegate.m */; };
-		323008621CE92853006D79A4 /* PolicyDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 323008611CE92852006D79A4 /* PolicyDelegate.m */; };
 		326849BB1CE709C100A2AF66 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 326849BA1CE709C100A2AF66 /* WebKit.framework */; };
 		326849BD1CE7152400A2AF66 /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 326849BC1CE7152400A2AF66 /* icon.icns */; };
+		32746AE71CEC331F003DE2C5 /* inkscape in Resources */ = {isa = PBXBuildFile; fileRef = 32746AE61CEC331F003DE2C5 /* inkscape */; };
 		32793CD61CE7AE9900A5349E /* web in Resources */ = {isa = PBXBuildFile; fileRef = 32793CD51CE7AE9900A5349E /* web */; };
 		32793CD81CE7B1A600A5349E /* install in Resources */ = {isa = PBXBuildFile; fileRef = 32793CD71CE7B1A600A5349E /* install */; };
 		32C5504D1CE7F38E0045DBD6 /* Main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 32C5504B1CE7F38E0045DBD6 /* Main.xib */; };
@@ -26,13 +27,13 @@
 
 /* Begin PBXFileReference section */
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		320F3DB81CEAB48900A393E6 /* Download.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = Download.xib; path = en.lproj/Download.xib; sourceTree = "<group>"; };
+		320F3DBA1CEAB62F00A393E6 /* Download.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Download.h; sourceTree = "<group>"; };
+		320F3DBB1CEAB62F00A393E6 /* Download.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Download.m; sourceTree = "<group>"; };
 		320FC5591CE8444100F6D2E9 /* dio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = dio; path = Resources/dio; sourceTree = "<group>"; };
-		3230085D1CE9284D006D79A4 /* DownloadDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadDelegate.h; sourceTree = "<group>"; };
-		3230085E1CE9284D006D79A4 /* DownloadDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadDelegate.m; sourceTree = "<group>"; };
-		323008601CE92852006D79A4 /* PolicyDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolicyDelegate.h; sourceTree = "<group>"; };
-		323008611CE92852006D79A4 /* PolicyDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PolicyDelegate.m; sourceTree = "<group>"; };
 		326849BA1CE709C100A2AF66 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		326849BC1CE7152400A2AF66 /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = icon.icns; path = Icons/icon.icns; sourceTree = "<group>"; };
+		32746AE61CEC331F003DE2C5 /* inkscape */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = inkscape; path = Resources/inkscape; sourceTree = "<group>"; };
 		32793CD51CE7AE9900A5349E /* web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = web; path = Resources/web; sourceTree = "<group>"; };
 		32793CD71CE7B1A600A5349E /* install */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = install; path = Resources/install; sourceTree = "<group>"; };
 		32793CE91CE7F1CF00A5349E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -86,12 +87,14 @@
 			isa = PBXGroup;
 			children = (
 				32793CD71CE7B1A600A5349E /* install */,
+				32746AE61CEC331F003DE2C5 /* inkscape */,
 				320FC5591CE8444100F6D2E9 /* dio */,
 				32793CD51CE7AE9900A5349E /* web */,
 				326849BC1CE7152400A2AF66 /* icon.icns */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				32C5504B1CE7F38E0045DBD6 /* Main.xib */,
+				320F3DB81CEAB48900A393E6 /* Download.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -123,10 +126,8 @@
 				32EEA3821CE79B6E00CAEF6D /* main.m */,
 				84B434950F91511700913D12 /* Application.h */,
 				84B434960F91511700913D12 /* Application.m */,
-				3230085D1CE9284D006D79A4 /* DownloadDelegate.h */,
-				3230085E1CE9284D006D79A4 /* DownloadDelegate.m */,
-				323008601CE92852006D79A4 /* PolicyDelegate.h */,
-				323008611CE92852006D79A4 /* PolicyDelegate.m */,
+				320F3DBA1CEAB62F00A393E6 /* Download.h */,
+				320F3DBB1CEAB62F00A393E6 /* Download.m */,
 				32EEA3811CE799D800CAEF6D /* SerialTools */,
 			);
 			path = Sources;
@@ -198,10 +199,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+				320F3DB91CEAB48900A393E6 /* Download.xib in Resources */,
 				32793CD61CE7AE9900A5349E /* web in Resources */,
 				326849BD1CE7152400A2AF66 /* icon.icns in Resources */,
 				320FC55A1CE8444100F6D2E9 /* dio in Resources */,
 				32C5504D1CE7F38E0045DBD6 /* Main.xib in Resources */,
+				32746AE71CEC331F003DE2C5 /* inkscape in Resources */,
 				32793CD81CE7B1A600A5349E /* install in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -214,9 +217,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				84B4349E0F91511700913D12 /* Application.m in Sources */,
-				3230085F1CE9284D006D79A4 /* DownloadDelegate.m in Sources */,
-				323008621CE92853006D79A4 /* PolicyDelegate.m in Sources */,
 				84B434A00F91511700913D12 /* serial.c in Sources */,
+				320F3DBC1CEAB62F00A393E6 /* Download.m in Sources */,
 				84B434A10F91511700913D12 /* Terminal.m in Sources */,
 				32EEA3831CE79B6E00CAEF6D /* main.m in Sources */,
 			);

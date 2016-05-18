@@ -1,19 +1,72 @@
 #import "Application.h"
 #import "serial.h"
 #import "Terminal.h"
+#import "Download.h"
 #include <termios.h>
-#import "PolicyDelegate.h"
-#import "DownloadDelegate.h"
 
 @implementation Application
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    [webView setPolicyDelegate:[[PolicyDelegate alloc] init]];
-    [webView setDownloadDelegate:[[DownloadDelegate alloc] init]];
+    [webView setPolicyDelegate:self];
+    [webView setDownloadDelegate:self];
     
     [self performSelectorInBackground:@selector(startPHP) withObject:nil];
-    //[self performSelectorInBackground:@selector(checkDrivers) withObject:nil];
+}
+
+- (void)checkInkscape
+{
+    if (![[NSFileManager defaultManager] fileExistsAtPath:@"/Applications/Inkscape.app/Contents/MacOS/Inkscape"])
+    {
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert setMessageText:@"Install Inkscape - Download 70MB"];
+        [alert setInformativeText:@"Inkscape is an open-source vector editor."];
+        [alert addButtonWithTitle:@"OK"];
+        [alert addButtonWithTitle:@"Cancel"];
+        
+        if ([alert runModal] == NSAlertFirstButtonReturn)
+        {
+            //[webView setMainFrameURL:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/web/encoder/inkscape.html"]];
+            
+            NSWindowController* downloadWindow = [[NSWindowController alloc] initWithWindowNibName:@"Download"];
+            [downloadWindow showWindow:self];
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(completeDownload:) name:@"completeDownload" object:nil];
+            NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys: @"https://inkscape.org/en/gallery/item/3896/Inkscape-0.91-1-x11-10.7-x86_64.dmg", @"url", [[NSHomeDirectory() stringByAppendingPathComponent:@"Downloads"] stringByAppendingPathComponent:@"Inkscape-0.91-1-x11-10.7-x86_64.dmg"], @"path", nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"startDownload" object:nil userInfo:userInfo];
+        }
+        [alert release];
+    }else{
+        /*
+        //Applications/Inkscape.app/Contents/Resources/share/inkscape/extensions/encoder_disk_generator.py
+        NSString* encoderPath = [NSString stringWithFormat:@"%@/.config/inkscape/extensions/encoder_disk_generator.py", NSHomeDirectory()];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:encoderPath])
+        {
+            [[NSFileManager defaultManager] copyItemAtURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"encoder_disk_generator" ofType:@"py" inDirectory:@"web/encoder"]] toURL:[NSURL fileURLWithPath:encoderPath] error:nil];
+        }
+        */
+        [[NSWorkspace sharedWorkspace] launchApplication:@"/Applications/Inkscape.app"];
+    }
+}
+
+- (void) completeDownload:(NSNotification *) notification
+{
+    if ([notification.name isEqualToString:@"completeDownload"])
+    {
+        NSLog(@"install DMG");
+        
+        NSString* output = nil;
+        NSString* processErrorDescription = nil;
+        BOOL success = [self runProcessAsAdministrator:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/inkscape"] withArguments:[NSArray arrayWithObjects:@"", nil] output:&output errorDescription:&processErrorDescription];
+        if (!success)
+        {
+            NSLog(processErrorDescription);
+        }
+        else
+        {
+            NSLog(output);
+        }
+    }
 }
 
 - (void)checkDrivers
@@ -111,19 +164,17 @@
         
         NSString* output = nil;
         NSString* processErrorDescription = nil;
-        
-        //BOOL success = [self runProcessAsAdministrator:@"ditto" withArguments:[NSArray arrayWithObjects: [NSString stringWithFormat:@"'%@'",[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dio/dio.so"]], @"/usr/local/lib/php/extensions", nil] output:&output errorDescription:&processErrorDescription];
         BOOL success = [self runProcessAsAdministrator:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/install"] withArguments:[NSArray arrayWithObjects:@"", nil] output:&output errorDescription:&processErrorDescription];
         if (!success)
         {
-            NSLog(processErrorDescription);
+            //NSLog(processErrorDescription);
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [webView setMainFrameURL:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/web/driver/error2.html"]];
             });
         }
         else
         {
-            NSLog(output);
+            //NSLog(output);
             [self startPHP];
         }
         
@@ -138,6 +189,53 @@
         [self performSelectorInBackground:@selector(checkDrivers) withObject:nil];
         
         [self.phpTask launch];
+    }
+}
+
+- (void)download:(NSURLDownload *)download didReceiveResponse:(NSURLResponse *)response
+{
+    // A response was received.  We can use the response to get some interesting stuff like the expected content length
+    // for use in progress indicators and a suggested filename that I'll be using here..
+    suggestedFilename = [[response suggestedFilename] retain];
+}
+
+- (void)download:(NSURLDownload *)download decideDestinationWithSuggestedFilename:(NSString *)filename
+{
+    NSSavePanel* panel = [NSSavePanel savePanel];
+    [panel setNameFieldStringValue:suggestedFilename];
+    if ([panel runModal] == NSFileHandlingPanelCancelButton)
+    {
+        [download cancel];
+    }
+    else
+    {
+        NSString *destination;
+        destination = [[panel directoryURL] path];
+        destination = [destination stringByAppendingPathComponent:suggestedFilename];
+        [download setDestination:destination allowOverwrite:YES];
+    }
+}
+
+- (void)webView:(WebView *)sender decidePolicyForMIMEType:(NSString *)type request:(NSURLRequest *)request frame:(WebFrame *)frame decisionListener:(id<WebPolicyDecisionListener>)listener
+{
+    if ([type isEqualToString:@"text/snapshot"]){
+        [listener download];
+    }else{
+        [listener use];
+    }
+}
+
+- (void)webView:(WebView *)sender decidePolicyForNavigationAction:(NSDictionary*)actionInformation request:(NSURLRequest *)request frame:(WebFrame *)frame decisionListener:(id<WebPolicyDecisionListener>)listener
+{
+    if ([[actionInformation objectForKey:WebActionOriginalURLKey] isEqual:[NSURL URLWithString:@"http://localhost:8080/encoder.html"]])
+    {
+        [self checkInkscape];
+        
+        [listener ignore];
+        
+    }else{
+        
+        [listener use];
     }
 }
 
@@ -176,15 +274,20 @@
     }
 }
 
-- (void) phpDidTerminate:(NSNotification *)notification {
-
+- (void) phpDidTerminate:(NSNotification *)notification
+{
     NSAlert *alert = [[NSAlert alloc] init];
     [alert addButtonWithTitle:@"OK"];
     [alert setMessageText:@"PHP Server Quit"];
     [alert setInformativeText:@"Well this is unexpected ..check Firewall."];
     [alert setAlertStyle:NSWarningAlertStyle];
     [alert runModal];
-    //[self performSelectorOnMainThread:@selector(updateUI) withObject:nil waitUntilDone:NO];
+}
+
+- (void)windowWillClose:(NSNotification *)notification
+{
+    NSLog(@"Main Window Closed");
+
 }
 
 - (void)applicationWillTerminate:(NSApplication *)application
