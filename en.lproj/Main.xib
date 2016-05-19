@@ -42,5 +42,19 @@
                 <outlet property="window" destination="371" id="532"/>
             </connections>
         </customObject>
+        <menu id="Czr-1G-TUp">
+            <items>
+                <menuItem title="Test" id="sD4-yD-hFV">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem title="Item 2" id="IcU-2g-Y1w">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem title="Item 3" id="cFA-vO-Jyf">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="301.5" y="-22.5"/>
+        </menu>
     </objects>
 </document>

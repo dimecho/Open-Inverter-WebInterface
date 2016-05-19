@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		320AA24B1CED3B4500829FDB /* encoder in Resources */ = {isa = PBXBuildFile; fileRef = 320AA24A1CED3B4500829FDB /* encoder */; };
 		320F3DB91CEAB48900A393E6 /* Download.xib in Resources */ = {isa = PBXBuildFile; fileRef = 320F3DB81CEAB48900A393E6 /* Download.xib */; };
 		320F3DBC1CEAB62F00A393E6 /* Download.m in Sources */ = {isa = PBXBuildFile; fileRef = 320F3DBB1CEAB62F00A393E6 /* Download.m */; };
 		320FC55A1CE8444100F6D2E9 /* dio in Resources */ = {isa = PBXBuildFile; fileRef = 320FC5591CE8444100F6D2E9 /* dio */; };
@@ -27,6 +28,7 @@
 
 /* Begin PBXFileReference section */
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		320AA24A1CED3B4500829FDB /* encoder */ = {isa = PBXFileReference; lastKnownFileType = folder; name = encoder; path = Resources/encoder; sourceTree = "<group>"; };
 		320F3DB81CEAB48900A393E6 /* Download.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = Download.xib; path = en.lproj/Download.xib; sourceTree = "<group>"; };
 		320F3DBA1CEAB62F00A393E6 /* Download.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Download.h; sourceTree = "<group>"; };
 		320F3DBB1CEAB62F00A393E6 /* Download.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Download.m; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 			children = (
 				32793CD71CE7B1A600A5349E /* install */,
 				32746AE61CEC331F003DE2C5 /* inkscape */,
+				320AA24A1CED3B4500829FDB /* encoder */,
 				320FC5591CE8444100F6D2E9 /* dio */,
 				32793CD51CE7AE9900A5349E /* web */,
 				326849BC1CE7152400A2AF66 /* icon.icns */,
@@ -204,6 +207,7 @@
 				326849BD1CE7152400A2AF66 /* icon.icns in Resources */,
 				320FC55A1CE8444100F6D2E9 /* dio in Resources */,
 				32C5504D1CE7F38E0045DBD6 /* Main.xib in Resources */,
+				320AA24B1CED3B4500829FDB /* encoder in Resources */,
 				32746AE71CEC331F003DE2C5 /* inkscape in Resources */,
 				32793CD81CE7B1A600A5349E /* install in Resources */,
 			);

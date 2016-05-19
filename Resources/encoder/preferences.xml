@@ -7,7 +7,7 @@
      id="extensions"
      dgkelectronics.com.encoder.disk.generator.diameter="200"
      dgkelectronics.com.encoder.disk.generator.hole_diameter="50"
-     dgkelectronics.com.encoder.disk.generator.segments="64"
+     dgkelectronics.com.encoder.disk.generator.segments="32"
      dgkelectronics.com.encoder.disk.generator.outer_encoder_diameter="190"
      dgkelectronics.com.encoder.disk.generator.outer_encoder_width="50"
      dgkelectronics.com.encoder.disk.generator.inner_encoder_diameter="0"
@@ -23,5 +23,5 @@
      dgkelectronics.com.encoder.disk.generator.cutouts="1"
      dgkelectronics.com.encoder.disk.generator.sensors="1"
      dgkelectronics.com.encoder.disk.generator.stgc_encoder_diameter="1"
-     dgkelectronics.com.encoder.disk.generator.stgc_track_width="1" />
+     dgkelectronics.com.encoder.disk.generator.stgc_track_width="4" />
 </inkscape>

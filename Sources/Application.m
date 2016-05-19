@@ -37,15 +37,16 @@
         }
         [alert release];
     }else{
-        /*
-        //Applications/Inkscape.app/Contents/Resources/share/inkscape/extensions/encoder_disk_generator.py
+        
         NSString* encoderPath = [NSString stringWithFormat:@"%@/.config/inkscape/extensions/encoder_disk_generator.py", NSHomeDirectory()];
         if (![[NSFileManager defaultManager] fileExistsAtPath:encoderPath])
         {
-            [[NSFileManager defaultManager] copyItemAtURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"encoder_disk_generator" ofType:@"py" inDirectory:@"web/encoder"]] toURL:[NSURL fileURLWithPath:encoderPath] error:nil];
+            [[NSFileManager defaultManager] copyItemAtURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"encoder_disk_generator" ofType:@"py" inDirectory:@"encoder"]] toURL:[NSURL fileURLWithPath:encoderPath] error:nil];
         }
-        */
-        [[NSWorkspace sharedWorkspace] launchApplication:@"/Applications/Inkscape.app"];
+        
+        NSURL *app = [NSURL fileURLWithPath:@"/Applications/Inkscape.app/Contents/Resources/bin/inkscape"];
+        NSArray *arguments = [NSArray arrayWithObjects:@"--verb", @"dgkelectronics.com.encoder.disk.generator", nil];
+        [[NSWorkspace sharedWorkspace] launchApplicationAtURL:app options:0 configuration:[NSDictionary dictionaryWithObject:arguments forKey:NSWorkspaceLaunchConfigurationArguments] error:nil];
     }
 }
 
@@ -53,8 +54,10 @@
 {
     if ([notification.name isEqualToString:@"completeDownload"])
     {
-        NSLog(@"install DMG");
-        
+        NSTask *task = [[[NSTask alloc] init] autorelease];
+        [task setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/inkscape"]];
+        [task launch];
+        /*
         NSString* output = nil;
         NSString* processErrorDescription = nil;
         BOOL success = [self runProcessAsAdministrator:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/inkscape"] withArguments:[NSArray arrayWithObjects:@"", nil] output:&output errorDescription:&processErrorDescription];
@@ -66,6 +69,7 @@
         {
             NSLog(output);
         }
+        */
     }
 }
 

@@ -18,8 +18,8 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wac-9S-9Am">
-                        <rect key="frame" x="35" y="62" width="182" height="17"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Downloading Inkscape v0.91" id="zLV-AO-CPt">
+                        <rect key="frame" x="35" y="62" width="394" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="zLV-AO-CPt">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -29,8 +29,8 @@
                         <rect key="frame" x="37" y="35" width="390" height="20"/>
                     </progressIndicator>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tSC-M9-qRc">
-                        <rect key="frame" x="35" y="11" width="396" height="17"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Progress" id="CeZ-Ds-b3D">
+                        <rect key="frame" x="35" y="11" width="394" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="CeZ-Ds-b3D">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -43,6 +43,7 @@
         <customObject id="Im1-ih-OTG" userLabel="Download Delegate" customClass="Download">
             <connections>
                 <outlet property="downloadProgressTextField" destination="tSC-M9-qRc" id="7PV-6Z-pCh"/>
+                <outlet property="fileLabelTextField" destination="wac-9S-9Am" id="tel-R0-rm8"/>
                 <outlet property="progressIndicator" destination="5Mz-OS-WVl" id="7kA-r3-tEi"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="n9g-SH-GXa"/>
             </connections>

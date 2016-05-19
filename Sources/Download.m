@@ -17,6 +17,8 @@
 {
     if ([notification.name isEqualToString:@"startDownload"])
     {
+        [self.fileLabelTextField setStringValue:notification.userInfo[@"path"]];
+        
         NSURLRequest* theRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:notification.userInfo[@"url"]]];
         NSURLDownload* theDownload = [[NSURLDownload alloc] initWithRequest:theRequest delegate:self];
 
@@ -51,6 +53,12 @@
     if(actualContentLength && actualContentLength.length > 0){
         expectedContentLength = actualContentLength.longLongValue;
     }
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[self.fileLabelTextField stringValue]] && [[[NSFileManager defaultManager] attributesOfItemAtPath:[self.fileLabelTextField stringValue] error:nil] fileSize] == expectedContentLength)
+    {
+        [download cancel];
+        [self downloadDidFinish:download];
+    }
 }
 
 - (void)download:(NSURLDownload *)download didReceiveDataOfLength:(unsigned long)length
@@ -68,13 +76,5 @@
         NSLog(@"Bytes received - %ld",bytesReceived);
     }
 }
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name: @"startDownload" object:nil];
-    [super dealloc];
-}
-
-
 
 @end
