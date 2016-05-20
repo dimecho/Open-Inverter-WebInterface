@@ -44,9 +44,9 @@
 	<key>CFBundleSignature</key>
 	<string>DE9s</string>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>3</string>
 	<key>NSMainNibFile</key>
-	<string>Main</string>
+	<string>Application</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 </dict>

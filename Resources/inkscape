@@ -17,6 +17,4 @@ do
     sleep 4
 done
 
-/Applications/Inkscape.app/Contents/Resources/bin/inkscape --verb dgkelectronics.com.encoder.disk.generator
-
 #hdiutil detach /dev/disk2

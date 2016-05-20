@@ -6,12 +6,27 @@
 
 @implementation Application
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+-(void)awakeFromNib
 {
     [webView setPolicyDelegate:self];
     [webView setDownloadDelegate:self];
     
     [self performSelectorInBackground:@selector(startPHP) withObject:nil];
+}
+
+- (void)checkXQuartz
+{
+    if (![[NSFileManager defaultManager] fileExistsAtPath:@"/Applications/Utilities/XQuartz.app/Contents/MacOS/X11"])
+    {
+        NSWindowController* downloadWindow = [[NSWindowController alloc] initWithWindowNibName:@"Download"];
+        [downloadWindow showWindow:self];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(completeXQUartzDownload:) name:@"completeDownload" object:nil];
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys: @"https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.9.dmg", @"url", [[NSHomeDirectory() stringByAppendingPathComponent:@"Downloads"] stringByAppendingPathComponent:@"XQuartz-2.7.9.dmg"], @"path", nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"startDownload" object:nil userInfo:userInfo];
+    }else{
+        [self openInskcapeEncoder];
+    }
 }
 
 - (void)checkInkscape
@@ -31,7 +46,7 @@
             NSWindowController* downloadWindow = [[NSWindowController alloc] initWithWindowNibName:@"Download"];
             [downloadWindow showWindow:self];
             
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(completeDownload:) name:@"completeDownload" object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(completeInkscapeDownload:) name:@"completeDownload" object:nil];
             NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys: @"https://inkscape.org/en/gallery/item/3896/Inkscape-0.91-1-x11-10.7-x86_64.dmg", @"url", [[NSHomeDirectory() stringByAppendingPathComponent:@"Downloads"] stringByAppendingPathComponent:@"Inkscape-0.91-1-x11-10.7-x86_64.dmg"], @"path", nil];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startDownload" object:nil userInfo:userInfo];
         }
@@ -44,19 +59,41 @@
             [[NSFileManager defaultManager] copyItemAtURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"encoder_disk_generator" ofType:@"py" inDirectory:@"encoder"]] toURL:[NSURL fileURLWithPath:encoderPath] error:nil];
         }
         
-        NSURL *app = [NSURL fileURLWithPath:@"/Applications/Inkscape.app/Contents/Resources/bin/inkscape"];
-        NSArray *arguments = [NSArray arrayWithObjects:@"--verb", @"dgkelectronics.com.encoder.disk.generator", nil];
-        [[NSWorkspace sharedWorkspace] launchApplicationAtURL:app options:0 configuration:[NSDictionary dictionaryWithObject:arguments forKey:NSWorkspaceLaunchConfigurationArguments] error:nil];
+        [self checkXQuartz];
     }
 }
 
-- (void) completeDownload:(NSNotification *) notification
+- (void) openInskcapeEncoder
+{
+    NSURL *app = [NSURL fileURLWithPath:@"/Applications/Inkscape.app/Contents/Resources/bin/inkscape"];
+    NSArray *arguments = [NSArray arrayWithObjects:@"--verb", @"dgkelectronics.com.encoder.disk.generator", nil];
+    [[NSWorkspace sharedWorkspace] launchApplicationAtURL:app options:0 configuration:[NSDictionary dictionaryWithObject:arguments forKey:NSWorkspaceLaunchConfigurationArguments] error:nil];
+}
+
+- (void) completeXQUartzDownload:(NSNotification *) notification
+{
+    if ([notification.name isEqualToString:@"completeDownload"])
+    {
+        NSTask *task = [[[NSTask alloc] init] autorelease];
+        [task setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/xquartz"]];
+        [task launch];
+        [task waitUntilExit];
+        
+        [self openInskcapeEncoder];
+    }
+}
+
+- (void) completeInkscapeDownload:(NSNotification *) notification
 {
     if ([notification.name isEqualToString:@"completeDownload"])
     {
         NSTask *task = [[[NSTask alloc] init] autorelease];
         [task setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/inkscape"]];
         [task launch];
+        [task waitUntilExit];
+        
+        [self checkXQuartz];
+        
         /*
         NSString* output = nil;
         NSString* processErrorDescription = nil;

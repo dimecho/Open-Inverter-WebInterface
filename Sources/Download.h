@@ -1,6 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
-@interface Download : NSViewController <NSURLDownloadDelegate>
+@interface Download : NSObject <NSURLDownloadDelegate>
 {
     IBOutlet NSWindow *window;
     long bytesReceived;

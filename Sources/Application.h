@@ -2,7 +2,7 @@
 #import <WebKit/WebKit.h>
 #import "Terminal.h"
 
-@interface Application : NSWindow <NSApplicationDelegate, NSWindowDelegate>
+@interface Application : NSObject <NSApplicationDelegate, NSWindowDelegate>
 {
     IBOutlet WebView* webView;
     IBOutlet NSWindow* window;

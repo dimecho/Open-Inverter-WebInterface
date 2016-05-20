@@ -11,18 +11,18 @@
 		320F3DB91CEAB48900A393E6 /* Download.xib in Resources */ = {isa = PBXBuildFile; fileRef = 320F3DB81CEAB48900A393E6 /* Download.xib */; };
 		320F3DBC1CEAB62F00A393E6 /* Download.m in Sources */ = {isa = PBXBuildFile; fileRef = 320F3DBB1CEAB62F00A393E6 /* Download.m */; };
 		320FC55A1CE8444100F6D2E9 /* dio in Resources */ = {isa = PBXBuildFile; fileRef = 320FC5591CE8444100F6D2E9 /* dio */; };
+		324BD1041CED816700C9F19D /* Application.xib in Resources */ = {isa = PBXBuildFile; fileRef = 324BD1021CED816700C9F19D /* Application.xib */; };
+		324BD1061CED84D400C9F19D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 324BD1051CED84D400C9F19D /* main.m */; };
 		326849BB1CE709C100A2AF66 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 326849BA1CE709C100A2AF66 /* WebKit.framework */; };
 		326849BD1CE7152400A2AF66 /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 326849BC1CE7152400A2AF66 /* icon.icns */; };
 		32746AE71CEC331F003DE2C5 /* inkscape in Resources */ = {isa = PBXBuildFile; fileRef = 32746AE61CEC331F003DE2C5 /* inkscape */; };
 		32793CD61CE7AE9900A5349E /* web in Resources */ = {isa = PBXBuildFile; fileRef = 32793CD51CE7AE9900A5349E /* web */; };
 		32793CD81CE7B1A600A5349E /* install in Resources */ = {isa = PBXBuildFile; fileRef = 32793CD71CE7B1A600A5349E /* install */; };
-		32C5504D1CE7F38E0045DBD6 /* Main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 32C5504B1CE7F38E0045DBD6 /* Main.xib */; };
-		32EEA3831CE79B6E00CAEF6D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EEA3821CE79B6E00CAEF6D /* main.m */; };
+		32C379061CED5AFC000D7EF1 /* xquartz in Resources */ = {isa = PBXBuildFile; fileRef = 32C379051CED5AFC000D7EF1 /* xquartz */; };
 		84B4349E0F91511700913D12 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = 84B434960F91511700913D12 /* Application.m */; };
 		84B434A00F91511700913D12 /* serial.c in Sources */ = {isa = PBXBuildFile; fileRef = 84B4349A0F91511700913D12 /* serial.c */; };
 		84B434A10F91511700913D12 /* Terminal.m in Sources */ = {isa = PBXBuildFile; fileRef = 84B4349D0F91511700913D12 /* Terminal.m */; };
 		84B434A80F91516800913D12 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B434A70F91516800913D12 /* IOKit.framework */; };
-		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -33,14 +33,14 @@
 		320F3DBA1CEAB62F00A393E6 /* Download.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Download.h; sourceTree = "<group>"; };
 		320F3DBB1CEAB62F00A393E6 /* Download.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Download.m; sourceTree = "<group>"; };
 		320FC5591CE8444100F6D2E9 /* dio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = dio; path = Resources/dio; sourceTree = "<group>"; };
+		324BD1031CED816700C9F19D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Application.xib; sourceTree = "<group>"; };
+		324BD1051CED84D400C9F19D /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		326849BA1CE709C100A2AF66 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		326849BC1CE7152400A2AF66 /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = icon.icns; path = Icons/icon.icns; sourceTree = "<group>"; };
 		32746AE61CEC331F003DE2C5 /* inkscape */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = inkscape; path = Resources/inkscape; sourceTree = "<group>"; };
 		32793CD51CE7AE9900A5349E /* web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = web; path = Resources/web; sourceTree = "<group>"; };
 		32793CD71CE7B1A600A5349E /* install */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = install; path = Resources/install; sourceTree = "<group>"; };
-		32793CE91CE7F1CF00A5349E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		32C5504C1CE7F38E0045DBD6 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Main.xib; sourceTree = "<group>"; };
-		32EEA3821CE79B6E00CAEF6D /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		32C379051CED5AFC000D7EF1 /* xquartz */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = xquartz; path = Resources/xquartz; sourceTree = "<group>"; };
 		84B434950F91511700913D12 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
 		84B434960F91511700913D12 /* Application.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Application.m; sourceTree = "<group>"; };
 		84B4349A0F91511700913D12 /* serial.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = serial.c; sourceTree = "<group>"; };
@@ -90,14 +90,14 @@
 			children = (
 				32793CD71CE7B1A600A5349E /* install */,
 				32746AE61CEC331F003DE2C5 /* inkscape */,
+				32C379051CED5AFC000D7EF1 /* xquartz */,
 				320AA24A1CED3B4500829FDB /* encoder */,
 				320FC5591CE8444100F6D2E9 /* dio */,
 				32793CD51CE7AE9900A5349E /* web */,
 				326849BC1CE7152400A2AF66 /* icon.icns */,
 				8D1107310486CEB800E47090 /* Info.plist */,
-				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
-				32C5504B1CE7F38E0045DBD6 /* Main.xib */,
 				320F3DB81CEAB48900A393E6 /* Download.xib */,
+				324BD1021CED816700C9F19D /* Application.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -126,7 +126,7 @@
 		84B434940F91511700913D12 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				32EEA3821CE79B6E00CAEF6D /* main.m */,
+				324BD1051CED84D400C9F19D /* main.m */,
 				84B434950F91511700913D12 /* Application.h */,
 				84B434960F91511700913D12 /* Application.m */,
 				320F3DBA1CEAB62F00A393E6 /* Download.h */,
@@ -201,12 +201,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				320F3DB91CEAB48900A393E6 /* Download.xib in Resources */,
 				32793CD61CE7AE9900A5349E /* web in Resources */,
 				326849BD1CE7152400A2AF66 /* icon.icns in Resources */,
 				320FC55A1CE8444100F6D2E9 /* dio in Resources */,
-				32C5504D1CE7F38E0045DBD6 /* Main.xib in Resources */,
+				32C379061CED5AFC000D7EF1 /* xquartz in Resources */,
+				324BD1041CED816700C9F19D /* Application.xib in Resources */,
 				320AA24B1CED3B4500829FDB /* encoder in Resources */,
 				32746AE71CEC331F003DE2C5 /* inkscape in Resources */,
 				32793CD81CE7B1A600A5349E /* install in Resources */,
@@ -220,31 +220,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				324BD1061CED84D400C9F19D /* main.m in Sources */,
 				84B4349E0F91511700913D12 /* Application.m in Sources */,
 				84B434A00F91511700913D12 /* serial.c in Sources */,
 				320F3DBC1CEAB62F00A393E6 /* Download.m in Sources */,
 				84B434A10F91511700913D12 /* Terminal.m in Sources */,
-				32EEA3831CE79B6E00CAEF6D /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
+		324BD1021CED816700C9F19D /* Application.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				32793CE91CE7F1CF00A5349E /* en */,
+				324BD1031CED816700C9F19D /* en */,
 			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		32C5504B1CE7F38E0045DBD6 /* Main.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				32C5504C1CE7F38E0045DBD6 /* en */,
-			);
-			name = Main.xib;
+			name = Application.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
