@@ -9,6 +9,10 @@ Serial console managment application written for Open-Source [Inverter Project](
 
 This is a native Mac OSX wrapper using IOKit.framework to allow for better RS232-USB support.
 
-->![Screenshot](https://github.com/poofik/huebner-inverter/raw/master/Screenshot.jpg)<-
+<p align="center">
+  <img src="https://github.com/poofik/huebner-inverter/raw/master/Screenshot.jpg">
+</p>
 
-->![Inverter](https://github.com/poofik/huebner-inverter/raw/master/Photo.jpg)<-
+<p align="center">
+  <img src="https://github.com/poofik/huebner-inverter/raw/master/Photo.jpg">
+</p>
