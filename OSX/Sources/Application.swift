@@ -103,8 +103,8 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     
     func checkXQuartz()
     {
-        let fileManager = NSFileManager.defaultManager()
-        if (!fileManager.fileExistsAtPath("/Applications/Utilities/XQuartz.app/Contents/MacOS/X11"))
+        let app: Bool = NSFileManager.defaultManager().fileExistsAtPath("/Applications/Utilities/XQuartz.app", isDirectory: nil)
+        if (!app)
         {
             //dispatch_async(dispatch_get_main_queue()) {
                 self.performSegueWithIdentifier("Download", sender:self)
@@ -121,9 +121,8 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     
     func checkInkscape()
     {
-        let fileManager = NSFileManager.defaultManager()
-        
-        if (!fileManager.fileExistsAtPath("/Applications/Inkscape.app/Contents/MacOS/Inkscape"))
+        let app: Bool = NSFileManager.defaultManager().fileExistsAtPath("/Applications/Inkscape.app", isDirectory: nil)
+        if (!app)
         {
             let alert = NSAlert()
             //alert.alertStyle = NSAlertStyle.WarningAlertStyle
@@ -146,10 +145,10 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             
             let encoderPath = NSHomeDirectory() + "/.config/inkscape/extensions/encoder_disk_generator.py"
             
-            if (!fileManager.fileExistsAtPath(encoderPath))
+            if (!NSFileManager.defaultManager().fileExistsAtPath(encoderPath))
             {
                 do {
-                    try fileManager.copyItemAtPath(NSBundle.mainBundle().pathForResource("encoder_disk_generator", ofType:"py", inDirectory:"encoder")!, toPath:encoderPath)
+                    try NSFileManager.defaultManager().copyItemAtPath(NSBundle.mainBundle().pathForResource("encoder_disk_generator", ofType:"py", inDirectory:"encoder")!, toPath:encoderPath)
                 } catch let error as NSError {
                     print("Cannot copy file: \(error.localizedDescription)")
                 }
@@ -196,7 +195,6 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             let success: Bool = runProcessAsAdministrator(installer, output:&output, errorDescription:&processErrorDescription)
             if (!success)
             {
-                print(processErrorDescription)
                 dispatch_async(dispatch_get_main_queue()) {
                     self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartzError.html")!))
                 }
@@ -205,7 +203,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             {
                 print(output)
                 dispatch_async(dispatch_get_main_queue()) {
-                    self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartzSucess.html")!))
+                    self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartzSuccess.html")!))
                 }
                 sleep(2)
                 //openInskcapeEncoder()
@@ -305,10 +303,11 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     
     func checkDrivers()
     {
-        let filePath = "/Library/Extensions/ProlificUsbSerial.kext/Contents/MacOS/ProlificUsbSerial";
-        let fileManager = NSFileManager.defaultManager()
-        
-        if (!fileManager.fileExistsAtPath(filePath))
+        var directory: ObjCBool = ObjCBool(false)
+        let kext_Prolific: Bool = NSFileManager.defaultManager().fileExistsAtPath("/Library/Extensions/ProlificUsbSerial.kext", isDirectory: &directory)
+        let kext_Serial: Bool = NSFileManager.defaultManager().fileExistsAtPath("/Library/Extensions/serial.kext", isDirectory: &directory)
+
+        if(!kext_Prolific || kext_Serial)
         {
             sleep(1)
             dispatch_async(dispatch_get_main_queue()) {
@@ -409,12 +408,13 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     func runProcessAsAdministrator(command: String, inout output: String?, inout errorDescription: String?) -> Bool
     {
         //command 2>&1
-        var errorInfo: NSDictionary?
-        let source = "do shell script \"\(command)\" with administrator privileges"
+        var errorInfo:NSDictionary?
+        let source = "do shell script \"\(command.stringByReplacingOccurrencesOfString(" ", withString: "\\\\ "))\" with administrator privileges"
         let script = NSAppleScript(source: source)
         let eventResult = script?.executeAndReturnError(&errorInfo)
         
-        if eventResult == nil {
+        if (eventResult == nil)
+        {
             errorDescription = nil
             if let code = errorInfo?.valueForKey(NSAppleScriptErrorNumber) as? NSNumber {
                 if code.intValue == -128 {
@@ -424,6 +424,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
                 if errorDescription == nil {
                     if let message = errorInfo?.valueForKey(NSAppleScriptErrorMessage) as? NSString {
                         errorDescription = String(message)
+                        //print(errorDescription)
                     }
                 }
             }

@@ -279,7 +279,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = OSX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.iroot.Huebner-Inverter";
+				PRODUCT_BUNDLE_IDENTIFIER = "Huebner-Inverter";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 			};
@@ -292,7 +292,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = OSX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.iroot.Huebner-Inverter";
+				PRODUCT_BUNDLE_IDENTIFIER = "Huebner-Inverter";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 			};
