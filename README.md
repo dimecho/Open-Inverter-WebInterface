@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/poofik/huebner-inverter/raw/master/Icons/icon.png" alt="" width="153" height="131" />
+<img src="https://github.com/poofik/huebner-inverter/raw/master/Web/Icon.png" alt="" width="153" height="131" />
 </p>
 
 # Huebner Inverter - Console Management#
