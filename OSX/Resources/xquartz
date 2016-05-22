@@ -1,0 +1,5 @@
+#!/bin/sh
+
+hdiutil attach ~/Downloads/XQuartz-2.7.9.dmg
+installer -pkg /Volumes/XQuartz-2.7.9/XQuartz.pkg -target /
+hdiutil detach /Volumes/XQuartz-2.7.9

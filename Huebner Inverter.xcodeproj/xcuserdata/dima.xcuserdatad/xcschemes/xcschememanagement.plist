@@ -4,7 +4,7 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Inverter Interface.xcscheme</key>
+		<key>Huebner Inverter.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
@@ -12,7 +12,17 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>8D1107260486CEB800E47090</key>
+		<key>32D281AD1CF0066E00606B12</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>32D281BE1CF0066F00606B12</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>32D281C91CF0066F00606B12</key>
 		<dict>
 			<key>primary</key>
 			<true/>

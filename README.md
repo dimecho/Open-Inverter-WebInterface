@@ -3,16 +3,19 @@
 </p>
 
 # Huebner Inverter - Console Management#
-**OSX 10.11**
 
 Serial console management application written for Open-Source [Inverter Project](http://johanneshuebner.com/quickcms/index.html%3Fde_electric-car-conversion-site,14.html) controlling 3-Phase AC Induction Motors.
 
-This is a native Mac OSX wrapper using IOKit.framework to allow for better RS232-USB support.
+**Mac OSX 10.11**
+Native "termios.h" wrapper using Swift 2.0 Framework to allow for better RS232-USB support.
+
+**Windows 10**
+PowerShell script helper with direct COM access
 
 <p align="center">
-  <img src="https://github.com/poofik/huebner-inverter/raw/master/Screenshot.jpg">
+  <img src="https://github.com/poofik/huebner-inverter/raw/master/Web/Screenshot.jpg">
 </p>
 
 <p align="center">
-  <img src="https://github.com/poofik/huebner-inverter/raw/master/Photo.jpg">
+  <img src="https://github.com/poofik/huebner-inverter/raw/master/Web/Photo.jpg">
 </p>

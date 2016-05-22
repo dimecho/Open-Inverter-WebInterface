@@ -1,0 +1,11 @@
+#!/bin/sh
+
+cd "$(dirname "$0")"
+
+if [ ! -d "/Library/Extensions/ProlificUsbSerial.kext" ]; then
+    cp -R ./kext/ProlificUsbSerial.kext /Library/Extensions/
+fi
+
+if [ ! -d "/Library/Extensions/usbserial.kext" ]; then
+    cp -R ./kext/usbserial.kext /Library/Extensions/
+fi

@@ -3,333 +3,323 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 47;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		320AA24B1CED3B4500829FDB /* encoder in Resources */ = {isa = PBXBuildFile; fileRef = 320AA24A1CED3B4500829FDB /* encoder */; };
-		320F3DB91CEAB48900A393E6 /* Download.xib in Resources */ = {isa = PBXBuildFile; fileRef = 320F3DB81CEAB48900A393E6 /* Download.xib */; };
-		320F3DBC1CEAB62F00A393E6 /* Download.m in Sources */ = {isa = PBXBuildFile; fileRef = 320F3DBB1CEAB62F00A393E6 /* Download.m */; };
-		320FC55A1CE8444100F6D2E9 /* dio in Resources */ = {isa = PBXBuildFile; fileRef = 320FC5591CE8444100F6D2E9 /* dio */; };
-		324BD1041CED816700C9F19D /* Application.xib in Resources */ = {isa = PBXBuildFile; fileRef = 324BD1021CED816700C9F19D /* Application.xib */; };
-		324BD1061CED84D400C9F19D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 324BD1051CED84D400C9F19D /* main.m */; };
-		326849BB1CE709C100A2AF66 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 326849BA1CE709C100A2AF66 /* WebKit.framework */; };
-		326849BD1CE7152400A2AF66 /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 326849BC1CE7152400A2AF66 /* icon.icns */; };
-		32746AE71CEC331F003DE2C5 /* inkscape in Resources */ = {isa = PBXBuildFile; fileRef = 32746AE61CEC331F003DE2C5 /* inkscape */; };
-		32793CD61CE7AE9900A5349E /* web in Resources */ = {isa = PBXBuildFile; fileRef = 32793CD51CE7AE9900A5349E /* web */; };
-		32793CD81CE7B1A600A5349E /* install in Resources */ = {isa = PBXBuildFile; fileRef = 32793CD71CE7B1A600A5349E /* install */; };
-		32C379061CED5AFC000D7EF1 /* xquartz in Resources */ = {isa = PBXBuildFile; fileRef = 32C379051CED5AFC000D7EF1 /* xquartz */; };
-		84B4349E0F91511700913D12 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = 84B434960F91511700913D12 /* Application.m */; };
-		84B434A00F91511700913D12 /* serial.c in Sources */ = {isa = PBXBuildFile; fileRef = 84B4349A0F91511700913D12 /* serial.c */; };
-		84B434A10F91511700913D12 /* Terminal.m in Sources */ = {isa = PBXBuildFile; fileRef = 84B4349D0F91511700913D12 /* Terminal.m */; };
-		84B434A80F91516800913D12 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B434A70F91516800913D12 /* IOKit.framework */; };
-		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		32D281B41CF0066E00606B12 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D281B31CF0066E00606B12 /* Application.swift */; };
+		32D281B61CF0066F00606B12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32D281B51CF0066F00606B12 /* Assets.xcassets */; };
+		32D281B91CF0066F00606B12 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32D281B71CF0066F00606B12 /* Main.storyboard */; };
+		32D281F31CF00EF200606B12 /* dio in Resources */ = {isa = PBXBuildFile; fileRef = 32D281ED1CF00EF200606B12 /* dio */; };
+		32D281F41CF00EF200606B12 /* encoder in Resources */ = {isa = PBXBuildFile; fileRef = 32D281EE1CF00EF200606B12 /* encoder */; };
+		32D281F51CF00EF200606B12 /* inkscape in Resources */ = {isa = PBXBuildFile; fileRef = 32D281EF1CF00EF200606B12 /* inkscape */; };
+		32D281F61CF00EF200606B12 /* install in Resources */ = {isa = PBXBuildFile; fileRef = 32D281F01CF00EF200606B12 /* install */; };
+		32D281F81CF00EF200606B12 /* xquartz in Resources */ = {isa = PBXBuildFile; fileRef = 32D281F21CF00EF200606B12 /* xquartz */; };
+		32DE5F911CF0D03000113FCF /* Web in Resources */ = {isa = PBXBuildFile; fileRef = 32DE5F901CF0D03000113FCF /* Web */; };
+		32DE5F961CF0DC0E00113FCF /* Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32DE5F951CF0DC0E00113FCF /* Download.swift */; };
+		32F25DD11CF2499F00494B1C /* kext in Resources */ = {isa = PBXBuildFile; fileRef = 32F25DD01CF2499F00494B1C /* kext */; };
+		32F25DD31CF24A2600494B1C /* driver in Resources */ = {isa = PBXBuildFile; fileRef = 32F25DD21CF24A2600494B1C /* driver */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		320AA24A1CED3B4500829FDB /* encoder */ = {isa = PBXFileReference; lastKnownFileType = folder; name = encoder; path = Resources/encoder; sourceTree = "<group>"; };
-		320F3DB81CEAB48900A393E6 /* Download.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = Download.xib; path = en.lproj/Download.xib; sourceTree = "<group>"; };
-		320F3DBA1CEAB62F00A393E6 /* Download.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Download.h; sourceTree = "<group>"; };
-		320F3DBB1CEAB62F00A393E6 /* Download.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Download.m; sourceTree = "<group>"; };
-		320FC5591CE8444100F6D2E9 /* dio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = dio; path = Resources/dio; sourceTree = "<group>"; };
-		324BD1031CED816700C9F19D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Application.xib; sourceTree = "<group>"; };
-		324BD1051CED84D400C9F19D /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		326849BA1CE709C100A2AF66 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		326849BC1CE7152400A2AF66 /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = icon.icns; path = Icons/icon.icns; sourceTree = "<group>"; };
-		32746AE61CEC331F003DE2C5 /* inkscape */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = inkscape; path = Resources/inkscape; sourceTree = "<group>"; };
-		32793CD51CE7AE9900A5349E /* web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = web; path = Resources/web; sourceTree = "<group>"; };
-		32793CD71CE7B1A600A5349E /* install */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = install; path = Resources/install; sourceTree = "<group>"; };
-		32C379051CED5AFC000D7EF1 /* xquartz */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = xquartz; path = Resources/xquartz; sourceTree = "<group>"; };
-		84B434950F91511700913D12 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
-		84B434960F91511700913D12 /* Application.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Application.m; sourceTree = "<group>"; };
-		84B4349A0F91511700913D12 /* serial.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = serial.c; sourceTree = "<group>"; };
-		84B4349B0F91511700913D12 /* serial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = serial.h; sourceTree = "<group>"; };
-		84B4349C0F91511700913D12 /* Terminal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Terminal.h; sourceTree = "<group>"; };
-		84B4349D0F91511700913D12 /* Terminal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Terminal.m; sourceTree = "<group>"; };
-		84B434A70F91516800913D12 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
-		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* Huebner Inverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Huebner Inverter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		32D281AE1CF0066E00606B12 /* Huebner Inverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Huebner Inverter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		32D281B31CF0066E00606B12 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Application.swift; path = Sources/Application.swift; sourceTree = "<group>"; };
+		32D281B51CF0066F00606B12 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		32D281B81CF0066F00606B12 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		32D281BA1CF0066F00606B12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		32D281ED1CF00EF200606B12 /* dio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = dio; path = OSX/Resources/dio; sourceTree = "<group>"; };
+		32D281EE1CF00EF200606B12 /* encoder */ = {isa = PBXFileReference; lastKnownFileType = folder; name = encoder; path = OSX/Resources/encoder; sourceTree = "<group>"; };
+		32D281EF1CF00EF200606B12 /* inkscape */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = inkscape; path = OSX/Resources/inkscape; sourceTree = "<group>"; };
+		32D281F01CF00EF200606B12 /* install */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = install; path = OSX/Resources/install; sourceTree = "<group>"; };
+		32D281F21CF00EF200606B12 /* xquartz */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = xquartz; path = OSX/Resources/xquartz; sourceTree = "<group>"; };
+		32DE5F901CF0D03000113FCF /* Web */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Web; sourceTree = "<group>"; };
+		32DE5F951CF0DC0E00113FCF /* Download.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Download.swift; path = Sources/Download.swift; sourceTree = "<group>"; };
+		32F25DD01CF2499F00494B1C /* kext */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kext; path = OSX/Resources/kext; sourceTree = "<group>"; };
+		32F25DD21CF24A2600494B1C /* driver */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = driver; path = OSX/Resources/driver; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		8D11072E0486CEB800E47090 /* Frameworks */ = {
+		32D281AB1CF0066E00606B12 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				326849BB1CE709C100A2AF66 /* WebKit.framework in Frameworks */,
-				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				84B434A80F91516800913D12 /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		19C28FACFE9D520D11CA2CBB /* Products */ = {
+		32D281A51CF0066E00606B12 = {
 			isa = PBXGroup;
 			children = (
-				8D1107320486CEB800E47090 /* Huebner Inverter.app */,
+				32D281B01CF0066E00606B12 /* OSX */,
+				32D281E01CF00D5300606B12 /* Resources */,
+				32D281AF1CF0066E00606B12 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		32D281AF1CF0066E00606B12 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				32D281AE1CF0066E00606B12 /* Huebner Inverter.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA /* Serial Tools */ = {
+		32D281B01CF0066E00606B12 /* OSX */ = {
 			isa = PBXGroup;
 			children = (
-				84B434940F91511700913D12 /* Sources */,
-				29B97317FDCFA39411CA2CEA /* Resources */,
-				29B97323FDCFA39411CA2CEA /* Frameworks */,
-				19C28FACFE9D520D11CA2CBB /* Products */,
+				32D281B31CF0066E00606B12 /* Application.swift */,
+				32DE5F951CF0DC0E00113FCF /* Download.swift */,
+				32D281B51CF0066F00606B12 /* Assets.xcassets */,
+				32D281B71CF0066F00606B12 /* Main.storyboard */,
+				32D281BA1CF0066F00606B12 /* Info.plist */,
 			);
-			name = "Serial Tools";
+			path = OSX;
 			sourceTree = "<group>";
 		};
-		29B97317FDCFA39411CA2CEA /* Resources */ = {
+		32D281E01CF00D5300606B12 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				32793CD71CE7B1A600A5349E /* install */,
-				32746AE61CEC331F003DE2C5 /* inkscape */,
-				32C379051CED5AFC000D7EF1 /* xquartz */,
-				320AA24A1CED3B4500829FDB /* encoder */,
-				320FC5591CE8444100F6D2E9 /* dio */,
-				32793CD51CE7AE9900A5349E /* web */,
-				326849BC1CE7152400A2AF66 /* icon.icns */,
-				8D1107310486CEB800E47090 /* Info.plist */,
-				320F3DB81CEAB48900A393E6 /* Download.xib */,
-				324BD1021CED816700C9F19D /* Application.xib */,
+				32F25DD01CF2499F00494B1C /* kext */,
+				32DE5F901CF0D03000113FCF /* Web */,
+				32D281ED1CF00EF200606B12 /* dio */,
+				32D281EE1CF00EF200606B12 /* encoder */,
+				32D281F01CF00EF200606B12 /* install */,
+				32F25DD21CF24A2600494B1C /* driver */,
+				32D281EF1CF00EF200606B12 /* inkscape */,
+				32D281F21CF00EF200606B12 /* xquartz */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
-		};
-		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				326849BA1CE709C100A2AF66 /* WebKit.framework */,
-				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
-				84B434A70F91516800913D12 /* IOKit.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		32EEA3811CE799D800CAEF6D /* SerialTools */ = {
-			isa = PBXGroup;
-			children = (
-				84B4349B0F91511700913D12 /* serial.h */,
-				84B4349A0F91511700913D12 /* serial.c */,
-				84B4349C0F91511700913D12 /* Terminal.h */,
-				84B4349D0F91511700913D12 /* Terminal.m */,
-			);
-			name = SerialTools;
-			sourceTree = "<group>";
-		};
-		84B434940F91511700913D12 /* Sources */ = {
-			isa = PBXGroup;
-			children = (
-				324BD1051CED84D400C9F19D /* main.m */,
-				84B434950F91511700913D12 /* Application.h */,
-				84B434960F91511700913D12 /* Application.m */,
-				320F3DBA1CEAB62F00A393E6 /* Download.h */,
-				320F3DBB1CEAB62F00A393E6 /* Download.m */,
-				32EEA3811CE799D800CAEF6D /* SerialTools */,
-			);
-			path = Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8D1107260486CEB800E47090 /* Huebner Inverter */ = {
+		32D281AD1CF0066E00606B12 /* Huebner Inverter */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Huebner Inverter" */;
+			buildConfigurationList = 32D281D31CF0066F00606B12 /* Build configuration list for PBXNativeTarget "Huebner Inverter" */;
 			buildPhases = (
-				8D1107290486CEB800E47090 /* Resources */,
-				8D11072C0486CEB800E47090 /* Sources */,
-				8D11072E0486CEB800E47090 /* Frameworks */,
+				32D281AA1CF0066E00606B12 /* Sources */,
+				32D281AB1CF0066E00606B12 /* Frameworks */,
+				32D281AC1CF0066E00606B12 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = "Huebner Inverter";
-			productInstallPath = "$(HOME)/Applications";
-			productName = "Serial Tools";
-			productReference = 8D1107320486CEB800E47090 /* Huebner Inverter.app */;
+			productName = "Huebner Inverter";
+			productReference = 32D281AE1CF0066E00606B12 /* Huebner Inverter.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		29B97313FDCFA39411CA2CEA /* Project object */ = {
+		32D281A61CF0066E00606B12 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0720;
+				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = "Dima Dykhman";
 				TargetAttributes = {
-					8D1107260486CEB800E47090 = {
-						SystemCapabilities = {
-							com.apple.Sandbox = {
-								enabled = 0;
-							};
-						};
+					32D281AD1CF0066E00606B12 = {
+						CreatedOnToolsVersion = 7.3.1;
 					};
 				};
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Huebner Inverter" */;
-			compatibilityVersion = "Xcode 6.3";
+			buildConfigurationList = 32D281A91CF0066E00606B12 /* Build configuration list for PBXProject "Huebner Inverter" */;
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
-			hasScannedForEncodings = 1;
+			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
-				Japanese,
-				French,
-				German,
-				de,
-				ja,
 				en,
+				Base,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA /* Serial Tools */;
+			mainGroup = 32D281A51CF0066E00606B12;
+			productRefGroup = 32D281AF1CF0066E00606B12 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8D1107260486CEB800E47090 /* Huebner Inverter */,
+				32D281AD1CF0066E00606B12 /* Huebner Inverter */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		8D1107290486CEB800E47090 /* Resources */ = {
+		32D281AC1CF0066E00606B12 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				320F3DB91CEAB48900A393E6 /* Download.xib in Resources */,
-				32793CD61CE7AE9900A5349E /* web in Resources */,
-				326849BD1CE7152400A2AF66 /* icon.icns in Resources */,
-				320FC55A1CE8444100F6D2E9 /* dio in Resources */,
-				32C379061CED5AFC000D7EF1 /* xquartz in Resources */,
-				324BD1041CED816700C9F19D /* Application.xib in Resources */,
-				320AA24B1CED3B4500829FDB /* encoder in Resources */,
-				32746AE71CEC331F003DE2C5 /* inkscape in Resources */,
-				32793CD81CE7B1A600A5349E /* install in Resources */,
+				32F25DD31CF24A2600494B1C /* driver in Resources */,
+				32DE5F911CF0D03000113FCF /* Web in Resources */,
+				32D281F61CF00EF200606B12 /* install in Resources */,
+				32D281F31CF00EF200606B12 /* dio in Resources */,
+				32D281B61CF0066F00606B12 /* Assets.xcassets in Resources */,
+				32D281B91CF0066F00606B12 /* Main.storyboard in Resources */,
+				32D281F51CF00EF200606B12 /* inkscape in Resources */,
+				32D281F81CF00EF200606B12 /* xquartz in Resources */,
+				32F25DD11CF2499F00494B1C /* kext in Resources */,
+				32D281F41CF00EF200606B12 /* encoder in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		8D11072C0486CEB800E47090 /* Sources */ = {
+		32D281AA1CF0066E00606B12 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				324BD1061CED84D400C9F19D /* main.m in Sources */,
-				84B4349E0F91511700913D12 /* Application.m in Sources */,
-				84B434A00F91511700913D12 /* serial.c in Sources */,
-				320F3DBC1CEAB62F00A393E6 /* Download.m in Sources */,
-				84B434A10F91511700913D12 /* Terminal.m in Sources */,
+				32DE5F961CF0DC0E00113FCF /* Download.swift in Sources */,
+				32D281B41CF0066E00606B12 /* Application.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		324BD1021CED816700C9F19D /* Application.xib */ = {
+		32D281B71CF0066F00606B12 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				324BD1031CED816700C9F19D /* en */,
+				32D281B81CF0066F00606B12 /* Base */,
 			);
-			name = Application.xib;
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		C01FCF4B08A954540054247B /* Debug */ = {
+		32D281D11CF0066F00606B12 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
-				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_NAME = "Huebner Inverter";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
-		C01FCF4C08A954540054247B /* Release */ = {
+		32D281D21CF0066F00606B12 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
-				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_VERSION = "";
-				GENERATE_MASTER_OBJECT_FILE = NO;
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_NAME = "Huebner Inverter";
+				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
-				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Release;
 		};
-		C01FCF4F08A954540054247B /* Debug */ = {
+		32D281D41CF0066F00606B12 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PREBINDING = NO;
-				SDKROOT = macosx;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = OSX/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.iroot.Huebner-Inverter";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 			};
 			name = Debug;
 		};
-		C01FCF5008A954540054247B /* Release */ = {
+		32D281D51CF0066F00606B12 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-				SDKROOT = macosx;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = OSX/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.iroot.Huebner-Inverter";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Huebner Inverter" */ = {
+		32D281A91CF0066E00606B12 /* Build configuration list for PBXProject "Huebner Inverter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C01FCF4B08A954540054247B /* Debug */,
-				C01FCF4C08A954540054247B /* Release */,
+				32D281D11CF0066F00606B12 /* Debug */,
+				32D281D21CF0066F00606B12 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Huebner Inverter" */ = {
+		32D281D31CF0066F00606B12 /* Build configuration list for PBXNativeTarget "Huebner Inverter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C01FCF4F08A954540054247B /* Debug */,
-				C01FCF5008A954540054247B /* Release */,
+				32D281D41CF0066F00606B12 /* Debug */,
+				32D281D51CF0066F00606B12 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+	rootObject = 32D281A61CF0066E00606B12 /* Project object */;
 }
