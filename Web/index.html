@@ -20,16 +20,12 @@
         
         <script>
         
-            //$.fn.editable.defaults.url = 'serial.php';
-            //$.fn.editable.defaults.ajaxOptions = {type: "PUT"};
-            //$.fn.editable.defaults.mode = 'inline';
-            $.fn.editable.defaults.mode = 'popup';
-            
             $(document).ready(function()
             {
                 $('#parameters').editable({
                     selector: 'a',
                     url: 'serial.php',
+                    mode: 'popup',
                     pk: 1,
                     showbuttons: true,
                     ajaxOptions: {
@@ -102,24 +98,18 @@
             <li><a href="wiring.html">Wiring Diagram</a></li>
             <li><a href="encoder.html">Build Encoder</a></li>
         </ul>
-
+        <br/>
         <div class="col-md-12 col-sm-12 col-xs-12">
-            <br/>
-            <div class="center-block" id="title">
-                <h3 class="label">Inverter Console</h3><span id="titleStatus" class="label col-sm-offset-1"></span>
-            </div>
-            <br/>
-            <table class="table table-bordered table-striped table-hover" style="clear: both; background-color:#e6e6e6;" id="parameters">
-                <thead class="thead-inverse">
-                    <tr>
-                        <th>Name</th>
-                        <th>Value</th>
-                        <th>Type</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <center>
+                <div class="center-block" id="title">
+                    <h3 class="label">Inverter Console</h3>
+                    <span id="titleStatus" class="label col-sm-offset-1"></span>
+                </div>
+                <br/>
+                <div class="center-block" id="connection"></div>
+                <table class="table table-striped table-hover" style="background-color:#e6e6e6;" id="parameters">
+                </table>
+            </center>
         </div>
     </body>
 </html>

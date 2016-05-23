@@ -16,7 +16,16 @@ function loadJSON()
         success: function(data)
         {
             //console.log(data);
-            buildMenu(JSON.parse(data.slice(5))); //cut out command 'json....' from beginning
+            try {
+                var json = JSON.parse(data.slice(5)); //cut out command 'json....' from beginning
+                buildMenu(json); 
+            } catch (e) {
+                var title = $("#title h3").empty();
+                title.append("Check Serial Connection");
+
+                var connection = $("#connection").empty();
+                connection.append($("<img>", { src:"img/connection.jpg", class:"img-thumbnail", width:"80%", height:"80%"}));
+            }
         },
         error: function(xhr, textStatus, errorThrown){
         }
@@ -68,7 +77,10 @@ function buildMenu(json)
         }
     });
     //=================
-    var menu = $("#parameters tbody").empty();
+    var menu = $("#parameters").empty();
+    var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("Type")))
+    var tbody = $("<tbody>");
+    menu.append(thead);
 
     $.each(json, function()
     {
@@ -92,10 +104,11 @@ function buildMenu(json)
             var td2 = $("<td>").append(a);
             var td3 = $("<td>").append(this.unit);
    
-            menu.append(tr.append(td1).append(td2).append(td3));
+            tbody.append(tr.append(td1).append(td2).append(td3));
         }
         i++;
     });
+    menu.append(tbody);
 }
 
 function startInverter()

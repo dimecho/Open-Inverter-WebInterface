@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/poofik/huebner-inverter/raw/master/Web/Icon.png" alt="" width="153" height="131" />
+<img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/icon.png" alt="" width="153" height="131" />
 </p>
 
 # Huebner Inverter - Console Management#
@@ -13,9 +13,9 @@ Native "termios.h" wrapper using Swift 2.0 Framework to allow for better RS232-U
 PowerShell script helper with direct COM access
 
 <p align="center">
-  <img src="https://github.com/poofik/huebner-inverter/raw/master/Web/Screenshot.jpg">
+  <img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/screenshot.jpg">
 </p>
 
 <p align="center">
-  <img src="https://github.com/poofik/huebner-inverter/raw/master/Web/Photo.jpg">
+  <img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/photo.jpg">
 </p>
