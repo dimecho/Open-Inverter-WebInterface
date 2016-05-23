@@ -171,7 +171,6 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         task.launchPath = "/Applications/Inkscape.app/Contents/Resources/bin/inkscape"
         task.arguments = ["--verb", "dgkelectronics.com.encoder.disk.generator"]
         task.launch()
-        self.openInskcapeEncoder()
     }
     
     func completeXQUartzDownload(notification: NSNotification)
@@ -206,7 +205,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
                     self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartzSuccess.html")!))
                 }
                 sleep(2)
-                //openInskcapeEncoder()
+                openInskcapeEncoder()
             }
         }
     }
