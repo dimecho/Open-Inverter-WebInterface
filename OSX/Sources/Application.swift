@@ -6,12 +6,10 @@ import IOKit.serial
 import Darwin.POSIX.termios
 
 @NSApplicationMain
-
-class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WKNavigationDelegate, NSURLDownloadDelegate //NSURLSessionDelegate
+class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WKNavigationDelegate, NSURLDownloadDelegate //, NSURLSessionDelegate
 {
     //@IBOutlet weak var webView: WebView!
     var webView: WKWebView!
-    var taskPHP = NSTask()
     var serial = String()
     var serialPath = [String]()
     var ip = "localhost"
@@ -96,8 +94,9 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         return true
     }
     
-    func applicationWillTerminate(notification: NSNotification) {
-        self.taskPHP.terminate();
+    func applicationWillTerminate(notification: NSNotification)
+    {
+        system("pkill -9 php");
         //self.terminal.closeConnections();
     }
     
@@ -293,10 +292,10 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
        
             //TODO: check config.inc.php and correct serial /dev/cu.*
             
-            self.taskPHP = NSTask()
-            self.taskPHP.launchPath = "/usr/bin/php"
-            self.taskPHP.arguments = ["-S", "127.0.0.1:8080", "-t", NSBundle.mainBundle().resourcePath! + "/Web/"]
-            self.taskPHP.launch()
+            var task = NSTask()
+            task.launchPath = "/usr/bin/php"
+            task.arguments = ["-S", "127.0.0.1:8080", "-t", NSBundle.mainBundle().resourcePath! + "/Web/"]
+            task.launch()
         }
     }
     
@@ -389,7 +388,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         {
             let data  = NSData(contentsOfFile:panel.URL!.path!)
             
-            let request = NSMutableURLRequest(URL: NSURL(string:"http://" + ip + ":8080/upload.php")!)
+            let request = NSMutableURLRequest(URL: NSURL(string:"http://" + self.ip + ":8080/upload.php")!)
             request.HTTPMethod = "POST"
             request.HTTPBody = data
             
@@ -433,6 +432,41 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             return true
         }
     }
+    
+    @IBAction func checkUpdates(sender: AnyObject)
+    {
+        let data = NSData(contentsOfURL: NSURL(string: "http://github.com/poofik/huebner-inverter/raw/master/OSX/Info.plist")!)
+        let plist = (try! NSPropertyListSerialization.propertyListWithData(data!, options: NSPropertyListMutabilityOptions.MutableContainersAndLeaves, format: nil)) as! NSMutableDictionary
+        let onlineVersion = plist.valueForKey("CFBundleShortVersionString") as? String
+        let currentVersion = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as? String
+        let onlineBuild = plist.valueForKey("CFBundleVersion") as? String
+        let currentBuild = NSBundle.mainBundle().infoDictionary!["CFBundleVersion"] as? String
+        let alert = NSAlert()
+        
+        if(Double(onlineVersion!)! == Double(currentVersion!)! && Int(onlineBuild!)! == Int(currentBuild!)!)
+        {
+            alert.messageText = "Version " + onlineVersion! + " Build " + currentBuild!
+            alert.informativeText = "You already have the latest and greatest"
+            alert.addButtonWithTitle("OK")
+            alert.runModal()
+        }else{
+            alert.messageText = "New Version " + onlineVersion! + " Build " + onlineBuild! + " is Available"
+            alert.informativeText = "Go to GitHub to Download?"
+            alert.addButtonWithTitle("OK")
+            alert.addButtonWithTitle("Cancel")
+            if (alert.runModal() == NSAlertFirstButtonReturn)
+            {
+                let github = "https://github.com/poofik/Huebner-Inverter/releases"
+                if NSFileManager.defaultManager().fileExistsAtPath("/Applications/FireFox.app")
+                {
+                    system("open -a Firefox '" + github + "'")
+                }else{
+                    NSWorkspace.sharedWorkspace().openURL(NSURL(string:github)!)
+                }
+            }
+        }
+    }
+    
     //================= C Wrapper ======================
     func printSerialPaths(portIterator: io_iterator_t) {
         var serialService: io_object_t

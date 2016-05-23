@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "OSX/Sources/Application.swift"
-            timestampString = "485592259.666575"
+            timestampString = "485717379.76116"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "12"
-            endingLineNumber = "12"
+            startingLineNumber = "11"
+            endingLineNumber = "11"
             landmarkName = "Application"
             landmarkType = "3">
          </BreakpointContent>
