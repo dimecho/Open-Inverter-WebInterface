@@ -1,8 +1,3 @@
-$(document).ready(function()
-{
-    $('#menu').slicknav();
-    $('.tooltip').tooltipster();
-});
 
 function loadJSON()
 {
@@ -23,8 +18,7 @@ function loadJSON()
                 var title = $("#title h3").empty();
                 title.append("Check Serial Connection");
 
-                var connection = $("#connection").empty();
-                connection.append($("<img>", { src:"img/connection.jpg", class:"img-thumbnail", width:"80%", height:"80%"}));
+                var connection = $("#connection").show();
             }
         },
         error: function(xhr, textStatus, errorThrown){
@@ -77,7 +71,7 @@ function buildMenu(json)
         }
     });
     //=================
-    var menu = $("#parameters").empty();
+    var menu = $("#parameters").empty().show();
     var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("Type")))
     var tbody = $("<tbody>");
     menu.append(thead);
@@ -100,7 +94,7 @@ function buildMenu(json)
 
             var a = $("<a>", { href:"#", id:name[i], "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":this.unit + " ("+ this.default + ")"}).append(this.value);
             var tr = $("<tr>");
-            var td1 = $("<td>", { title:tooltip}).append(name[i]);
+            var td1 = $("<td>", { class:"tooltip-custom", title:tooltip}).append(name[i]);
             var td2 = $("<td>").append(a);
             var td3 = $("<td>").append(this.unit);
    
@@ -121,14 +115,14 @@ function startInverter()
             var span = $("#titleStatus").empty();
             span.removeClass('label-success');
             span.removeClass('label-warning');
-            span.removeClass('label-danger');
+            span.removeClass('label-important');
 
             if(data.indexOf("Inverter started") != -1)
             {
                 span.addClass('label-success');
                 span.text('started');
             }else{
-                span.addClass('label-danger');
+                span.addClass('label-important');
                 span.text('error');
             }
         }
@@ -145,14 +139,14 @@ function stopInverter()
             var span = $("#titleStatus").empty();
             span.removeClass('label-success');
             span.removeClass('label-warning');
-            span.removeClass('label-danger');
+            span.removeClass('label-important');
            
             if(data.indexOf("Inverter hated") != -1)
             {
                 span.addClass('label-warning');
                 span.text('stopped');
             }else{
-                span.addClass('label-danger');
+                span.addClass('label-important');
                 span.text('error');
             }
         }

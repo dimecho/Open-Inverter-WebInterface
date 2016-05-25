@@ -9,10 +9,12 @@ import Darwin.POSIX.termios
 class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WKNavigationDelegate, NSURLDownloadDelegate //, NSURLSessionDelegate
 {
     //@IBOutlet weak var webView: WebView!
+    var ip = "localhost"
     var webView: WKWebView!
     var serial = String()
     var serialPath = [String]()
-    var ip = "localhost"
+    var metadataSearch: NSMetadataQuery!
+    var metadataQueryDidFinishGatheringObserver: AnyObject?
     
     override func viewDidLoad()
     {
@@ -70,6 +72,11 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             uploadSnapshot();
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
+        else if (url == NSURL(string:"http://" + ip + ":8080/schematics.html"))
+        {
+            checkEagle()
+            decisionHandler(WKNavigationActionPolicy.Cancel)
+        }
         else if (url == NSURL(string:"http://" + ip + ":8080/download.php"))
         {
             //navigationAction.request.URL!.host
@@ -100,19 +107,78 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         //self.terminal.closeConnections();
     }
     
-    func checkXQuartz()
+    func initalGatherComplete(notification: NSNotification)
     {
-        let app: Bool = NSFileManager.defaultManager().fileExistsAtPath("/Applications/Utilities/XQuartz.app", isDirectory: nil)
-        if (!app)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        metadataSearch.disableUpdates() // You should invoke this method before iterating over query results that could change due to live updates.
+        metadataSearch.stopQuery() // You would call this function to stop a query that is generating too many results to be useful but still want to access the available results.
+        
+        for item in metadataSearch.results as! [NSMetadataItem]
         {
-            //dispatch_async(dispatch_get_main_queue()) {
+            //let itemName = item.valueForAttribute(NSMetadataItemFSNameKey) as! String
+            //let itemUrl = item.valueForAttribute(NSMetadataItemURLKey) as! NSURL
+            print(item.valueForAttribute(NSMetadataItemURLKey))
+            //print("result at " + String(i) + " - " + url)
+        }
+    }
+    
+    func downloadSchematics()
+    {
+        /*
+        metadataSearch = NSMetadataQuery()
+        metadataSearch.searchScopes = [NSMetadataQueryLocalComputerScope] //[NSMetadataQueryUserHomeScope]
+        let predicate = NSPredicate(format: "%K == 'base_board4.sch'", NSMetadataItemFSNameKey)
+        metadataSearch.predicate = predicate
+        metadataSearch.startQuery()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.initalGatherComplete), name:NSMetadataQueryDidFinishGatheringNotification, object:metadataSearch)
+        */
+        
+        if (!NSFileManager.defaultManager().fileExistsAtPath(NSHomeDirectory() + "/Documents/pcb/base_board4.sch"))
+        {
+            self.performSegueWithIdentifier("Download", sender:self)
+            var userInfo = Dictionary<String, String>()
+            userInfo["url"] = "http://johanneshuebner.com/quickcms/files/inverter.zip"
+            userInfo["path"] = NSHomeDirectory() + "/Documents/inverter.zip"
+            NSNotificationCenter.defaultCenter().postNotificationName("startDownload", object:nil, userInfo:userInfo);
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeSchematicsDownload), name:"completeDownload", object: nil)
+        }else{
+            system("open " + NSHomeDirectory() + "/Documents/pcb/")
+        }
+    }
+    
+    func checkEagle()
+    {
+        if (!NSFileManager.defaultManager().fileExistsAtPath("/Applications/EAGLE-7.6.0/Eagle.app"))
+        {
+            let alert = NSAlert()
+            alert.messageText = "Install EAGLE - Download 50MB"
+            alert.informativeText = "CadSoft EAGLE PCB Design Software."
+            alert.addButtonWithTitle("OK")
+            alert.addButtonWithTitle("Cancel")
+            if (alert.runModal() == NSAlertFirstButtonReturn)
+            {
                 self.performSegueWithIdentifier("Download", sender:self)
                 var userInfo = Dictionary<String, String>()
-                userInfo["url"] = "https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.9.dmg"
-                userInfo["path"] = NSHomeDirectory() + "/Downloads/XQuartz-2.7.9.dmg"
+                userInfo["url"] = "http://web.cadsoft.de/ftp/eagle/program/7.6/eagle-mac64-7.6.0.zip"
+                userInfo["path"] = NSHomeDirectory() + "/Downloads/eagle-mac64-7.6.0.zip"
                 NSNotificationCenter.defaultCenter().postNotificationName("startDownload", object:nil, userInfo:userInfo);
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeXQUartzDownload), name:"completeDownload", object: nil)
-            //}
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeEagleDownload), name:"completeDownload", object: nil)
+            }
+        }else{
+            downloadSchematics()
+        }
+    }
+    
+    func checkXQuartz()
+    {
+        if (!NSFileManager.defaultManager().fileExistsAtPath("/Applications/Utilities/XQuartz.app"))
+        {
+            self.performSegueWithIdentifier("Download", sender:self)
+            var userInfo = Dictionary<String, String>()
+            userInfo["url"] = "https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.9.dmg"
+            userInfo["path"] = NSHomeDirectory() + "/Downloads/XQuartz-2.7.9.dmg"
+            NSNotificationCenter.defaultCenter().postNotificationName("startDownload", object:nil, userInfo:userInfo);
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeXQUartzDownload), name:"completeDownload", object: nil)
         }else{
             openInskcapeEncoder()
         }
@@ -120,25 +186,21 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     
     func checkInkscape()
     {
-        let app: Bool = NSFileManager.defaultManager().fileExistsAtPath("/Applications/Inkscape.app", isDirectory: nil)
-        if (!app)
+        if (!NSFileManager.defaultManager().fileExistsAtPath("/Applications/Inkscape.app"))
         {
             let alert = NSAlert()
-            //alert.alertStyle = NSAlertStyle.WarningAlertStyle
             alert.messageText = "Install Inkscape - Download 70MB"
-            alert.informativeText = "Inkscape is an open-source vector editor."
+            alert.informativeText = "Inkscape is a Vector Graphics Software."
             alert.addButtonWithTitle("OK")
             alert.addButtonWithTitle("Cancel")
             if (alert.runModal() == NSAlertFirstButtonReturn)
             {
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.performSegueWithIdentifier("Download", sender:self)
-                    var userInfo = Dictionary<String, String>()
-                    userInfo["url"] = "https://inkscape.org/en/gallery/item/3896/Inkscape-0.91-1-x11-10.7-x86_64.dmg"
-                    userInfo["path"] = NSHomeDirectory() + "/Downloads/Inkscape-0.91-1-x11-10.7-x86_64.dmg"
-                    NSNotificationCenter.defaultCenter().postNotificationName("startDownload", object:nil, userInfo:userInfo);
-                    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeInkscapeDownload), name:"completeDownload", object: nil)
-                }
+                self.performSegueWithIdentifier("Download", sender:self)
+                var userInfo = Dictionary<String, String>()
+                userInfo["url"] = "https://inkscape.org/en/gallery/item/3896/Inkscape-0.91-1-x11-10.7-x86_64.dmg"
+                userInfo["path"] = NSHomeDirectory() + "/Downloads/Inkscape-0.91-1-x11-10.7-x86_64.dmg"
+                NSNotificationCenter.defaultCenter().postNotificationName("startDownload", object:nil, userInfo:userInfo);
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeInkscapeDownload), name:"completeDownload", object: nil)
             }
         }else{
             
@@ -172,14 +234,51 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         task.launch()
     }
     
+    func completeEagleDownload(notification: NSNotification)
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        
+        //if (notification.name == "completeDownload"){
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/eagle.html")!))
+            sleep(4)
+            
+            var output:String?
+            var processErrorDescription:String?
+            let installer: String = NSBundle.mainBundle().pathForResource("eagle", ofType:nil)!
+            let success: Bool = runProcessAsAdministrator(installer, output:&output, errorDescription:&processErrorDescription)
+            if (!success)
+            {
+                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/eagleError.html")!))
+            }
+            else
+            {
+                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/eagleSuccess.html")!))
+                sleep(2)
+                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/index.html")!))
+                
+                downloadSchematics()
+            }
+        //}
+    }
+    
+    func completeSchematicsDownload(notification: NSNotification)
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        //if (notification.name == "completeDownload"){
+            system("tar xzf " + NSHomeDirectory() + "/Documents/inverter.zip -C " + NSHomeDirectory() + "/Documents/")
+            system("open " + NSHomeDirectory() + "/Documents/pcb/")
+        //}
+    }
+    
     func completeXQUartzDownload(notification: NSNotification)
     {
-        if (notification.name == "completeDownload")
-        {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        
+        //if (notification.name == "completeDownload"){
             //self.performSelectorInBackground(#selector(launchInstaller), withObject:"xquartz")
-            dispatch_async(dispatch_get_main_queue()) {
-                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartz.html")!))
-            }
+            
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartz.html")!))
+            sleep(2)
             
             let task = NSTask()
             task.launchPath = "/usr/bin/hdiutil"
@@ -193,29 +292,26 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             let success: Bool = runProcessAsAdministrator(installer, output:&output, errorDescription:&processErrorDescription)
             if (!success)
             {
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartzError.html")!))
-                }
+                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartzError.html")!))
             }
             else
             {
-                print(output)
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartzSuccess.html")!))
-                }
+                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartzSuccess.html")!))
                 sleep(2)
+                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/index.html")!))
                 openInskcapeEncoder()
             }
-        }
+        //}
     }
     
     func completeInkscapeDownload(notification: NSNotification)
     {
-        if (notification.name == "completeDownload")
-        {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        
+        //if (notification.name == "completeDownload"){
             self.performSelectorInBackground(#selector(launchInstaller), withObject:"inkscape")
             //openInskcapeEncoder()
-        }
+        //}
     }
     
     func startSerial()
@@ -292,7 +388,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
        
             //TODO: check config.inc.php and correct serial /dev/cu.*
             
-            var task = NSTask()
+            let task = NSTask()
             task.launchPath = "/usr/bin/php"
             task.arguments = ["-S", "127.0.0.1:8080", "-t", NSBundle.mainBundle().resourcePath! + "/Web/"]
             task.launch()
@@ -301,9 +397,8 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     
     func checkDrivers()
     {
-        var directory: ObjCBool = ObjCBool(false)
-        let kext_Prolific: Bool = NSFileManager.defaultManager().fileExistsAtPath("/Library/Extensions/ProlificUsbSerial.kext", isDirectory: &directory)
-        let kext_Serial: Bool = NSFileManager.defaultManager().fileExistsAtPath("/Library/Extensions/serial.kext", isDirectory: &directory)
+        let kext_Prolific: Bool = NSFileManager.defaultManager().fileExistsAtPath("/Library/Extensions/ProlificUsbSerial.kext")
+        let kext_Serial: Bool = NSFileManager.defaultManager().fileExistsAtPath("/Library/Extensions/serial.kext")
 
         if(!kext_Prolific || kext_Serial)
         {
@@ -405,7 +500,6 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
 
     func runProcessAsAdministrator(command: String, inout output: String?, inout errorDescription: String?) -> Bool
     {
-        //command 2>&1
         var errorInfo:NSDictionary?
         let source = "do shell script \"\(command.stringByReplacingOccurrencesOfString(" ", withString: "\\\\ "))\" with administrator privileges"
         let script = NSAppleScript(source: source)
@@ -495,4 +589,3 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     }
     //=================================================
 }
-

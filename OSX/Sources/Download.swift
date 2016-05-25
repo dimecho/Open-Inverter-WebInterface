@@ -11,7 +11,6 @@ class Download: NSViewController, NSURLDownloadDelegate //NSURLSessionDelegate
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(startDownload), name:"startDownload", object: nil)
     }
     
@@ -94,8 +93,9 @@ class Download: NSViewController, NSURLDownloadDelegate //NSURLSessionDelegate
         progress.stringValue = String(bytesReceived/1024/1024) + " of " + String(expectedContentLength/1024/1024) + "MB Downloaded"
     }
     
-    @IBAction func dismiss(sender: AnyObject) {
-        
+    @IBAction func dismiss(sender: AnyObject)
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
         self.dismissController(self)
     }
     

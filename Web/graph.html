@@ -3,50 +3,70 @@
     <head>
         <meta charset="utf-8" />
         <title>Huebner Inverter</title>
-        <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
-
         <link rel="stylesheet" type="text/css" href="css/style.css" />
-        <link rel="stylesheet" type="text/css" href="css/slicknav.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css" />
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
-        <script type="text/javascript" src="js/jquery.slicknav.js"></script>
         <script type="text/javascript" src="js/bootstrap.js"></script>
         <script type="text/javascript" src="js/chart.js"></script>
     </head>
 
     <body>
-        <ul id="menu">
-            <li id="startInverter"><a href="#" onClick="startInverter()">Start Inverter</a></li>
-            <li id="stopInverter"><a href="#" onClick="stopInverter()">Stop Inverter</a></li>
-            <!--
-            <li><a href="#">Save Parameters to Flash</a></li>
-            <li><a href="#">Save Parameters from Flash</a></li>
-            -->
-            <li><a href="#" onClick="uploadSnapshot()">Upload Parameters</a></li>
-            <li><a href="download.php">Download Parameters</a></li>
-            <li><a href="index.html">Advanced Parameters</a></li>
-            <!--
-            <li><a href="simple.html">Simple Parameters</a></li>
-            -->
-            <!--
-            <li><a href="graph.html">Show Graph</a></li>
-            -->
-            <li><a href="wiring.html">Wiring Diagram</a></li>
-            <li><a href="encoder.html">Build Encoder</a></li>
-        </ul>
+        <div class="navbar navbar-static" >
+            <div class="navbar-inner">
+                <div class="container" style="width: auto;">
+                    <ul class="nav" role="navigation">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#"><b>Menu</b><b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
+                            <li><a tabindex="-1" href="#" onClick="startInverter()">Start Inverter</a></li>
+                            <li><a tabindex="-1" href="#" onClick="stopInverter()">Stop Inverter</a></li>
+                            <!--
+                            <li><a tabindex="-1" href="#">Save Parameters to Flash</a></li>
+                            <li><a tabindex="-1" href="#">Save Parameters from Flash</a></li>
+                            -->
+                            <li><a tabindex="-1" href="upload.html">Upload Parameters</a></li>
+                            <li><a tabindex="-1" href="download.php">Download Parameters</a></li>
+                            <li><a tabindex="-1" href="index.html">Advanced Parameters</a></li>
+                            <!--
+                            <li><a tabindex="-1" href="simple.html">Simple Parameters</a></li>
+                            -->
+                            <!--
+                            <li><a tabindex="-1" href="graph.html">Show Graph</a></li>
+                            -->
+                            <li class="divider"></li>
+                            <li><a tabindex="-1" href="schematics.html">View Schematics</a></li>
+                            <li><a tabindex="-1" href="wiring.html">Wiring Diagram</a></li>
+                            <li><a tabindex="-1" href="encoder.html">Build Encoder</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <div id="title">
+                            <h3 class="label" id="title">Inverter Console</h3>
+                            <span id="titleStatus" class="label offset1"></span>
+                        </div>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
         <br/><br/>
-         <div class="col-md-12 col-sm-12 col-xs-12">
-            <table class="table table-bordered table-striped table-hover" style="clear: both; background-color:#e6e6e6;" id="parameters">
-                <thead class="thead-inverse">
-                    <tr>
-                        <th class="text-left">Graph</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <td ><canvas id="myChart" width="400" height="400"></canvas></td>
-                </tbody>
-            </table>
+        <div class="row-fluid">
+            <div class="span1"></div>
+            <div class="span10">
+                <table class="table table-bordered table-striped table-hover" style="clear: both; background-color:#e6e6e6;" id="parameters">
+                    <thead class="thead-inverse">
+                        <tr>
+                            <th class="text-left">Graph</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <td ><canvas id="myChart" width="400" height="400"></canvas></td>
+                    </tbody>
+                </table>
+            </div>
+        <div class="span1"></div>
         </div>
         <script>
         var ctx = document.getElementById("myChart");

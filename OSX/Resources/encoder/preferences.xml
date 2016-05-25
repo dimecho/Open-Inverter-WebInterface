@@ -6,10 +6,10 @@
   <group
      id="extensions"
      dgkelectronics.com.encoder.disk.generator.diameter="200"
-     dgkelectronics.com.encoder.disk.generator.hole_diameter="50"
+     dgkelectronics.com.encoder.disk.generator.hole_diameter="80"
      dgkelectronics.com.encoder.disk.generator.segments="32"
      dgkelectronics.com.encoder.disk.generator.outer_encoder_diameter="180"
-     dgkelectronics.com.encoder.disk.generator.outer_encoder_width="50"
+     dgkelectronics.com.encoder.disk.generator.outer_encoder_width="40"
      dgkelectronics.com.encoder.disk.generator.inner_encoder_diameter="0"
      dgkelectronics.com.encoder.disk.generator.inner_encoder_width="1"
      dgkelectronics.com.encoder.disk.generator.brgc_diameter="0"
