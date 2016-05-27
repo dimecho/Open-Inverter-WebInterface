@@ -6,7 +6,7 @@ if [ -f /usr/bin/php ]; then
     if [ ! -f /usr/local/lib/php/extensions/dio.so ]; then
         ditto ./dio/dio.so /usr/local/lib/php/extensions/dio.so
     fi
-    if grep -lr "extension=dio.so" /etc/php.ini; then
+    if ! grep -lr "extension=dio.so" /etc/php.ini; then
         cat "extension_dir=/usr/local/lib/php/extensions/" >> /etc/php.ini
         cat "extension=dio.so" >> /etc/php.ini
     fi

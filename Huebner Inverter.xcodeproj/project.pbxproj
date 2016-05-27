@@ -18,6 +18,9 @@
 		32D281F81CF00EF200606B12 /* xquartz in Resources */ = {isa = PBXBuildFile; fileRef = 32D281F21CF00EF200606B12 /* xquartz */; };
 		32DE5F911CF0D03000113FCF /* Web in Resources */ = {isa = PBXBuildFile; fileRef = 32DE5F901CF0D03000113FCF /* Web */; };
 		32DE5F961CF0DC0E00113FCF /* Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32DE5F951CF0DC0E00113FCF /* Download.swift */; };
+		32DF0C821CF7FF73008F19AC /* updater-make in Resources */ = {isa = PBXBuildFile; fileRef = 32DF0C811CF7FF73008F19AC /* updater-make */; };
+		32DF0C841CF7FF78008F19AC /* updater in Resources */ = {isa = PBXBuildFile; fileRef = 32DF0C831CF7FF78008F19AC /* updater */; };
+		32DF0C861CF80495008F19AC /* sine-make in Resources */ = {isa = PBXBuildFile; fileRef = 32DF0C851CF80495008F19AC /* sine-make */; };
 		32F25DD11CF2499F00494B1C /* kext in Resources */ = {isa = PBXBuildFile; fileRef = 32F25DD01CF2499F00494B1C /* kext */; };
 		32F25DD31CF24A2600494B1C /* driver in Resources */ = {isa = PBXBuildFile; fileRef = 32F25DD21CF24A2600494B1C /* driver */; };
 /* End PBXBuildFile section */
@@ -36,6 +39,9 @@
 		32D281F21CF00EF200606B12 /* xquartz */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = xquartz; path = OSX/Resources/xquartz; sourceTree = "<group>"; };
 		32DE5F901CF0D03000113FCF /* Web */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Web; sourceTree = "<group>"; };
 		32DE5F951CF0DC0E00113FCF /* Download.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Download.swift; path = Sources/Download.swift; sourceTree = "<group>"; };
+		32DF0C811CF7FF73008F19AC /* updater-make */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = "updater-make"; path = "OSX/Resources/updater-make"; sourceTree = "<group>"; };
+		32DF0C831CF7FF78008F19AC /* updater */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = updater; path = OSX/Resources/updater; sourceTree = "<group>"; };
+		32DF0C851CF80495008F19AC /* sine-make */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = "sine-make"; path = "OSX/Resources/sine-make"; sourceTree = "<group>"; };
 		32F25DD01CF2499F00494B1C /* kext */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kext; path = OSX/Resources/kext; sourceTree = "<group>"; };
 		32F25DD21CF24A2600494B1C /* driver */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = driver; path = OSX/Resources/driver; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -92,6 +98,9 @@
 				324C22E71CF429E7003A1AF5 /* eagle */,
 				32D281EF1CF00EF200606B12 /* inkscape */,
 				32D281F21CF00EF200606B12 /* xquartz */,
+				32DF0C831CF7FF78008F19AC /* updater */,
+				32DF0C811CF7FF73008F19AC /* updater-make */,
+				32DF0C851CF80495008F19AC /* sine-make */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -156,12 +165,15 @@
 			files = (
 				324C22E81CF429E7003A1AF5 /* eagle in Resources */,
 				32F25DD31CF24A2600494B1C /* driver in Resources */,
+				32DF0C821CF7FF73008F19AC /* updater-make in Resources */,
+				32DF0C861CF80495008F19AC /* sine-make in Resources */,
 				32DE5F911CF0D03000113FCF /* Web in Resources */,
 				32D281F61CF00EF200606B12 /* install in Resources */,
 				32D281F31CF00EF200606B12 /* dio in Resources */,
 				32D281B61CF0066F00606B12 /* Assets.xcassets in Resources */,
 				32D281B91CF0066F00606B12 /* Main.storyboard in Resources */,
 				32D281F51CF00EF200606B12 /* inkscape in Resources */,
+				32DF0C841CF7FF78008F19AC /* updater in Resources */,
 				32D281F81CF00EF200606B12 /* xquartz in Resources */,
 				32F25DD11CF2499F00494B1C /* kext in Resources */,
 				32D281F41CF00EF200606B12 /* encoder in Resources */,

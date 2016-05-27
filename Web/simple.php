@@ -3,20 +3,19 @@
     <head>
         <meta charset="utf-8" />
         <title>Huebner Inverter</title>
-        <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
-
+        
         <link rel="stylesheet" type="text/css" href="css/style.css" />
-        <link rel="stylesheet" type="text/css" href="css/slicknav.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap-editable.css" />
+        <link rel="stylesheet" type="text/css" href="css/tooltipster.css" />
 
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
-        <script type="text/javascript" src="js/jquery.slicknav.js"></script>
-        
         <script type="text/javascript" src="js/bootstrap.js"></script>
         <script type="text/javascript" src="js/bootstrap-editable.js"></script>
-        
+        <script type="text/javascript" src="js/tooltipster.js"></script>
+
         <script>
         
             //defaults
@@ -42,41 +41,13 @@
     </head>
 
     <body>
-        <ul id="menu">
-            <li id="startInverter"><a href="#" onClick="startInverter()">Start Inverter</a></li>
-            <li id="stopInverter"><a href="#" onClick="stopInverter()">Stop Inverter</a></li>
-            <!--
-            <li><a href="#">Save Parameters to Flash</a></li>
-            <li><a href="#">Save Parameters from Flash</a></li>
-            -->
-            <li><a href="upload.html">Upload Parameters</a></li>
-            <li><a href="download.php">Download Parameters</a></li>
-            <li><a href="index.html">Advanced Parameters</a></li>
-            <!--
-            <li><a href="simple.html">Simple Parameters</a></li>
-            -->
-            <!--
-            <li><a href="graph.html">Show Graph</a></li>
-            -->
-            <li><a href="schematics.html">View Schematics</a></li>
-            <li><a href="wiring.html">Wiring Diagram</a></li>
-            <li><a href="encoder.html">Build Encoder</a></li>
-        </ul>
+        <?php include "menu.php" ?>
         <br/>
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="center-block" id="title">
                 <h3>Inverter Console</h3>
             </div>
             <table class="table table-bordered table-striped table-hover" style="clear: both; background-color:#e6e6e6;" id="parameters">
-                <thead class="thead-inverse">
-                    <tr>
-                        <th>Name</th>
-                        <th>Value</th>
-                        <th>Default</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
             </table>
         </div>
     </body>

@@ -11,8 +11,9 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     //@IBOutlet weak var webView: WebView!
     var ip = "localhost"
     var webView: WKWebView!
-    var serial = String()
-    var serialPath = [String]()
+    var serial:CInt = -1
+    var serialPath = String()
+    var serialPathArray = [String]()
     var metadataSearch: NSMetadataQuery!
     var metadataQueryDidFinishGatheringObserver: AnyObject?
     
@@ -41,7 +42,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     {
         webView.frame = view.bounds
     }
-
+    
     func download(download: NSURLDownload, decideDestinationWithSuggestedFilename filename: String)
     {
         let panel = NSSavePanel()
@@ -62,17 +63,36 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         let url:NSURL = navigationAction.request.URL!
         //print(url)
         
-        if (url == NSURL(string:"http://" + ip + ":8080/encoder.html"))
+        if (url == NSURL(string:"http://" + ip + ":8080/encoder.php"))
         {
             checkInkscape()
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
-        else if (url == NSURL(string:"http://" + ip + ":8080/upload.html"))
+        else if (url == NSURL(string:"http://" + ip + ":8080/upload.php"))
         {
             uploadSnapshot();
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
-        else if (url == NSURL(string:"http://" + ip + ":8080/schematics.html"))
+        else if (url == NSURL(string:"http://" + ip + ":8080/bootloader.php"))
+        {
+            let alert = NSAlert()
+            alert.messageText = "This feature is currently in development."
+            alert.informativeText = "...maybe next build"
+            alert.addButtonWithTitle("OK")
+            alert.runModal()
+            decisionHandler(WKNavigationActionPolicy.Cancel)
+        }
+        else if (url == NSURL(string:"http://" + ip + ":8080/firmware.php"))
+        {
+            flashFirmware()
+            decisionHandler(WKNavigationActionPolicy.Cancel)
+        }
+        else if (url == NSURL(string:"http://" + ip + ":8080/compile.php"))
+        {
+            checkSource()
+            decisionHandler(WKNavigationActionPolicy.Cancel)
+        }
+        else if (url == NSURL(string:"http://" + ip + ":8080/schematics.php"))
         {
             checkEagle()
             decisionHandler(WKNavigationActionPolicy.Cancel)
@@ -84,11 +104,11 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             
             _ = NSURLDownload(request: NSURLRequest(URL: url), delegate: self)
             /*
-            let session = NSURLSession()
-            let downloadTask = session.downloadTaskWithURL(url)
-            downloadTask.resume()
-            */
-   
+             let session = NSURLSession()
+             let downloadTask = session.downloadTaskWithURL(url)
+             downloadTask.resume()
+             */
+            
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
         else
@@ -104,7 +124,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     func applicationWillTerminate(notification: NSNotification)
     {
         system("pkill -9 php");
-        //self.terminal.closeConnections();
+        closeSerial()
     }
     
     func initalGatherComplete(notification: NSNotification)
@@ -122,24 +142,41 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         }
     }
     
-    func downloadSchematics()
+    func downloadSource()
+    {
+        self.performSegueWithIdentifier("Download", sender:self)
+        var userInfo = Dictionary<String, String>()
+        userInfo["url"] = "http://johanneshuebner.com/quickcms/files/inverter.zip"
+        userInfo["path"] = NSHomeDirectory() + "/Documents/inverter.zip"
+        NSNotificationCenter.defaultCenter().postNotificationName("startDownload", object:nil, userInfo:userInfo);
+    }
+    
+    func checkSource()
+    {
+        if (!NSFileManager.defaultManager().fileExistsAtPath(NSHomeDirectory() + "/Documents/firmware/stm32_loader.bin"))
+        {
+            downloadSource()
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeSourceDownload), name:"completeDownload", object: nil)
+        }else{
+            
+            system("open " + NSHomeDirectory() + "/Documents/firmware/")
+        }
+    }
+    
+    func checkSchematics()
     {
         /*
-        metadataSearch = NSMetadataQuery()
-        metadataSearch.searchScopes = [NSMetadataQueryLocalComputerScope] //[NSMetadataQueryUserHomeScope]
-        let predicate = NSPredicate(format: "%K == 'base_board4.sch'", NSMetadataItemFSNameKey)
-        metadataSearch.predicate = predicate
-        metadataSearch.startQuery()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.initalGatherComplete), name:NSMetadataQueryDidFinishGatheringNotification, object:metadataSearch)
-        */
+         metadataSearch = NSMetadataQuery()
+         metadataSearch.searchScopes = [NSMetadataQueryLocalComputerScope] //[NSMetadataQueryUserHomeScope]
+         let predicate = NSPredicate(format: "%K == 'base_board4.sch'", NSMetadataItemFSNameKey)
+         metadataSearch.predicate = predicate
+         metadataSearch.startQuery()
+         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.initalGatherComplete), name:NSMetadataQueryDidFinishGatheringNotification, object:metadataSearch)
+         */
         
         if (!NSFileManager.defaultManager().fileExistsAtPath(NSHomeDirectory() + "/Documents/pcb/base_board4.sch"))
         {
-            self.performSegueWithIdentifier("Download", sender:self)
-            var userInfo = Dictionary<String, String>()
-            userInfo["url"] = "http://johanneshuebner.com/quickcms/files/inverter.zip"
-            userInfo["path"] = NSHomeDirectory() + "/Documents/inverter.zip"
-            NSNotificationCenter.defaultCenter().postNotificationName("startDownload", object:nil, userInfo:userInfo);
+            downloadSource()
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeSchematicsDownload), name:"completeDownload", object: nil)
         }else{
             system("open " + NSHomeDirectory() + "/Documents/pcb/")
@@ -165,7 +202,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
                 NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeEagleDownload), name:"completeDownload", object: nil)
             }
         }else{
-            downloadSchematics()
+            checkSchematics()
         }
     }
     
@@ -238,121 +275,180 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
         
-        //if (notification.name == "completeDownload"){
-            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/eagle.html")!))
-            sleep(4)
+        self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/eagle.html")!))
+        sleep(4)
+        
+        var output:String?
+        var processErrorDescription:String?
+        let installer: String = NSBundle.mainBundle().pathForResource("eagle", ofType:nil)!
+        let success: Bool = runProcessAsAdministrator(installer, output:&output, errorDescription:&processErrorDescription)
+        if (!success)
+        {
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/eagleError.html")!))
+        }
+        else
+        {
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/eagleSuccess.html")!))
+            sleep(2)
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/index.php")!))
             
-            var output:String?
-            var processErrorDescription:String?
-            let installer: String = NSBundle.mainBundle().pathForResource("eagle", ofType:nil)!
-            let success: Bool = runProcessAsAdministrator(installer, output:&output, errorDescription:&processErrorDescription)
-            if (!success)
-            {
-                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/eagleError.html")!))
-            }
-            else
-            {
-                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/eagleSuccess.html")!))
-                sleep(2)
-                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/index.html")!))
-                
-                downloadSchematics()
-            }
-        //}
+            checkSchematics()
+        }
+    }
+    
+    func completeSourceDownload(notification: NSNotification)
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        system("tar xzf " + NSHomeDirectory() + "/Documents/inverter.zip -C " + NSHomeDirectory() + "/Documents/")
+        checkSource()
+        
     }
     
     func completeSchematicsDownload(notification: NSNotification)
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        //if (notification.name == "completeDownload"){
-            system("tar xzf " + NSHomeDirectory() + "/Documents/inverter.zip -C " + NSHomeDirectory() + "/Documents/")
-            system("open " + NSHomeDirectory() + "/Documents/pcb/")
-        //}
+        system("tar xzf " + NSHomeDirectory() + "/Documents/inverter.zip -C " + NSHomeDirectory() + "/Documents/")
+        checkSchematics()
     }
     
     func completeXQUartzDownload(notification: NSNotification)
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
         
-        //if (notification.name == "completeDownload"){
-            //self.performSelectorInBackground(#selector(launchInstaller), withObject:"xquartz")
-            
-            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartz.html")!))
+        self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartz.html")!))
+        sleep(2)
+        
+        let task = NSTask()
+        task.launchPath = "/usr/bin/hdiutil"
+        task.arguments = ["attach", NSHomeDirectory() + "/Downloads/XQuartz-2.7.9.dmg"]
+        task.launch()
+        task.waitUntilExit()
+        
+        var output:String?
+        var processErrorDescription:String?
+        let installer: String = NSBundle.mainBundle().pathForResource("xquartz", ofType:nil)!
+        let success: Bool = runProcessAsAdministrator(installer, output:&output, errorDescription:&processErrorDescription)
+        if (!success)
+        {
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartzError.html")!))
+        }
+        else
+        {
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartzSuccess.html")!))
             sleep(2)
-            
-            let task = NSTask()
-            task.launchPath = "/usr/bin/hdiutil"
-            task.arguments = ["attach", NSHomeDirectory() + "/Downloads/XQuartz-2.7.9.dmg"]
-            task.launch()
-            task.waitUntilExit()
- 
-            var output:String?
-            var processErrorDescription:String?
-            let installer: String = NSBundle.mainBundle().pathForResource("xquartz", ofType:nil)!
-            let success: Bool = runProcessAsAdministrator(installer, output:&output, errorDescription:&processErrorDescription)
-            if (!success)
-            {
-                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartzError.html")!))
-            }
-            else
-            {
-                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartzSuccess.html")!))
-                sleep(2)
-                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/index.html")!))
-                openInskcapeEncoder()
-            }
-        //}
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/index.php")!))
+            openInskcapeEncoder()
+        }
     }
     
     func completeInkscapeDownload(notification: NSNotification)
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
         
-        //if (notification.name == "completeDownload"){
-            self.performSelectorInBackground(#selector(launchInstaller), withObject:"inkscape")
-            //openInskcapeEncoder()
-        //}
+        self.performSelectorInBackground(#selector(launchInstaller), withObject:"inkscape")
+        //openInskcapeEncoder()
+    }
+    
+    func flashFirmware()
+    {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canCreateDirectories = false
+        panel.canChooseFiles = true
+        panel.allowedFileTypes = ["bin"]
+        
+        if (panel.runModal() == NSFileHandlingPanelOKButton)
+        {
+            /*
+            let data  = NSData(contentsOfFile:panel.URL!.path!)!
+            
+            openSerial()
+            
+            let len = data.length
+            var pages:Int = (len + 1024 - 1) / 1024;
+            print("File length is %d bytes/%d pages\n", len, pages);
+            //-----------------------------
+            print("Resetting device...\n");
+            write(serial, "reset\r", 6);
+            var recv_char:Character = "-"
+            while ("S" != recv_char){ //Wait for size request
+                read(serial, &recv_char, 1)
+            }
+            //-----------------------------
+            print("Sending number of pages...\n");
+            write(serial, &pages, 1);
+            while ("P" != recv_char){ //Wait for page request
+                read(serial, &recv_char, 1)
+            }
+            */
+            /*
+             var page = 0
+             var done = false
+             repeat
+             {
+             print("Sending page %d... ", page);
+             write(fd, rst_cmd, rst_cmd.count);
+             //send_string(uart, (uint8_t*)&data[PAGE_SIZE_WORDS * page], PAGE_SIZE_BYTES);
+             
+             } while done != true
+             */
+        }
     }
     
     func startSerial()
     {
-        var raw = Darwin.termios()
+        openSerial()
         
-        let path = String.fromCString(serial)
+        sleep(2)
+        dispatch_async(dispatch_get_main_queue()) {
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/index.php")!))
+        }
+    }
+    
+    func openSerial()
+    {
+        if(serial != -1){
+            return
+        }
+        
+        var raw = Darwin.termios()
+        let path = String.fromCString(serialPath)
         let fd = open(path!, (O_RDWR | O_NOCTTY | O_NDELAY))
         
         if (fd > 0)
         {
-            tcgetattr( fd, &raw)            // merge flags into termios attributes
+            //fcntl(fd, F_SETFL, 0);
+            tcgetattr( fd, &raw)          // merge flags into termios attributes
             //------------------
-             var cflag:tcflag_t = 0
-             cflag |= UInt(CS8)              // 8-bit
-             cflag |= UInt(PARODD)           // parity
-             cflag |= UInt(CSTOPB)           // stop 2
+            //cfsetspeed(&raw, 115200)    // set speed
+            cfsetispeed(&raw, 115200)     // set input speed
+            cfsetospeed(&raw, 115200)     // set output
+            //------------------
+            var cflag:tcflag_t = 0
+            cflag |= UInt(CS8)            // 8-bit
+            //cflag |= UInt(PARODD)       // parity
+            cflag |= UInt(CSTOPB)         // stop 2
             raw.c_cflag &= ~( UInt(CSIZE) | UInt(PARENB) | UInt(PARODD) | UInt(CSTOPB))	// clear all bits and merge in our selection
+            raw.c_cflag &= ~(UInt(IXON) | UInt(IXOFF) | UInt(IXANY)) // shut off xon/xoff ctrl
+            raw.c_cflag &= ~(UInt(PARENB) | UInt(PARODD));      // shut off parity
             raw.c_cflag |= cflag            // set flags
             //------------------
-            cfsetspeed(&raw, 115200)        // set speed
-            //cfsetispeed(&raw, 115200)     // set input speed
-            //cfsetospeed(&raw, 115200)     // set output
-            tcsetattr( fd, TCSANOW, &raw)   // set termios
-            
-            sleep(2)
-            dispatch_async(dispatch_get_main_queue()) {
-                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/index.html")!))
+            if (tcsetattr (fd, TCSANOW, &raw) != 0) // set termios
+            {
+                print("error from tcsetattr");
+            }else{
+                serial = fd
             }
-        }else{
-            
         }
-        /*
-        let opened = terminal.openConnections(serial, baudrate:115200, bits:8, parity:1, stopBits:2)
-        if (opened == false)
-        {
+    }
+    
+    func closeSerial()
+    {
+        if(serial != -1){
+            close(serial) ;
+            serial = -1 ;
         }
-        else
-        {
-        }
-        */
     }
     
     func startPHP()
@@ -385,7 +481,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             
             //NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(phpDidTerminate), name:NSTaskDidTerminateNotification, object: nil)
             self.performSelectorInBackground(#selector(checkDrivers), withObject:nil)
-       
+            
             //TODO: check config.inc.php and correct serial /dev/cu.*
             
             let task = NSTask()
@@ -399,7 +495,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     {
         let kext_Prolific: Bool = NSFileManager.defaultManager().fileExistsAtPath("/Library/Extensions/ProlificUsbSerial.kext")
         let kext_Serial: Bool = NSFileManager.defaultManager().fileExistsAtPath("/Library/Extensions/serial.kext")
-
+        
         if(!kext_Prolific || kext_Serial)
         {
             sleep(1)
@@ -441,18 +537,18 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             var portIterator: io_iterator_t = 0
             let kernResult = findSerialDevices(kIOSerialBSDAllTypes, serialPortIterator: &portIterator)
             if kernResult == KERN_SUCCESS {
-                printSerialPaths(portIterator)
+                printSerialPath(portIterator)
             }
-            //print(serialPath.count)
-            for i in 0...(serialPath.count-1)
+            
+            for i in 0...(serialPathArray.count-1)
             {
-                print(serialPath[i])
-                if (serialPath[i].rangeOfString("usbserial") != nil)
+                print(serialPathArray[i])
+                if (serialPathArray[i].rangeOfString("usbserial") != nil)
                 {
                     dispatch_async(dispatch_get_main_queue()) {
                         self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/receive.html")!))
                     }
-                    serial = serialPath[i]
+                    serialPath = serialPathArray[i]
                     startSerial()
                     found = true
                 }
@@ -478,7 +574,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         panel.canChooseDirectories = false
         panel.canCreateDirectories = false
         panel.canChooseFiles = true
-    
+        
         if (panel.runModal() == NSFileHandlingPanelOKButton)
         {
             let data  = NSData(contentsOfFile:panel.URL!.path!)
@@ -491,13 +587,13 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             connection!.start()
             
             /*
-            let session = NSURLSession()
-            let downloadTask = session.dataTaskWithRequest(request)
-            downloadTask.resume()
-            */
+             let session = NSURLSession()
+             let downloadTask = session.dataTaskWithRequest(request)
+             downloadTask.resume()
+             */
         }
     }
-
+    
     func runProcessAsAdministrator(command: String, inout output: String?, inout errorDescription: String?) -> Bool
     {
         var errorInfo:NSDictionary?
@@ -562,7 +658,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     }
     
     //================= C Wrapper ======================
-    func printSerialPaths(portIterator: io_iterator_t) {
+    func printSerialPath(portIterator: io_iterator_t) {
         var serialService: io_object_t
         repeat {
             serialService = IOIteratorNext(portIterator)
@@ -572,11 +668,11 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
                     IORegistryEntryCreateCFProperty(serialService, key, kCFAllocatorDefault, 0).takeUnretainedValue()
                 let bsdPath = bsdPathAsCFtring as! String?
                 if let path = bsdPath {
-                    serialPath.append(path)
+                    serialPathArray.append(path)
                     //print(path)
                 }
             }
-        } while serialService != 0;
+        } while serialService != 0
     }
     func findSerialDevices(deviceType: String, inout serialPortIterator: io_iterator_t ) -> kern_return_t {
         var result: kern_return_t = KERN_FAILURE
