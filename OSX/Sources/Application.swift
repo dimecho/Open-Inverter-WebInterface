@@ -159,6 +159,32 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeSourceDownload), name:"completeDownload", object: nil)
         }else{
             
+           
+            
+            //brew install libmpc
+            //brew install newlib
+            //brew install binutils
+            //brew install gmp
+            
+            //brew install homebrew/versions/gcc49
+            //brew install homebrew/versions/isl012
+            //brew install --HEAD plietar/stm32/libopencm3
+            
+            //brew link arm-none-eabi-binutils
+            //brew install --HEAD plietar/stm32/arm-none-eabi-gcc
+            
+            
+            //brew install homebrew/versions/gcc48
+            //brew install PX4/homebrew-px4/gcc-arm-none-eabi
+            
+            
+            
+            //--------------------------
+
+            
+            //https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q1-update/+download/gcc-arm-none-eabi-5_3-2016q1-20160330-mac.tar.bz2
+            //git clone https://github.com/libopencm3/libopencm3.git
+            
             system("open " + NSHomeDirectory() + "/Documents/firmware/")
         }
     }
@@ -289,8 +315,6 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         else
         {
             self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/eagleSuccess.html")!))
-            sleep(2)
-            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/index.php")!))
             
             checkSchematics()
         }
@@ -335,8 +359,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         else
         {
             self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartzSuccess.html")!))
-            sleep(2)
-            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/index.php")!))
+
             openInskcapeEncoder()
         }
     }
@@ -360,6 +383,10 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         
         if (panel.runModal() == NSFileHandlingPanelOKButton)
         {
+            //system("open -b com.apple.terminal --args \"" + NSBundle.mainBundle().pathForResource("updater", ofType:nil)! + "\" \"" + panel.URL!.path! + "\" " + serialPath)
+            
+            system("echo '\"" + NSBundle.mainBundle().pathForResource("updater", ofType:nil)! + "\" \"" + panel.URL!.path! + "\" " + serialPath + "' > /tmp/updater.sh; chmod +x /tmp/updater.sh; open -a Terminal /tmp/updater.sh") //; rm /tmp/updater.sh
+            
             /*
             let data  = NSData(contentsOfFile:panel.URL!.path!)!
             
@@ -383,16 +410,15 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             }
             */
             /*
-             var page = 0
-             var done = false
-             repeat
-             {
-             print("Sending page %d... ", page);
-             write(fd, rst_cmd, rst_cmd.count);
-             //send_string(uart, (uint8_t*)&data[PAGE_SIZE_WORDS * page], PAGE_SIZE_BYTES);
-             
-             } while done != true
-             */
+            var page = 0
+            var done = false
+            repeat
+            {
+            print("Sending page %d... ", page);
+            write(fd, rst_cmd, rst_cmd.count);
+                //send_string(uart, (uint8_t*)&data[PAGE_SIZE_WORDS * page], PAGE_SIZE_BYTES);
+            } while done != true
+            */
         }
     }
     
@@ -432,6 +458,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             raw.c_cflag &= ~( UInt(CSIZE) | UInt(PARENB) | UInt(PARODD) | UInt(CSTOPB))	// clear all bits and merge in our selection
             raw.c_cflag &= ~(UInt(IXON) | UInt(IXOFF) | UInt(IXANY)) // shut off xon/xoff ctrl
             raw.c_cflag &= ~(UInt(PARENB) | UInt(PARODD));      // shut off parity
+            //raw.c_cflag &= ~UInt(CRTSCTS);  // no flow control
             raw.c_cflag |= cflag            // set flags
             //------------------
             if (tcsetattr (fd, TCSANOW, &raw) != 0) // set termios
