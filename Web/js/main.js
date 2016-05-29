@@ -1,5 +1,5 @@
 
-function loadJSON()
+function loadJSON(i)
 {
     $.ajax("serial.php?i=json",{
     //$.ajax("test/json.data",{
@@ -11,13 +11,17 @@ function loadJSON()
         success: function(data)
         {
             //console.log(data);
-            try {
-                var json = JSON.parse(data.slice(5)); //cut out command 'json....' from beginning
-                buildMenu(json); 
-            } catch (e) {
+            if(i < 4)
+            {
+                try {
+                    var json = JSON.parse(data.slice(5)); //cut out command 'json....' from beginning
+                    buildMenu(json); 
+                } catch (e) {
+                    loadJSON(i++);
+                }
+            }else{
                 var title = $("#title h3").empty();
                 title.append("Check Serial Connection");
-
                 var connection = $("#connection").show();
             }
         },
@@ -141,7 +145,7 @@ function stopInverter()
             span.removeClass('label-warning');
             span.removeClass('label-important');
            
-            if(data.indexOf("Inverter hated") != -1)
+            if(data.indexOf("Inverter halted") != -1)
             {
                 span.addClass('label-warning');
                 span.text('stopped');

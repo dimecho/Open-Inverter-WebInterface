@@ -73,7 +73,7 @@
                 });
 
                 //setTimeout(function(){
-                    loadJSON();
+                    loadJSON(0);
                 //},500);
                 $('.tooltip-custom').tooltipster();
             });

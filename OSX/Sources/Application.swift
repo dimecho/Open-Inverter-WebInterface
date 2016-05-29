@@ -169,12 +169,20 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             }else{
                 if (!NSFileManager.defaultManager().fileExistsAtPath("/usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1"))
                 {
-                    self.performSegueWithIdentifier("Download", sender:self)
-                    var userInfo = Dictionary<String, String>()
-                    userInfo["url"] = "https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q1-update/+download/gcc-arm-none-eabi-5_3-2016q1-20160330-mac.tar.bz2"
-                    userInfo["path"] = NSHomeDirectory() + "/Downloads/gcc-arm-none-eabi-5_3-2016q1-20160330-mac.tar.bz2"
-                    NSNotificationCenter.defaultCenter().postNotificationName("startDownload", object:nil, userInfo:userInfo);
-                    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeGCCDownload), name:"completeDownload", object: nil)
+                    let alert = NSAlert()
+                    alert.messageText = "Install GCC 5.3 ARM Compiler - 100MB"
+                    alert.informativeText = "arm-none-eabi-gcc"
+                    alert.addButtonWithTitle("OK")
+                    alert.addButtonWithTitle("Cancel")
+                    if (alert.runModal() == NSAlertFirstButtonReturn)
+                    {
+                        self.performSegueWithIdentifier("Download", sender:self)
+                        var userInfo = Dictionary<String, String>()
+                        userInfo["url"] = "https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q1-update/+download/gcc-arm-none-eabi-5_3-2016q1-20160330-mac.tar.bz2"
+                        userInfo["path"] = NSHomeDirectory() + "/Downloads/gcc-arm-none-eabi-5_3-2016q1-20160330-mac.tar.bz2"
+                        NSNotificationCenter.defaultCenter().postNotificationName("startDownload", object:nil, userInfo:userInfo);
+                        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeGCCDownload), name:"completeDownload", object: nil)
+                    }
                 }else{
                     system("open -a Terminal \"" + NSBundle.mainBundle().pathForResource("make", ofType:nil)! + "\"")
                 }
