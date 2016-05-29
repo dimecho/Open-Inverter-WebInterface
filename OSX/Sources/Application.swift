@@ -153,39 +153,32 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     
     func checkSource()
     {
-        if (!NSFileManager.defaultManager().fileExistsAtPath(NSHomeDirectory() + "/Documents/firmware/stm32_loader.bin"))
+        if (!NSFileManager.defaultManager().fileExistsAtPath("/Applications/Xcode.app"))
         {
-            downloadSource()
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeSourceDownload), name:"completeDownload", object: nil)
+            let alert = NSAlert()
+            alert.messageText = "XCode is Not Found"
+            alert.informativeText = "http://developer.apple.com/xcode"
+            alert.addButtonWithTitle("OK")
+            alert.runModal()
+            
         }else{
-            
-           
-            
-            //brew install libmpc
-            //brew install newlib
-            //brew install binutils
-            //brew install gmp
-            
-            //brew install homebrew/versions/gcc49
-            //brew install homebrew/versions/isl012
-            //brew install --HEAD plietar/stm32/libopencm3
-            
-            //brew link arm-none-eabi-binutils
-            //brew install --HEAD plietar/stm32/arm-none-eabi-gcc
-            
-            
-            //brew install homebrew/versions/gcc48
-            //brew install PX4/homebrew-px4/gcc-arm-none-eabi
-            
-            
-            
-            //--------------------------
-
-            
-            //https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q1-update/+download/gcc-arm-none-eabi-5_3-2016q1-20160330-mac.tar.bz2
-            //git clone https://github.com/libopencm3/libopencm3.git
-            
-            system("open " + NSHomeDirectory() + "/Documents/firmware/")
+            if (!NSFileManager.defaultManager().fileExistsAtPath(NSHomeDirectory() + "/Documents/firmware/stm32_loader.bin"))
+            {
+                downloadSource()
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeSourceDownload), name:"completeDownload", object: nil)
+            }else{
+                if (!NSFileManager.defaultManager().fileExistsAtPath("/usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1"))
+                {
+                    self.performSegueWithIdentifier("Download", sender:self)
+                    var userInfo = Dictionary<String, String>()
+                    userInfo["url"] = "https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q1-update/+download/gcc-arm-none-eabi-5_3-2016q1-20160330-mac.tar.bz2"
+                    userInfo["path"] = NSHomeDirectory() + "/Downloads/gcc-arm-none-eabi-5_3-2016q1-20160330-mac.tar.bz2"
+                    NSNotificationCenter.defaultCenter().postNotificationName("startDownload", object:nil, userInfo:userInfo);
+                    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeGCCDownload), name:"completeDownload", object: nil)
+                }else{
+                    system("open -a Terminal \"" + NSBundle.mainBundle().pathForResource("make", ofType:nil)! + "\"")
+                }
+            }
         }
     }
     
@@ -320,12 +313,17 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         }
     }
     
+    func completeGCCDownload(notification: NSNotification)
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        checkSource()
+    }
+    
     func completeSourceDownload(notification: NSNotification)
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
         system("tar xzf " + NSHomeDirectory() + "/Documents/inverter.zip -C " + NSHomeDirectory() + "/Documents/")
         checkSource()
-        
     }
     
     func completeSchematicsDownload(notification: NSNotification)

@@ -1,38 +1,49 @@
 #!/bin/sh
 
-#xcode-select --install
+xcode-select --install
 #open /Applications/XCode.app
-
-#if [ ! -d /usr/local/Cellar/ ]; then
-#    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-#fi
-
-#if [ ! -d /usr/local/Cellar/gcc ]; then
-#    brew update
-#    brew install gcc
-#fi
-
-#if [ ! -d /usr/local/Cellar/open-ocd ]; then
-#    brew install open-ocd
-#fi
 
 if [ ! -d /usr/local/gcc_arm ]; then
     mkdir /usr/local/gcc_arm
     tar xzf ~/Downloads/gcc-arm-none-eabi-5_3-2016q1-20160330-mac.tar.bz2 -C /usr/local/gcc_arm/
-    # NOTE: You should also add this line to ~/.bashrc or ~/.bash_profile (in your home directory)
-    # so you don't have to remember to do this every time you want to compile firmware.
-    export PATH="$PATH:/usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1/bin/"
 fi
 
+# NOTE: You should also add this line to ~/.bashrc or ~/.bash_profile (in your home directory)
+# so you don't have to remember to do this every time you want to compile firmware.
+export PATH="$PATH:/usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1/bin/"
+
 cd ~/Documents/firmware/
+
 if [ ! -d libopencm3 ]; then
     git clone https://github.com/libopencm3/libopencm3.git
-    cd libopencm3
-    make
+    #cd libopencm3
+    #make
     #cp examples/stm32/f1/Makefile.include ~/Documents/firmware/src/
     #cp examples/stm32/f1/stm32-h103/stm32-h103.ld ~/Documents/firmware/src/
 fi
 
 cd ~/Documents/firmware/src/
-arm-none-eabi-g++ -I../libopencm3/include -c anain.cpp -o anain.o
-#arm-none-eabi-g++ -Wall -mcpu=cortex-m4 -fno-common -mthumb -O0 -I../libopencm3/include -I../libopencm3/include -c anain.cpp -o anain.o
+
+if [ ! -d include ]; then
+    mkdir include
+    cp -r ../libopencm3/include/libopencm3 ./include
+fi
+
+#small correction for latest libopencm3
+if ! grep -lr "adc_power_off(ADC1);" anian.cpp; then
+    sed -i '' 's/adc_off(ADC1);/adc_power_off(ADC1);/' anian.cpp
+fi
+
+make clean
+
+make
+
+open ~/Documents/firmware
+
+#for filename in *.c; do
+#    arm-none-eabi-gcc -Os -Wall -DSTM32F1 -mcpu=cortex-m3 -mthumb -I../libopencm3/include -o ${filename/.c/}.o -c $filename
+#done
+
+#for filename in *.cpp; do
+#    arm-none-eabi-g++ -Os -Wall -DSTM32F1 -mcpu=cortex-m3 -mthumb -I../libopencm3/include -o ${filename/.cpp/}.o -c $filename
+#done
