@@ -75,11 +75,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         }
         else if (url == NSURL(string:"http://" + ip + ":8080/bootloader.php"))
         {
-            let alert = NSAlert()
-            alert.messageText = "This feature is currently in development."
-            alert.informativeText = "...maybe next build"
-            alert.addButtonWithTitle("OK")
-            alert.runModal()
+            flashBootloader()
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
         else if (url == NSURL(string:"http://" + ip + ":8080/firmware.php"))
@@ -90,6 +86,12 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         else if (url == NSURL(string:"http://" + ip + ":8080/compile.php"))
         {
             checkSource()
+            decisionHandler(WKNavigationActionPolicy.Cancel)
+            
+        }
+        else if (url == NSURL(string:"http://" + ip + ":8080/gcc_remove.php"))
+        {
+            removeGCCARM()
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
         else if (url == NSURL(string:"http://" + ip + ":8080/schematics.php"))
@@ -151,6 +153,26 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         NSNotificationCenter.defaultCenter().postNotificationName("startDownload", object:nil, userInfo:userInfo);
     }
     
+    func removeGCCARM()
+    {
+        let gcc_arm = "/usr/local/gcc_arm"
+        let alert = NSAlert()
+        alert.messageText = "Remove GCC 5.3 ARM Compiler?"
+        alert.informativeText = "This will clean up over 500MB of space!\n" + gcc_arm
+        alert.addButtonWithTitle("OK")
+        alert.addButtonWithTitle("Cancel")
+        if (alert.runModal() == NSAlertFirstButtonReturn)
+        {
+            do {
+                try NSFileManager.defaultManager().removeItemAtPath(gcc_arm)
+            }
+            catch let error as NSError {
+                print("Error: \(error)")
+            }
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/index.php")!))
+        }
+    }
+    
     func checkSource()
     {
         if (!NSFileManager.defaultManager().fileExistsAtPath("/Applications/Xcode.app"))
@@ -170,7 +192,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
                 if (!NSFileManager.defaultManager().fileExistsAtPath("/usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1"))
                 {
                     let alert = NSAlert()
-                    alert.messageText = "Install GCC 5.3 ARM Compiler - 100MB"
+                    alert.messageText = "Install GCC 5.3 ARM Compiler - Download 100MB"
                     alert.informativeText = "arm-none-eabi-gcc"
                     alert.addButtonWithTitle("OK")
                     alert.addButtonWithTitle("Cancel")
@@ -324,6 +346,14 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     func completeGCCDownload(notification: NSNotification)
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        
+        system("mkdir /usr/local/gcc_arm")
+        let task = NSTask()
+        task.launchPath = "/usr/bin/tar"
+        task.arguments = ["xzf", NSHomeDirectory() + "/Downloads/gcc-arm-none-eabi-5_3-2016q1-20160330-mac.tar.bz2", "-C", "/usr/local/gcc_arm/"]
+        task.launch()
+        task.waitUntilExit()
+        
         checkSource()
     }
     
@@ -373,9 +403,17 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     func completeInkscapeDownload(notification: NSNotification)
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        
         self.performSelectorInBackground(#selector(launchInstaller), withObject:"inkscape")
         //openInskcapeEncoder()
+    }
+    
+    func flashBootloader()
+    {
+        let alert = NSAlert()
+        alert.messageText = "This feature is currently in development."
+        alert.informativeText = "...maybe next build"
+        alert.addButtonWithTitle("OK")
+        alert.runModal()
     }
     
     func flashFirmware()

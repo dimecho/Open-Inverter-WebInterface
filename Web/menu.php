@@ -1,3 +1,8 @@
+<script>
+    $(document).ready(function(){
+        checkGCC_ARM()
+    });
+</script>
 <div class="navbar navbar-static" >
     <div class="navbar-inner">
         <div class="container" style="width: auto;">
@@ -7,6 +12,10 @@
                 <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
                     <li><a tabindex="-1" href="#" onClick="startInverter()">Start Inverter</a></li>
                     <li><a tabindex="-1" href="#" onClick="stopInverter()">Stop Inverter</a></li>
+                    <li><a tabindex="-1" href="#" onClick="setDefaults()">Reset to Default</a></li>
+                    <li class="divider"></li>
+                    <li><a tabindex="-1" href="graph.php">Graph</a></li>
+                    <li class="divider"></li>
                     <!--
                     <li><a tabindex="-1" href="#">Save Parameters to Flash</a></li>
                     <li><a tabindex="-1" href="#">Save Parameters from Flash</a></li>
@@ -24,6 +33,7 @@
                     <li><a tabindex="-1" href="bootloader.php">Flash Bootloader</a></li>
                     <li><a tabindex="-1" href="firmware.php">Flash Firmware</a></li>
                     <li><a tabindex="-1" href="compile.php">Compile from Source</a></li>
+                    <li id="gcc" style="display: none;"><a tabindex="-1" href="gcc_remove.php">Remove GCC ARM Compiler</a></li>
                     <li class="divider"></li>
                     <li><a tabindex="-1" href="schematics.php">View Schematics</a></li>
                     <li><a tabindex="-1" href="wiring.php">Wiring Diagram</a></li>
@@ -33,7 +43,7 @@
             <li>
                 <div id="title">
                     <h3 class="label" id="title">Inverter Console</h3>
-                    <span id="titleStatus" class="label offset1"></span>
+                    <span id="titleStatus" class="offset1"></span>
                 </div>
             </li>
             </ul>

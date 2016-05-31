@@ -25,11 +25,23 @@ if( $_GET["save"]){
     $serial->sendMessage("set " . $_GET["name"] . " " . $_GET["value"] . "\n");
     $read = $serial->readPort();
 
+}else if( $_GET["errors"]){
+
+    $serial->sendMessage("errors\n");
+    $read = $serial->readPort();
+
+}else if( $_GET["default"]){
+
+    $serial->sendMessage("defaults\n");
+    $read = $serial->readPort();
+
 }else{
 
-    if( $_GET["i"])
+    if($_GET["json"])
     {
-        $cmd = $_GET["i"];
+        $cmd = "json";
+    }else{
+        $cmd = "get " . $_GET["i"];
     }
 
     $x = 0;

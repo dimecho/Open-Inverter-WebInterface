@@ -1,7 +1,7 @@
 
 function loadJSON(i)
 {
-    $.ajax("serial.php?i=json",{
+    $.ajax("serial.php?json=1",{
     //$.ajax("test/json.data",{
         async: false,
         //contentType: "application/text",
@@ -17,7 +17,8 @@ function loadJSON(i)
                     var json = JSON.parse(data.slice(5)); //cut out command 'json....' from beginning
                     buildMenu(json); 
                 } catch (e) {
-                    loadJSON(i++);
+                    i++;
+                    loadJSON(i);
                 }
             }else{
                 var title = $("#title h3").empty();
@@ -26,6 +27,20 @@ function loadJSON(i)
             }
         },
         error: function(xhr, textStatus, errorThrown){
+        }
+    });
+}
+
+function checkGCC_ARM()
+{
+    $.ajax("gcc_arm.php",{
+        async: false,
+        success: function(data)
+        {
+            if(data == "1")
+            {
+                var menu = $("#gcc").show();
+            }
         }
     });
 }
@@ -107,6 +122,8 @@ function buildMenu(json)
         i++;
     });
     menu.append(tbody);
+
+    showErrors();
 }
 
 function startInverter()
@@ -120,6 +137,7 @@ function startInverter()
             span.removeClass('label-success');
             span.removeClass('label-warning');
             span.removeClass('label-important');
+            span.addClass('label');
 
             if(data.indexOf("Inverter started") != -1)
             {
@@ -144,6 +162,7 @@ function stopInverter()
             span.removeClass('label-success');
             span.removeClass('label-warning');
             span.removeClass('label-important');
+            span.addClass('label');
            
             if(data.indexOf("Inverter halted") != -1)
             {
@@ -157,7 +176,44 @@ function stopInverter()
     });
 }
 
-function saveGraph()
+function showErrors()
 {
+    $.ajax("serial.php?errors=1",{
+        success: function(data)
+        {
+            //console.log(data);
 
+            var span = $("#titleStatus").empty();
+            if(data.indexOf("error") != -1)
+            {
+                var icon = $("<span>", { class:"tooltip-custom glyphicon glyphicon-qrcode", title:data});
+                span.append(icon);
+            }
+        }
+    });
+}
+
+function setDefaults()
+{
+    $.ajax("serial.php?default=1",{
+        success: function(data)
+        {
+            //console.log(data);
+
+            var span = $("#titleStatus").empty();
+            span.removeClass('label-success');
+            span.removeClass('label-warning');
+            span.removeClass('label-important');
+            span.addClass('label');
+
+            if(data.indexOf("default") != -1)
+            {
+                span.addClass('label-success');
+                span.text('everything reset to default');
+            }else{
+                span.addClass('label-important');
+                span.text('error');
+            }
+        }
+    });
 }

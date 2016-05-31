@@ -3,47 +3,41 @@
 xcode-select --install
 #open /Applications/XCode.app
 
-if [ ! -d /usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1 ]; then
-    mkdir /usr/local/gcc_arm
-    tar xzf ~/Downloads/gcc-arm-none-eabi-5_3-2016q1-20160330-mac.tar.bz2 -C /usr/local/gcc_arm/
-fi
-
 # NOTE: You should also add this line to ~/.bashrc or ~/.bash_profile (in your home directory)
 # so you don't have to remember to do this every time you want to compile firmware.
 export PATH="$PATH:/usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1/bin/"
 
-cd ~/Documents/firmware/
+#--------- LIBOPENCM3 ------------
 
+cd ~/Documents/firmware/
 if [ ! -d libopencm3 ]; then
     git clone https://github.com/libopencm3/libopencm3.git
-    #cd libopencm3
-    #make
+    cd libopencm3
+    make
     #cp examples/stm32/f1/Makefile.include ~/Documents/firmware/src/
     #cp examples/stm32/f1/stm32-h103/stm32-h103.ld ~/Documents/firmware/src/
 fi
 
-cd ~/Documents/firmware/src/
+#--------- BOOTLOADER ------------
 
+cd ~/Documents/bootloader/
+if [ ! -f /usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1/arm-none-eabi/lib/libopencm3_stm32f1.a ]; then
+    cp -r ../firmware/libopencm3/lib /usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1/arm-none-eabi
+fi
+arm-none-eabi-gcc -I../firmware/libopencm3/include -c stm32_loader.c -o stm32_loader.o
+arm-none-eabi-gcc -L../firmware/libopencm3/lib -Tstm32_loader.ld -nostartfiles -Wl,--gc-sections,-Map,linker.map -o stm32_loader stm32_loader.o -lopencm3_stm32f1
+arm-none-eabi-objcopy -Obinary stm32_loader ../firmware/stm32_loader.bin
+arm-none-eabi-objcopy -Oihex stm32_loader ../firmware/stm32_loader.hex
+
+#--------- FIRMWARE --------------
+
+cd ~/Documents/firmware/src/
 if [ ! -d include ]; then
     mkdir include
     cp -r ../libopencm3/include/libopencm3 ./include
 fi
-
-#small correction for latest libopencm3
-if ! grep -lr "adc_power_off(ADC1);" anian.cpp; then
-    sed -i '' 's/adc_off(ADC1);/adc_power_off(ADC1);/' anian.cpp
-fi
-
 make clean
-
 make
+#---------------------------------
 
 open ~/Documents/firmware
-
-#for filename in *.c; do
-#    arm-none-eabi-gcc -Os -Wall -DSTM32F1 -mcpu=cortex-m3 -mthumb -I../libopencm3/include -o ${filename/.c/}.o -c $filename
-#done
-
-#for filename in *.cpp; do
-#    arm-none-eabi-g++ -Os -Wall -DSTM32F1 -mcpu=cortex-m3 -mthumb -I../libopencm3/include -o ${filename/.cpp/}.o -c $filename
-#done
