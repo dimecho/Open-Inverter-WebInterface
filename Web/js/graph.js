@@ -1,12 +1,18 @@
 var syncronized;
-var speed ;
 var data;
 var xaxis = [];
 var chart;
 
 $(document).ready(function()
 {
-    speed = $("#speed").slider(); //$('.slider').slider();
+    $("#speed").slider({
+        min: 20,
+        max: 400,
+        value: 80,
+        //scale: 'logarithmic',
+        step: 10
+    });
+
     var ctx = document.getElementById("canvas").getContext("2d");
     var count = 10;
     for (i = 0; i < 200; i++) {
@@ -99,13 +105,11 @@ $(document).ready(function()
             }
         }
     });
-
-    //updateChart();
 });
 
 function updateChart()
 {
-    var delay =  speed.slider('getValue');
+    var delay =  $("#speed").slider('getValue');
     //console.log(speed.slider('getValue'));
 
     clearTimeout(syncronized);
@@ -138,6 +142,7 @@ function updateChart()
         });
         
         updateChart();
+
     },delay);
 }
 

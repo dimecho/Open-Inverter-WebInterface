@@ -6,7 +6,7 @@ import IOKit.serial
 import Darwin.POSIX.termios
 
 @NSApplicationMain
-class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WKNavigationDelegate, NSURLDownloadDelegate //, NSURLSessionDelegate
+class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WKNavigationDelegate, NSURLDownloadDelegate , NSURLSessionDelegate,NSURLSessionDataDelegate
 {
     //@IBOutlet weak var webView: WebView!
     var ip = "localhost"
@@ -43,6 +43,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         webView.frame = view.bounds
     }
     
+    //func download(download: NSURLDownload, decideDestinationWithSuggestedFilename filename: String)
     func download(download: NSURLDownload, decideDestinationWithSuggestedFilename filename: String)
     {
         let panel = NSSavePanel()
@@ -56,6 +57,10 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         {
             download.setDestination(panel.URL!.path!, allowOverwrite: true)
         }
+    }
+    
+    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveResponse response: NSURLResponse, completionHandler: (NSURLSessionResponseDisposition) -> Void) {
+        completionHandler(NSURLSessionResponseDisposition.Allow)
     }
     
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void)
@@ -105,11 +110,13 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             //navigationAction.request.URL!.pathComponents
             
             _ = NSURLDownload(request: NSURLRequest(URL: url), delegate: self)
+            
             /*
-             let session = NSURLSession()
-             let downloadTask = session.downloadTaskWithURL(url)
-             downloadTask.resume()
-             */
+            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+            let session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: NSOperationQueue.mainQueue())
+            let connection  = session.downloadTaskWithRequest(NSURLRequest(URL: url))
+            connection.resume()
+            */
             
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
@@ -648,14 +655,17 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         
         if (panel.runModal() == NSFileHandlingPanelOKButton)
         {
-            let data  = NSData(contentsOfFile:panel.URL!.path!)
+            let data = NSData(contentsOfFile:panel.URL!.path!)
             
             let request = NSMutableURLRequest(URL: NSURL(string:"http://" + self.ip + ":8080/upload.php")!)
             request.HTTPMethod = "POST"
-            request.HTTPBody = data
+            request.setValue("Keep-Alive", forHTTPHeaderField: "Connection")
             
-            let connection = NSURLConnection(request: request, delegate: self, startImmediately: true)
-            connection!.start()
+            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+            let session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: NSOperationQueue.mainQueue())
+
+            let connection  = session.uploadTaskWithRequest(request, fromData: data!)
+            connection.resume()
             
             /*
              let session = NSURLSession()

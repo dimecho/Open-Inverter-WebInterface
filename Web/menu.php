@@ -1,8 +1,12 @@
-<script>
-    $(document).ready(function(){
-        checkGCC_ARM()
-    });
+<link rel="stylesheet" href="css/alertify.css">
+<script src="js/alertify.js"></script>
+<script type="text/javascript">
+alertify.defaults.transition = "slide";
+alertify.defaults.theme.ok = "btn btn-primary";
+alertify.defaults.theme.cancel = "btn btn-danger";
+alertify.defaults.theme.input = "form-control";
 </script>
+<script type="text/javascript" src="js/menu.js"></script>
 <div class="navbar navbar-static" >
     <div class="navbar-inner">
         <div class="container" style="width: auto;">
@@ -23,6 +27,7 @@
                     <li><a tabindex="-1" href="upload.php">Upload Parameters</a></li>
                     <li><a tabindex="-1" href="download.php">Download Parameters</a></li>
                     <li><a tabindex="-1" href="index.php">Advanced Parameters</a></li>
+                    <li><a tabindex="-1" href="simple.php">Simple Parameters</a></li>
                     <!--
                     <li><a tabindex="-1" href="simple.php">Simple Parameters</a></li>
                     -->
@@ -42,8 +47,7 @@
             </li>
             <li>
                 <div id="title">
-                    <h3 class="label" id="title">Inverter Console</h3>
-                    <span id="titleStatus" class="offset1"></span>
+                    <h3 class="label" id="title">Inverter Console</h3>&nbsp;&nbsp;<span id="titleStatus"></span>
                 </div>
             </li>
             </ul>

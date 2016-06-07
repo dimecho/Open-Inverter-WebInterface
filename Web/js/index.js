@@ -1,3 +1,41 @@
+$(document).ready(function()
+{
+    $('#parameters').editable({
+        selector: 'a',
+        url: 'serial.php',
+        mode: 'popup',
+        pk: 1,
+        showbuttons: true,
+        ajaxOptions: {
+            type: 'get',
+            //type: 'put',
+            //dataType: 'json'
+        },
+        success: function(response, newValue) {
+            //console.log(response);
+            if(response.indexOf("Set OK"))
+            {
+                var id = this.id;
+                //console.log(this.id);
+                
+                var span = $("<span>", { class:"label label-warning offset1"}).append("changed");
+                $("#" + id).parent().append(span);
+                
+                setTimeout(function(){
+                    saveChanges(span);
+                },2000);
+                setTimeout(function(){
+                    span.remove();
+                },5000);
+            }
+        }
+    });
+
+    //setTimeout(function(){
+        loadJSON(0);
+    //},500);
+    $('.tooltip-custom').tooltipster();
+});
 
 function loadJSON(i)
 {
@@ -27,20 +65,6 @@ function loadJSON(i)
             }
         },
         error: function(xhr, textStatus, errorThrown){
-        }
-    });
-}
-
-function checkGCC_ARM()
-{
-    $.ajax("gcc_arm.php",{
-        async: false,
-        success: function(data)
-        {
-            if(data == "1")
-            {
-                var menu = $("#gcc").show();
-            }
         }
     });
 }
@@ -124,96 +148,4 @@ function buildMenu(json)
     menu.append(tbody);
 
     showErrors();
-}
-
-function startInverter()
-{
-    $.ajax("serial.php?start=2",{
-        success: function(data)
-        {
-            //console.log(data);
-
-            var span = $("#titleStatus").empty();
-            span.removeClass('label-success');
-            span.removeClass('label-warning');
-            span.removeClass('label-important');
-            span.addClass('label');
-
-            if(data.indexOf("Inverter started") != -1)
-            {
-                span.addClass('label-success');
-                span.text('started');
-            }else{
-                span.addClass('label-important');
-                span.text('error');
-            }
-        }
-    });
-}
-
-function stopInverter()
-{
-    $.ajax("serial.php?stop=1",{
-        success: function(data)
-        {
-            //console.log(data);
-
-            var span = $("#titleStatus").empty();
-            span.removeClass('label-success');
-            span.removeClass('label-warning');
-            span.removeClass('label-important');
-            span.addClass('label');
-           
-            if(data.indexOf("Inverter halted") != -1)
-            {
-                span.addClass('label-warning');
-                span.text('stopped');
-            }else{
-                span.addClass('label-important');
-                span.text('error');
-            }
-        }
-    });
-}
-
-function showErrors()
-{
-    $.ajax("serial.php?errors=1",{
-        success: function(data)
-        {
-            //console.log(data);
-
-            var span = $("#titleStatus").empty();
-            if(data.indexOf("error") != -1)
-            {
-                var icon = $("<span>", { class:"tooltip-custom glyphicon glyphicon-qrcode", title:data});
-                span.append(icon);
-            }
-        }
-    });
-}
-
-function setDefaults()
-{
-    $.ajax("serial.php?default=1",{
-        success: function(data)
-        {
-            //console.log(data);
-
-            var span = $("#titleStatus").empty();
-            span.removeClass('label-success');
-            span.removeClass('label-warning');
-            span.removeClass('label-important');
-            span.addClass('label');
-
-            if(data.indexOf("default") != -1)
-            {
-                span.addClass('label-success');
-                span.text('everything reset to default');
-            }else{
-                span.addClass('label-important');
-                span.text('error');
-            }
-        }
-    });
 }
