@@ -7,9 +7,17 @@ xcode-select --install
 # so you don't have to remember to do this every time you want to compile firmware.
 export PATH="$PATH:/usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1/bin/"
 
+cd ~/Documents/firmware/
+
+#--------- SOURCECODE ------------
+
+if [ ! -d src ]; then
+    git clone -b sync_motor https://github.com/tumanako/tumanako-inverter-fw-motorControl.git
+    ditto ./tumanako-inverter-fw-motorControl/src/sine ./src
+fi
+
 #--------- LIBOPENCM3 ------------
 
-cd ~/Documents/firmware/
 if [ ! -d libopencm3 ]; then
     git clone https://github.com/libopencm3/libopencm3.git
     cd libopencm3
@@ -21,6 +29,7 @@ fi
 #--------- BOOTLOADER ------------
 
 cd ~/Documents/bootloader/
+
 if [ ! -f /usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1/arm-none-eabi/lib/libopencm3_stm32f1.a ]; then
     cp -r ../firmware/libopencm3/lib /usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1/arm-none-eabi
 fi

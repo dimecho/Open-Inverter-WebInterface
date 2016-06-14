@@ -43,3 +43,30 @@ snshs,,0,1,0,"Heatsink temperature sensor. 0=JCurve, 1=Semikron"
 snsm,,2,3,2,"Motor temperature sensor. 2=KTY83, 3=KTY84"
 fslipspnt,Hz,-100,100,0,Slip setpoint in mode 2. Written by software in mode 1
 ampnom,%,0,100,0,Nominal amplitude in mode 2. Written by software in mode 1
+version,,,,,Firmware version
+opmode,,,,,"Operating mode. 0=Off, 1=Run, 2=Manual_run"
+udc,V,,,,DC link voltage
+idc,A,,,,Calculated DC current
+il1,A,,,,AC current L1
+il2,A,,,,AC current L2
+il1rms,A,,,,RMS current L1
+il2rms,A,,,,RMS current L2
+fstat,Hz,,,,Stator frequency
+speed,rpm,,,,Motor speed
+amp,dig,,,,"Sine amplitude, 37813=max"
+pot,dig,,,,"Pot value, 4095=max"
+pot2,dig,,,,"Regen Pot value, 4095=max"
+potnom,%,,,,"Scaled pot value, 0 accel"
+dir,,,,,"Rotation direction. -1=REV, 0=Neutral, 1=FWD"
+tmphs,¡C,,,,Heatsink temperature
+tmpm,¡C,,,,Motor temperature
+din_cruise,,,,,Cruise Control. This pin activates the cruise control with the current speed. Pressing again updates the speed set point.
+din_start,,,,,"State of digital input ""start"". This pin starts inverter operation"
+din_brake,,,,,"State of digital input ""brake"". This pin sets maximum regen torque (brknompedal). Cruise control is disabled."
+din_mprot,,,,,"State of digital input ""motor protection switch"". Shuts down the inverter when =0"
+din_forward,,,,,Direction forward
+din_reverse,,,,,Direction backward
+din_emcystop,,,,,"State of digital input ""emergency stop"". Shuts down the inverter when =0"
+din_ocur,,,,,Over current detected
+din_bms,,,,,BMS over voltage/under voltage
+tm_meas,us,,,,Time taken to calculate new duty cycle in PWM service routine

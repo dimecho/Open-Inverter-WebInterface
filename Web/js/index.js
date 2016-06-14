@@ -11,6 +11,21 @@ $(document).ready(function()
             //type: 'put',
             //dataType: 'json'
         },
+        validate: function(value) {
+
+            if(this.id == 'fmin')
+            {
+                if($.trim(value) > $("#fslipmin").text())
+                {
+                    return 'fmin should be set just below fslipmin';
+                }
+            }else  if(this.id == 'polepairs'){
+                if ($.inArray($.trim(value), [ '2', '4', '8']) == -1)
+                {
+                    return 'poles should be in pair (2,4,8)';
+                }
+            }
+        },
         success: function(response, newValue) {
             //console.log(response);
             if(response.indexOf("Set OK"))
@@ -31,43 +46,10 @@ $(document).ready(function()
         }
     });
 
-    //setTimeout(function(){
-        loadJSON(0);
-    //},500);
+    buildMenu(loadJSON(0));
+
     $('.tooltip-custom').tooltipster();
 });
-
-function loadJSON(i)
-{
-    $.ajax("serial.php?json=1",{
-    //$.ajax("test/json.data",{
-        async: false,
-        //contentType: "application/text",
-        beforeSend: function (req) {
-          req.overrideMimeType('text/plain; charset=x-user-defined');
-        },
-        success: function(data)
-        {
-            //console.log(data);
-            if(i < 4)
-            {
-                try {
-                    var json = JSON.parse(data.slice(5)); //cut out command 'json....' from beginning
-                    buildMenu(json); 
-                } catch (e) {
-                    i++;
-                    loadJSON(i);
-                }
-            }else{
-                var title = $("#title h3").empty();
-                title.append("Check Serial Connection");
-                var connection = $("#connection").show();
-            }
-        },
-        error: function(xhr, textStatus, errorThrown){
-        }
-    });
-}
 
 function buildMenu(json)
 {
@@ -78,8 +60,8 @@ function buildMenu(json)
     var name = [];
     for(var k in json)
         name.push(k);
-
     //======================
+    
     var parameters = [];
     var description = [];
  

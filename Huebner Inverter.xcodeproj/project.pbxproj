@@ -25,23 +25,23 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		324C22E71CF429E7003A1AF5 /* eagle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = eagle; path = OSX/Resources/eagle; sourceTree = "<group>"; };
-		328C1F641CFA115E00C2C053 /* make */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = make; path = OSX/Resources/make; sourceTree = "<group>"; };
+		324C22E71CF429E7003A1AF5 /* eagle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = eagle; path = macOS/Resources/eagle; sourceTree = "<group>"; };
+		328C1F641CFA115E00C2C053 /* make */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = make; path = macOS/Resources/make; sourceTree = "<group>"; };
 		32D281AE1CF0066E00606B12 /* Huebner Inverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Huebner Inverter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		32D281B31CF0066E00606B12 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Application.swift; path = Sources/Application.swift; sourceTree = "<group>"; };
 		32D281B51CF0066F00606B12 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		32D281B81CF0066F00606B12 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		32D281BA1CF0066F00606B12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		32D281ED1CF00EF200606B12 /* dio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = dio; path = OSX/Resources/dio; sourceTree = "<group>"; };
-		32D281EE1CF00EF200606B12 /* encoder */ = {isa = PBXFileReference; lastKnownFileType = folder; name = encoder; path = OSX/Resources/encoder; sourceTree = "<group>"; };
-		32D281EF1CF00EF200606B12 /* inkscape */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = inkscape; path = OSX/Resources/inkscape; sourceTree = "<group>"; };
-		32D281F01CF00EF200606B12 /* install */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = install; path = OSX/Resources/install; sourceTree = "<group>"; };
-		32D281F21CF00EF200606B12 /* xquartz */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = xquartz; path = OSX/Resources/xquartz; sourceTree = "<group>"; };
+		32D281ED1CF00EF200606B12 /* dio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = dio; path = macOS/Resources/dio; sourceTree = "<group>"; };
+		32D281EE1CF00EF200606B12 /* encoder */ = {isa = PBXFileReference; lastKnownFileType = folder; name = encoder; path = macOS/Resources/encoder; sourceTree = "<group>"; };
+		32D281EF1CF00EF200606B12 /* inkscape */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = inkscape; path = macOS/Resources/inkscape; sourceTree = "<group>"; };
+		32D281F01CF00EF200606B12 /* install */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = install; path = macOS/Resources/install; sourceTree = "<group>"; };
+		32D281F21CF00EF200606B12 /* xquartz */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = xquartz; path = macOS/Resources/xquartz; sourceTree = "<group>"; };
 		32DE5F901CF0D03000113FCF /* Web */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Web; sourceTree = "<group>"; };
 		32DE5F951CF0DC0E00113FCF /* Download.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Download.swift; path = Sources/Download.swift; sourceTree = "<group>"; };
-		32DF0C831CF7FF78008F19AC /* updater */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = updater; path = OSX/Resources/updater; sourceTree = "<group>"; };
-		32F25DD01CF2499F00494B1C /* kext */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kext; path = OSX/Resources/kext; sourceTree = "<group>"; };
-		32F25DD21CF24A2600494B1C /* driver */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = driver; path = OSX/Resources/driver; sourceTree = "<group>"; };
+		32DF0C831CF7FF78008F19AC /* updater */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = updater; path = macOS/Resources/updater; sourceTree = "<group>"; };
+		32F25DD01CF2499F00494B1C /* kext */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kext; path = macOS/Resources/kext; sourceTree = "<group>"; };
+		32F25DD21CF24A2600494B1C /* driver */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = driver; path = macOS/Resources/driver; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +58,7 @@
 		32D281A51CF0066E00606B12 = {
 			isa = PBXGroup;
 			children = (
-				32D281B01CF0066E00606B12 /* OSX */,
+				32D281B01CF0066E00606B12 /* macOS */,
 				32D281E01CF00D5300606B12 /* Resources */,
 				32D281AF1CF0066E00606B12 /* Products */,
 			);
@@ -72,7 +72,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		32D281B01CF0066E00606B12 /* OSX */ = {
+		32D281B01CF0066E00606B12 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
 				32D281B31CF0066E00606B12 /* Application.swift */,
@@ -81,7 +81,7 @@
 				32D281B71CF0066F00606B12 /* Main.storyboard */,
 				32D281BA1CF0066F00606B12 /* Info.plist */,
 			);
-			path = OSX;
+			path = macOS;
 			sourceTree = "<group>";
 		};
 		32D281E01CF00D5300606B12 /* Resources */ = {
@@ -289,7 +289,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = OSX/Info.plist;
+				INFOPLIST_FILE = macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Huebner-Inverter";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -302,7 +302,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = OSX/Info.plist;
+				INFOPLIST_FILE = macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Huebner-Inverter";
 				PRODUCT_NAME = "$(TARGET_NAME)";

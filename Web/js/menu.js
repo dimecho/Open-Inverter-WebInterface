@@ -17,6 +17,41 @@ function checkGCC_ARM()
     });
 }
 
+function loadJSON(i)
+{
+    var json;
+
+    $.ajax("serial.php?json=1",{
+    //$.ajax("test/json.data",{
+        async: false,
+        //contentType: "application/text",
+        beforeSend: function (req) {
+          req.overrideMimeType('text/plain; charset=x-user-defined');
+        },
+        success: function(data)
+        {
+            //console.log(data);
+            if(i < 4)
+            {
+                try {
+                    json = JSON.parse(data.slice(5)); //cut out command 'json....' from beginning
+                } catch (e) {
+                    i++;
+                    json = loadJSON(i);
+                }
+            }else{
+                var title = $("#title h3").empty();
+                title.append("Check Serial Connection");
+                var connection = $("#connection").show();
+            }
+        },
+        error: function(xhr, textStatus, errorThrown){
+        }
+    });
+    
+    return json;
+}
+
 function saveChanges(span)
 {
     $.ajax("serial.php?save=1",{
