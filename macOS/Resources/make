@@ -14,6 +14,7 @@ cd ~/Documents/firmware/
 if [ ! -d src ]; then
     git clone -b sync_motor https://github.com/tumanako/tumanako-inverter-fw-motorControl.git
     ditto ./tumanako-inverter-fw-motorControl/src/sine ./src
+    rm -rf ./tumanako-inverter-fw-motorControl
 fi
 
 #--------- LIBOPENCM3 ------------

@@ -191,7 +191,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             alert.runModal()
             
         }else{
-            if (!NSFileManager.defaultManager().fileExistsAtPath(NSHomeDirectory() + "/Documents/firmware/stm32_loader.bin"))
+            if (!NSFileManager.defaultManager().fileExistsAtPath(NSHomeDirectory() + "/Documents/firmware"))
             {
                 downloadSource()
                 NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeSourceDownload), name:"completeDownload", object: nil)
@@ -706,7 +706,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     
     @IBAction func checkUpdates(sender: AnyObject)
     {
-        let data = NSData(contentsOfURL: NSURL(string: "http://github.com/poofik/huebner-inverter/raw/master/OSX/Info.plist")!)
+        let data = NSData(contentsOfURL: NSURL(string: "http://github.com/poofik/huebner-inverter/raw/master/macOS/Info.plist")!)
         let plist = (try! NSPropertyListSerialization.propertyListWithData(data!, options: NSPropertyListMutabilityOptions.MutableContainersAndLeaves, format: nil)) as! NSMutableDictionary
         let onlineVersion = plist.valueForKey("CFBundleShortVersionString") as? String
         let currentVersion = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as? String

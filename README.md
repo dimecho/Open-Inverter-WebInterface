@@ -18,7 +18,7 @@ Native "termios.h" wrapper for macOS using Swift 2.0 Framework to allow for bett
 
 ## Download
 
-<img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/download.png"> <a href="https://github.com/poofik/Huebner-Inverter/releases/download/1.0/Huebner.Inverter.zip">Download Binary for Mac</a>
+<a href="https://github.com/poofik/Huebner-Inverter/releases/download/1.0/Huebner.Inverter.zip"><img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/download.png"> Download Binary for Mac</a>
 
 ## Author
 

@@ -20,9 +20,9 @@ $(document).ready(function()
                     return 'fmin should be set just below fslipmin';
                 }
             }else  if(this.id == 'polepairs'){
-                if ($.inArray($.trim(value), [ '2', '4', '8']) == -1)
+                if ($.inArray($.trim(value), [ '1', '2', '3,', '4']) == -1)
                 {
-                    return 'poles should be in pair (2,4,8)';
+                    return 'Motor poles = twice # of pole pairs';
                 }
             }
         },
