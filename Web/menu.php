@@ -12,11 +12,11 @@ alertify.defaults.theme.input = "form-control";
         <div class="container" style="width: auto;">
             <ul class="nav" role="navigation">
             <li class="dropdown">
-                <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#"><b>Menu</b><b class="caret"></b></a>
+                <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>Menu</b><b class="caret"></b></a>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                    <li><a tabindex="-1" href="#" onClick="startInverter()">Start Inverter</a></li>
-                    <li><a tabindex="-1" href="#" onClick="stopInverter()">Stop Inverter</a></li>
-                    <li><a tabindex="-1" href="#" onClick="setDefaults()">Reset to Default</a></li>
+                    <li><a tabindex="-1" onClick="startInverter()">Start Inverter</a></li>
+                    <li><a tabindex="-1" onClick="stopInverter()">Stop Inverter</a></li>
+                    <li><a tabindex="-1" onClick="setDefaults()">Reset to Default</a></li>
                     <li class="divider"></li>
                     <li><a tabindex="-1" href="graph.php">Graph</a></li>
                     <li class="divider"></li>

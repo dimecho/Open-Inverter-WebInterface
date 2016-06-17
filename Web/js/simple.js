@@ -6,7 +6,9 @@ $(document).ready(function()
     $("#boost").slider({
         min: 0.0,
         max: 10.0,
+        step: 0.1,
         precision: 1,
+        tooltip_position:'left',
         //value: 3.8
     });
 
@@ -15,7 +17,6 @@ $(document).ready(function()
         step: 2,
         min: 2,
         max: 6,
-        focus: true
     });
 
     $("#ampmin").slider({
@@ -26,13 +27,25 @@ $(document).ready(function()
         //value: 80
     });
 
+    $("#udc").slider({
+        min: 12,
+        max: 400,
+        range: true,
+        //value: 55
+    });
+
     $("#fmax").slider({
         step: 100,
         min: 100,
         max: 7000,
         //value: 10
     });
-    
+
+    $("#brknompedal").slider({
+        min: 1,
+        max: 100,
+    });
+
     $("#idlespeed").slider({
         //ticks: [-100, 0, 100, 200, 300, 400, 500],
         //ticks_positions: [-100, 0, 100, 200, 300, 400, 500],
@@ -40,8 +53,8 @@ $(document).ready(function()
         min: 100,
         max: 1000,
         step: 100,
+        enabled: false,
         //value: -100,
-        enabled: false
     });
     
     $("#idlespeed-enabled").click(function() {
@@ -56,15 +69,13 @@ $(document).ready(function()
     $("#ex6").on("slide", function(slideEvt) {
         $("#ex6SliderVal").text(slideEvt.value);
     });
-
-    $("#brknormpedal-enabled").prop("checked");
     
-    $("#brknormpedal-enabled").click(function() {
+    $("#brknompedal-enabled").click(function() {
         if(this.checked) {
-            $("#brknormpedal").slider("enable");
+            $("#brknompedal").slider("enable");
         } else {
-            $("#brknormpedal").slider("disable");
-            $("#brknormpedal").slider({ value: -50});
+            $("#brknompedal").slider("disable");
+            $("#brknompedal").slider({ value: -50});
         }
     });
     
@@ -82,12 +93,16 @@ function buildMenu(json)
         name.push(k);
     //======================
 
-    var menu = $("#parameters_Motor").empty().show();
+    var motor = $("#parameters_Motor").empty().show();
+    var battery = $("#parameters_Battery").empty().show();
     var tbody = $("<tbody>");
     var tr;
-    var input;
     var td1;
     var td2;
+    var input;
+    var udcmin = -1;
+    var udcmax = -1;
+    var brknompedal = -1;
 
     $.each(json, function()
     {
@@ -104,7 +119,7 @@ function buildMenu(json)
         }
         else if(name[i] == "boost")
         {
-            input = $("<input>", {id:name[i], type:"text", "data-provide":"slider", "data-slider-value":this.value/448});
+            input = $("<input>", {id:name[i], type:"text", "data-provide":"slider", "data-slider-value":this.value/350});
             td1 = $("<td>").append("Resistance (&#8486;)");
             td2 = $("<td>").append(input);
             tbody.append(tr.append(td1).append(td2));
@@ -131,9 +146,47 @@ function buildMenu(json)
             td2 = $("<td>").append(input);
             tbody.append(tr.append(td1).append(td2));
         }
+        else if(name[i] == "brknompedal")
+        {
+            brknompedal = this.value;
+        }
+        else if(name[i] == "udcmin")
+        {
+            udcmin = this.value;
+        }
+        else if(name[i] == "udcmax")
+        {
+            udcmax = this.value;
+        }
         i++;
     });
-    menu.append(tbody);
+    motor.append(tbody);
+
+    tbody = $("<tbody>");
+
+    if(udcmin != -1 && udcmax != -1)
+    {
+        input = $("<input>", {id:"udc", type:"text", "data-provide":"slider", "data-slider-value":"[" + udcmin + "," + udcmax + "]"});
+        tr = $("<tr>");
+        td1 = $("<td>").append("Voltage (V)");
+        td2 = $("<td>").append(input);
+        tbody.append(tr.append(td1).append(td2));
+    }
+
+    if(brknompedal != -1)
+    {
+        input = $("<input>", {id:"brknompedal", type:"text", "data-provide":"slider", "data-slider-value":brknompedal});
+        var e = $("<input>", {id:"brknompedal-enabled", type:"checkbox"});
+        tr = $("<tr>");
+        td1 = $("<td>").append("Regenerative (%)");
+        td2 = $("<td>").append(input).append(e);
+        tbody.append(tr.append(td1).append(td2));
+        if(brknompedal != -100)
+            $("#brknompedal-enabled").prop("checked", true );
+    }
+
+    battery.append(tbody);
+
 }
 
 function setValue()

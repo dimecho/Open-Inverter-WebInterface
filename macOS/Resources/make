@@ -48,6 +48,9 @@ if [ ! -d include ]; then
 fi
 make clean
 make
+mv stm32_sine.bin ../
+mv stm32_sine.hex ../
+
 #---------------------------------
 
 open ~/Documents/firmware

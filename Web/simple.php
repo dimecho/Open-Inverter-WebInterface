@@ -14,6 +14,19 @@
         <script type="text/javascript" src="js/bootstrap-slider.js"></script>
         <script type="text/javascript" src="js/bootstrap-editable.js"></script>
         <script type="text/javascript" src="js/simple.js"></script>
+        <style>
+            /*
+            #udc .slider-track-high {
+                background: green;
+            }
+            #udc .slider-track-low {
+                background: red;
+            }
+            */
+            #udc .slider-selection {
+                background: yellow;
+            }
+        </style>
     </head>
     <body>
         <?php include "menu.php" ?>
@@ -30,20 +43,7 @@
                     <button type="button" class="list-group-item">Battery</button>
                     <table class="table table-bordered" style="background-color:#e6e6e6;" id="parameters_Battery">
                         <thead></thead>
-                        <tbody>
-                            <tr>
-                                <td>Regenerative (%)</td>
-                                <td><input id="brknormpedal" type="text" data-provide="slider" data-slider-min="1" data-slider-max="100" data-slider-value="1" data-slider-enabled="false" />&nbsp;&nbsp;<input id="brknormpedal-enabled" type="checkbox" /></td>
-                            </tr>
-                            <tr>
-                                <td>Voltage (V)</td>
-                                <td><input id="fmax" type="text" data-provide="slider" data-slider-min="1" data-slider-max="400" data-slider-value="55"/></td>
-                            </tr>
-                            <tr>
-                                <td>Amperage (A)</td>
-                                <td><input id="fmax" type="text" data-provide="slider" data-slider-min="5" data-slider-max="200" data-slider-value="10"/></td>
-                            </tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
