@@ -42,6 +42,7 @@ alertify.defaults.theme.input = "form-control";
                     <li class="divider"></li>
                     <li><a tabindex="-1" href="schematics.php">View Schematics</a></li>
                     <li><a tabindex="-1" href="wiring.php">Wiring Diagram</a></li>
+                    <li><a tabindex="-1" href="igbt-test.php">IGBT Test</a></li>
                     <li><a tabindex="-1" href="encoder.php">Build Encoder</a></li>
                 </ul>
             </li>

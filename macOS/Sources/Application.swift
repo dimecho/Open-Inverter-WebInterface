@@ -434,7 +434,11 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         
         if (panel.runModal() == NSFileHandlingPanelOKButton)
         {
-            if(panel.URL!.path!.rangeOfString("_sine.bin") != nil)
+            let fileAttributes = try! NSFileManager.defaultManager().attributesOfItemAtPath(panel.URL!.path!)
+            let fileSizeNumber = fileAttributes[NSFileSize] as! NSNumber
+            let fileSize = fileSizeNumber.longLongValue
+            
+            if(fileSize > 20000)
             {
                 //system("open -b com.apple.terminal --args \"" + NSBundle.mainBundle().pathForResource("updater", ofType:nil)! + "\" \"" + panel.URL!.path! + "\" " + serialPath)
                 system("echo '\"" + NSBundle.mainBundle().pathForResource("updater", ofType:nil)! + "\" \"" + panel.URL!.path! + "\" " + serialPath + "' > /tmp/updater.sh; chmod +x /tmp/updater.sh; open -a Terminal /tmp/updater.sh") //; rm /tmp/updater.sh
@@ -442,7 +446,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
                 let alert = NSAlert()
                 alert.alertStyle = NSAlertStyle.WarningAlertStyle
                 alert.messageText = "Brick Alert"
-                alert.informativeText = "Careful! You may brick your microcontroller - DO NOT pick 'loader.bin' This is Firmware Flash."
+                alert.informativeText = "Careful! You may brick your microcontroller - DO NOT pick Bootloader. This is Firmware Flash."
                 alert.addButtonWithTitle("OK")
                 alert.runModal()
             }
