@@ -80,7 +80,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         }
         else if (url == NSURL(string:"http://" + ip + ":8080/bootloader.php"))
         {
-            flashBootloader()
+            checkOpenOCD()
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
         else if (url == NSURL(string:"http://" + ip + ":8080/firmware.php"))
@@ -219,6 +219,36 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         }
     }
     
+    func checkOpenOCD()
+    {
+        if (!NSFileManager.defaultManager().fileExistsAtPath(NSHomeDirectory() + "/Documents/firmware"))
+        {
+            downloadSource()
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeSourceDownload), name:"completeDownload", object: nil)
+        }else{
+            if (!NSFileManager.defaultManager().fileExistsAtPath("/usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1"))
+            {
+                let alert = NSAlert()
+                    alert.messageText = "Install OpenoCD Debugger - Download 2.5MB"
+                    alert.informativeText = "openocd"
+                    alert.addButtonWithTitle("OK")
+                    alert.addButtonWithTitle("Cancel")
+                    if (alert.runModal() == NSAlertFirstButtonReturn)
+                    {
+                        self.performSegueWithIdentifier("Download", sender:self)
+                        var userInfo = Dictionary<String, String>()
+                        userInfo["url"] = "https://github.com/gnuarmeclipse/openocd/releases/download/gae-0.10.0-20160110/gnuarmeclipse-openocd-osx-0.10.0-201601101000-dev.pkg"
+                        userInfo["path"] = NSHomeDirectory() + "/Downloads/gnuarmeclipse-openocd-osx-0.10.0-201601101000-dev.pkg"
+                        NSNotificationCenter.defaultCenter().postNotificationName("startDownload", object:nil, userInfo:userInfo);
+                        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeOpenOCDDownload), name:"completeDownload", object: nil)
+                }
+            }else{
+                flashBootloader()
+            }
+        }
+    }
+
+    
     func checkSchematics()
     {
         /*
@@ -350,6 +380,20 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         }
     }
     
+    func completeOpenOCDDownload(notification: NSNotification)
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        
+        var output:String?
+        var processErrorDescription:String?
+        let installer: String = NSBundle.mainBundle().pathForResource("openocd", ofType:nil)!
+        let success: Bool = runProcessAsAdministrator(installer, output:&output, errorDescription:&processErrorDescription)
+        if (success)
+        {
+            flashBootloader()
+        }
+    }
+    
     func completeGCCDownload(notification: NSNotification)
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -414,6 +458,8 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         //openInskcapeEncoder()
     }
     
+  
+    
     func flashBootloader()
     {
         let alert = NSAlert()
@@ -421,6 +467,8 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         alert.informativeText = "...maybe next build"
         alert.addButtonWithTitle("OK")
         alert.runModal()
+        //openocd -d 3 -f ./interface/olimex-arm-usb-ocd-h.cfg -f ./target/cc26xx.cfg -c "program ${TARGETNAME}.elf verify reset exit"
+        
     }
     
     func flashFirmware()

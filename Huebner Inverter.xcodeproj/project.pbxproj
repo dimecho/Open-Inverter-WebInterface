@@ -22,6 +22,7 @@
 		32DF0C841CF7FF78008F19AC /* updater in Resources */ = {isa = PBXBuildFile; fileRef = 32DF0C831CF7FF78008F19AC /* updater */; };
 		32F25DD11CF2499F00494B1C /* kext in Resources */ = {isa = PBXBuildFile; fileRef = 32F25DD01CF2499F00494B1C /* kext */; };
 		32F25DD31CF24A2600494B1C /* driver in Resources */ = {isa = PBXBuildFile; fileRef = 32F25DD21CF24A2600494B1C /* driver */; };
+		32FFA9FC1D18D6FB00E5BBF0 /* openocd in Resources */ = {isa = PBXBuildFile; fileRef = 32FFA9FB1D18D6FB00E5BBF0 /* openocd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		32DF0C831CF7FF78008F19AC /* updater */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = updater; path = macOS/Resources/updater; sourceTree = "<group>"; };
 		32F25DD01CF2499F00494B1C /* kext */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kext; path = macOS/Resources/kext; sourceTree = "<group>"; };
 		32F25DD21CF24A2600494B1C /* driver */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = driver; path = macOS/Resources/driver; sourceTree = "<group>"; };
+		32FFA9FB1D18D6FB00E5BBF0 /* openocd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = openocd; path = macOS/Resources/openocd; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 				32D281EF1CF00EF200606B12 /* inkscape */,
 				32D281F21CF00EF200606B12 /* xquartz */,
 				32DF0C831CF7FF78008F19AC /* updater */,
+				32FFA9FB1D18D6FB00E5BBF0 /* openocd */,
 				328C1F641CFA115E00C2C053 /* make */,
 			);
 			name = Resources;
@@ -169,6 +172,7 @@
 				32D281B61CF0066F00606B12 /* Assets.xcassets in Resources */,
 				32D281B91CF0066F00606B12 /* Main.storyboard in Resources */,
 				32D281F51CF00EF200606B12 /* inkscape in Resources */,
+				32FFA9FC1D18D6FB00E5BBF0 /* openocd in Resources */,
 				32DF0C841CF7FF78008F19AC /* updater in Resources */,
 				32D281F81CF00EF200606B12 /* xquartz in Resources */,
 				32F25DD11CF2499F00494B1C /* kext in Resources */,
