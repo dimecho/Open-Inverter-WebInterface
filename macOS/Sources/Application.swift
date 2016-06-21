@@ -384,14 +384,9 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
         
-        var output:String?
-        var processErrorDescription:String?
-        let installer: String = NSBundle.mainBundle().pathForResource("openocd", ofType:nil)!
-        let success: Bool = runProcessAsAdministrator(installer, output:&output, errorDescription:&processErrorDescription)
-        if (success)
-        {
-            flashBootloader()
-        }
+        launchInstaller("openocd")
+        
+        flashBootloader()
     }
     
     func completeGCCDownload(notification: NSNotification)
@@ -458,17 +453,29 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         //openInskcapeEncoder()
     }
     
-  
-    
     func flashBootloader()
     {
-        let alert = NSAlert()
-        alert.messageText = "This feature is currently in development."
-        alert.informativeText = "...maybe next build"
-        alert.addButtonWithTitle("OK")
-        alert.runModal()
-        //openocd -d 3 -f ./interface/olimex-arm-usb-ocd-h.cfg -f ./target/cc26xx.cfg -c "program ${TARGETNAME}.elf verify reset exit"
+        /*
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canCreateDirectories = false
+        panel.canChooseFiles = true
+        panel.allowedFileTypes = ["bin"]
         
+        if (panel.runModal() == NSFileHandlingPanelOKButton)
+        {
+            let fileAttributes = try! NSFileManager.defaultManager().attributesOfItemAtPath(panel.URL!.path!)
+            let fileSizeNumber = fileAttributes[NSFileSize] as! NSNumber
+            let fileSize = fileSizeNumber.longLongValue
+            
+            if(fileSize < 20000)
+            {
+                system("echo '\"" + NSBundle.mainBundle().pathForResource("openocd", ofType:nil)! + "\" \"" + panel.URL!.path! + "\"' > /tmp/bootloader.sh; chmod +x /tmp/bootloader.sh; open -a Terminal /tmp/bootloader")
+            }
+        }
+        */
+        system("open -a Terminal \"" + NSBundle.mainBundle().pathForResource("openocd", ofType:nil)! + "\"")
     }
     
     func flashFirmware()
