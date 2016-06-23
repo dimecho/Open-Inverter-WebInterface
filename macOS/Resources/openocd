@@ -10,5 +10,11 @@ if [ ! -f "/usr/local/gcc_arm/openocd/bin/openocd" ]; then
 else
     export PATH="$PATH:/usr/local/gcc_arm/openocd/bin/"
     cd /usr/local/gcc_arm/openocd/scripts/
-    openocd -f ./interface/olimex-arm-usb-ocd-h.cfg -f ./board/olimex_stm32_h103.cfg -c "program $HOME/Documents/firmware/stm32_loader.bin reset exit"
+    
+    #halt
+    #flash erase_sector 0 0 last
+    #dump_image dump.bin 0x0 0x00020000
+    #[128k x 1024 = 131072 = 0x00020000]
+
+    openocd -f ./interface/ftdi/olimex-arm-usb-ocd-h.cfg -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset init" -c "halt" -c "flash write_image erase $HOME/Documents/firmware/stm32_loader.bin 0x08000000" -c "reset" -c "shutdown" 
 fi
