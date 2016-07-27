@@ -1,6 +1,38 @@
 $(document).ready(function()
 {
-    checkGCC_ARM()
+    alertify.dialog('startInverterMode', function() {
+      return {
+        setup: function() {
+          return {
+            buttons: [{
+              text: 'Wave Generator',
+              key: 13 /*keys.ENTER*/ ,
+              className: alertify.defaults.theme.ok,
+            }, {
+              text: 'Slip Control',
+              key: 27 /*keys.ESC*/ ,
+              invokeOnClose: false, // <== closing won't invoke this
+              className: alertify.defaults.theme.ok,
+            }],
+            focus: {
+              element: 0,
+              select: false
+            },
+            options: {
+              title: '',
+              maximizable: false,
+              resizable: false
+            },
+          };
+        }
+      }
+    }, false, 'confirm');
+
+    buildParameters(loadJSON(0));
+    showErrors();
+    checkGCC_ARM();
+
+    $("[rel=tooltip]").tooltip();
 });
 
 function checkGCC_ARM()
@@ -72,9 +104,21 @@ function saveChanges(span)
     });
 }
 
-function startInverter()
+function startInverterAlert()
 {
-    $.ajax("serial.php?start=2",{
+    alertify.startInverterMode("Which mode will it be?",
+      function() {
+        startInverter(2);
+      },
+      function() {
+        startInverter(1);
+      }
+    );
+}
+
+function startInverter(mode)
+{
+    $.ajax("serial.php?start=" + mode,{
         success: function(data)
         {
             //console.log(data);
@@ -93,6 +137,12 @@ function startInverter()
                 span.addClass('label-important');
                 span.text('error');
             }
+            buildMenu(loadJSON(0));
+
+            setTimeout( function ()
+            {
+                span.hide();
+            },1200);
         }
     });
 }
@@ -118,6 +168,12 @@ function stopInverter()
                 span.addClass('label-important');
                 span.text('error');
             }
+            buildMenu(loadJSON(0));
+
+            setTimeout( function ()
+            {
+                span.hide();
+            },1200);
         }
     });
 }
@@ -169,4 +225,122 @@ function setDefaults()
             }
         });
     }, function(){});
+}
+
+function buildHeader(json, name)
+{
+    var i = 0;
+    $.each(json, function()
+    {
+        if(name[i] == "version")
+        {
+            var version = $("#titleVersion").empty();
+            version.append("Inverter Console v" + this.value);
+        }
+        else if(name[i] == "opmode")
+        {
+            var opmode = $("#titleOperation").empty();
+            opmode.removeClass('label-success');
+            opmode.removeClass('label-warning');
+            opmode.removeClass('label-important');
+            opmode.addClass('label');
+            if(this.value == 0)
+            {
+                opmode.addClass('label-important');
+                opmode.append("Off");
+            }
+            else if(this.value == 1)
+            {
+                opmode.addClass('label-warning');
+                opmode.append("Debug");
+            }
+            else if(this.value == 2)
+            {
+                opmode.addClass('label-success');
+                opmode.append("Running");
+            }
+        }
+        i++;
+    });
+}
+
+function buildParameters(json)
+{
+    //var length = 0;
+    //for(var k in json) if(json.hasOwnProperty(k))    length++;
+
+    if(Object.keys(json).length > 0)
+    {
+        var i = 0;
+        var name = [];
+        for(var k in json)
+            name.push(k);
+
+        buildHeader(json, name);
+
+        var menu = $("#parameters").empty().show();
+        if(menu)
+        {
+            //======================
+            var parameters = [];
+            var description = [];
+         
+            $.ajax("description.csv",{
+                async: false,
+                //contentType: "application/text",
+                beforeSend: function (req) {
+                  req.overrideMimeType('text/plain; charset=x-user-defined');
+                },
+                //dataType: 'text',
+                success: function(data)
+                {
+                    var row = data.split("\n");
+
+                    for (var i = 0; i < row.length; ++i)
+                    {
+                        var split = row[i].split(",");
+                        var d;
+
+                        if(split.length > 6){
+                            for (var c = 5; c < split.length; ++c)
+                                d += split[c];
+                        }else{
+                            d = split[5];
+                        }
+
+                        parameters.push(split[0]);
+                        description.push(d);
+                    }
+                },
+                error: function(xhr, textStatus, errorThrown){
+                }
+            });
+            //=================
+
+            var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("Type")));
+            var tbody = $("<tbody>");
+
+            menu.append(thead);
+            $.each(json, function()
+            {
+                console.log(this)
+
+                var tooltip = "";
+                var x = parameters.indexOf(name[i]);
+                if(x !=-1)
+                    tooltip = description[x];
+                
+                var a = $("<a>", { href:"#", id:name[i], "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":this.unit + " ("+ this.default + ")"}).append(this.value);
+                var tr = $("<tr>");
+                var td1 = $("<td>", { rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h5>" + tooltip + "</h5>"}).append(name[i]);
+                var td2 = $("<td>").append(a);
+                var td3 = $("<td>").append(this.unit);
+       
+                tbody.append(tr.append(td1).append(td2).append(td3));
+                
+                i++;
+            });
+            menu.append(tbody);
+        }
+    }
 }

@@ -6,6 +6,7 @@ xcode-select --install
 # NOTE: You should also add this line to ~/.bashrc or ~/.bash_profile (in your home directory)
 # so you don't have to remember to do this every time you want to compile firmware.
 export PATH="$PATH:/usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1/bin/"
+export PATH="$PATH:/usr/local/CrossPack-AVR/bin/"
 
 cd ~/Documents/firmware/
 
@@ -35,9 +36,9 @@ if [ ! -f /usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1/arm-none-eabi/lib/libo
     cp -r ../firmware/libopencm3/lib /usr/local/gcc_arm/gcc-arm-none-eabi-5_3-2016q1/arm-none-eabi
 fi
 arm-none-eabi-gcc -I../firmware/libopencm3/include -c stm32_loader.c -o stm32_loader.o
-arm-none-eabi-gcc -L../firmware/libopencm3/lib -Tstm32_loader.ld -nostartfiles -Wl,--gc-sections,-Map,linker.map -o stm32_loader stm32_loader.o -lopencm3_stm32f1
-arm-none-eabi-objcopy -Obinary stm32_loader ../firmware/stm32_loader.bin
-arm-none-eabi-objcopy -Oihex stm32_loader ../firmware/stm32_loader.hex
+arm-none-eabi-gcc -L../firmware/libopencm3/lib -T stm32_loader.ld -nostartfiles -Wl,--gc-sections,-Map,linker.map -o stm32_loader stm32_loader.o -lopencm3_stm32f1
+arm-none-eabi-objcopy -O binary stm32_loader ../firmware/stm32_loader.bin
+arm-none-eabi-objcopy -O ihex stm32_loader ../firmware/stm32_loader.hex
 
 #--------- FIRMWARE --------------
 
@@ -50,6 +51,13 @@ make clean
 make
 mv stm32_sine.bin ../
 mv stm32_sine.hex ../
+
+#--------- ATtiny13 --------------
+
+cd ~/Documents/firmware/
+
+avr-gcc -g -mmcu=attiny13 -Os -Os -o volt-pwm-attiny13.o volt-pwm-attiny13.c
+avr-objcopy -R .eeprom -O ihex volt-pwm-attiny13.o volt-pwm-attiny13.hex
 
 #---------------------------------
 

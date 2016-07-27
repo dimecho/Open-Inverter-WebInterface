@@ -1,19 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-        <title>Huebner Inverter</title>
-        <link rel="stylesheet" type="text/css" href="css/style.css" />
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css" />
+        <?php include "header.php" ?>
         <link rel="stylesheet" type="text/css" href="css/bootstrap-slider.css" />
-
-        <script type="text/javascript" src="js/jquery.js"></script>
-        <script type="text/javascript" src="js/bootstrap.js"></script>
         <script type="text/javascript" src="js/bootstrap-slider.js"></script>
         <script type="text/javascript" src="js/chart.js"></script>
         <script type="text/javascript" src="js/graph.js"></script>
-        
         <style type="text/css">
             .nav-tabs > li > a {
                 color: #49afcd;

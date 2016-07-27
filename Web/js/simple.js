@@ -1,7 +1,7 @@
 
 $(document).ready(function()
 {
-    buildMenu(loadJSON(0));
+    buildSimpleParameters(loadJSON(0));
 
     $("#boost").slider({
         min: 0.0,
@@ -85,7 +85,7 @@ $(document).ready(function()
     //var delay =  speed.slider('getValue');
 });
 
-function buildMenu(json)
+function buildSimpleParameters(json)
 {
     var i = 0;
     var name = [];

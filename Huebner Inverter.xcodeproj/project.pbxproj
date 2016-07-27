@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		324C22E81CF429E7003A1AF5 /* eagle in Resources */ = {isa = PBXBuildFile; fileRef = 324C22E71CF429E7003A1AF5 /* eagle */; };
+		3274D25E1D3DF5C500573511 /* attiny in Resources */ = {isa = PBXBuildFile; fileRef = 3274D25D1D3DF5C500573511 /* attiny */; };
 		328C1F651CFA115E00C2C053 /* make in Resources */ = {isa = PBXBuildFile; fileRef = 328C1F641CFA115E00C2C053 /* make */; };
 		32D281B41CF0066E00606B12 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D281B31CF0066E00606B12 /* Application.swift */; };
 		32D281B61CF0066F00606B12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32D281B51CF0066F00606B12 /* Assets.xcassets */; };
@@ -27,6 +28,7 @@
 
 /* Begin PBXFileReference section */
 		324C22E71CF429E7003A1AF5 /* eagle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = eagle; path = macOS/Resources/eagle; sourceTree = "<group>"; };
+		3274D25D1D3DF5C500573511 /* attiny */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = attiny; path = macOS/Resources/attiny; sourceTree = "<group>"; };
 		328C1F641CFA115E00C2C053 /* make */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = make; path = macOS/Resources/make; sourceTree = "<group>"; };
 		32D281AE1CF0066E00606B12 /* Huebner Inverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Huebner Inverter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		32D281B31CF0066E00606B12 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Application.swift; path = Sources/Application.swift; sourceTree = "<group>"; };
@@ -100,6 +102,7 @@
 				32D281F21CF00EF200606B12 /* xquartz */,
 				32DF0C831CF7FF78008F19AC /* updater */,
 				32FFA9FB1D18D6FB00E5BBF0 /* openocd */,
+				3274D25D1D3DF5C500573511 /* attiny */,
 				328C1F641CFA115E00C2C053 /* make */,
 			);
 			name = Resources;
@@ -168,6 +171,7 @@
 				32F25DD31CF24A2600494B1C /* driver in Resources */,
 				32DE5F911CF0D03000113FCF /* Web in Resources */,
 				32D281F61CF00EF200606B12 /* install in Resources */,
+				3274D25E1D3DF5C500573511 /* attiny in Resources */,
 				32D281F31CF00EF200606B12 /* dio in Resources */,
 				32D281B61CF0066F00606B12 /* Assets.xcassets in Resources */,
 				32D281B91CF0066F00606B12 /* Main.storyboard in Resources */,

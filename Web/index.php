@@ -1,18 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
-        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-        <title>Huebner Inverter</title>
-        <link rel="stylesheet" type="text/css" href="css/style.css" />
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css" />
+        <?php include "header.php" ?>
         <link rel="stylesheet" type="text/css" href="css/bootstrap-editable.css" />
-        <link rel="stylesheet" type="text/css" href="css/tooltipster.css" />
-
-        <script type="text/javascript" src="js/jquery.js"></script>
-        <script type="text/javascript" src="js/bootstrap.js"></script>
         <script type="text/javascript" src="js/bootstrap-editable.js"></script>
-        <script type="text/javascript" src="js/tooltipster.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
     </head>
     <body>

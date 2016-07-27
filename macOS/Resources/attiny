@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ ! -f "/usr/local/CrossPack-AVR/bin/avr-gcc" ]; then
+    CrossPack-AVR-20131216.dmg
+    hdiutil attach ~/Downloads/CrossPack-AVR-20131216.dmg
+    installer -pkg /Volumes/CrossPack-AVR/CrossPack-AVR.pkg -target /
+    hdiutil detach /Volumes/CrossPack-AVR
+else
+    export PATH="$PATH:/usr/local/CrossPack-AVR/bin/"
+    cd ~/Documents/firmware/
+    avrdude -c USBasp -p attiny13 -U flash:w:volt-pwm-attiny13.hex:i
+fi

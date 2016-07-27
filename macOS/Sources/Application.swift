@@ -83,6 +83,12 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             checkOpenOCD()
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
+        else if (url == NSURL(string:"http://" + ip + ":8080/attiny.php"))
+        {
+            checkATtiny()
+            decisionHandler(WKNavigationActionPolicy.Cancel)
+
+        }
         else if (url == NSURL(string:"http://" + ip + ":8080/firmware.php"))
         {
             flashFirmware()
@@ -176,7 +182,22 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             catch let error as NSError {
                 print("Error: \(error)")
             }
+            
+            removeGCCAVR()
+
             self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/index.php")!))
+        }
+    }
+    
+    func removeGCCAVR()
+    {
+        let gcc_avr = "/usr/local/CrossPack-AVR-20131216"
+     
+        do {
+                try NSFileManager.defaultManager().removeItemAtPath(gcc_avr)
+        }
+        catch let error as NSError {
+                print("Error: \(error)")
         }
     }
     
@@ -219,6 +240,35 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         }
     }
     
+    func checkATtiny()
+    {
+        if (!NSFileManager.defaultManager().fileExistsAtPath(NSHomeDirectory() + "/Documents/firmware"))
+        {
+            downloadSource()
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeSourceDownload), name:"completeDownload", object: nil)
+        }else{
+            if (!NSFileManager.defaultManager().fileExistsAtPath("/usr/local/CrossPack-AVR/bin/avr-gcc"))
+            {
+                let alert = NSAlert()
+                alert.messageText = "Install CrossPack-AVR Compiler - Download 42MB"
+                alert.informativeText = "avr-gcc"
+                alert.addButtonWithTitle("OK")
+                alert.addButtonWithTitle("Cancel")
+                if (alert.runModal() == NSAlertFirstButtonReturn)
+                {
+                    self.performSegueWithIdentifier("Download", sender:self)
+                    var userInfo = Dictionary<String, String>()
+                    userInfo["url"] = "https://www.obdev.at/downloads/crosspack/CrossPack-AVR-20131216.dmg"
+                    userInfo["path"] = NSHomeDirectory() + "/Downloads/CrossPack-AVR-20131216.dmg"
+                    NSNotificationCenter.defaultCenter().postNotificationName("startDownload", object:nil, userInfo:userInfo);
+                    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeATtinyDownload), name:"completeDownload", object: nil)
+                }
+            }else{
+                flashATtiny()
+            }
+        }
+    }
+    
     func checkOpenOCD()
     {
         if (!NSFileManager.defaultManager().fileExistsAtPath(NSHomeDirectory() + "/Documents/firmware"))
@@ -252,13 +302,13 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     func checkSchematics()
     {
         /*
-         metadataSearch = NSMetadataQuery()
-         metadataSearch.searchScopes = [NSMetadataQueryLocalComputerScope] //[NSMetadataQueryUserHomeScope]
-         let predicate = NSPredicate(format: "%K == 'base_board4.sch'", NSMetadataItemFSNameKey)
-         metadataSearch.predicate = predicate
-         metadataSearch.startQuery()
-         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.initalGatherComplete), name:NSMetadataQueryDidFinishGatheringNotification, object:metadataSearch)
-         */
+        metadataSearch = NSMetadataQuery()
+        metadataSearch.searchScopes = [NSMetadataQueryLocalComputerScope] //[NSMetadataQueryUserHomeScope]
+        let predicate = NSPredicate(format: "%K == 'base_board4.sch'", NSMetadataItemFSNameKey)
+        metadataSearch.predicate = predicate
+        metadataSearch.startQuery()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.initalGatherComplete), name:NSMetadataQueryDidFinishGatheringNotification, object:metadataSearch)
+        */
         
         if (!NSFileManager.defaultManager().fileExistsAtPath(NSHomeDirectory() + "/Documents/pcb/base_board4.sch"))
         {
@@ -389,6 +439,15 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         flashBootloader()
     }
     
+    func completeATtinyDownload(notification: NSNotification)
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        
+        launchInstaller("attiny")
+        
+        flashATtiny()
+    }
+    
     func completeGCCDownload(notification: NSNotification)
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -451,6 +510,11 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         NSNotificationCenter.defaultCenter().removeObserver(self)
         self.performSelectorInBackground(#selector(launchInstaller), withObject:"inkscape")
         //openInskcapeEncoder()
+    }
+    
+    func flashATtiny()
+    {
+        system("open -a Terminal \"" + NSBundle.mainBundle().pathForResource("attiny", ofType:nil)! + "\"")
     }
     
     func flashBootloader()
