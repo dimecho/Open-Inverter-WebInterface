@@ -1,11 +1,10 @@
 $(document).ready(function()
 {
-    $('#myModal').modal('hide');
-    
     buildTable("Main Board v4","bom/base_board4.csv");
     buildTable("Gate Driver v2","bom/gate_driver2.csv");
     buildTable("Sensor Board v3","bom/sensor_board3.csv");
     
+    $("[rel=tooltip]").tooltip();
 });
 
 function buildTable(title,csv)
@@ -54,7 +53,11 @@ function buildTable(title,csv)
 
                         if(value.length > 1)
                         {
-                            td2 = $("<td>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<img src='bom/img/" + value + ".png' />"});
+                            var img = value;
+                            if(split[0].indexOf("RN") !=-1)
+                                img = "RN_"+ value;
+                            
+                            td2 = $("<td>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<img src='bom/img/" + img+ ".png' />"});
                             td2.append(value.replace("u", "&#181;"))
                         }
                         else

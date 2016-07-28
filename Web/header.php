@@ -7,6 +7,7 @@
 <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css" />
 
 <script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/jquery.svginject.js"></script>
 <script type="text/javascript" src="js/bootstrap.js"></script>
 <script type="text/javascript" src="js/alertify.js"></script>
 <script type="text/javascript" src="js/menu.js"></script>

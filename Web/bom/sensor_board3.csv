@@ -7,8 +7,8 @@ C4,,100nF**,C-EU025-024X044,
 C5,,100nF**,C-EU025-024X044,
 C6,2,1µ*,C-EU025-024X044,
 C7,2,1µ*,C-EU025-024X044,
-IC1,32,,LM2902N,
-IC2,47,*,ATTINY13DIP,
+IC1,32,,LM2902N,http://www.ti.com/lit/ds/symlink/lm2902.pdf
+IC2,47,*,ATTINY13DIP,http://www.atmel.com/images/doc2535.pdf
 PWS1,48,*,ROE-0505S,
 OK1,49,*,PC817,
 R1,23,680k,R-EU_0207/10,
@@ -26,7 +26,6 @@ R14,28,4.7k 1%,R-EU_0207/10,
 R15,18,500R*,R-EU_0207/10,
 R16,18,500R*,R-EU_0207/10,
 R17,19,10k*,R-EU_0207/10,
-L1,13,10µH,L-EU,
 TMPHS,35,,PINHD-1X2,
-U$1,41,,L06P800S05,
-U$2,41,,L06P800S05,
+U$1,41,,L06P800S05,http://www.tamuracorp.com/clientuploads/pdfs/engineeringdocs/L06PXXXS05.pdf
+U$2,41,,L06P800S05,http://www.tamuracorp.com/clientuploads/pdfs/engineeringdocs/L06PXXXS05.pdf

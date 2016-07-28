@@ -12,10 +12,10 @@ $(document).ready(function()
               text: 'Slip Control',
               key: 27 /*keys.ESC*/ ,
               invokeOnClose: false, // <== closing won't invoke this
-              className: alertify.defaults.theme.ok,
+              className: alertify.defaults.theme.cancel,
             }],
             focus: {
-              element: 0,
+              //element: 0,
               select: false
             },
             options: {
@@ -32,7 +32,7 @@ $(document).ready(function()
     showErrors();
     checkGCC_ARM();
 
-    $("[rel=tooltip]").tooltip();
+    $('.svg-inject').svgInject();
 });
 
 function checkGCC_ARM()
@@ -230,8 +230,12 @@ function setDefaults()
 function buildHeader(json, name)
 {
     var i = 0;
+    var opStatus = $("#opStatus").empty();
+
     $.each(json, function()
     {
+        var div = $("<span>").width(32).height(32);
+
         if(name[i] == "version")
         {
             var version = $("#titleVersion").empty();
@@ -260,8 +264,47 @@ function buildHeader(json, name)
                 opmode.append("Running");
             }
         }
+        else if(name[i] == "udc")
+        {
+            if(this.value > 0){
+                div.append($("<img>", {class:"svg-inject iconic-strong", src:"img/battery.svg"}));
+            }else{
+                div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/battery.svg"}));
+            }
+            opStatus.append(div);
+        }
+        else if(name[i] == "tmpm")
+        {
+            if(this.value > 150){
+                div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/temperature.svg"}));
+            }else if(this.value > 100){
+                div.append($("<img>", {class:"svg-inject iconic-medium", src:"img/temperature.svg"}));
+            }
+            opStatus.append(div);
+        }
+        /*
+        else if(name[i] == "deadtime")
+        {
+            if(this.value < 30){
+                div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/magnet.svg", title:"deadtime"}));
+            }else if(this.value < 60){
+                div.append($("<img>", {class:"svg-inject iconic-medium", src:"img/magnet.svg"}));
+            }
+            opStatus.append(div);
+        }
+        */
+        else if(name[i] == "speed")
+        {
+            if(this.value > 6000){
+                div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/speedometer.svg"}));
+            }else if(this.value > 3500){
+                div.append($("<img>", {class:"svg-inject iconic-medium", src:"img/speedometer.svg"}));
+            }
+            opStatus.append(div);
+        }
         i++;
     });
+
 }
 
 function buildParameters(json)

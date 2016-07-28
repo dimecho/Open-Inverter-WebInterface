@@ -4,7 +4,9 @@
         <?php include "header.php" ?>
     </head>
     <body>
-        <?php include "menu.php" ?>
-        <img src="img/wiring.png" />
+        <div class="container">
+            <?php include "menu.php" ?>
+            <img src="img/wiring.png" />
+        </div>
     </body>
 </html>
