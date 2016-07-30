@@ -26,16 +26,16 @@
                         <tbody>
                             <td>
                                 <ul class="nav nav-tabs">
-                                  <li class="active"><a data-toggle="tab" href="#sectionGraphA">Motor Speed</a></li>
-                                  <li><a data-toggle="tab" href="#sectionGraphB">Temperature</a></li>
-                                  <li><a data-toggle="tab" href="#sectionGraphC">Slip Control</a></li>
+                                  <li class="active"><a data-toggle="tab" href="#graphA">Motor Speed</a></li>
+                                  <li><a data-toggle="tab" href="#graphB">Temperature</a></li>
+                                  <li><a data-toggle="tab" href="#graphC">Slip Control</a></li>
                                 </ul>
                                 <div class="tab-content">
-                                    <div id="sectionGraphA" class="tab-pane fade in active"> 
+                                    <div id="graphA" class="tab-pane fade in active"> 
                                     </div>
-                                    <div id="sectionGraphB" class="tab-pane fade"> 
+                                    <div id="graphB" class="tab-pane fade"> 
                                     </div>
-                                    <div id="sectionGraphC" class="tab-pane fade">
+                                    <div id="graphC" class="tab-pane fade">
                                     </div>
                                 </div>
                                 <canvas id="canvas"></canvas>  
@@ -50,8 +50,8 @@
                 <div class="span10">
                     <center>
                         <div class="btn-group">
-                            <button type="button" class="btn btn-success" onClick="updateChart();">Start Graph</button>
-                            <button type="button" class="btn btn-danger" onClick="clearTimeout(syncronized);">Stop Graph</button>
+                            <button type="button" class="btn btn-success" onClick="startChart();">Start Graph</button>
+                            <button type="button" class="btn btn-danger" onClick="stopChart();">Stop Graph</button>
                             <button type="button" class="btn btn-info">Speed
                                 <input
                                 id="speed"

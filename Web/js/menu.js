@@ -106,14 +106,23 @@ function saveChanges(span)
 
 function startInverterAlert()
 {
-    alertify.startInverterMode("Which mode will it be?",
-      function() {
-        startInverter(2);
-      },
-      function() {
-        startInverter(1);
-      }
-    );
+    var json = loadJSON(0);
+
+    if(json.potnom.value > 80)
+    {
+        alertify.alert("High RPM Warning","Adjust your Potentiometer down to zero before starting Inverter.", function(){
+            alertify.message('OK');
+        });
+    }else{
+        alertify.startInverterMode("Which mode will it be?",
+          function() {
+            startInverter(2);
+          },
+          function() {
+            startInverter(1);
+          }
+        );
+    }
 }
 
 function startInverter(mode)
@@ -188,7 +197,7 @@ function showErrors()
             var span = $("#titleStatus").empty();
             if(data.indexOf("error") != -1)
             {
-                var icon = $("<span>", { class:"tooltip-custom glyphicon glyphicon-qrcode", title:data});
+                var icon = $("<span>", { class:"tooltip", title:data});
                 span.append(icon);
             }
         }
@@ -227,84 +236,71 @@ function setDefaults()
     }, function(){});
 }
 
-function buildHeader(json, name)
+function buildHeader(json)
 {
-    var i = 0;
     var opStatus = $("#opStatus").empty();
+    var div = $("<span>").width(32).height(32);
 
-    $.each(json, function()
+    //========================
+    $("#titleVersion").empty().append("Inverter Console v" + json.version.value);
+    //========================
+    var opmode = $("#titleOperation").empty();
+    opmode.removeClass('label-success');
+    opmode.removeClass('label-warning');
+    opmode.removeClass('label-important');
+    opmode.addClass('label');
+    if(json.opmode.value === 0)
     {
-        var div = $("<span>").width(32).height(32);
-
-        if(name[i] == "version")
-        {
-            var version = $("#titleVersion").empty();
-            version.append("Inverter Console v" + this.value);
-        }
-        else if(name[i] == "opmode")
-        {
-            var opmode = $("#titleOperation").empty();
-            opmode.removeClass('label-success');
-            opmode.removeClass('label-warning');
-            opmode.removeClass('label-important');
-            opmode.addClass('label');
-            if(this.value == 0)
-            {
-                opmode.addClass('label-important');
-                opmode.append("Off");
-            }
-            else if(this.value == 1)
-            {
-                opmode.addClass('label-warning');
-                opmode.append("Debug");
-            }
-            else if(this.value == 2)
-            {
-                opmode.addClass('label-success');
-                opmode.append("Running");
-            }
-        }
-        else if(name[i] == "udc")
-        {
-            if(this.value > 0){
-                div.append($("<img>", {class:"svg-inject iconic-strong", src:"img/battery.svg"}));
-            }else{
-                div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/battery.svg"}));
-            }
-            opStatus.append(div);
-        }
-        else if(name[i] == "tmpm")
-        {
-            if(this.value > 150){
-                div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/temperature.svg"}));
-            }else if(this.value > 100){
-                div.append($("<img>", {class:"svg-inject iconic-medium", src:"img/temperature.svg"}));
-            }
-            opStatus.append(div);
-        }
-        /*
-        else if(name[i] == "deadtime")
-        {
-            if(this.value < 30){
-                div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/magnet.svg", title:"deadtime"}));
-            }else if(this.value < 60){
-                div.append($("<img>", {class:"svg-inject iconic-medium", src:"img/magnet.svg"}));
-            }
-            opStatus.append(div);
-        }
-        */
-        else if(name[i] == "speed")
-        {
-            if(this.value > 6000){
-                div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/speedometer.svg"}));
-            }else if(this.value > 3500){
-                div.append($("<img>", {class:"svg-inject iconic-medium", src:"img/speedometer.svg"}));
-            }
-            opStatus.append(div);
-        }
-        i++;
-    });
-
+        opmode.addClass('label-important');
+        opmode.append("Off");
+    }
+    else if(json.opmode.value === 1)
+    {
+        opmode.addClass('label-warning');
+        opmode.append("Debug");
+    }
+    else if(json.opmode.value === 2)
+    {
+        opmode.addClass('label-success');
+        opmode.append("Running");
+    }
+    //========================
+    /*
+    if(json.ocurlim.value > 0){
+        div.append($("<img>", {src:"img/amperage.svg"}));
+    }
+    opStatus.append(div);
+    */
+    //========================
+    if(json.udc.value > 0){
+        div.append($("<img>", {class:"svg-inject iconic-strong", src:"img/battery.svg"}));
+    }else{
+        div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/battery.svg"}));
+    }
+    opStatus.append(div);
+    //========================
+    if(json.tmpm.value > 150 || json.tmphs.value > 150){
+        div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/temperature.svg"}));
+    }else if(json.tmpm.value > 100 || json.tmphs.value > 100){
+        div.append($("<img>", {class:"svg-inject iconic-medium", src:"img/temperature.svg"}));
+    }
+    opStatus.append(div);
+    //========================
+    /*
+    if(json.deadtime.value < 30){
+        div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/magnet.svg", title:"deadtime"}));
+    }else if(this.value < 60){
+        div.append($("<img>", {class:"svg-inject iconic-medium", src:"img/magnet.svg"}));
+    }
+    opStatus.append(div);
+    */
+    //========================
+    if(json.speed.value > 6000){
+        div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/speedometer.svg"}));
+    }else if(json.speed.value > 3000){
+        div.append($("<img>", {class:"svg-inject iconic-medium", src:"img/speedometer.svg"}));
+    }
+    opStatus.append(div);
 }
 
 function buildParameters(json)
@@ -312,14 +308,14 @@ function buildParameters(json)
     //var length = 0;
     //for(var k in json) if(json.hasOwnProperty(k))    length++;
 
-    if(Object.keys(json).length > 0)
+    if(json) //if(Object.keys(json).length > 0)
     {
         var i = 0;
         var name = [];
         for(var k in json)
             name.push(k);
 
-        buildHeader(json, name);
+        buildHeader(json);
 
         var menu = $("#parameters").empty().show();
         if(menu)
