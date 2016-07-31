@@ -15,15 +15,74 @@ $(document).ready(function()
     })
 
     $("#speed").slider({
-        min: 20,
-        max: 400,
-        value: 80,
+        min: 100,
+        max: 2000,
+        value: 400,
         //scale: 'logarithmic',
-        step: 10
+        step: 100,
+        reversed : true
     });
 
     ctx = document.getElementById("canvas").getContext("2d");
     var count = 10;
+
+    startChart();
+    stopChart();
+});
+
+function startChart(init)
+{
+    //console.log(activeTab);
+    
+    stopChart();
+
+    if(activeTab === "#graphA")
+    {
+        initMotorChart();
+        updateChart(["speed"]);
+    }
+    else  if(activeTab === "#graphB")
+    {
+        initTemperatureChart();
+        updateChart(["tmpm","tmphs"]);
+    }
+    else  if(activeTab === "#graphC")
+    {
+        initBatteryChart();
+        updateChart(["udc"]);
+    }
+
+    if(chart)
+        chart.destroy();
+    
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: options
+    });
+}
+
+function initMotorChart()
+{
+    xaxis = [];
+     for (var i = 0; i < 200; i++) {
+            xaxis.push("");
+            //xaxis.push(i.toString());
+    }
+
+    data = {
+        labels : xaxis,
+        datasets: [
+        {
+            label: "Motor Speed",
+            backgroundColor: "rgba(255,99,132,0.2)",
+            borderColor: "rgba(255,99,132,1)",
+            borderWidth: 1,
+            hoverBackgroundColor: "rgba(255,99,132,0.4)",
+            hoverBorderColor: "rgba(255,99,132,1)",
+            data: [0]
+        }]
+    };
 
     options = {
         legend: {
@@ -64,6 +123,7 @@ $(document).ready(function()
                 },
                 ticks: {
                     reverse: false,
+                    stepSize: 500,
                     suggestedMin: 0, //important
                     suggestedMax: 5000 //important
                 }
@@ -92,54 +152,120 @@ $(document).ready(function()
             */
         }
     };
-
-    initMotorChart();
-    
-    chart = new Chart(ctx, {
-        type: 'line',
-        data: data,
-        options: options
-    });
-});
-
-function startChart()
-{
-    //console.log(activeTab);
-    
-    stopChart();
-
-    chart.destroy();
-   
-    if(activeTab === "#graphA")
-    {
-        initMotorChart();
-        updateChart("speed");
-    }
-    else  if(activeTab === "#graphB")
-    {
-        initTemperatureChart();
-        //updateChart("tmpm");
-        updateChart("tmphs");
-    }
-    
-    chart = new Chart(ctx, {
-        type: 'line',
-        data: data,
-        options: options
-    });
 }
 
-function initMotorChart()
+function initTemperatureChart()
 {
-     xaxis = [];
+    xaxis = [];
      for (var i = 0; i < 200; i++) {
             xaxis.push("");
             //xaxis.push(i.toString());
     }
+
     data = {
         labels : xaxis,
         datasets: [{
-            label: "Motor Speed",
+            label: "Motor",
+            backgroundColor: "rgba(51, 153, 255,0.2)",
+            borderColor: "rgba(255,99,132,1)",
+            borderWidth: 1,
+            hoverBackgroundColor: "rgba(51, 153, 255,0.4)",
+            hoverBorderColor: "rgba(255,99,132,1)",
+            data: [0]
+        },{
+            label: "Inverter",
+            backgroundColor: "rgba(102, 255, 51,0.2)",
+            borderColor: "rgba(255,99,132,1)",
+            borderWidth: 1,
+            hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
+            hoverBorderColor: "rgba(255,99,132,1)",
+            data: [0]
+        }]
+    };
+
+    options = {
+        legend: {
+            display: false,
+            labels: {
+                fontColor: 'rgb(255, 99, 132)'
+            }
+        },
+        elements: {
+            point:{
+                radius: 1
+            }
+        },
+        tooltips:{
+            enabled: false
+        },
+        responsive: true,
+        //maintainAspectRatio: false,
+        scales: {
+            xAxes: [{
+                display: false,
+                position: 'bottom',
+                
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Time'
+                },
+                ticks: {
+                    maxRotation: 0,
+                    reverse: false
+                }
+            }],
+            yAxes: [{
+                position: 'left',
+                scaleLabel: {
+                    display: true,
+                    labelString: '°C'
+                },
+                ticks: {
+                    reverse: false,
+                    stepSize: 10,
+                    suggestedMin: 0, //important
+                    suggestedMax: 110 //important
+                }
+            }]
+        },
+        pan: {
+            enabled: true,
+            mode: 'xy'
+        },
+        zoom: {
+            enabled: true,
+            mode: 'xy',
+            limits: {
+                max: 100,
+                min: 0.5
+            }
+        },
+        animation: {
+            duration: 0,
+            /*
+            onComplete: function(animation) {
+                //updateChart();
+            },
+            onProgress: function () {
+            }
+            */
+        }
+    };
+}
+
+function initBatteryChart()
+{
+    xaxis = [];
+     for (var i = 0; i < 200; i++) {
+            xaxis.push("");
+            //xaxis.push(i.toString());
+    }
+
+    data = {
+        labels : xaxis,
+        datasets: [
+        {
+            label: "Voltage",
             backgroundColor: "rgba(255,99,132,0.2)",
             borderColor: "rgba(255,99,132,1)",
             borderWidth: 1,
@@ -148,26 +274,74 @@ function initMotorChart()
             data: [0]
         }]
     };
-}
 
-function initTemperatureChart()
-{
-     xaxis = [];
-     for (var i = 0; i < 200; i++) {
-            xaxis.push("");
-            //xaxis.push(i.toString());
-    }
-    data = {
-        labels : xaxis,
-        datasets: [{
-            label: "Motor Speed",
-            backgroundColor: "rgba(255,99,132,0.2)",
-            borderColor: "rgba(255,99,132,1)",
-            borderWidth: 1,
-            hoverBackgroundColor: "rgba(255,99,132,0.4)",
-            hoverBorderColor: "rgba(255,99,132,1)",
-            data: [0]
-        }]
+    options = {
+        legend: {
+            display: false,
+            labels: {
+                fontColor: 'rgb(255, 99, 132)'
+            }
+        },
+        elements: {
+            point:{
+                radius: 1
+            }
+        },
+        tooltips:{
+            enabled: false
+        },
+        responsive: true,
+        //maintainAspectRatio: false,
+        scales: {
+            xAxes: [{
+                display: false,
+                position: 'bottom',
+                
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Time'
+                },
+                ticks: {
+                    maxRotation: 0,
+                    reverse: false
+                }
+            }],
+            yAxes: [{
+                position: 'left',
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Voltage'
+                },
+                ticks: {
+                    reverse: false,
+                    stepSize: 50,
+                    suggestedMin: 0, //important
+                    suggestedMax: 400 //important
+                }
+            }]
+        },
+        pan: {
+            enabled: true,
+            mode: 'xy'
+        },
+        zoom: {
+            enabled: true,
+            mode: 'xy',
+            limits: {
+                max: 100,
+                min: 0.5
+            }
+        },
+        animation: {
+            duration: 0,
+            /*
+            onComplete: function(animation) {
+                //updateChart();
+            },
+            onProgress: function () {
+            }
+            */
+        }
     };
 }
 
@@ -183,19 +357,23 @@ function updateChart(value)
 
     syncronized = setTimeout( function ()
     {
-        try {
-            //data.datasets[0].data.push(getRandom(300,4000));
-            //console.log(getGraphValue(value));
+        for (var i = 0; i < value.length; i++) {
+            try {
+                var point = getJSONFloatValue(value[i]);
+                //var point = getRandom(1.0,80.0);
+                //console.log(point);
 
-            data.datasets[0].data.push(getGraphValue(value));
-           
-            if(data.datasets[0].data.length > xaxis.length)
-                data.datasets[0].data = [];
-                //data.datasets[0].data.shift();
-            chart.update();
+                data.datasets[i].data.push(point);
+                
+                if(data.datasets[i].data.length > xaxis.length)
+                    data.datasets[i].data = [];
+                    //data.datasets[0].data.shift();
 
-        } catch (e) {
-            console.log(e);
+                chart.update();
+
+            } catch (e) {
+                console.log(e);
+            }
         }
 
         updateChart(value);
@@ -203,23 +381,6 @@ function updateChart(value)
     },delay);
 }
 
-function getGraphValue(value) {
-
-    $.ajax("serial.php?i=" + value,{
-    //$.ajax("test/speed.data",{
-        async: false,
-        beforeSend: function (req) {
-          req.overrideMimeType('text/plain; charset=x-user-defined');
-        },
-        success: function(data)
-        {
-            //console.log(data);
-            return parseInt(data.replace("get " + value + "\n",""));
-        }
-    });
-    return 0;
-}
-
 function getRandom(min, max) {
-    return Math.random() * (max - min) + min;
+    return (Math.random() * (max - min) + min).toFixed(1);
 }

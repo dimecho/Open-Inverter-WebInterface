@@ -20,19 +20,20 @@ if( $_GET["save"]){
 
     $serial->sendMessage("stop\n");
     $read = $serial->readPort();
+    
 }else if( $_GET["pk"] && $_GET["name"] && $_GET["value"]){
     
     $serial->sendMessage("set " . $_GET["name"] . " " . $_GET["value"] . "\n");
     $read = $serial->readPort();
 
-}else if( $_GET["errors"]){
-
-    $serial->sendMessage("errors\n");
-    $read = $serial->readPort();
-
 }else if( $_GET["default"]){
 
     $serial->sendMessage("defaults\n");
+    $read = $serial->readPort();
+
+}else if( $_GET["errors"]){
+
+    $serial->sendMessage("errors\n");
     $read = $serial->readPort();
 
 }else{

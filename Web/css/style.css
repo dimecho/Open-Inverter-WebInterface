@@ -3,3 +3,19 @@ body {
   background-attachment: fixed;
   background-image:url(../img/background.jpg);
 }
+
+.svg-inject{
+  width:22px;
+  height:22px;
+  margin: 3px auto;
+  padding: 5px;
+}
+.svg-green * {
+    fill:#569e26;
+}
+.svg-yellow * {
+    fill:#efc411;
+}
+.svg-red * {
+    fill:#b52808;
+}

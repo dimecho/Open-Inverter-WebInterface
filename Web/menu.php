@@ -1,27 +1,9 @@
-<style>
-svg {
-  width:22px;
-  height:22px;
-}
-.svg-inject.iconic-strong * {
-    fill:#569e26;
-    stroke:#569e26;
-}
-.svg-inject.iconic-medium * {
-    fill:#efc411;
-    stroke:#efc411;
-}
-.svg-inject.iconic-weak * {
-    fill:#b52808;
-    stroke:#b52808;
-}
-</style>
 <div class="row">
     <div class="span1"></div>
     <div class="span10">
         <div class="navbar navbar-static" >
             <div class="navbar-inner">
-                <div class="container center">
+                <div class="container">
                     <ul class="nav" role="navigation">
                     <li class="dropdown">
                         <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>Menu</b><b class="caret"></b></a>
@@ -63,7 +45,7 @@ svg {
                     <li>
                         <h3 class="label" id="titleVersion"></h3>&nbsp;&nbsp;<span id="titleOperation"></span>&nbsp;&nbsp;<span id="titleStatus"></span>
                     </li>
-                    <li id="opStatus" style="margin:8px;"></li>
+                    <li id="opStatus"></li>
                     </ul>
                 </div>
             </div>

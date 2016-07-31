@@ -26,9 +26,9 @@
                         <tbody>
                             <td>
                                 <ul class="nav nav-tabs">
-                                  <li class="active"><a data-toggle="tab" href="#graphA">Motor Speed</a></li>
+                                  <li class="active"><a data-toggle="tab" href="#graphA">Motor</a></li>
                                   <li><a data-toggle="tab" href="#graphB">Temperature</a></li>
-                                  <li><a data-toggle="tab" href="#graphC">Slip Control</a></li>
+                                  <li><a data-toggle="tab" href="#graphC">Battery</a></li>
                                 </ul>
                                 <div class="tab-content">
                                     <div id="graphA" class="tab-pane fade in active"> 

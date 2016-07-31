@@ -29,10 +29,7 @@ $(document).ready(function()
     }, false, 'confirm');
 
     buildParameters(loadJSON(0));
-    showErrors();
     checkGCC_ARM();
-
-    $('.svg-inject').svgInject();
 });
 
 function checkGCC_ARM()
@@ -84,6 +81,42 @@ function loadJSON(i)
     return json;
 }
 
+function getJSONFloatValue(value) {
+    var float = 0;
+
+    $.ajax("serial.php?i=" + value,{
+    //$.ajax("test/" + value + ".data",{
+        async: false,
+        beforeSend: function (req) {
+          req.overrideMimeType('text/plain; charset=x-user-defined');
+        },
+        success: function(data)
+        {
+            float = parseFloat(data.replace("get " + value + "\n",""));
+        }
+    });
+    return float;
+}
+
+function getErrors()
+{
+   var value = "";
+
+    $.ajax("serial.php?errors=1",{
+    //$.ajax("test/errors.data",{
+        async: false,
+        beforeSend: function (req) {
+          req.overrideMimeType('text/plain; charset=x-user-defined');
+        },
+        success: function(data)
+        {
+            console.log(data);
+            value = data.replace("errors\n","");
+        }
+    });
+    return value;
+}
+
 function saveChanges(span)
 {
     $.ajax("serial.php?save=1",{
@@ -106,9 +139,7 @@ function saveChanges(span)
 
 function startInverterAlert()
 {
-    var json = loadJSON(0);
-
-    if(json.potnom.value > 80)
+    if(getJSONFloatValue("potnom") > 20)
     {
         alertify.alert("High RPM Warning","Adjust your Potentiometer down to zero before starting Inverter.", function(){
             alertify.message('OK');
@@ -146,11 +177,12 @@ function startInverter(mode)
                 span.addClass('label-important');
                 span.text('error');
             }
-            buildMenu(loadJSON(0));
-
+            
             setTimeout( function ()
             {
                 span.hide();
+                location.reload(); 
+                //buildParameters(loadJSON(0));
             },1200);
         }
     });
@@ -177,29 +209,13 @@ function stopInverter()
                 span.addClass('label-important');
                 span.text('error');
             }
-            buildMenu(loadJSON(0));
 
             setTimeout( function ()
             {
                 span.hide();
+                location.reload();
+                //buildParameters(loadJSON(0));
             },1200);
-        }
-    });
-}
-
-function showErrors()
-{
-    $.ajax("serial.php?errors=1",{
-        success: function(data)
-        {
-            //console.log(data);
-
-            var span = $("#titleStatus").empty();
-            if(data.indexOf("error") != -1)
-            {
-                var icon = $("<span>", { class:"tooltip", title:data});
-                span.append(icon);
-            }
         }
     });
 }
@@ -231,6 +247,13 @@ function setDefaults()
                     span.addClass('label-important');
                     span.text('error');
                 }
+
+                setTimeout( function ()
+                {
+                    span.hide();
+                    location.reload();
+                    //buildParameters(loadJSON(0));
+                },1200);
             }
         });
     }, function(){});
@@ -239,31 +262,38 @@ function setDefaults()
 function buildHeader(json)
 {
     var opStatus = $("#opStatus").empty();
-    var div = $("<span>").width(32).height(32);
+    var div = $("<div>").height(32);
+    var span = $("<span>");
+    var img = $("<img>");
 
     //========================
     $("#titleVersion").empty().append("Inverter Console v" + json.version.value);
     //========================
-    var opmode = $("#titleOperation").empty();
-    opmode.removeClass('label-success');
-    opmode.removeClass('label-warning');
-    opmode.removeClass('label-important');
-    opmode.addClass('label');
+    span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true"});
+    img = $("<img>", {class:"svg-inject", src:"img/key.svg"});
     if(json.opmode.value === 0)
     {
-        opmode.addClass('label-important');
-        opmode.append("Off");
+        span.attr("data-title","<h6>OFF</h6>");
+        img.addClass("svg-red");
     }
-    else if(json.opmode.value === 1)
+    else if(json.opmode.value === 1 && json.din_emcystop.value === 1)
     {
-        opmode.addClass('label-warning');
-        opmode.append("Debug");
+        if(json.din_start.value === 1)
+        {
+            img.addClass("svg-yellow");
+            span.attr("data-title","<h6>Pulse Only - Do not leave ON</h6>");
+        }else{
+            span.attr("data-title","<h6>Running</h6>");
+            img.addClass("svg-green");
+        }
     }
     else if(json.opmode.value === 2)
     {
-        opmode.addClass('label-success');
-        opmode.append("Running");
+        span.attr("data-title","<h6>Debug Mode</h6>");
+        img.addClass("svg-green");
     }
+    span.append(img);
+    div.append(span);
     //========================
     /*
     if(json.ocurlim.value > 0){
@@ -272,35 +302,61 @@ function buildHeader(json)
     opStatus.append(div);
     */
     //========================
-    if(json.udc.value > 0){
-        div.append($("<img>", {class:"svg-inject iconic-strong", src:"img/battery.svg"}));
+    span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>" + json.udc.value+ "</h6>"});
+    img = $("<img>", {class:"svg-inject", src:"img/battery.svg"});
+    if(json.udc.value > json.udcmin.value){
+        img.addClass("svg-green");
     }else{
-        div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/battery.svg"}));
+        img.addClass("svg-red");
     }
-    opStatus.append(div);
+    span.append(img);
+    div.append(span);
     //========================
+    span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>" + json.tmpm.value + "</h6>"});
+    img = $("<img>", {class:"svg-inject", src:"img/temperature.svg"})
     if(json.tmpm.value > 150 || json.tmphs.value > 150){
-        div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/temperature.svg"}));
+        img.addClass("svg-red");
+        span.append(img);
+        div.append(span);
     }else if(json.tmpm.value > 100 || json.tmphs.value > 100){
-        div.append($("<img>", {class:"svg-inject iconic-medium", src:"img/temperature.svg"}));
+        img.addClass("svg-yellow");
+        span.append(img);
+        div.append(span);
     }
-    opStatus.append(div);
     //========================
     /*
     if(json.deadtime.value < 30){
-        div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/magnet.svg", title:"deadtime"}));
+        div.append($("<img>", {class:"svg-inject svg-red", src:"img/magnet.svg", title:"deadtime"}));
     }else if(this.value < 60){
-        div.append($("<img>", {class:"svg-inject iconic-medium", src:"img/magnet.svg"}));
+        div.append($("<img>", {class:"svg-inject svg-yellow", src:"img/magnet.svg"}));
     }
     opStatus.append(div);
     */
     //========================
+    span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>" + json.speed.value + "</h6>"});
+    img = $("<img>", {class:"svg-inject", src:"img/speedometer.svg"});
     if(json.speed.value > 6000){
-        div.append($("<img>", {class:"svg-inject iconic-weak", src:"img/speedometer.svg"}));
+        img.addClass("svg-red");
+        span.append(img);
+        div.append(span);
     }else if(json.speed.value > 3000){
-        div.append($("<img>", {class:"svg-inject iconic-medium", src:"img/speedometer.svg"}));
+        img.addClass("svg-yellow");
+        span.append(img);
+        div.append(span);
     }
+    //========================
+    var errors = getErrors();
+    if(errors.length > 1)
+    {
+        span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>" + errors + "</h6>"});
+        span.append($("<img>", {class:"svg-inject", src:"img/amperage.svg"}));
+        div.append(span);
+    }
+    
     opStatus.append(div);
+
+    var SVGInject = document.querySelectorAll('img.svg-inject');
+    SVGInjector(SVGInject);
 }
 
 function buildParameters(json)

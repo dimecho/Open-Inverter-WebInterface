@@ -38,11 +38,13 @@ $(document).ready(function()
                 {
                     return 'Should be below maximum voltage (udcmax)';
                 }
+            /*
             }else  if(this.id == 'ocurlim'){
                 if($.trim(value) > 0)
                 {
                     return 'Current limit should be set as negative';
                 }
+                */
             }
         },
         success: function(response, newValue) {
