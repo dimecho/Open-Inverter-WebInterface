@@ -289,7 +289,7 @@ function buildHeader(json)
     }
     else if(json.opmode.value === 2)
     {
-        span.attr("data-title","<h6>Debug Mode</h6>");
+        span.attr("data-title","<h6>Manual Mode</h6>");
         img.addClass("svg-green");
     }
     span.append(img);
@@ -345,11 +345,18 @@ function buildHeader(json)
         div.append(span);
     }
     //========================
+    if(json.din_mprot.value != 1)
+    {
+        span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>Probably forgot PIN 11 to 12V</h6>"});
+        span.append($("<img>", {class:"svg-inject", src:"img/alert.svg"}));
+        div.append(span);
+    }
+    //========================
     var errors = getErrors();
-    if(errors.length > 1)
+    if(errors.indexOf("Unknown command") == -1 && errors.indexOf("No Errors") == -1)
     {
         span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>" + errors + "</h6>"});
-        span.append($("<img>", {class:"svg-inject", src:"img/amperage.svg"}));
+        span.append($("<img>", {class:"svg-inject", src:"img/alert.svg"}));
         div.append(span);
     }
     
@@ -418,7 +425,7 @@ function buildParameters(json)
             menu.append(thead);
             $.each(json, function()
             {
-                console.log(this)
+                //console.log(this)
 
                 var tooltip = "";
                 var x = parameters.indexOf(name[i]);
@@ -429,7 +436,7 @@ function buildParameters(json)
                 var tr = $("<tr>");
                 var td1 = $("<td>", { rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h5>" + tooltip + "</h5>"}).append(name[i]);
                 var td2 = $("<td>").append(a);
-                var td3 = $("<td>").append(this.unit);
+                var td3 = $("<td>").append(this.unit.replace("","°"));
        
                 tbody.append(tr.append(td1).append(td2).append(td3));
                 

@@ -10,6 +10,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
 {
     //@IBOutlet weak var webView: WebView!
     var ip = "localhost"
+    var port = "8080";
     var webView: WKWebView!
     var serial:CInt = -1
     var serialPath = String()
@@ -68,49 +69,49 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         let url:NSURL = navigationAction.request.URL!
         //print(url)
         
-        if (url == NSURL(string:"http://" + ip + ":8080/encoder.php"))
+        if (url == NSURL(string:"http://" + ip + ":" + port + "/encoder.php"))
         {
             checkInkscape()
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
-        else if (url == NSURL(string:"http://" + ip + ":8080/upload.php"))
+        else if (url == NSURL(string:"http://" + ip + ":" + port + "/upload.php"))
         {
             uploadSnapshot();
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
-        else if (url == NSURL(string:"http://" + ip + ":8080/bootloader.php"))
+        else if (url == NSURL(string:"http://" + ip + ":" + port + "/bootloader.php"))
         {
             checkOpenOCD()
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
-        else if (url == NSURL(string:"http://" + ip + ":8080/attiny.php"))
+        else if (url == NSURL(string:"http://" + ip + ":" + port + "/attiny.php"))
         {
             checkATtiny()
             decisionHandler(WKNavigationActionPolicy.Cancel)
 
         }
-        else if (url == NSURL(string:"http://" + ip + ":8080/firmware.php"))
+        else if (url == NSURL(string:"http://" + ip + ":" + port + "/firmware.php"))
         {
             flashFirmware()
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
-        else if (url == NSURL(string:"http://" + ip + ":8080/compile.php"))
+        else if (url == NSURL(string:"http://" + ip + ":" + port + "/compile.php"))
         {
             checkSource()
             decisionHandler(WKNavigationActionPolicy.Cancel)
             
         }
-        else if (url == NSURL(string:"http://" + ip + ":8080/gcc_remove.php"))
+        else if (url == NSURL(string:"http://" + ip + ":" + port + "/gcc_remove.php"))
         {
             removeGCCARM()
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
-        else if (url == NSURL(string:"http://" + ip + ":8080/schematics.php"))
+        else if (url == NSURL(string:"http://" + ip + ":" + port + "/schematics.php"))
         {
             checkEagle()
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
-        else if (url == NSURL(string:"http://" + ip + ":8080/download.php"))
+        else if (url == NSURL(string:"http://" + ip + ":" + port + "/download.php"))
         {
             //navigationAction.request.URL!.host
             //navigationAction.request.URL!.pathComponents
@@ -185,7 +186,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             
             removeGCCAVR()
 
-            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/index.php")!))
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + port + "/index.php")!))
         }
     }
     
@@ -411,7 +412,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
         
-        self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/eagle.html")!))
+        self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + port + "/driver/eagle.html")!))
         sleep(4)
         
         var output:String?
@@ -420,11 +421,11 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         let success: Bool = runProcessAsAdministrator(installer, output:&output, errorDescription:&processErrorDescription)
         if (!success)
         {
-            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/eagleError.html")!))
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + port + "/driver/eagleError.html")!))
         }
         else
         {
-            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/eagleSuccess.html")!))
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + port + "/driver/eagleSuccess.html")!))
             
             checkSchematics()
         }
@@ -480,7 +481,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
         
-        self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartz.html")!))
+        self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + port + "/driver/xquartz.html")!))
         sleep(2)
         
         let task = NSTask()
@@ -495,11 +496,11 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         let success: Bool = runProcessAsAdministrator(installer, output:&output, errorDescription:&processErrorDescription)
         if (!success)
         {
-            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartzError.html")!))
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + port + "/driver/xquartzError.html")!))
         }
         else
         {
-            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/xquartzSuccess.html")!))
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + port + "/driver/xquartzSuccess.html")!))
 
             openInskcapeEncoder()
         }
@@ -540,6 +541,8 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         }
         */
         system("open -a Terminal \"" + NSBundle.mainBundle().pathForResource("openocd", ofType:nil)! + "\"")
+        
+        NSTimer.scheduledTimerWithTimeInterval(4.0, target: self, selector: #selector(webViewRefresh), userInfo: nil, repeats: false)
     }
     
     func flashFirmware()
@@ -561,6 +564,8 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             {
                 //system("open -b com.apple.terminal --args \"" + NSBundle.mainBundle().pathForResource("updater", ofType:nil)! + "\" \"" + panel.URL!.path! + "\" " + serialPath)
                 system("echo '\"" + NSBundle.mainBundle().pathForResource("updater", ofType:nil)! + "\" \"" + panel.URL!.path! + "\" " + serialPath + "' > /tmp/updater.sh; chmod +x /tmp/updater.sh; open -a Terminal /tmp/updater.sh") //; rm /tmp/updater.sh
+                
+                NSTimer.scheduledTimerWithTimeInterval(4.0, target: self, selector: #selector(webViewRefresh), userInfo: nil, repeats: false)
             }else{
                 let alert = NSAlert()
                 alert.alertStyle = NSAlertStyle.WarningAlertStyle
@@ -605,13 +610,17 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         }
     }
     
+    func webViewRefresh() {
+        webView.reload();
+    }
+    
     func startSerial()
     {
         openSerial()
         
         sleep(2)
         dispatch_async(dispatch_get_main_queue()) {
-            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/index.php")!))
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + self.port + "/index.php")!))
         }
     }
     
@@ -671,7 +680,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         if (!fileManager.fileExistsAtPath(phpPath) || !fileManager.fileExistsAtPath("/usr/local/lib/php/extensions/dio.so"))
         {
             dispatch_async(dispatch_get_main_queue()) {
-                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/php.html")!))
+                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + self.port + "/driver/php.html")!))
             }
             var output:String?
             var processErrorDescription:String?
@@ -680,7 +689,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             if (!success)
             {
                 dispatch_async(dispatch_get_main_queue()) {
-                    self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/phpError.html")!))
+                    self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + self.port + "/driver/phpError.html")!))
                 }
             }
             else
@@ -694,9 +703,11 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             
             //TODO: check config.inc.php and correct serial /dev/cu.*
             
+            system("pkill -9 php");
+            
             let task = NSTask()
             task.launchPath = "/usr/bin/php"
-            task.arguments = ["-S", "127.0.0.1:8080", "-t", NSBundle.mainBundle().resourcePath! + "/Web/"]
+            task.arguments = ["-S", "127.0.0.1:" + port, "-t", NSBundle.mainBundle().resourcePath! + "/Web/" ,"-c", "/usr/local/etc/php.ini"]
             task.launch()
         }
     }
@@ -710,7 +721,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         {
             sleep(1)
             dispatch_async(dispatch_get_main_queue()) {
-                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/loading.html")!))
+                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + self.port + "/driver/loading.html")!))
             }
             
             var output:String?
@@ -720,13 +731,13 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             if (!success)
             {
                 dispatch_async(dispatch_get_main_queue()) {
-                    self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/error.html")!))
+                    self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + self.port + "/driver/error.html")!))
                 }
             }
             else
             {
                 dispatch_async(dispatch_get_main_queue()) {
-                    self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/success.html")!))
+                    self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + self.port + "/driver/success.html")!))
                 }
                 sleep(2)
             }
@@ -739,7 +750,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     {
         sleep(1)
         dispatch_async(dispatch_get_main_queue()) {
-            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/connect.html")!))
+            self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + self.port + "/driver/connect.html")!))
         }
         
         var found = false
@@ -753,10 +764,13 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             for i in 0...(serialPathArray.count-1)
             {
                 print(serialPathArray[i])
-                if (serialPathArray[i].rangeOfString("usbserial") != nil)
+                
+                if (serialPathArray[i].uppercaseString.rangeOfString("USB") != nil)
                 {
+                    //NSBundle.mainBundle().pathForResource("Web/config.inc", ofType:"php")!
+                    
                     dispatch_async(dispatch_get_main_queue()) {
-                        self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":8080/driver/receive.html")!))
+                        self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + self.port + "/driver/receive.html")!))
                     }
                     serialPath = serialPathArray[i]
                     startSerial()
@@ -789,7 +803,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         {
             let data = NSData(contentsOfFile:panel.URL!.path!)
             
-            let request = NSMutableURLRequest(URL: NSURL(string:"http://" + self.ip + ":8080/upload.php")!)
+            let request = NSMutableURLRequest(URL: NSURL(string:"http://" + self.ip + ":" + self.port + "/upload.php")!)
             request.HTTPMethod = "POST"
             request.setValue("Keep-Alive", forHTTPHeaderField: "Connection")
             

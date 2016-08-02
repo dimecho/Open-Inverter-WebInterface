@@ -28,18 +28,11 @@
             <div class="row">
                 <div class="span1"></div>
                 <div class="span10">
-                    <div class="list-group">
-                        <button type="button" class="list-group-item">Motor</button>
-                        <table class="table table-bordered" style="background-color:#e6e6e6;" id="parameters_Motor">
-                            <thead></thead>
-                            <tbody></tbody>
-                        </table>
-                        <button type="button" class="list-group-item">Battery</button>
-                        <table class="table table-bordered" style="background-color:#e6e6e6;" id="parameters_Battery">
-                            <thead></thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
+                        <table class="table table-bordered" style="background-color:#e6e6e6;"><thead><tr><td><h4>Motor</h4></td></tr></thead></table>
+                        <table class="table table-bordered" style="background-color:#e6e6e6;" id="parameters_Motor"></table>
+                        <table class="table table-bordered" style="background-color:#e6e6e6;"><tbody><tr><td><h4>Battery</h4></td></tr></tbody></table>
+                        <table class="table table-bordered" style="background-color:#e6e6e6;" id="parameters_Battery"></table>
+                    
                 </div>
                 <div class="span1"></div>
             </div>

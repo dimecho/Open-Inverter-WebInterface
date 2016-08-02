@@ -34,6 +34,20 @@ $(document).ready(function()
         //value: 55
     });
 
+    $("#ocurlim").slider({
+        step: 100,
+        min: 0,
+        max: 1000,
+        //value: 10
+    });
+
+    $("#freq").slider({
+        step: 10,
+        min: 20,
+        max: 120,
+        //value: 10
+    });
+
     $("#fmax").slider({
         step: 100,
         min: 100,
@@ -56,7 +70,7 @@ $(document).ready(function()
         enabled: false,
         //value: -100,
     });
-    
+
     $("#idlespeed-enabled").click(function() {
         if(this.checked) {
             $("#idlespeed").slider("enable");
@@ -79,114 +93,125 @@ $(document).ready(function()
         }
     });
     
-    $("#ampmin").mouseup(function(){
-    
+    /*
+    $(".slider").on('slideStop', function(e) {
+        //console.log(e);
+        console.log(e.target.nextSibling.id + ":" + e.value);
     });
+    */
+
+    $("#udc").on('slideStop', function(e) {
+        //console.log(e.value);
+     
+        if (e.value[1] < 55)
+        {
+            //set fmin 0.5
+
+            //set boost 10000
+        }
+
+        calculateCurve(e.value);   //calculate fweak
+    });
+
+    $("#freq").on('slideStop', function(e) {
+        //console.log(e.value);
+        
+        //calculateCurve(e.value);   //calculate fweak
+    });
+
+
+    $("#ocurlim").on('slideStop', function(e) {
+        var ocurlim = 0 - e.value;
+        console.log(ocurlim);
+    });
+
+
     //var delay =  speed.slider('getValue');
 });
 
+function calculateCurve(value)
+{
+    var fweak = $("#freq")[0].value * (value[1]/1.41)/value[0];
+    console.log(fweak);
+}
+
 function buildSimpleParameters(json)
 {
-    var i = 0;
-    var name = [];
-    for(var k in json)
-        name.push(k);
-    //======================
-
     var motor = $("#parameters_Motor").empty().show();
     var battery = $("#parameters_Battery").empty().show();
     var tbody = $("<tbody>");
-    var tr;
     var td1;
     var td2;
     var input;
-    var udcmin = -1;
-    var udcmax = -1;
-    var brknompedal = -1;
 
-    $.each(json, function()
-    {
-        console.log(this)
+    //=======================
+    input = $("<input>", {id:"polepairs", type:"text", "data-provide":"slider", "data-slider-value":json.polepairs.value*2 });
+    tr = $("<tr>");
+    td1 = $("<td>").append("Poles");
+    td2 = $("<td>").append(input);
+    tbody.append(tr.append(td1).append(td2));
 
-        tr = $("<tr>");
+    input = $("<input>", {id:"fmax", type:"text", "data-provide":"slider", "data-slider-value":json.fmax.value*30});
+    tr = $("<tr>");
+    td1 = $("<td>").append("Speed (RPM)");
+    td2 = $("<td>").append(input);
+    tbody.append(tr.append(td1).append(td2));
 
-        if(name[i] == "polepairs")
-        {
-            input = $("<input>", {id:name[i], type:"text", "data-provide":"slider", "data-slider-value":this.value*2 });
-            td1 = $("<td>").append("Poles");
-            td2 = $("<td>").append(input);
-            tbody.append(tr.append(td1).append(td2));
-        }
-        else if(name[i] == "boost")
-        {
-            input = $("<input>", {id:name[i], type:"text", "data-provide":"slider", "data-slider-value":this.value/350});
-            td1 = $("<td>").append("Resistance (&#8486;)");
-            td2 = $("<td>").append(input);
-            tbody.append(tr.append(td1).append(td2));
-        }
-        else if(name[i] == "fmax")
-        {
-            input = $("<input>", {id:name[i], type:"text", "data-provide":"slider", "data-slider-value":this.value*30});
-            td1 = $("<td>").append("Speed (RPM)");
-            td2 = $("<td>").append(input);
-            tbody.append(tr.append(td1).append(td2));
-        }
-        else if(name[i] == "idlespeed")
-        {
-            input = $("<input>", {id:name[i], type:"text", "data-provide":"slider", "data-slider-value":100});
-            var e = $("<input>", {id:name[i]+"-enabled", type:"checkbox"});
-            td1 = $("<td>").append("Idle (RPM)");
-            td2 = $("<td>").append(input).append(e);
-            tbody.append(tr.append(td1).append(td2));
-        }
-        else if(name[i] == "ampmin")
-        {
-            input = $("<input>", {id:name[i], type:"text", "data-provide":"slider", "data-slider-value":10});
-            td1 = $("<td>").append("Torque (%)");
-            td2 = $("<td>").append(input);
-            tbody.append(tr.append(td1).append(td2));
-        }
-        else if(name[i] == "brknompedal")
-        {
-            brknompedal = this.value;
-        }
-        else if(name[i] == "udcmin")
-        {
-            udcmin = this.value;
-        }
-        else if(name[i] == "udcmax")
-        {
-            udcmax = this.value;
-        }
-        i++;
-    });
+    input = $("<input>", {id:"idlespeed", type:"text", "data-provide":"slider", "data-slider-value":100});
+    var e = $("<input>", {id:"idlespeed-enabled", type:"checkbox"});
+    tr = $("<tr>");
+    td1 = $("<td>").append("Idle (RPM)");
+    td2 = $("<td>").append(input).append(e);
+    tbody.append(tr.append(td1).append(td2));
+
+    var v = json.fweak.value/((json.udcmax.value / 1.41)/json.udcmax.value);
+    input = $("<input>", {id:"freq", type:"text", "data-provide":"slider", "data-slider-value":v});
+    tr = $("<tr>");
+    td1 = $("<td>").append("Frequency (Hz)");
+    td2 = $("<td>").append(input);
+    tbody.append(tr.append(td1).append(td2));
+    
+    input = $("<input>", {id:"ampmin", type:"text", "data-provide":"slider", "data-slider-value":json.ampmin.value});
+    tr = $("<tr>");
+    td1 = $("<td>").append("Torque (%)");
+    td2 = $("<td>").append(input);
+    tbody.append(tr.append(td1).append(td2));
+
     motor.append(tbody);
+    //=======================
 
     tbody = $("<tbody>");
+    input = $("<input>", {id:"udc", type:"text", "data-provide":"slider", "data-slider-value":"[" + json.udcmin.value + "," + json.udcmax.value + "]"});
+    tr = $("<tr>");
+    td1 = $("<td>").append("Voltage (V)");
+    td2 = $("<td>").append(input);
+    tbody.append(tr.append(td1).append(td2));
 
-    if(udcmin != -1 && udcmax != -1)
-    {
-        input = $("<input>", {id:"udc", type:"text", "data-provide":"slider", "data-slider-value":"[" + udcmin + "," + udcmax + "]"});
-        tr = $("<tr>");
-        td1 = $("<td>").append("Voltage (V)");
-        td2 = $("<td>").append(input);
-        tbody.append(tr.append(td1).append(td2));
-    }
+    input = $("<input>", {id:"ocurlim", type:"text", "data-provide":"slider", "data-slider-value":0-json.ocurlim.value});
+    tr = $("<tr>");
+    td1 = $("<td>").append("Current (A)");
+    td2 = $("<td>").append(input);
+    tbody.append(tr.append(td1).append(td2));
+    
+    /*
+    input = $("<input>", {id:"boost", type:"text", "data-provide":"slider", "data-slider-value":json.boost.value/350});
+    tr = $("<tr>");
+    td1 = $("<td>").append("Resistance (&#8486;)");
+    td2 = $("<td>").append(input);
+    tbody.append(tr.append(td1).append(td2));
+    */
 
-    if(brknompedal != -1)
-    {
-        input = $("<input>", {id:"brknompedal", type:"text", "data-provide":"slider", "data-slider-value":brknompedal});
-        var e = $("<input>", {id:"brknompedal-enabled", type:"checkbox"});
-        tr = $("<tr>");
-        td1 = $("<td>").append("Regenerative (%)");
-        td2 = $("<td>").append(input).append(e);
-        tbody.append(tr.append(td1).append(td2));
-        if(brknompedal != -100)
-            $("#brknompedal-enabled").prop("checked", true );
-    }
+    input = $("<input>", {id:"brknompedal", type:"text", "data-provide":"slider", "data-slider-value":json.brknompedal.value});
+    var e = $("<input>", {id:"brknompedal-enabled", type:"checkbox"});
+    tr = $("<tr>");
+    td1 = $("<td>").append("Regenerative (%)");
+    td2 = $("<td>").append(input).append(e);
+    tbody.append(tr.append(td1).append(td2));
+    if(json.brknompedal.value != -100)
+        $("#brknompedal-enabled").prop("checked", true );
+    //=======================
 
     battery.append(tbody);
-
 }
 
 function setValue()

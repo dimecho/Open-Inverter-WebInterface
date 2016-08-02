@@ -1,6 +1,5 @@
 <?php
 
-require('php_serial.class.php');
 require('config.inc.php');
 require('InverterTerminal.class.php');
 

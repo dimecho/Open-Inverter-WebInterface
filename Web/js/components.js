@@ -10,7 +10,7 @@ $(document).ready(function()
 function buildTable(title,csv)
 {
     var div = $("#components"); //.empty();
-    var header = $("<table>", {class:"table table-bordered", style:"padding-left:10px;background-color:#e6e6e6;"}).append($("<h2>").append(title));
+    var header = $("<table>", {class:"table table-bordered", style:"padding-left:10px;background-color:#e6e6e6;"}).append($("<h4>").append(title));
     var table = $("<table>", {class:"table table-bordered table-striped table-hover", style:"background-color:#e6e6e6;"});
     var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Part")).append($("<th>").append("Value")).append($("<th>").append("Manual")));
     var tbody = $("<tbody>");
@@ -44,25 +44,25 @@ function buildTable(title,csv)
                             });
                         }
 
-                        var value = split[2].replace("", "u").replace(" ", "").replace("**", "").replace("*", "").replace("1%", "");
+                        var value = split[2].replace("", "u").replace("**", "").replace("*", "");
 
                         var tr = $("<tr>");
                         var td1 = $("<td>");
-                        var td2 = $("<td>");
+                        var td2 = $("<td>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true"});
                         var td3 = $("<td>");
 
                         if(value.length > 1)
                         {
-                            var img = value;
+                            var img = value.replace(" ", "").replace("1%", "");
                             if(split[0].indexOf("RN") !=-1)
                                 img = "RN_"+ value;
-                            
-                            td2 = $("<td>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<img src='bom/img/" + img+ ".png' />"});
+
+                            td2.attr("data-title","<img src='bom/img/" + img + ".png' />");
                             td2.append(value.replace("u", "&#181;"))
                         }
                         else
                         {
-                            td2 = $("<td>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<img src='bom/img/" + split[3] + ".png' />"});
+                            td2.attr("data-title","<img src='bom/img/" + split[3] + ".png' />");
                             td2.append(split[3]);
                         }
 
