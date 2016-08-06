@@ -273,7 +273,7 @@ function buildHeader(json)
     img = $("<img>", {class:"svg-inject", src:"img/key.svg"});
     if(json.opmode.value === 0)
     {
-        span.attr("data-title","<h6>OFF</h6>");
+        span.attr("data-title","<h5>Off</h5>");
         img.addClass("svg-red");
     }
     else if(json.opmode.value === 1 && json.din_emcystop.value === 1)
@@ -283,13 +283,13 @@ function buildHeader(json)
             img.addClass("svg-yellow");
             span.attr("data-title","<h6>Pulse Only - Do not leave ON</h6>");
         }else{
-            span.attr("data-title","<h6>Running</h6>");
+            span.attr("data-title","<h5>Running</h5>");
             img.addClass("svg-green");
         }
     }
     else if(json.opmode.value === 2)
     {
-        span.attr("data-title","<h6>Manual Mode</h6>");
+        span.attr("data-title","<h5>Manual Mode</h5>");
         img.addClass("svg-green");
     }
     span.append(img);
@@ -302,7 +302,7 @@ function buildHeader(json)
     opStatus.append(div);
     */
     //========================
-    span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>" + json.udc.value+ "</h6>"});
+    span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h5>" + json.udc.value+ "V</h5>"});
     img = $("<img>", {class:"svg-inject", src:"img/battery.svg"});
     if(json.udc.value > json.udcmin.value){
         img.addClass("svg-green");
@@ -312,7 +312,7 @@ function buildHeader(json)
     span.append(img);
     div.append(span);
     //========================
-    span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>" + json.tmpm.value + "</h6>"});
+    span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h5>" + json.tmpm.value + "°C</h5>"});
     img = $("<img>", {class:"svg-inject", src:"img/temperature.svg"})
     if(json.tmpm.value > 150 || json.tmphs.value > 150){
         img.addClass("svg-red");
@@ -333,7 +333,7 @@ function buildHeader(json)
     opStatus.append(div);
     */
     //========================
-    span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>" + json.speed.value + "</h6>"});
+    span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h5>" + json.speed.value + "RPM</h5>"});
     img = $("<img>", {class:"svg-inject", src:"img/speedometer.svg"});
     if(json.speed.value > 6000){
         img.addClass("svg-red");
@@ -347,7 +347,7 @@ function buildHeader(json)
     //========================
     if(json.din_mprot.value != 1)
     {
-        span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>Probably forgot PIN 11 to 12V</h6>"});
+        span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h5>Probably forgot PIN 11 to 12V</h5>"});
         span.append($("<img>", {class:"svg-inject", src:"img/alert.svg"}));
         div.append(span);
     }
@@ -355,15 +355,56 @@ function buildHeader(json)
     var errors = getErrors();
     if(errors.indexOf("Unknown command") == -1 && errors.indexOf("No Errors") == -1)
     {
-        span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>" + errors + "</h6>"});
+        span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h5>" + errors + "</h5>"});
         span.append($("<img>", {class:"svg-inject", src:"img/alert.svg"}));
         div.append(span);
     }
-    
+
     opStatus.append(div);
 
     var SVGInject = document.querySelectorAll('img.svg-inject');
     SVGInjector(SVGInject);
+}
+
+function buildTips()
+{
+    var show = Math.random() >= 0.5;
+
+    if(show == true)
+    {
+        var opStatus = $("#opStatus").empty();
+        var div = $("<div>").height(32);
+        var span = $("<span>");
+        var img = $("<img>");
+
+        $.ajax("tips.csv",{
+            async: false,
+            //contentType: "application/text",
+            beforeSend: function (req) {
+              req.overrideMimeType('text/plain; charset=x-user-defined');
+            },
+            //dataType: 'text',
+            success: function(data)
+            {
+                var row = data.split("\n");
+
+                for (var i = 0; i < row.length; ++i)
+                {
+                    var tip = Math.random() >= 0.5;
+                    if(tip == true)
+                    {
+                        span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h5>Tip: " + row[i] + "</h5>"});
+                        span.append($("<img>", {class:"svg-inject", src:"img/idea.svg"}));
+                        div.append(span);
+                        opStatus.append(div);
+                        break;
+                    }
+                }
+            },
+            error: function(xhr, textStatus, errorThrown){
+            }
+        });
+    }
 }
 
 function buildParameters(json)
@@ -445,4 +486,6 @@ function buildParameters(json)
             menu.append(tbody);
         }
     }
+
+    buildTips();
 }

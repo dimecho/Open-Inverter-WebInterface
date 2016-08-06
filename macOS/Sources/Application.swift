@@ -392,12 +392,14 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         }
     }
     
-    func launchInstaller(script:String)
+    func launchInstaller(script:String) -> Bool
     {
         let task = NSTask()
         task.launchPath = NSBundle.mainBundle().pathForResource(script, ofType:nil)
         task.launch()
         task.waitUntilExit()
+        
+        return true;
     }
     
     func openInskcapeEncoder()
@@ -677,11 +679,12 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         let fileManager = NSFileManager.defaultManager()
         let phpPath = "/usr/bin/php"
         
-        if (!fileManager.fileExistsAtPath(phpPath) || !fileManager.fileExistsAtPath("/usr/local/lib/php/extensions/dio.so"))
+        if (!fileManager.fileExistsAtPath(phpPath) || !fileManager.fileExistsAtPath("/usr/local/lib/php/extensions/dio.so") || !fileManager.fileExistsAtPath("/usr/local/etc/php.ini"))
         {
             dispatch_async(dispatch_get_main_queue()) {
-                self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + self.port + "/driver/php.html")!))
+                self.webView.loadRequest(NSURLRequest(URL: NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("Web/driver/php", ofType:"html")!)))
             }
+            
             var output:String?
             var processErrorDescription:String?
             let installer: String = NSBundle.mainBundle().pathForResource("install", ofType:nil)!
@@ -689,13 +692,14 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             if (!success)
             {
                 dispatch_async(dispatch_get_main_queue()) {
-                    self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + self.port + "/driver/phpError.html")!))
+                    self.webView.loadRequest(NSURLRequest(URL: NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("Web/driver/phpError", ofType:"html")!)))
                 }
             }
             else
             {
                 startPHP()
             }
+            
         }else{
             
             //NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(phpDidTerminate), name:NSTaskDidTerminateNotification, object: nil)
