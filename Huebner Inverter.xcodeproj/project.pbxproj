@@ -16,7 +16,7 @@
 		32D281F31CF00EF200606B12 /* dio in Resources */ = {isa = PBXBuildFile; fileRef = 32D281ED1CF00EF200606B12 /* dio */; };
 		32D281F41CF00EF200606B12 /* encoder in Resources */ = {isa = PBXBuildFile; fileRef = 32D281EE1CF00EF200606B12 /* encoder */; };
 		32D281F51CF00EF200606B12 /* inkscape in Resources */ = {isa = PBXBuildFile; fileRef = 32D281EF1CF00EF200606B12 /* inkscape */; };
-		32D281F61CF00EF200606B12 /* install in Resources */ = {isa = PBXBuildFile; fileRef = 32D281F01CF00EF200606B12 /* install */; };
+		32D281F61CF00EF200606B12 /* php in Resources */ = {isa = PBXBuildFile; fileRef = 32D281F01CF00EF200606B12 /* php */; };
 		32D281F81CF00EF200606B12 /* xquartz in Resources */ = {isa = PBXBuildFile; fileRef = 32D281F21CF00EF200606B12 /* xquartz */; };
 		32DE5F911CF0D03000113FCF /* Web in Resources */ = {isa = PBXBuildFile; fileRef = 32DE5F901CF0D03000113FCF /* Web */; };
 		32DE5F961CF0DC0E00113FCF /* Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32DE5F951CF0DC0E00113FCF /* Download.swift */; };
@@ -38,7 +38,7 @@
 		32D281ED1CF00EF200606B12 /* dio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = dio; path = macOS/Resources/dio; sourceTree = "<group>"; };
 		32D281EE1CF00EF200606B12 /* encoder */ = {isa = PBXFileReference; lastKnownFileType = folder; name = encoder; path = macOS/Resources/encoder; sourceTree = "<group>"; };
 		32D281EF1CF00EF200606B12 /* inkscape */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = inkscape; path = macOS/Resources/inkscape; sourceTree = "<group>"; };
-		32D281F01CF00EF200606B12 /* install */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = install; path = macOS/Resources/install; sourceTree = "<group>"; };
+		32D281F01CF00EF200606B12 /* php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = php; path = macOS/Resources/php; sourceTree = "<group>"; };
 		32D281F21CF00EF200606B12 /* xquartz */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = xquartz; path = macOS/Resources/xquartz; sourceTree = "<group>"; };
 		32DE5F901CF0D03000113FCF /* Web */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Web; sourceTree = "<group>"; };
 		32DE5F951CF0DC0E00113FCF /* Download.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Download.swift; path = Sources/Download.swift; sourceTree = "<group>"; };
@@ -95,7 +95,7 @@
 				32DE5F901CF0D03000113FCF /* Web */,
 				32D281ED1CF00EF200606B12 /* dio */,
 				32D281EE1CF00EF200606B12 /* encoder */,
-				32D281F01CF00EF200606B12 /* install */,
+				32D281F01CF00EF200606B12 /* php */,
 				32F25DD21CF24A2600494B1C /* driver */,
 				324C22E71CF429E7003A1AF5 /* eagle */,
 				32D281EF1CF00EF200606B12 /* inkscape */,
@@ -170,7 +170,7 @@
 				324C22E81CF429E7003A1AF5 /* eagle in Resources */,
 				32F25DD31CF24A2600494B1C /* driver in Resources */,
 				32DE5F911CF0D03000113FCF /* Web in Resources */,
-				32D281F61CF00EF200606B12 /* install in Resources */,
+				32D281F61CF00EF200606B12 /* php in Resources */,
 				3274D25E1D3DF5C500573511 /* attiny in Resources */,
 				32D281F31CF00EF200606B12 /* dio in Resources */,
 				32D281B61CF0066F00606B12 /* Assets.xcassets in Resources */,

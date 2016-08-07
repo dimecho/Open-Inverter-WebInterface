@@ -11,11 +11,16 @@ body {
   padding: 5px;
 }
 .svg-green * {
-    fill:#569e26;
+  fill:#569e26;
 }
 .svg-yellow * {
-    fill:#efc411;
+  fill:#efc411;
 }
 .svg-red * {
-    fill:#b52808;
+  fill:#b52808;
+}
+
+.file {
+  visibility: hidden;
+  position: absolute;
 }

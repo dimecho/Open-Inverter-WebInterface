@@ -16,6 +16,9 @@
                                 <tr>
                                     <td>Compile from Source</td>
                                 </tr>
+                                <tr>
+                                    <td><a href="https://launchpad.net/gcc-arm-embedded/+download">Download</a> ARM Embedded Toolchain</td>
+                                </tr>
                             </tbody>
                         </table>
                     </center>

@@ -678,27 +678,29 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         
         let fileManager = NSFileManager.defaultManager()
         let phpPath = "/usr/bin/php"
+        let iniPath = "/usr/local/etc/php.ini"
+        let dioPath = NSBundle.mainBundle().pathForResource("dio", ofType: nil)
+        var wrongPath = true
         
-        if (!fileManager.fileExistsAtPath(phpPath) || !fileManager.fileExistsAtPath("/usr/local/lib/php/extensions/dio.so") || !fileManager.fileExistsAtPath("/usr/local/etc/php.ini"))
+        do {
+            let data = try String(contentsOfURL: NSURL(fileURLWithPath:iniPath), encoding: NSUTF8StringEncoding)
+            if data.rangeOfString(dioPath!) != nil{
+                wrongPath = false
+            }
+        }
+        catch {}
+      
+        if (!fileManager.fileExistsAtPath(phpPath) || wrongPath == true)
         {
             dispatch_async(dispatch_get_main_queue()) {
                 self.webView.loadRequest(NSURLRequest(URL: NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("Web/driver/php", ofType:"html")!)))
             }
             
-            var output:String?
-            var processErrorDescription:String?
-            let installer: String = NSBundle.mainBundle().pathForResource("install", ofType:nil)!
-            let success: Bool = runProcessAsAdministrator(installer, output:&output, errorDescription:&processErrorDescription)
-            if (!success)
-            {
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.webView.loadRequest(NSURLRequest(URL: NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("Web/driver/phpError", ofType:"html")!)))
-                }
-            }
-            else
-            {
-                startPHP()
-            }
+            launchInstaller("php")
+            
+            sleep(2)
+            
+            startPHP()
             
         }else{
             
@@ -716,10 +718,28 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         }
     }
     
+    func checkPHPConfig()
+    {
+        let config_inc =  NSBundle.mainBundle().pathForResource("Web/config", ofType:"inc")
+        let config_inc_php =  NSBundle.mainBundle().pathForResource("Web/config.inc", ofType:"php")
+        
+        do {
+            var data = try String(contentsOfURL: NSURL(fileURLWithPath:config_inc_php!), encoding: NSUTF8StringEncoding)
+            if data.rangeOfString(serialPath) == nil
+            {
+                data = try String(contentsOfURL: NSURL(fileURLWithPath:config_inc!), encoding: NSUTF8StringEncoding)
+                data = data.stringByReplacingOccurrencesOfString("/dev/cu.usbserial", withString:serialPath)
+                    
+                try data.writeToURL(NSURL(fileURLWithPath:config_inc_php!), atomically: false, encoding: NSUTF8StringEncoding)
+            }
+        } catch {}
+    }
+    
     func checkDrivers()
     {
-        let kext_Prolific: Bool = NSFileManager.defaultManager().fileExistsAtPath("/Library/Extensions/ProlificUsbSerial.kext")
-        let kext_Serial: Bool = NSFileManager.defaultManager().fileExistsAtPath("/Library/Extensions/serial.kext")
+        let fileManager = NSFileManager.defaultManager()
+        let kext_Prolific: Bool = fileManager.fileExistsAtPath("/Library/Extensions/ProlificUsbSerial.kext")
+        let kext_Serial: Bool = fileManager.fileExistsAtPath("/Library/Extensions/serial.kext")
         
         if(!kext_Prolific || kext_Serial)
         {
@@ -777,7 +797,11 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
                         self.webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://" + self.ip + ":" + self.port + "/driver/receive.html")!))
                     }
                     serialPath = serialPathArray[i]
+                    
+                    checkPHPConfig()
+                    
                     startSerial()
+                    
                     found = true
                 }
             }
