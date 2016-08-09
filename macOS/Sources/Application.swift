@@ -74,6 +74,11 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             checkInkscape()
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
+        else if (url == NSURL(string:"http://" + ip + ":" + port + "/encoder3d.php"))
+        {
+            checkOpenSCAD()
+            decisionHandler(WKNavigationActionPolicy.Cancel)
+        }
         else if (url == NSURL(string:"http://" + ip + ":" + port + "/upload.php"))
         {
             uploadSnapshot();
@@ -377,20 +382,33 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
                 NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeInkscapeDownload), name:"completeDownload", object: nil)
             }
         }else{
-            
-            let encoderPath = NSHomeDirectory() + "/.config/inkscape/extensions/encoder_disk_generator.py"
-            
-            if (!NSFileManager.defaultManager().fileExistsAtPath(encoderPath))
-            {
-                do {
-                    try NSFileManager.defaultManager().copyItemAtPath(NSBundle.mainBundle().pathForResource("encoder_disk_generator", ofType:"py", inDirectory:"encoder")!, toPath:encoderPath)
-                } catch let error as NSError {
-                    print("Cannot copy file: \(error.localizedDescription)")
-                }
-            }
             checkXQuartz()
         }
     }
+    
+    func checkOpenSCAD()
+    {
+        if (!NSFileManager.defaultManager().fileExistsAtPath("/Applications/OpenSCAD.app"))
+        {
+            let alert = NSAlert()
+            alert.messageText = "Install OpenSCAD - Download 25MB"
+            alert.informativeText = "OpenSCAD is for creating solid 3D CAD objects"
+            alert.addButtonWithTitle("OK")
+            alert.addButtonWithTitle("Cancel")
+            if (alert.runModal() == NSAlertFirstButtonReturn)
+            {
+                self.performSegueWithIdentifier("Download", sender:self)
+                var userInfo = Dictionary<String, String>()
+                userInfo["url"] = "http://files.openscad.org/OpenSCAD-2015.03-3.dmg"
+                userInfo["path"] = NSHomeDirectory() + "/Downloads/OpenSCAD-2015.03-3.dmg"
+                NSNotificationCenter.defaultCenter().postNotificationName("startDownload", object:nil, userInfo:userInfo);
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.completeOpenSCADDownload), name:"completeDownload", object: nil)
+            }
+        }else{
+           openInskcapeOpenSCAD()
+        }
+    }
+
     
     func launchInstaller(script:String) -> Bool
     {
@@ -408,6 +426,26 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         task.launchPath = "/Applications/Inkscape.app/Contents/Resources/bin/inkscape"
         task.arguments = ["--verb", "dgkelectronics.com.encoder.disk.generator"]
         task.launch()
+    }
+    
+    func openInskcapeOpenSCAD()
+    {
+        //checkInkscape()
+        
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canCreateDirectories = false
+        panel.canChooseFiles = true
+        panel.allowedFileTypes = ["svg"]
+        
+        if (panel.runModal() == NSFileHandlingPanelOKButton)
+        {
+            let task = NSTask()
+            task.launchPath = "/Applications/Inkscape.app/Contents/Resources/bin/inkscape"
+            task.arguments = ["-f", panel.URL!.path!, "--verb", "EditSelectAll", "--verb", "SelectionUnGroup", "--verb", "SelectionSymDiff", "--verb", "command.extrude.openscad"]
+            task.launch()
+        }
     }
     
     func completeEagleDownload(notification: NSNotification)
@@ -512,7 +550,12 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
         self.performSelectorInBackground(#selector(launchInstaller), withObject:"inkscape")
-        //openInskcapeEncoder()
+    }
+    
+    func completeOpenSCADDownload(notification: NSNotification)
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        self.performSelectorInBackground(#selector(launchInstaller), withObject:"openscad")
     }
     
     func flashATtiny()

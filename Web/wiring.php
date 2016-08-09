@@ -6,7 +6,9 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <img src="img/wiring.png" />
+             <div class="row">
+                <div class="span12"><img src="img/wiring.png" /></div>
+            </div>
         </div>
     </body>
 </html>

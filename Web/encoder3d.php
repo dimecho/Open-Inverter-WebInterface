@@ -14,7 +14,7 @@
                         <table class="table table-bordered" style="background-color:#e6e6e6;">
                             <tbody>
                                 <tr>
-                                    <td>Encoder is a <a href="https://github.com/Hyvok/Inkscape-rotary-encoder-disk-generator">plugin</a> for <a href="https://inkscape.org/en/download/">Inkscape</a> vector graphic editor.
+                                    <td><a href="https://github.com/Hyvok/Inkscape-rotary-encoder-disk-generator">OpenSCAD SVG Converter</a> plugin for <a href="http://www.openscad.org/">3D printing</a>.
                                     </td>
                                 </tr>
                             </tbody>

@@ -23,5 +23,12 @@
      dgkelectronics.com.encoder.disk.generator.cutouts="1"
      dgkelectronics.com.encoder.disk.generator.sensors="1"
      dgkelectronics.com.encoder.disk.generator.stgc_encoder_diameter="1"
-     dgkelectronics.com.encoder.disk.generator.stgc_track_width="4" />
+     dgkelectronics.com.encoder.disk.generator.stgc_track_width="4"
+     command.extrude.openscad.height="1"
+     command.extrude.openscad.smoothness="0.2"
+     command.extrude.openscad.tab="splash"
+     command.extrude.openscad.fname="~/Desktop/encoder.scad"
+     command.extrude.openscad.autoheight="1"
+     command.extrude.openscad.line_width="1"
+     command.extrude.openscad.force_line="0" />
 </inkscape>

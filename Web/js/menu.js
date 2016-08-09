@@ -6,12 +6,34 @@ $(document).ready(function()
           return {
             buttons: [{
               text: 'Wave Generator',
-              key: 13 /*keys.ENTER*/ ,
               className: alertify.defaults.theme.ok,
             }, {
               text: 'Slip Control',
-              key: 27 /*keys.ESC*/ ,
-              invokeOnClose: false, // <== closing won't invoke this
+              className: alertify.defaults.theme.cancel,
+            }],
+            focus: {
+              //element: 0,
+              select: false
+            },
+            options: {
+              title: '',
+              maximizable: false,
+              resizable: false
+            },
+          };
+        }
+      }
+    }, false, 'confirm');
+
+    alertify.dialog('buildEncoder', function() {
+      return {
+        setup: function() {
+          return {
+            buttons: [{
+              text: '2D SVG Blueprint',
+              className: alertify.defaults.theme.ok,
+            }, {
+              text: '3D Print from SVG',
               className: alertify.defaults.theme.cancel,
             }],
             focus: {
@@ -110,7 +132,7 @@ function getErrors()
         },
         success: function(data)
         {
-            console.log(data);
+            //console.log(data);
             value = data.replace("errors\n","");
         }
     });
@@ -259,10 +281,22 @@ function setDefaults()
     }, function(){});
 }
 
+function buildEncoderAlert()
+{
+    alertify.buildEncoder("Build encoder",
+        function() {
+            window.location.href = "/encoder.php";
+        },
+        function() {
+            window.location.href = "/encoder3d.php";
+        }
+    );
+}
+
 function buildHeader(json)
 {
-    var opStatus = $("#opStatus").empty();
-    var div = $("<div>").height(32);
+    var opStatus = $("#opStatus");
+    //var div = $("<div>").height(32);
     var span = $("<span>");
     var img = $("<img>");
 
@@ -293,7 +327,7 @@ function buildHeader(json)
         img.addClass("svg-green");
     }
     span.append(img);
-    div.append(span);
+    opStatus.append(span);
     //========================
     /*
     if(json.ocurlim.value > 0){
@@ -310,18 +344,18 @@ function buildHeader(json)
         img.addClass("svg-red");
     }
     span.append(img);
-    div.append(span);
+    opStatus.append(span);
     //========================
     span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>" + json.tmpm.value + "°C</h6>"});
     img = $("<img>", {class:"svg-inject", src:"img/temperature.svg"})
     if(json.tmpm.value > 150 || json.tmphs.value > 150){
         img.addClass("svg-red");
         span.append(img);
-        div.append(span);
+        opStatus.append(span);
     }else if(json.tmpm.value > 100 || json.tmphs.value > 100){
         img.addClass("svg-yellow");
         span.append(img);
-        div.append(span);
+        opStatus.append(span);
     }
     //========================
     /*
@@ -338,18 +372,18 @@ function buildHeader(json)
     if(json.speed.value > 6000){
         img.addClass("svg-red");
         span.append(img);
-        div.append(span);
+        opStatus.append(span);
     }else if(json.speed.value > 3000){
         img.addClass("svg-yellow");
         span.append(img);
-        div.append(span);
+        opStatus.append(span);
     }
     //========================
     if(json.din_mprot.value != 1)
     {
         span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>Probably forgot PIN 11 to 12V</h6>"});
         span.append($("<img>", {class:"svg-inject", src:"img/alert.svg"}));
-        div.append(span);
+        opStatus.append(span);
     }
     //========================
     var errors = getErrors();
@@ -357,10 +391,8 @@ function buildHeader(json)
     {
         span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>" + errors + "</h6>"});
         span.append($("<img>", {class:"svg-inject", src:"img/alert.svg"}));
-        div.append(span);
+        opStatus.append(span);
     }
-
-    opStatus.append(div);
 
     var SVGInject = document.querySelectorAll('img.svg-inject');
     SVGInjector(SVGInject);
@@ -370,13 +402,11 @@ function buildTips()
 {
     var show = Math.random() >= 0.5;
 
+    var opStatus = $("#opStatus");
+    var span = $("<span>");
+
     if(show == true)
     {
-        var opStatus = $("#opStatus").empty();
-        var div = $("<div>").height(32);
-        var span = $("<span>");
-        var img = $("<img>");
-
         $.ajax("tips.csv",{
             async: false,
             //contentType: "application/text",
@@ -395,8 +425,7 @@ function buildTips()
                     {
                         span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>Tip: " + row[i] + "</h6>"});
                         span.append($("<img>", {class:"svg-inject", src:"img/idea.svg"}));
-                        div.append(span);
-                        opStatus.append(div);
+                        opStatus.append(span);
                         break;
                     }
                 }
@@ -405,12 +434,18 @@ function buildTips()
             }
         });
     }
+
+    span = $("<a>", {href:"."});
+    span.append($("<img>", {class:"svg-inject", src:"img/refresh.svg"}));
+    opStatus.append(span);
 }
 
 function buildParameters(json)
 {
     //var length = 0;
     //for(var k in json) if(json.hasOwnProperty(k))    length++;
+
+    $("#opStatus").empty().height(32);
 
     if(json) //if(Object.keys(json).length > 0)
     {

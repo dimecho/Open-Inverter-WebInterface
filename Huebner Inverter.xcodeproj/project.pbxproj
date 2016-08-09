@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3249F2A21D599E3900ECF5B4 /* openscad in Resources */ = {isa = PBXBuildFile; fileRef = 3249F2A11D599E3900ECF5B4 /* openscad */; };
 		324C22E81CF429E7003A1AF5 /* eagle in Resources */ = {isa = PBXBuildFile; fileRef = 324C22E71CF429E7003A1AF5 /* eagle */; };
 		3274D25E1D3DF5C500573511 /* attiny in Resources */ = {isa = PBXBuildFile; fileRef = 3274D25D1D3DF5C500573511 /* attiny */; };
 		328C1F651CFA115E00C2C053 /* make in Resources */ = {isa = PBXBuildFile; fileRef = 328C1F641CFA115E00C2C053 /* make */; };
@@ -27,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3249F2A11D599E3900ECF5B4 /* openscad */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = openscad; path = macOS/Resources/openscad; sourceTree = "<group>"; };
 		324C22E71CF429E7003A1AF5 /* eagle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = eagle; path = macOS/Resources/eagle; sourceTree = "<group>"; };
 		3274D25D1D3DF5C500573511 /* attiny */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = attiny; path = macOS/Resources/attiny; sourceTree = "<group>"; };
 		328C1F641CFA115E00C2C053 /* make */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = make; path = macOS/Resources/make; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				32F25DD21CF24A2600494B1C /* driver */,
 				324C22E71CF429E7003A1AF5 /* eagle */,
 				32D281EF1CF00EF200606B12 /* inkscape */,
+				3249F2A11D599E3900ECF5B4 /* openscad */,
 				32D281F21CF00EF200606B12 /* xquartz */,
 				32DF0C831CF7FF78008F19AC /* updater */,
 				32FFA9FB1D18D6FB00E5BBF0 /* openocd */,
@@ -171,6 +174,7 @@
 				32F25DD31CF24A2600494B1C /* driver in Resources */,
 				32DE5F911CF0D03000113FCF /* Web in Resources */,
 				32D281F61CF00EF200606B12 /* php in Resources */,
+				3249F2A21D599E3900ECF5B4 /* openscad in Resources */,
 				3274D25E1D3DF5C500573511 /* attiny in Resources */,
 				32D281F31CF00EF200606B12 /* dio in Resources */,
 				32D281B61CF0066F00606B12 /* Assets.xcassets in Resources */,

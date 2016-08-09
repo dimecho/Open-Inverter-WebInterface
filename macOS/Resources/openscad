@@ -1,0 +1,4 @@
+#!/bin/sh
+
+hdiutil attach ~/Downloads/OpenSCAD-2015.03-3.dmg
+open /Volumes/OpenSCAD

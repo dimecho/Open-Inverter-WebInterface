@@ -9,6 +9,7 @@ body {
   height:22px;
   margin: 3px auto;
   padding: 5px;
+  vertical-align: top;
 }
 .svg-green * {
   fill:#569e26;
@@ -18,9 +19,4 @@ body {
 }
 .svg-red * {
   fill:#b52808;
-}
-
-.file {
-  visibility: hidden;
-  position: absolute;
 }

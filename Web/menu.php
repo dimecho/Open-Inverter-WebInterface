@@ -39,14 +39,13 @@
                             <li><a tabindex="-1" href="components.php">Components</a></li>
                             <li><a tabindex="-1" href="wiring.php">Wiring Diagram</a></li>
                             <li><a tabindex="-1" href="igbt-test.php">IGBT Test</a></li>
-                            <li><a tabindex="-1" href="encoder.php">Build Encoder</a></li>
+                            <li><a tabindex="-1" onClick="buildEncoderAlert()">Build Encoder</a></li>
                         </ul>
                     </li>
                     <li>
                         <h3 class="label" id="titleVersion"></h3>&nbsp;&nbsp;<span id="titleOperation"></span>&nbsp;&nbsp;<span id="titleStatus"></span>
                     </li>
-                    <li id="opStatus"></li>
-                    <li><div style="height:32"><a href="."><img class="svg-inject" src="img/refresh.svg"/></a><div></li>
+                    <li><div id="opStatus"></div></li>
                     </ul>
                 </div>
             </div>
