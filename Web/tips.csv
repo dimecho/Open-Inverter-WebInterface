@@ -1,3 +1,4 @@
-Snubbers caps use 1uF for every 100A on rails.
-fweak applies only to sensor operation.
+Snubbers caps use 1uF for every 100A on rails.,
+fweak applies only to sensor operation.,
 Clean flux, it attracts moisture and causes shorts.
+You can use pin18 on main board for temperature indicator <img src="img/temp_indicator.png" />

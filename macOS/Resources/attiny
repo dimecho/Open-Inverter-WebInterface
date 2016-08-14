@@ -8,5 +8,27 @@ if [ ! -f "/usr/local/CrossPack-AVR/bin/avr-gcc" ]; then
 else
     export PATH="$PATH:/usr/local/CrossPack-AVR/bin/"
     cd ~/Documents/firmware/
-    avrdude -c USBasp -p attiny13 -U flash:w:volt-pwm-attiny13.hex:i
+
+    #Read
+    #avrdude -c ponyser -p attiny13 -P /dev/cu.usbserial  -U flash:r:flash.bin:r
+
+    #Debug
+    #avrdude -c ponyser -p attiny13 -P /dev/cu.usbserial -tuF
+    #avrdude> sck 1000
+    #avrdude: Setting SCK period to 250 usec
+    #avrdude> e
+    #avrdude: erasing chip
+    #avrdude> sck 10
+    #avrdude: Setting SCK period to 10 usec
+    #avrdude> quit
+
+    #Fuse - Default
+    #avrdude -c ponyser -p attiny13 -P /dev/cu.usbserial -U lfuse:w:0x6A:m -U hfuse:w:0xFF:m -B 250
+
+    #Fuse - Lock
+    #avrdude -c ponyser -p attiny13 -P /dev/cu.usbserial -U lfuse:w:0x6A:m -U hfuse:w:0xFF:m -U lock:w:0xFE:m
+
+    #Write
+    #avrdude -c USBasp -p attiny13 -P /dev/cu.usbserial -U flash:w:volt-pwm-attiny13.hex:i -B 1024 -b 19200
+    avrdude -c $2 -p attiny13 -P $3 -U flash:w:$1 -F
 fi

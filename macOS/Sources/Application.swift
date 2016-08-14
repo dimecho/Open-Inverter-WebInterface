@@ -89,13 +89,13 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             checkOpenOCD()
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
-        else if (url == NSURL(string:"http://" + ip + ":" + port + "/attiny.php"))
+        else if (url == NSURL(string:"http://" + ip + ":" + port + "/_attiny.php"))
         {
             checkATtiny()
             decisionHandler(WKNavigationActionPolicy.Cancel)
 
         }
-        else if (url == NSURL(string:"http://" + ip + ":" + port + "/firmware.php"))
+        else if (url == NSURL(string:"http://" + ip + ":" + port + "/_firmware.php"))
         {
             flashFirmware()
             decisionHandler(WKNavigationActionPolicy.Cancel)
@@ -560,7 +560,24 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     
     func flashATtiny()
     {
-        system("open -a Terminal \"" + NSBundle.mainBundle().pathForResource("attiny", ofType:nil)! + "\"")
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canCreateDirectories = false
+        panel.canChooseFiles = true
+        panel.allowedFileTypes = ["hex"]
+        
+        if (panel.runModal() == NSFileHandlingPanelOKButton)
+        {
+            let fileAttributes = try! NSFileManager.defaultManager().attributesOfItemAtPath(panel.URL!.path!)
+            let fileSizeNumber = fileAttributes[NSFileSize] as! NSNumber
+            let fileSize = fileSizeNumber.longLongValue
+            
+            if(fileSize < 300)
+            {
+                system("echo '\"" + NSBundle.mainBundle().pathForResource("attiny", ofType:nil)! + "\" \"" + panel.URL!.path! + "\" " + serialPath + "' > /tmp/attiny.sh; chmod +x /tmp/attiny.sh; open -a Terminal /tmp/attiny.sh")
+            }
+        }
     }
     
     func flashBootloader()
@@ -581,7 +598,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             
             if(fileSize < 20000)
             {
-                system("echo '\"" + NSBundle.mainBundle().pathForResource("openocd", ofType:nil)! + "\" \"" + panel.URL!.path! + "\"' > /tmp/bootloader.sh; chmod +x /tmp/bootloader.sh; open -a Terminal /tmp/bootloader")
+                system("echo '\"" + NSBundle.mainBundle().pathForResource("openocd", ofType:nil)! + "\" \"" + panel.URL!.path! + "\"' > /tmp/bootloader.sh; chmod +x /tmp/bootloader.sh; open -a Terminal /tmp/bootloader.sh")
             }
         }
         */

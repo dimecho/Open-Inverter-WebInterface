@@ -7,8 +7,16 @@
         ?>
         <script>
             $(document).on('click', '.browse', function(){
-                var file = $(".file");
-                file.trigger('click');
+                <?php
+                if (strpos($_SERVER['HTTP_USER_AGENT'], 'Macintosh') !== false) {
+                    echo "window.location.href = '_firmware.php';";
+                }else{
+                ?>
+                    var file = $(".file");
+                    file.trigger('click');
+                <?php
+                }
+                ?>
             });
         </script>
     </head>
@@ -23,42 +31,46 @@
                         <tbody>
                         <?php if(isset($_FILES["firmware"])){ ?>
                             <tr>
-                                <td>Firmware Updated Successfully</td>
-                            </tr>
-                            <tr>
                                 <td>
                                 <?php
-                                    $output = "";
-
                                     if (strpos($_SERVER['HTTP_USER_AGENT'], 'Macintosh') !== false) {
-                                        $output = shell_exec("'" .$_SERVER["DOCUMENT_ROOT"]. "/../updater' '" .$_FILES['firmware']['tmp_name']. "' " .$serial->_device. " 2>&1; echo $?");
+                                        $name = basename($_FILES['firmware']['tmp_name']);
+                                        move_uploaded_file($_FILES['firmware']['tmp_name'], "/tmp/$name.bin");
+                                        $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../updater' '/tmp/$name.bin' " .$serial->_device. " 2>&1; echo $?";
+                                        $output = shell_exec($command);
                                     }else{
                                         //Windows: double backslash \\ should be used to print a single \
                                         //Windows: safe_mode = Off
                                         $output = exec("'" .$_SERVER["DOCUMENT_ROOT"]. "/../updater.exe' '" .$_FILES['firmware']['tmp_name']. "' " .$serial->_device);
                                     }
 
+                                    echo "<span class='label'>$command</span>";
                                     echo "<pre>$output</pre>";
                                 ?>
                                 </td>
                             </tr>
                         <?php }else{ ?>
                             <tr>
-                                <td>Firmware Update</td>
-                            </tr>
-                            <tr>
                                 <td>
-                                    <form enctype="multipart/form-data" action="firmware.php" method="POST">
-                                        <input type="file" name="firmware" class="file" hidden onchange="javascript:this.form.submit();"/>
-                                        <input type="submit" hidden/>
-                                    </form>
-                                    <div class="input-append">
-                                        <input type="text" class="form-control" disabled placeholder="Upload Firmware">
-                                        <button class="browse btn btn-primary" type="button"><i class="icon-search"></i> Browse</button>
-                                    </div>
+                                    <center>
+                                        <form enctype="multipart/form-data" action="firmware.php" method="POST" id="Aform">
+                                            <input type="file" name="firmware" class="file" hidden onchange="javascript:this.form.submit();"/>
+                                            <input type="submit" hidden/>
+                                        </form>
+                                        <div class="input-append">
+                                            <select name="rslist" class="form-control" form="Aform">
+                                                <option value="<?php echo $serial->_device; ?>" selected="selected"><?php echo $serial->_device; ?></option>
+                                            </select>
+                                            <button class="browse btn btn-primary" type="button"><i class="icon-search"></i> Select BIN</button>
+                                        </div>
+                                        <br/><br/>
+                                        <span class="label label-warning">Caution: Main board for Olimex powered with 3.3V - Double check your USB-TTL adapter.</span>
+                                        <br/><br/>
+                                        <img src="img/usb_ttl.jpg" />
+                                    </center>
                                 </td>
                             </tr>
-                            <?php } ?>
+                        <?php } ?>
                         </tbody>
                     </table>
                 </div>

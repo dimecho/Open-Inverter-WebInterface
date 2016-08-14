@@ -435,7 +435,7 @@ function buildTips()
         });
     }
 
-    span = $("<a>", {href:"."});
+    span = $("<a>", {href:"#", onClick:"window.location.reload()"});
     span.append($("<img>", {class:"svg-inject", src:"img/refresh.svg"}));
     opStatus.append(span);
 }
