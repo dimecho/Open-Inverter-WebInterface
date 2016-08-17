@@ -5,7 +5,7 @@
         <script>
             $(document).on('click', '.browse', function(){
                 <?php
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'Macintosh') !== false) {
+                if (strpos($_SERVER['HTTP_USER_AGENT'], 'Huebner Inverter') !== false) {
                     echo "window.location.href = '_attiny.php';";
                 }else{
                     echo "var file = $('.file');";
@@ -28,9 +28,9 @@
                             <tr>
                                 <td>
                                 <?php
-                                    $name = basename($_FILES['firmware']['tmp_name']);
-                                    move_uploaded_file($_FILES['firmware']['tmp_name'], "/tmp/$name.hex");
-                                    $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../attiny' '/tmp/$name.hex' " .$_POST["isplist"]. " " .$serial->_device. " 2>&1; echo $?";
+                                    //$name = basename($_FILES['firmware']['tmp_name']);
+                                    //move_uploaded_file($_FILES['firmware']['tmp_name'], "/tmp/$name.hex");
+                                    $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../attiny' " .$_FILES['firmware']['tmp_name']. " " .$_POST["isplist"]. " " .$serial->_device. " 2>&1; echo $?";
                                     $output = shell_exec($command);
                                     echo "<span class='label'>$command</span>";
                                     echo "<pre>$output</pre>";

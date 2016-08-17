@@ -26,16 +26,18 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
         //Create Preferences - How the web page should be loaded
         let preferences = WKPreferences()
         preferences.javaScriptEnabled = true
+        //preferences.plugInsEnabled = true
         
         //Create Configuration for our Preferences
         let configuration = WKWebViewConfiguration()
         configuration.preferences = preferences
+        configuration.applicationNameForUserAgent = "Huebner Inverter";
         
         //Instantiate webView
         webView = WKWebView(frame: view.bounds, configuration: configuration)
         webView.navigationDelegate = self
         view.addSubview(webView)
-        
+  
         self.performSelectorInBackground(#selector(startPHP), withObject:nil)
     }
     
@@ -84,7 +86,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             uploadSnapshot();
             decisionHandler(WKNavigationActionPolicy.Cancel)
         }
-        else if (url == NSURL(string:"http://" + ip + ":" + port + "/bootloader.php"))
+        else if (url == NSURL(string:"http://" + ip + ":" + port + "/_bootloader.php"))
         {
             checkOpenOCD()
             decisionHandler(WKNavigationActionPolicy.Cancel)
@@ -582,7 +584,6 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
     
     func flashBootloader()
     {
-        /*
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
@@ -598,13 +599,17 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
             
             if(fileSize < 20000)
             {
-                system("echo '\"" + NSBundle.mainBundle().pathForResource("openocd", ofType:nil)! + "\" \"" + panel.URL!.path! + "\"' > /tmp/bootloader.sh; chmod +x /tmp/bootloader.sh; open -a Terminal /tmp/bootloader.sh")
+                system("echo '\"" + NSBundle.mainBundle().pathForResource("openocd", ofType:nil)! + "\" \"" + panel.URL!.path! + "\" olimex-arm-usb-ocd-h' > /tmp/bootloader.sh; chmod +x /tmp/bootloader.sh; open -a Terminal /tmp/bootloader.sh")
+                NSTimer.scheduledTimerWithTimeInterval(4.0, target: self, selector: #selector(webViewRefresh), userInfo: nil, repeats: false)
+            }else{
+                let alert = NSAlert()
+                alert.alertStyle = NSAlertStyle.WarningAlertStyle
+                alert.messageText = "Brick Alert"
+                alert.informativeText = "Careful! You may brick your microcontroller. This is Bootloader Flash."
+                alert.addButtonWithTitle("OK")
+                alert.runModal()
             }
         }
-        */
-        system("open -a Terminal \"" + NSBundle.mainBundle().pathForResource("openocd", ofType:nil)! + "\"")
-        
-        NSTimer.scheduledTimerWithTimeInterval(4.0, target: self, selector: #selector(webViewRefresh), userInfo: nil, repeats: false)
     }
     
     func flashFirmware()
@@ -632,7 +637,7 @@ class Application: NSViewController, NSApplicationDelegate, NSWindowDelegate, WK
                 let alert = NSAlert()
                 alert.alertStyle = NSAlertStyle.WarningAlertStyle
                 alert.messageText = "Brick Alert"
-                alert.informativeText = "Careful! You may brick your microcontroller - DO NOT pick Bootloader. This is Firmware Flash."
+                alert.informativeText = "Careful! You may brick your microcontroller. This is Firmware Flash."
                 alert.addButtonWithTitle("OK")
                 alert.runModal()
             }

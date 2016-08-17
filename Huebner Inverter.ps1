@@ -1,6 +1,6 @@
-#=============
-# Version: 1.0
-#=============
+#===============
+# Version: 1.0.1
+#===============
 
 # Get the ID and security principal of the current user account
 $myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent()
@@ -27,10 +27,10 @@ function startPHP($page) {
 			Invoke-WebRequest -Uri http://windows.php.net/downloads/releases/$phpFile -OutFile "$env:TEMP\$phpFile"
 		}
 		# Download Dio Extension
-		$phpDIO = "php_dio-0.0.7-5.6-ts-vc11-x64.zip"
-		if (-Not (Test-Path "$env:TEMP\$phpDIO")) {
-			Invoke-WebRequest -Uri http://windows.php.net/downloads/pecl/releases/dio/0.0.7/$phpDIO -OutFile "$env:TEMP\$phpDIO"
-		}
+		#$phpDIO = "php_dio-0.0.7-5.6-ts-vc11-x64.zip"
+		#if (-Not (Test-Path "$env:TEMP\$phpDIO")) {
+		#	Invoke-WebRequest -Uri http://windows.php.net/downloads/pecl/releases/dio/0.0.7/$phpDIO -OutFile "$env:TEMP\$phpDIO"
+		#}
 		
 		# Visual C++ Redistributable for Visual Studio 2012
 		if (-Not (Test-Path 'HKLM:\SOFTWARE\Classes\Installer\Dependencies\{ca67548a-5ebe-413a-b50c-4b9ceb6d66c6}')) {
@@ -46,11 +46,13 @@ function startPHP($page) {
 		{
 			$shell.Namespace("$env:programfiles\PHP\").copyhere($item)
 		}
-		$zip = $shell.NameSpace("$env:TEMP\$phpDIO")
-		foreach($item in $zip.items())
-		{
-			$shell.Namespace("$env:programfiles\PHP\ext").copyhere($item)
-		}
+		#$zip = $shell.NameSpace("$env:TEMP\$phpDIO")
+		#foreach($item in $zip.items())
+		#{
+		#	$shell.Namespace("$env:programfiles\PHP\ext").copyhere($item)
+		#}
+		Copy-Item "$PSScriptRoot\Windows\dio\php_dio.dll" "$env:programfiles\PHP\ext"
+		
 		Rename-Item "$env:programfiles\PHP\php.ini-development" php.ini -ErrorAction SilentlyContinue
 		Add-Content "$env:programfiles\PHP\php.ini" "
 [WebPIChanges]
@@ -66,9 +68,9 @@ extension_dir = `'ext`'
 extension=php_dio.dll"
 
 		# Firewall Configuration
-		if (!(Get-NetFirewallRule | where {$_.Name -eq "TCP8080"})) {
-			New-NetFirewallRule -Name "TCP8080" -DisplayName "HTTP on TCP/8080" -Protocol tcp -LocalPort 8080 -Action Allow -Enabled True
-		}
+		#if (!(Get-NetFirewallRule | where {$_.Name -eq "TCP8080"})) {
+		#	New-NetFirewallRule -Name "TCP8080" -DisplayName "HTTP on TCP/8080" -Protocol tcp -LocalPort 8080 -Action Allow -Enabled True
+		#}
 		
 		startPHP
 		
@@ -83,6 +85,18 @@ extension=php_dio.dll"
 		Write-Host "===================================="  -ForegroundColor Green 
 		Write-Host "COM port '$comPort' set in config.inc.php"  -ForegroundColor Green
 		Write-Host "===================================="  -ForegroundColor Green
+		
+		#================================================
+		#Quick Fix [give it a kick] - Prolific Driver Bug or Windows?
+		#================================================
+		$process = Start-Process -FilePath "$PSScriptRoot\Windows\putty.exe" -ArgumentList "-serial $comPort" -PassThru
+		try{
+			$process | Wait-Process -Timeout 2 -ErrorAction Stop
+		}catch{
+			$process | Stop-Process -Force
+		}
+		#Somehow Putty fix sets maximum buffer size
+		#================================================
 		
 		$firefox = "C:\Program Files (x86)\Mozilla Firefox\firefox.exe"
 		If (Test-Path $firefox){
@@ -99,7 +113,7 @@ extension=php_dio.dll"
 		Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 127.0.0.1:8080 -t ""$scriptPath\Web\""" -Wait
 	}
 }
-	
+
 function findPort {
 	DO
 	{
@@ -113,24 +127,33 @@ function findPort {
 	} While ($True)
 }
 
-function startInkscape {
-
-}
-
-function ProlificDriver {
-
-	if (-Not (Test-Path "C:\WINDOWS\system32\DRIVERS\se2pl64.sys")) {
-		$file = "PL2303_Prolific_GPS_AllInOne_1013.exe"
-		if (-Not (Test-Path "$env:TEMP\$file")) {
-			Invoke-WebRequest -Uri http://www.crercc.com/$file -OutFile "$env:TEMP\$file"
-			Start-Process "$env:TEMP\$file" -Wait
+function checkDrivers {
+	
+	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "Prolific"}
+	if ($Driver)
+	{
+		if ([System.Diagnostics.FileVersionInfo]::GetVersionInfo("C:\Windows\System32\drivers\ser2pl64.sys").FileVersion -ne "3.3.11.152")
+		{
+			$oeminflist = gci "$env:windir\inf\*.*" -Include oem*.inf;
+			foreach ($inf in $oeminflist) {
+				Select-String -path $inf.FullName -Pattern "Prolific" -List| foreach {
+					$oeminfmatches += $_.filename;
+					Write-Host "Found $infname in $_.path";
+					pnputil -f -d $_.filename
+				}
+			}
+			Write-Host "...Installing Driver"
+			pnputil -a ""$PSScriptRoot\Windows\driver\ProlificUsbSerial\ser2pl.inf""
+			InfDefaultInstall ""$PSScriptRoot\Windows\driver\ProlificUsbSerial\ser2pl.inf""
 		}
 	}
 }
 
 function Uninstall {
-	Remove-NetFirewallRule -Name "TCP8080" -ErrorAction SilentlyContinue
+	#Remove-NetFirewallRule -Name "TCP8080" -ErrorAction SilentlyContinue
 	Remove-Item -Recurse -Force "$env:programfiles\PHP"
 }
 
+checkDrivers
 startPHP "index.php"
+#startPHP "serial.php?json"

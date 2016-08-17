@@ -8,13 +8,11 @@
         <script>
             $(document).on('click', '.browse', function(){
                 <?php
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'Macintosh') !== false) {
+                if (strpos($_SERVER['HTTP_USER_AGENT'], 'Huebner Inverter') !== false) {
                     echo "window.location.href = '_firmware.php';";
                 }else{
-                ?>
-                    var file = $(".file");
-                    file.trigger('click');
-                <?php
+                    echo "var file = $('.file');";
+                    echo "file.trigger('click');";
                 }
                 ?>
             });
@@ -33,15 +31,16 @@
                             <tr>
                                 <td>
                                 <?php
-                                    if (strpos($_SERVER['HTTP_USER_AGENT'], 'Macintosh') !== false) {
-                                        $name = basename($_FILES['firmware']['tmp_name']);
-                                        move_uploaded_file($_FILES['firmware']['tmp_name'], "/tmp/$name.bin");
-                                        $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../updater' '/tmp/$name.bin' " .$serial->_device. " 2>&1; echo $?";
-                                        $output = shell_exec($command);
-                                    }else{
+                                    if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
                                         //Windows: double backslash \\ should be used to print a single \
                                         //Windows: safe_mode = Off
-                                        $output = exec("'" .$_SERVER["DOCUMENT_ROOT"]. "/../updater.exe' '" .$_FILES['firmware']['tmp_name']. "' " .$serial->_device);
+                                        $command = "powershell.exe -file '" .$_SERVER["DOCUMENT_ROOT"]. "/../Windows/updater.ps1' '" .$_FILES['firmware']['tmp_name']. "' " .str_replace("\\.\\", "", $serial->_device);
+                                        $output = exec($command);
+                                    }else{
+                                        //$name = basename($_FILES['firmware']['tmp_name']);
+                                        //move_uploaded_file($_FILES['firmware']['tmp_name'], "/tmp/$name.bin");
+                                        $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../updater' " .$_FILES['firmware']['tmp_name']. " " .$serial->_device. " 2>&1; echo $?";
+                                        $output = shell_exec($command);
                                     }
 
                                     echo "<span class='label'>$command</span>";
