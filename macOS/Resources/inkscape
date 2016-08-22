@@ -7,12 +7,12 @@ hdiutil attach ~/Downloads/Inkscape-0.91-1-x11-10.7-x86_64.dmg
 x=1
 while [ $x -le 120 ]
 do
-    if [ -f /Applications/Inkscape.app/Contents/MacOS/Inkscape ]; then
+    if [ -d /Applications/Inkscape.app ]; then
         rsync -avh ./encoder/* ~/.config/inkscape/
-        break
+        exit
     fi
     x=$(( $x + 1 ))
-    sleep 4
+    sleep 6
 done
 
 #hdiutil detach /dev/disk2

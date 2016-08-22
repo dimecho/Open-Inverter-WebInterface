@@ -1,63 +1,64 @@
 $PAGE_SIZE_BYTES = 1024
 $PAGE_SIZE_WORDS = ($PAGE_SIZE_BYTES / 4)
+$serial
 
 function update($binFile, $ttyDev)
 {
 	$data = [System.IO.File]::ReadAllBytes($binFile)
    	$page = 0
    	$done = 0
-   	$rst_cmd = "reset`r"
 	$len = $data.Count
-
  	if ($len -lt 1)
  	{
  		return
  	}
 
- 	$pages = ($len + $PAGE_SIZE_BYTES - 1) / $PAGE_SIZE_BYTES
- 	Write-Host "File length is $len bytes/$pages pages"  -ForegroundColor Red
+ 	$pages = [math]::Round(($len + $PAGE_SIZE_BYTES - 1) / $PAGE_SIZE_BYTES)
+ 	Write-Host "File length is $len bytes/$pages pages"
 
-	$uart = New-Object System.IO.Ports.SerialPort $comPort,115200,None,8,one
-	$uart.Open()
+	$serial = New-Object System.IO.Ports.SerialPort $ttyDev,115200,None,8,Two
+    #$serial.ReadTimeout = 1500
+    #$serial.WriteTimeout = 1500
+	$serial.Open()
 
-	if (!$uart)
-	{
+	if (!$serial.IsOpen){
+		Write-Host "Could not open $ttyDev"
 		return
 	}
 	
 	Write-Host "Resetting device..."
 
-	$uart.Write($rst_cmd)
-
-	wait_for_char($uart, 'S') #Wait for size request
+	$serial.Write("reset`r")
+	
+	wait_for_char 'S' #Wait for size request
 
   	Write-Host "Sending number of pages..."
 
-  	$uart.Write($pages)
+  	$serial.WriteLine($pages)
 
-  	wait_for_char($uart, 'P') #Wait for page request
+  	wait_for_char 'P' #Wait for page request
 
-  	while(!done)
+  	while(!$done)
    	{
-   		Write-Host "Sending page $page... "
-
-   		$uart.Write($data[$PAGE_SIZE_WORDS * $page])
-
-   		wait_for_char($uart, 'C') #Wait for CRC request
-
-		#Start-Sleep -s 1
-   		Write-Host "Sending CRC... "
-
-   		$crc = crc32($data[$PAGE_SIZE_WORDS * $page], $PAGE_SIZE_WORDS, 0xffffffff)
-   		$uart.Write($crc)
-   		#Write-Host $crc
+		$start = ($PAGE_SIZE_WORDS * $page)
+   		Write-Host "Sending page $page ($start)... "
+		
+   		$serial.Write($data[$start..($start + $PAGE_SIZE_WORDS)])
+		
+   		wait_for_char 'C' #Wait for CRC request
+		#wait_for_char 'T' #Wait for CRC request
+		
+   		$crc = crc32 $data[$start..($start + $PAGE_SIZE_WORDS)] $PAGE_SIZE_WORDS
+		Write-Host "Sending CRC $crc ... "
+   		$serial.Write($crc)
 
    		$recv_char = '';
       	while ($recv_char -eq '')
       	{
-         	$recv_char = $uart.ReadLine()
+         	$recv_char = $serial.ReadChar()
       	}
-
+		Write-Host ">$recv_char"
+		
       	if ('D'-eq $recv_char)
 	    {
 	        Write-Host "CRC correct!"
@@ -81,23 +82,27 @@ function update($binFile, $ttyDev)
 	    }
    	}
 
-	$uart.Close()
+	$serial.Close()
 }
 
-function wait_for_char($uart, $c)
+function wait_for_char($c)
 {
-	$recv_char = -1;
-   	while ($c -ne $recv_char)
-   	{
-      	$recv_char = $uart.ReadLine()
-   	}
+	while($recv_char = $serial.ReadChar())
+	{
+		#Write-Host $recv_char
+		if($recv_char -eq [char]$c){
+			return
+		}
+	}
 }
 
-function crc32($data, $len, $crc)
+function crc32($data, $len)
 {
+	$crc = 0xffffffff
+	
    	for ($i = 0; $i -lt $len; $i++)
    	{
-      	$crc = crc32_word($crc, $data[$i]);
+      	$crc = crc32_word [Int32]$crc [Int32]$data[$i]
    	}
    	return $crc;
 }
@@ -110,9 +115,9 @@ function crc32_word($crc, $data)
   	{
 	    if ($crc -and 0x80000000)
 		{
-	      	$crc = ($crc -shl 1) -xor 0x04C11DB7; # Polynomial used in STM32
+	      	$crc = ([Int32]$crc -shl 1) -xor 0x04C11DB7; # Polynomial used in STM32
 	    }else{
-	      	$crc = ($crc -shl 1);
+	      	$crc = ([Int32]$crc -shl 1);
 	    }
 	}
   	return($crc);

@@ -24,10 +24,10 @@ else
 
     #Fuse - Default
     #avrdude -c ponyser -p attiny13 -P /dev/cu.usbserial -U lfuse:w:0x6A:m -U hfuse:w:0xFF:m -B 250
-
+    
     #Fuse - Lock
-    #avrdude -c ponyser -p attiny13 -P /dev/cu.usbserial -U lfuse:w:0x6A:m -U hfuse:w:0xFF:m -U lock:w:0xFE:m
-
+    #avrdude -c ponyser -p attiny13 -P /dev/cu.usbserial -U lfuse:w:0x7A:m -U hfuse:w:0xFF:m -U lock:w:0xFF:m
+    
     #Write
     #avrdude -c USBasp -p attiny13 -P /dev/cu.usbserial -U flash:w:volt-pwm-attiny13.hex:i -B 1024 -b 19200
     avrdude -c $2 -p attiny13 -P $3 -U flash:w:$1 -F

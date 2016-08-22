@@ -1,20 +1,31 @@
+<?php
+    require "config.inc.php";
+
+    if(isset($_GET["ajax"])){
+         if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
+            //Windows: safe_mode = Off
+            $command = "powershell.exe -file '" .$_SERVER["DOCUMENT_ROOT"]. "/../Windows/updater.ps1' '" .$_GET["file"]. "' " .str_replace("\\.\\", "", $serial->_device);
+        }else{
+            $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../updater' " .$_GET["file"]. " " .$serial->_device;
+        }
+
+        exec($command . " 2>&1", $output, $return);
+
+        foreach ($output as $line) {
+            echo "$line\n";
+        }
+    }else{
+?>
 <!DOCTYPE html>
 <html>
     <head>
         <?php
-            require "config.inc.php";
             include "header.php";
         ?>
         <script>
             $(document).on('click', '.browse', function(){
-                <?php
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'Huebner Inverter') !== false) {
-                    echo "window.location.href = '_firmware.php';";
-                }else{
-                    echo "var file = $('.file');";
-                    echo "file.trigger('click');";
-                }
-                ?>
+                var file = $('.file');
+                file.trigger('click');
             });
         </script>
     </head>
@@ -30,22 +41,36 @@
                         <?php if(isset($_FILES["firmware"])){ ?>
                             <tr>
                                 <td>
-                                <?php
-                                    if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
-                                        //Windows: double backslash \\ should be used to print a single \
-                                        //Windows: safe_mode = Off
-                                        $command = "powershell.exe -file '" .$_SERVER["DOCUMENT_ROOT"]. "/../Windows/updater.ps1' '" .$_FILES['firmware']['tmp_name']. "' " .str_replace("\\.\\", "", $serial->_device);
-                                        $output = exec($command);
-                                    }else{
-                                        //$name = basename($_FILES['firmware']['tmp_name']);
-                                        //move_uploaded_file($_FILES['firmware']['tmp_name'], "/tmp/$name.bin");
-                                        $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../updater' " .$_FILES['firmware']['tmp_name']. " " .$serial->_device. " 2>&1; echo $?";
-                                        $output = shell_exec($command);
-                                    }
-
-                                    echo "<span class='label'>$command</span>";
-                                    echo "<pre>$output</pre>";
-                                ?>
+                                    <script>
+                                        $(document).ready(function() {
+                                            var progressBar = $("#progressBar");
+                                            for (i = 0; i < 100; i++) {
+                                                setTimeout(function(){ progressBar.css("width", i + "%"); }, i*2000);
+                                            }
+                                            $.ajax({
+                                                type: "GET",
+                                                url: "firmware.php?ajax=1<?php
+                                                    $name = basename($_FILES['firmware']['tmp_name']);
+                                                    $tmp_name = "/tmp/$name.bin";
+                                                    move_uploaded_file($_FILES['firmware']['tmp_name'], $tmp_name);
+                                                    //echo $_FILES['firmware']['tmp_name'];
+                                                    echo "&file=" .$tmp_name;
+                                                ?>",
+                                                data: {},
+                                                success: function(data){
+                                                    console.log(data);
+                                                    progressBar.css("width","100%");
+                                                    $("#output").append($("<pre>").append(data));
+                                                }
+                                            });
+                                        });
+                                    </script>
+                                    <div class="progress progress-striped active">
+                                        <div class="bar" style="width:1%" id="progressBar"></div>
+                                    </div>
+                                    <span class="label label-warning">Tip: If Olimex is bricked, try pressing "reset" button while flashing</span>
+                                    <br/>
+                                    <div id="output"></div>
                                 </td>
                             </tr>
                         <?php }else{ ?>
@@ -78,3 +103,4 @@
         </div>
     </body>
 </html>
+<?php } ?>

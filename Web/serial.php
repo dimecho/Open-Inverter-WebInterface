@@ -48,24 +48,25 @@ if(isset($_GET["save"])){
         $cmd = "get " . $_GET["i"];
     }
 
-    $serial->sendMessage($cmd . "\n");
-   
-    if (strpos($_SERVER['HTTP_USER_AGENT'], 'Macintosh') !== false) {
-        $x = 0;
-        while($x <= 10)
+    
+	$serial->sendMessage($cmd . "\n");
+	$x = 0;
+
+	//while($x <= 4 && json_decode($read) === null)
+	$read = $serial->readPort();
+	while($x <= 10)
+    {
+		usleep(500);
+        if(strlen($read) < 6500)
         {
-            usleep(1000);
-            $str = $serial->readPort();
-            if(strlen($str) == 0)
-            {
-                $x++;
-            }else{
-                $read .= $str;
-            }
+			$serial->sendMessage("\n");
+			$read .= $serial->readPort();
+			$x++;
+        }else{
+            break;
         }
-    }else{
-        $read = $serial->readPort();
     }
 }
+
 echo $read;
 ?>

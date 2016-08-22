@@ -1,0 +1,1 @@
+start /wait %USERPROFILE%\Downloads\gcc-arm-none-eabi-5_4-2016q2-20160622-win32.exe

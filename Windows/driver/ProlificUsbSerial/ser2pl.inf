@@ -9,7 +9,7 @@ signature="$CHICAGO$"
 Class=Ports
 ClassGuid={4D36E978-E325-11CE-BFC1-08002BE10318}
 Provider=%PRO%
-DriverVer=03/12/2010,3.3.11.152
+DriverVer=10/27/2008,3.3.2.105
 CatalogFile=ser2pl.cat
 
 
@@ -47,7 +47,6 @@ AddReg=ComPort.HW.AddReg
 
 [ComPort.NT.Services]
 AddService = Ser2pl, 0x00000002, Serial_Service_Inst.NT
-AddService = Serenum,,Serenum_Service_Inst
 
 [ComPort.NT.Copy]
 ser2pl.sys
@@ -58,7 +57,7 @@ HKR,,NTMPDriver,,ser2pl.sys
 HKR,,EnumPropPages32,,"MsPorts.dll,SerialPortPropPageProvider"
 
 [ComPort.HW.AddReg]
-HKR,,"UpperFilters",0x00010000,"serenum"
+;HKR,,"UpperFilters",0x00010000,"serenum"
 
 
 [ComPort.NTAMD64]
@@ -70,7 +69,6 @@ AddReg=ComPort.HW.AddReg
 
 [ComPort.NTAMD64.Services]
 AddService = Ser2pl, 0x00000002, Serial_Service_Inst.NTAMD64
-AddService = Serenum,,Serenum_Service_Inst
 
 [ComPort.NTAMD64.Copy]
 ser2pl64.sys

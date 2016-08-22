@@ -51,21 +51,28 @@ $(document).ready(function()
     }, false, 'confirm');
 
     buildParameters(loadJSON(0));
-    checkGCC_ARM();
 });
 
-function checkGCC_ARM()
+function openExternalApp(app)
 {
-    $.ajax("gcc_arm.php",{
-        async: false,
-        success: function(data)
-        {
-            if(data == "1")
-            {
-                var menu = $("#gcc").show();
-            }
-        }
-    });
+    if(app === "inkscape"){
+        buildEncoderAlert();
+    }else if(app === "source"){
+        window.location.href = "/compile.php";
+    }else if(app === "attiny"){
+        window.location.href = "/attiny.php";
+    }else{
+        $.ajax("open.php?app=" + app);
+    }
+}
+
+function confirmGCCRemove(e)
+{
+    alertify.confirm("Remove Compiler?", "This will clean up over 500MB of space!\n" + e, function()
+    {
+        $.ajax("install.php?remove=arm",{async: false});
+        $.ajax("install.php?remove=avr",{async: false});
+    }, function(){});
 }
 
 function loadJSON(i)
@@ -97,7 +104,8 @@ function loadJSON(i)
             }
         },
         error: function(xhr, textStatus, errorThrown){
-        }
+        },
+        timeout: 8000 // sets timeout to 8 seconds
     });
     
     return json;
@@ -285,10 +293,10 @@ function buildEncoderAlert()
 {
     alertify.buildEncoder("Build encoder",
         function() {
-            window.location.href = "/encoder.php";
+            $.ajax("open.php?app=inkscape");
         },
         function() {
-            window.location.href = "/encoder3d.php";
+            $.ajax("open.php?app=inkscape_openscad");
         }
     );
 }

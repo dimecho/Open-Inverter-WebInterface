@@ -4,7 +4,7 @@ $(document).ready(function()
         selector: 'a',
         url: 'serial.php',
         mode: 'popup',
-        pk: 1,
+        pk: '1',
         showbuttons: true,
         ajaxOptions: {
             type: 'get',
@@ -59,7 +59,7 @@ $(document).ready(function()
                 
                 setTimeout(function(){
                     saveChanges(span);
-                },2000);
+                },1500);
                 setTimeout(function(){
                     span.remove();
                 },5000);

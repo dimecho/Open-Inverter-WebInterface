@@ -1,3 +1,4 @@
+<?php include "install.php"; ?>
 <div class="row">
     <div class="span1"></div>
     <div class="span10">
@@ -19,7 +20,7 @@
                             <li><a tabindex="-1" href="#">Save Parameters from Flash</a></li>
                             -->
                             <li><a tabindex="-1" href="upload.php">Upload Parameters</a></li>
-                            <li><a tabindex="-1" href="download.php">Download Parameters</a></li>
+                            <li><a tabindex="-1" href="snapshot.php">Download Parameters</a></li>
                             <li><a tabindex="-1" href="index.php">Advanced Parameters</a></li>
                             <li><a tabindex="-1" href="simple.php">Simple Parameters</a></li>
                             <!--
@@ -31,15 +32,17 @@
                             <li class="divider"></li>
                             <li><a tabindex="-1" href="bootloader.php">Flash Bootloader</a></li>
                             <li><a tabindex="-1" href="firmware.php">Flash Firmware</a></li>
-                            <li><a tabindex="-1" href="attiny.php">Flash ATtiny13 Chip</a></li>
-                            <li><a tabindex="-1" href="compile.php">Compile from Source</a></li>
-                            <li id="gcc" style="display: none;"><a tabindex="-1" href="gcc_remove.php">Remove GCC ARM Compiler</a></li>
+                            <li><a tabindex="-1" href="#" onClick=<?php checkAVRCompiler(); ?>>Flash ATtiny13 Chip</a></li>
+                            <li><a tabindex="-1" href="#" onClick=<?php checkARMCompiler(); ?>>Compile from Source</a></li>
+                            <?php if(checkCompiler()) { ?>
+                                <li><a tabindex="-1" href="#" onClick=<?php echo "\"confirmGCCRemove()\""; ?>>Remove GCC ARM Compiler</a></li>
+                            <?php } ?>
                             <li class="divider"></li>
-                            <li><a tabindex="-1" href="schematics.php">Schematics</a></li>
+                            <li><a tabindex="-1" href="#" onClick=<?php checkEagle(); ?>>Schematics</a></li>
                             <li><a tabindex="-1" href="components.php">Components</a></li>
                             <li><a tabindex="-1" href="wiring.php">Wiring Diagram</a></li>
                             <li><a tabindex="-1" href="igbt-test.php">IGBT Test</a></li>
-                            <li><a tabindex="-1" onClick="buildEncoderAlert()">Build Encoder</a></li>
+                            <li><a tabindex="-1" href="#" onClick=<?php checkInkscape(); ?>>Build Encoder</a></li>
                         </ul>
                     </li>
                     <li>

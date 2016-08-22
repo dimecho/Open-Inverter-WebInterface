@@ -1,0 +1,1 @@
+start /wait %USERPROFILE%\Downloads\OpenSCAD-2015.03-x86-64-Installer.exe

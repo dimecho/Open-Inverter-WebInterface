@@ -1,4 +1,4 @@
 #!/bin/sh
 
 tar xzf ~/Downloads/eagle-mac64-7.6.0.zip -C ~/Downloads/
-installer -pkg ~/Downloads/eagle-mac64-7.6.0.pkg -target /
+osascript -e "do shell script \"installer -pkg ~/Downloads/eagle-mac64-7.6.0.pkg -target /\" with administrator privileges"

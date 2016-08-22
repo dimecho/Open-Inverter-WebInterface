@@ -65,7 +65,8 @@ fastcgi.impersonate=1
 fastcgi.logging=0
 date.timezone=America/Los_Angeles
 extension_dir = `'ext`'
-extension=php_dio.dll"
+extension=php_dio.dll
+extension=php_curl.dll"
 
 		# Firewall Configuration
 		#if (!(Get-NetFirewallRule | where {$_.Name -eq "TCP8080"})) {
@@ -82,21 +83,9 @@ extension=php_dio.dll"
 		For ($i=0; $i -le 10; $i++) {
 	    	(Get-Content $config_inc).replace("deviceSet(""COM$i"")", "deviceSet(""$comPort"")") | Set-Content $config_inc
 	    }
-		Write-Host "===================================="  -ForegroundColor Green 
+		Write-Host "===================================="  -ForegroundColor Green
 		Write-Host "COM port '$comPort' set in config.inc.php"  -ForegroundColor Green
 		Write-Host "===================================="  -ForegroundColor Green
-		
-		#================================================
-		#Quick Fix [give it a kick] - Prolific Driver Bug or Windows?
-		#================================================
-		$process = Start-Process -FilePath "$PSScriptRoot\Windows\putty.exe" -ArgumentList "-serial $comPort" -PassThru
-		try{
-			$process | Wait-Process -Timeout 2 -ErrorAction Stop
-		}catch{
-			$process | Stop-Process -Force
-		}
-		#Somehow Putty fix sets maximum buffer size
-		#================================================
 		
 		$firefox = "C:\Program Files (x86)\Mozilla Firefox\firefox.exe"
 		If (Test-Path $firefox){
@@ -117,12 +106,14 @@ extension=php_dio.dll"
 function findPort {
 	DO
 	{
+		checkDrivers
 		$portArray = ([System.IO.Ports.SerialPort]::GetPortNames() | select -first 1)
 		ForEach ($item in $portArray)
 		{
 			return $item
 		}
 		Write-Host "... Waiting for RS232-USB"
+
 		Start-Sleep -s 4
 	} While ($True)
 }
@@ -132,7 +123,7 @@ function checkDrivers {
 	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "Prolific"}
 	if ($Driver)
 	{
-		if ([System.Diagnostics.FileVersionInfo]::GetVersionInfo("C:\Windows\System32\drivers\ser2pl64.sys").FileVersion -ne "3.3.11.152")
+		if ([System.Diagnostics.FileVersionInfo]::GetVersionInfo("C:\Windows\System32\drivers\ser2pl64.sys").FileVersion -ne "3.3.2.105")
 		{
 			$oeminflist = gci "$env:windir\inf\*.*" -Include oem*.inf;
 			foreach ($inf in $oeminflist) {
@@ -154,6 +145,5 @@ function Uninstall {
 	Remove-Item -Recurse -Force "$env:programfiles\PHP"
 }
 
-checkDrivers
 startPHP "index.php"
-#startPHP "serial.php?json"
+#startPHP "serial.php?json=1"

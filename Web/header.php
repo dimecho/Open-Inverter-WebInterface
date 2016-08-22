@@ -10,10 +10,19 @@
 <script type="text/javascript" src="js/bootstrap.js"></script>
 <script type="text/javascript" src="js/alertify.js"></script>
 <script type="text/javascript" src="js/menu.js"></script>
+<script type="text/javascript" src="js/download.js"></script>
 <script type="text/javascript" src="js/svg-injector.js"></script>
 <script type="text/javascript">
     alertify.defaults.transition = "slide";
     alertify.defaults.theme.ok = "btn btn-primary";
     alertify.defaults.theme.cancel = "btn btn-danger";
     alertify.defaults.theme.input = "form-control";
+
+    var os = "Mac";
+    $(document).ready(function()
+    {
+        if (navigator.userAgent.indexOf("Windows") != -1) {
+            os = "Windows";
+        }
+    });
 </script>

@@ -1,0 +1,64 @@
+#!/bin/sh
+
+cd "$(dirname "$0")"
+clear
+
+if [ -d /Applications/Firefox.app ]; then
+    browser="Firefox"
+else
+    browser="Safari"
+fi
+
+if [ -f /usr/bin/php ]; then
+    if grep -q "extension_dir=$(dirname "$0")/dio" "/usr/local/etc/php.ini"; then
+        echo "php.ini OK"
+    else
+        cp -R /etc/php.ini /usr/local/etc/php.ini
+        #cp -R ./dio/php.ini /usr/local/etc/php.ini
+        chmod 644 /usr/local/etc/php.ini
+        echo "extension_dir=$(dirname "$0")/dio/" >> /usr/local/etc/php.ini
+        echo "extension=dio.so" >> /usr/local/etc/php.ini
+        #echo "memory_limit=512M" >> /usr/local/etc/php.ini
+    fi
+fi
+
+pkill -9 php
+/usr/bin/php -S 127.0.0.1:8080 -t "$(dirname "$0")/Web/" -c /usr/local/etc/php.ini &
+sleep 4
+
+connect=0
+while true; do
+    serial=$(ls /dev/cu.* | tail -n 1)
+    #serial=$(ls /dev/tty.* | tail -n 1)
+    shopt -s nocasematch
+    if [[ $serial == *"usb"* ]]; then
+        if grep -q $serial "$(dirname "$0")/Web/config.inc.php"; then
+            echo "config.inc.php OK"
+        else
+            cp -R "$(dirname "$0")/Web/config.inc" "$(dirname "$0")/Web/config.inc.php"
+            sed -i -e "s~/dev/cu.usbserial~$serial~g" "$(dirname "$0")/Web/config.inc.php"
+        fi
+        echo $serial
+        break
+    fi
+    echo "... Waiting for RS232-USB"
+
+    if [[ $connect -eq 0 ]]; then
+        open -a $browser http://localhost:8080/connect.html
+        connect=1
+    fi
+    sleep 1
+done
+
+#stty -f $serial 115200 parodd cs8 cstopb -crtscts -echo & cat $serial &
+#stty -f $serial 115200 & screen $serial 115200 &
+
+if [ ! -d "/Library/Extensions/ProlificUsbSerial.kext" ]; then
+    open -a $browser http://localhost:8080/drivers.html
+    echo "============================"
+    echo "Installing RS232-USB Drivers"
+    echo "============================"
+    osascript -e "do shell script \"$(dirname "$0")/driver\" with administrator privileges"
+fi
+
+open -a $browser http://localhost:8080

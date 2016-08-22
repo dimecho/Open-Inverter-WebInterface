@@ -6,7 +6,7 @@
 
 Serial console management application written for Open-Source [Inverter Project](http://johanneshuebner.com/quickcms/index.html%3Fde_electric-car-conversion-site,14.html) controlling 3-Phase AC Induction Motors.
 
-Native "termios.h" wrapper for macOS using Swift 2.0 Framework to allow for better RS232-USB support.
+All-In-One Application with PHP helper, RS232-USB support, Firmware, ARM compiler and Instructions.
 
 <p align="center">
   <img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/screenshot.jpg">

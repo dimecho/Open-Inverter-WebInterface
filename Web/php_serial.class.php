@@ -62,18 +62,7 @@ class phpSerial
 		elseif (substr($sysname, 0, 6) === "Darwin")
 		{
 			$this->_os = "osx";
-            // We know stty is available in Darwin. 
-            // stty returns 1 when run from php, because "stty: stdin isn't a
-            // terminal"
-            // skip this check
-//			if($this->_exec("stty") === 0)
-//			{
-				register_shutdown_function(array($this, "deviceClose"));
-//			}
-//			else
-//			{
-//				trigger_error("No stty availible, unable to run.", E_USER_ERROR);
-//			}
+			register_shutdown_function(array($this, "deviceClose"));
 		}
 		elseif(substr($sysname, 0, 7) === "Windows")
 		{
@@ -568,9 +557,7 @@ class phpSerial
 		}
 
 		if ($this->_os === "linux" || $this->_os === "osx")
-			{
-			// Behavior in OSX isn't to wait for new data to recover, but just grabs what's there!
-			// Doesn't always work perfectly for me in OSX
+		{
 			$content = ""; $i = 0;
 
 			if ($count !== 0)
@@ -579,9 +566,10 @@ class phpSerial
 			}
 			else
 			{
-				do {
-					$content .= fread($this->_dHandle, 128);
-				} while (($i += 128) === strlen($content));
+				//do {
+				//	$content .= fread($this->_dHandle, 128);
+				//} while (($i += 128) === strlen($content));
+				$content = fread($this->_dHandle, 65536);
 			}
 
 			return $content;
