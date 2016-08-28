@@ -1,6 +1,7 @@
 #!/bin/sh
 
 if [ ! -f "/usr/local/gcc_arm/openocd/bin/openocd" ]; then
+    mkdir /usr/local/gcc_arm
     pkgutil --expand ~/Downloads/gnuarmeclipse-openocd-osx-0.10.0-201601101000-dev.pkg /usr/local/gcc_arm/openocd/
     cd /usr/local/gcc_arm/openocd/
     cat Payload | gzip -d | cpio -id

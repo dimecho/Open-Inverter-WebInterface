@@ -6,7 +6,7 @@
         $source = $_GET["url"];
 
         if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
-            $destination = getenv("HOMEPATH"). "\\Downloads\\";
+            $destination = getenv("USERPROFILE"). "\\Downloads\\";
         }else{
             $destination = getenv("HOME"). "/Downloads/";
         }
@@ -38,9 +38,9 @@
             $from = filesize($destination);
             curl_setopt($curl, CURLOPT_RANGE, $from . "-");
             curl_setopt($curl, CURLOPT_RESUME_FROM, $from);
-            $handle = fopen($destination, 'a');
+            $handle = fopen($destination, 'a+');
         }else{
-            $handle = fopen($destination, 'w');
+            $handle = fopen($destination, 'w+');
         }
         if (!$handle) {
             exit;
@@ -56,7 +56,7 @@
         curl_setopt($curl, CURLOPT_MAXREDIRS, 5); // Following a maximum of 2 redirections
         curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_FTP | CURLPROTO_FTPS); // Only allow http(s) and ftp(s) protocol for connection to the remote server
         curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']); // Define the UserAgent to be used for requests to the remote server.
-        curl_setopt($curl, CURLOPT_REFERER, $_GET["url"]); // Define the Referer to be used for requests to the remote server.
+        //curl_setopt($curl, CURLOPT_REFERER, $_GET["url"]); // Define the Referer to be used for requests to the remote server.
         
         function callback($resource,$download_size, $downloaded, $upload_size, $uploaded)
         {

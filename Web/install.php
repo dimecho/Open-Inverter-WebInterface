@@ -46,14 +46,34 @@ function checkEagle()
     if(is_dir($path)) {
         if(checkSource())
         {
-            echo "\"openExternalApp('eagle')\"";
+            echo "openExternalApp('eagle')";
         }else{
-            echo "\"confirmDownload('source')\"";
+            echo "confirmDownload('source')";
         }
     }else{
-        echo "\"confirmDownload('eagle')\"";
+        echo "confirmDownload('eagle')";
     }
 }
+
+function checkOpenOCD()
+{
+    if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
+        $path = "/usr/local/gcc_arm/openocd";
+    }else{
+        $path = "C:\\Program Files\\GNU ARM Eclipse\\OpenOCD";
+    }
+    if(is_dir($path)) {
+        if(checkSource())
+        {
+            echo "openExternalApp('openocd')";
+        }else{
+            echo "confirmDownload('source')";
+        }
+    }else{
+        echo "confirmDownload('openocd')";
+    }
+}
+
 
 function checkAVRCompiler()
 {
@@ -65,12 +85,12 @@ function checkAVRCompiler()
     if(is_file($path)) {
         if(checkSource())
         {
-            echo "\"openExternalApp('attiny')\"";
+            echo "openExternalApp('attiny')";
         }else{
-            echo "\"confirmDownload('source')\"";
+            echo "confirmDownload('source')";
         }
     }else{
-        echo "\"confirmDownload('attiny')\"";
+        echo "confirmDownload('attiny')";
     }
 }
 
@@ -85,12 +105,12 @@ function checkARMCompiler()
     {
         if(checkSource())
         {
-            echo "\"openExternalApp('source')\"";
+            echo "openExternalApp('source')";
         }else{
-            echo "\"confirmDownload('source')\"";
+            echo "confirmDownload('source')";
         }
     }else{
-        echo "\"confirmDownload('arm')\"";
+        echo "confirmDownload('arm')";
     }
 }
 
@@ -136,12 +156,12 @@ function checkInkscape()
     if(is_dir($path)) {
         if($xquartz == true)
         {
-            echo "\"openExternalApp('inkscape')\"";
+            echo "openExternalApp('inkscape')";
         }else{
-            echo "\"confirmDownload('xquartz')\"";
+            echo "confirmDownload('xquartz')";
         }
     }else{
-        echo "\"confirmDownload('inkscape')\"";
+        echo "confirmDownload('inkscape')";
     }
 }
 
@@ -153,9 +173,9 @@ function checkOpenSCAD()
         $path = "C:\\Program Files\\OpenSCAD";
     }
     if(is_dir($path)) {
-        echo "\"openExternalApp('openscad')\"";
+        echo "openExternalApp('openscad')";
     }else{
-        echo "\"confirmDownload('openscad')\"";
+        echo "confirmDownload('openscad')";
     }
 }
 

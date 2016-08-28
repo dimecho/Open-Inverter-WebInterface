@@ -1,4 +1,10 @@
-Snubbers caps use 1uF for every 100A on rails.,
-fweak applies only to sensor operation.,
+Snubbers caps use 1uF for every 100A on rails.
+fweak applies only to sensor operation.
 Clean flux, it attracts moisture and causes shorts.
-You can use pin18 on main board for temperature indicator <img src="img/temp_indicator.png" />
+You can use pin18 on main board for temperature indicator. <img src="img/temp_indicator.png" />
+If encoder requires 5V leave out R2 and connect Pin 2 directly to 5V.
+The faster the switching (pwmfrq) the higher the losses in the inverter and the lower the losses in the motor.
+There are two types of encoders, transmissive (gap type) as TCST2103 and reflective. <img src="img/TCST2103.jpg" />
+The larger the gap of encoder wheel the more problems will occur with ambient light. <a href="http://heliosoph.mit-links.info/make-your-own-rotary-encoder/">Info</a>
+Make ampmin as small as possible to get good economy.
+fslipmin=fslipmax (no slip) useful during debugging.

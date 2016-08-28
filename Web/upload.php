@@ -1,27 +1,19 @@
 <?php
 require('config.inc.php');
-require('InverterTerminal.class.php');
-
-$term = new InverterTerminal($serial);
 
 if (count($_FILES))
 {
-    $string = file_get_contents($_FILES['userfile']['tmp_name']);
+    $string = file_get_contents($_FILES['file']['tmp_name']);
     $params = (array)json_decode($string);
 
-    echo json_decode($string);
-
-    $term->sendCmd("stop");
-    
-    foreach ($combined as $name => $attributes)
+    foreach ($params as $name => $attributes)
     {
-        if ($attributes->isparam)
-        {
-            $term->sendCmd("set ".$name." ".$params[$name], false, 0.01);
-        }
+        //echo $name. ">" .$params[$name];
+        $serial->sendMessage("set " .$name. " " .$params[$name]. "\n");
+        $read = $serial->readPort();
     }
-
-    $term->getValues($combined);
 }
+
+header("Location:/index.php");
 
 ?>

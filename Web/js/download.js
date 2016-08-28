@@ -34,6 +34,14 @@ function confirmDownload(app)
         }else if(os === "Windows"){
             url = "https://downloads.sourceforge.net/project/winavr/WinAVR/20100110/WinAVR-20100110-install.exe";
         }
+    }else if(app === "openocd"){
+        title = "OpenOCD";
+        msg = "Install OpenoCD Debugger - Download 2.5MB";
+        if(os === "Mac"){
+            url = "https://github.com/gnuarmeclipse/openocd/releases/download/gae-0.10.0-20160110/gnuarmeclipse-openocd-osx-0.10.0-201601101000-dev.pkg";
+        }else if(os === "Windows"){
+            url = "https://github.com/gnuarmeclipse/openocd/releases/download/gae-0.10.0-20160110/gnuarmeclipse-openocd-win64-0.10.0-201601101000-dev-setup.exe";
+        }
     }else if(app === "eagle"){
         title = "CadSoft EAGLE PCB Design Software.";
         msg = "Install EAGLE - Download 50MB";
@@ -54,14 +62,28 @@ function confirmDownload(app)
 
     }else if(app === "source"){
         title = "Inverter Source Code";
-        msg = "Source Code - Download 1MB";
         url = "http://johanneshuebner.com/quickcms/files/inverter.zip";
+        //get_filesize(url, function(size) {
+            msg = "Source Code - Download 1MB";
+        //});
     }
 
     alertify.confirm(title, msg, function()
     {
         window.location.href = "download.php?url=" + url+ "&app=" + app;
     }, function(){});
+}
+
+function get_filesize(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("HEAD", url, true); // Notice "HEAD" instead of "GET", to get only the header
+    xhr.onreadystatechange = function() {
+        if(xhr.readyState==4 && xhr.status==200){
+        //if (this.readyState == this.DONE) {
+            callback(parseInt(xhr.getResponseHeader("Content-Length")));
+        }
+    };
+    xhr.send();
 }
 
 function downloadComplete(app)
@@ -111,7 +133,7 @@ function download(url,app)
             }, false);
             return xhr;
         },
-        async: false,
+        //async: false,
         type: "GET",
         url: "download.php?download=1&url=" + url,
         data: {},

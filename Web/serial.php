@@ -1,5 +1,4 @@
 <?php
-
 require('config.inc.php');
 
 $read = "";
@@ -22,7 +21,7 @@ if(isset($_GET["save"])){
     
 }else if(isset($_GET["pk"]) && isset($_GET["name"]) && isset($_GET["value"])){
     
-    $serial->sendMessage("set " . $_GET["name"] . " " . $_GET["value"] . "\n");
+    $serial->sendMessage("set " .$_GET["name"]. " " .$_GET["value"]. "\n");
     $read = $serial->readPort();
 
 }else if(isset($_GET["default"])){
@@ -47,26 +46,21 @@ if(isset($_GET["save"])){
     {
         $cmd = "get " . $_GET["i"];
     }
-
     
 	$serial->sendMessage($cmd . "\n");
 	$x = 0;
 
-	//while($x <= 4 && json_decode($read) === null)
-	$read = $serial->readPort();
-	while($x <= 10)
+    $read = $serial->readPort();
+    $read = str_replace("json {","{",$read);
+    
+	while($x <= 10 && json_decode($read) != true)
     {
-		usleep(500);
-        if(strlen($read) < 6500)
-        {
-			$serial->sendMessage("\n");
-			$read .= $serial->readPort();
-			$x++;
-        }else{
-            break;
-        }
+		$serial->sendMessage("\n");
+		$read .= $serial->readPort();
+		$x++;
     }
 }
 
 echo $read;
+
 ?>

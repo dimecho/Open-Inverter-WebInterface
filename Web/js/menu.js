@@ -53,10 +53,24 @@ $(document).ready(function()
     buildParameters(loadJSON(0));
 });
 
+function downloadSnapshot()
+{
+    window.location.href = "/snapshot.php";
+}
+
+function uploadSnapshot()
+{
+    $('.fileUpload').trigger('click');
+}
+
 function openExternalApp(app)
 {
     if(app === "inkscape"){
         buildEncoderAlert();
+    }else if(app === "openocd"){
+        window.location.href = "/bootloader.php";
+    }else if(app === "openscad"){
+        $('.fileSVG').trigger('click');
     }else if(app === "source"){
         window.location.href = "/compile.php";
     }else if(app === "attiny"){
@@ -116,10 +130,10 @@ function getJSONFloatValue(value) {
 
     $.ajax("serial.php?i=" + value,{
     //$.ajax("test/" + value + ".data",{
-        async: false,
-        beforeSend: function (req) {
-          req.overrideMimeType('text/plain; charset=x-user-defined');
-        },
+        //async: false,
+        //beforeSend: function (req) {
+        //  req.overrideMimeType('text/plain; charset=x-user-defined');
+        //},
         success: function(data)
         {
             float = parseFloat(data.replace("get " + value + "\n",""));
@@ -150,6 +164,7 @@ function getErrors()
 function saveChanges(span)
 {
     $.ajax("serial.php?save=1",{
+        async: false,
         success: function(data)
         {
             //console.log(data);
@@ -175,13 +190,12 @@ function startInverterAlert()
             alertify.message('OK');
         });
     }else{
-        alertify.startInverterMode("Which mode will it be?",
-          function() {
-            startInverter(2);
-          },
-          function() {
-            startInverter(1);
-          }
+        alertify.startInverterMode("Which mode will it be?", function(){
+                startInverter(2);
+            },
+                function() {
+                startInverter(1);
+            }
         );
     }
 }
@@ -189,6 +203,7 @@ function startInverterAlert()
 function startInverter(mode)
 {
     $.ajax("serial.php?start=" + mode,{
+        async: false,
         success: function(data)
         {
             //console.log(data);
@@ -203,15 +218,22 @@ function startInverter(mode)
             {
                 span.addClass('label-success');
                 span.text('started');
+
+                if(mode === 2)
+                {
+                    $("#potentiometer").show();
+                    $(".collapse").collapse('show');
+                }
+
             }else{
                 span.addClass('label-important');
                 span.text('error');
             }
-            
+
             setTimeout( function ()
             {
                 span.hide();
-                location.reload(); 
+                //location.reload(); 
                 //buildParameters(loadJSON(0));
             },1200);
         }
@@ -221,6 +243,7 @@ function startInverter(mode)
 function stopInverter()
 {
     $.ajax("serial.php?stop=1",{
+        async: false,
         success: function(data)
         {
             //console.log(data);
@@ -239,11 +262,13 @@ function stopInverter()
                 span.addClass('label-important');
                 span.text('error');
             }
+            $(".collapse").collapse();
 
             setTimeout( function ()
             {
                 span.hide();
-                location.reload();
+                $("#potentiometer").hide();
+                //location.reload();
                 //buildParameters(loadJSON(0));
             },1200);
         }
@@ -255,6 +280,7 @@ function setDefaults()
     alertify.confirm('', 'This reset all settings back to default.', function()
     {
         $.ajax("serial.php?default=1",{
+            async: false,
             success: function(data)
             {
                 //console.log(data);
@@ -289,18 +315,6 @@ function setDefaults()
     }, function(){});
 }
 
-function buildEncoderAlert()
-{
-    alertify.buildEncoder("Build encoder",
-        function() {
-            $.ajax("open.php?app=inkscape");
-        },
-        function() {
-            $.ajax("open.php?app=inkscape_openscad");
-        }
-    );
-}
-
 function buildHeader(json)
 {
     var opStatus = $("#opStatus");
@@ -317,6 +331,7 @@ function buildHeader(json)
     {
         span.attr("data-title","<h6>Off</h6>");
         img.addClass("svg-red");
+        $("#potentiometer").hide();
     }
     else if(json.opmode.value === 1 && json.din_emcystop.value === 1)
     {
@@ -328,11 +343,13 @@ function buildHeader(json)
             span.attr("data-title","<h6>Running</h6>");
             img.addClass("svg-green");
         }
+        $("#potentiometer").hide();
     }
     else if(json.opmode.value === 2)
     {
         span.attr("data-title","<h6>Manual Mode</h6>");
         img.addClass("svg-green");
+        $("#potentiometer").show();
     }
     span.append(img);
     opStatus.append(span);

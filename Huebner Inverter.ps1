@@ -1,23 +1,28 @@
 #===============
-# Version: 1.0.1
+# Version: 1.0.2
 #===============
 
-# Get the ID and security principal of the current user account
-$myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent()
-$myWindowsPrincipal=new-object System.Security.Principal.WindowsPrincipal($myWindowsID)
-
-# Check to see if we are currently running "as Administrator"
-if (!$myWindowsPrincipal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)){
-	$newProcess = new-object System.Diagnostics.ProcessStartInfo "PowerShell"; # Create a new process object that starts PowerShell
-	$newProcess.Arguments = "& '$PSCommandPath'" # Specify the current script path and name as a parameter
-	$newProcess.Verb = "runas"; # Indicate that the process should be elevated
-	[System.Diagnostics.Process]::Start($newProcess); # Start the new process
-	exit # Exit from the current, unelevated, process
-}
 Write-Host "`nHuebner Inverter - Console Management`n"  -ForegroundColor Green
+
+function Elevate() {
+	# Get the ID and security principal of the current user account
+	$myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent()
+	$myWindowsPrincipal=new-object System.Security.Principal.WindowsPrincipal($myWindowsID)
+
+	# Check to see if we are currently running "as Administrator"
+	if (!$myWindowsPrincipal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)){
+		$newProcess = new-object System.Diagnostics.ProcessStartInfo "PowerShell"; # Create a new process object that starts PowerShell
+		$newProcess.Arguments = "& '$PSCommandPath'" # Specify the current script path and name as a parameter
+		$newProcess.Verb = "runas"; # Indicate that the process should be elevated
+		[System.Diagnostics.Process]::Start($newProcess); # Start the new process
+		exit # Exit from the current, unelevated, process
+	}
+}
 
 function startPHP($page) {
 	if (-Not (Test-Path "$env:programfiles\PHP\php.exe")) {
+
+		Elevate
 	
 		Write-Host "...Installing PHP"
 		
@@ -77,16 +82,27 @@ extension=php_curl.dll"
 		
 	}else{
 		# COM Port Configure
-		$config_inc = "$PSScriptRoot\Web\config.inc.php"
+		$config_inc = "$PSScriptRoot\Web\config.inc"
 		$comPort = findPort
-		(Get-Content $config_inc).replace("deviceSet(""/dev/cu.usbserial"")", "deviceSet(""$comPort"")") | Set-Content $config_inc
-		For ($i=0; $i -le 10; $i++) {
-	    	(Get-Content $config_inc).replace("deviceSet(""COM$i"")", "deviceSet(""$comPort"")") | Set-Content $config_inc
-	    }
+		Copy-Item "$config_inc" "$config_inc.php" -force
+		(Get-Content $config_inc).replace("deviceSet(""/dev/cu.usbserial"")", "deviceSet(""$comPort"")") | Set-Content "$config_inc.php"
 		Write-Host "===================================="  -ForegroundColor Green
 		Write-Host "COM port '$comPort' set in config.inc.php"  -ForegroundColor Green
 		Write-Host "===================================="  -ForegroundColor Green
 		
+		#================================================
+		#Quick Fix [give it a kick] - Prolific Driver Bug or Windows?
+		#================================================
+		$process = Start-Process -FilePath "$PSScriptRoot\Windows\putty.exe" -ArgumentList "-serial $comPort" -PassThru -WindowStyle Hidden
+		try{
+			$process | Wait-Process -Timeout 4 -ErrorAction Stop
+		}catch{
+			$process | Stop-Process -Force
+		}
+		#Somehow Putty fix sets maximum buffer size
+		#================================================
+        #Start-Process -FilePath "cmd.exe" -ArgumentList "/c mode ${comPort}: BAUD=115200 PARITY=n DATA=8 STOP=2 to=off dtr=off rts=off" -Wait
+
 		$firefox = "C:\Program Files (x86)\Mozilla Firefox\firefox.exe"
 		If (Test-Path $firefox){
 		 	Start-Process $firefox "http://127.0.0.1:8080/$page"
@@ -125,6 +141,7 @@ function checkDrivers {
 	{
 		if ([System.Diagnostics.FileVersionInfo]::GetVersionInfo("C:\Windows\System32\drivers\ser2pl64.sys").FileVersion -ne "3.3.2.105")
 		{
+			Elevate
 			$oeminflist = gci "$env:windir\inf\*.*" -Include oem*.inf;
 			foreach ($inf in $oeminflist) {
 				Select-String -path $inf.FullName -Pattern "Prolific" -List| foreach {
@@ -141,6 +158,8 @@ function checkDrivers {
 }
 
 function Uninstall {
+
+	Elevate
 	#Remove-NetFirewallRule -Name "TCP8080" -ErrorAction SilentlyContinue
 	Remove-Item -Recurse -Force "$env:programfiles\PHP"
 }

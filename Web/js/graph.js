@@ -15,11 +15,11 @@ $(document).ready(function()
     })
 
     $("#speed").slider({
-        min: 100,
+        min: 200,
         max: 2000,
         value: 400,
         //scale: 'logarithmic',
-        step: 100,
+        step: 500,
         reversed : true
     });
 
@@ -51,6 +51,11 @@ function startChart(init)
         initBatteryChart();
         updateChart(["udc"]);
     }
+    else  if(activeTab === "#graphD")
+    {
+        initAmperageChart();
+        updateChart(["il1","il2"]);
+    }
 
     if(chart)
         chart.destroy();
@@ -60,6 +65,110 @@ function startChart(init)
         data: data,
         options: options
     });
+}
+
+function initAmperageChart()
+{
+    //RMS = LOCKED-ROTOR CURRENT
+
+    xaxis = [];
+     for (var i = 0; i < 200; i++) {
+            xaxis.push("");
+            //xaxis.push(i.toString());
+    }
+    data = {
+        labels : xaxis,
+        datasets: [{
+            label: "iL1",
+            backgroundColor: "rgba(51, 153, 255,0.2)",
+            borderColor: "rgba(255,99,132,1)",
+            borderWidth: 1,
+            hoverBackgroundColor: "rgba(51, 153, 255,0.4)",
+            hoverBorderColor: "rgba(255,99,132,1)",
+            data: [0]
+        },{
+            label: "iL2",
+            backgroundColor: "rgba(102, 255, 51,0.2)",
+            borderColor: "rgba(255,99,132,1)",
+            borderWidth: 1,
+            hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
+            hoverBorderColor: "rgba(255,99,132,1)",
+            data: [0]
+        }]
+    };
+
+    var ocurlim = (0-getJSONFloatValue("ocurlim"));
+    if(ocurlim === 0)
+        ocurlim = 100;
+
+    options = {
+        legend: {
+            display: false,
+            labels: {
+                fontColor: 'rgb(255, 99, 132)'
+            }
+        },
+        elements: {
+            point:{
+                radius: 1
+            }
+        },
+        tooltips:{
+            enabled: false
+        },
+        responsive: true,
+        //maintainAspectRatio: false,
+        scales: {
+            xAxes: [{
+                display: false,
+                position: 'bottom',
+                
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Time'
+                },
+                ticks: {
+                    maxRotation: 0,
+                    reverse: false
+                }
+            }],
+            yAxes: [{
+                position: 'left',
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Amperage'
+                },
+                ticks: {
+                    reverse: false,
+                    stepSize: 10,
+                    suggestedMin: 0, //important
+                    suggestedMax: ocurlim //important
+                }
+            }]
+        },
+        pan: {
+            enabled: true,
+            mode: 'xy'
+        },
+        zoom: {
+            enabled: true,
+            mode: 'xy',
+            limits: {
+                max: 100,
+                min: 0.5
+            }
+        },
+        animation: {
+            duration: 0,
+            /*
+            onComplete: function(animation) {
+                //updateChart();
+            },
+            onProgress: function () {
+            }
+            */
+        }
+    };
 }
 
 function initMotorChart()
@@ -275,6 +384,10 @@ function initBatteryChart()
         }]
     };
 
+    var udclim = (0-getJSONFloatValue("udclim"));
+    if(udclim === 0)
+        udclim = 300;
+
     options = {
         legend: {
             display: false,
@@ -316,7 +429,7 @@ function initBatteryChart()
                     reverse: false,
                     stepSize: 50,
                     suggestedMin: 0, //important
-                    suggestedMax: 400 //important
+                    suggestedMax: udclim //important
                 }
             }]
         },
@@ -353,12 +466,13 @@ function stopChart()
 function updateChart(value)
 {
     var delay =  $("#speed").slider('getValue');
-    //console.log(delay);
+    console.log(delay);
 
     syncronized = setTimeout( function ()
     {
         for (var i = 0; i < value.length; i++) {
             try {
+                //getJSONFloatValue(value[i])
                 var point = getJSONFloatValue(value[i]);
                 //var point = getRandom(1.0,80.0);
                 //console.log(point);

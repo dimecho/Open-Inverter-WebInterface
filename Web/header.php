@@ -12,6 +12,7 @@
 <script type="text/javascript" src="js/menu.js"></script>
 <script type="text/javascript" src="js/download.js"></script>
 <script type="text/javascript" src="js/svg-injector.js"></script>
+<script type="text/javascript" src="js/jquery.knob.js"></script>
 <script type="text/javascript">
     alertify.defaults.transition = "slide";
     alertify.defaults.theme.ok = "btn btn-primary";

@@ -165,13 +165,17 @@ class InverterTerminal
 	private function readAll()
 	{
         $read = "";
-        
-        do
-        {
-            $str = $this->serial->readPort();
-            $read .= $str;
-            usleep(100000);
-        } while (strlen($str) > 0);
+		$x = 0;
+		
+		$read = $this->serial->readPort();
+		$read = str_replace("json {","{",$read);
+		
+		while($x <= 4 && json_decode($read) != true)
+		{
+			$this->serial->sendMessage("\n");
+			$read .= $this->serial->readPort();
+			$x++;
+		}
         
         return $read;
 	}

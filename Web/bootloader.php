@@ -1,5 +1,4 @@
 <?php
-    require "config.inc.php";
 
     if(isset($_GET["ajax"])){
         //if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
