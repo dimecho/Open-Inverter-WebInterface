@@ -1,4 +1,5 @@
 var activeTab = "#graphA";
+var activeTabText = "Motor";
 var syncronized;
 var data;
 var options;
@@ -8,27 +9,123 @@ var ctx;
 
 $(document).ready(function()
 {
+    $("#speed").slider({
+        /*
+        formatter: function(value) {
+            return 'Current value: ' + value;
+        },
+        */
+        min: 200,
+        max: 3000,
+        value: 1000,
+        //scale: 'logarithmic',
+        step: 1,
+        reversed : true
+    }).on('slide', function() {
+        var t = $("#speed").slider('getValue');
+        t = Math.round(t / 1000 * 60);
+        //console.log(t);
+        chart.config.data.labels = initTimeAxis(t);
+        chart.update();
+    });
+
     $('a[data-toggle="tab"]').on('shown', function (e) {
+        //console.log(e);
         activeTab = e.target.hash;
+        activeTabText = e.target.text;
+
         startChart();
         stopChart();
     })
 
-    $("#speed").slider({
-        min: 200,
-        max: 2000,
-        value: 400,
-        //scale: 'logarithmic',
-        step: 500,
-        reversed : true
-    });
-
     ctx = document.getElementById("canvas").getContext("2d");
+    /*
+    ctx.webkitImageSmoothingEnabled = false;
+    ctx.mozImageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = false;
+    */
     var count = 10;
 
     startChart();
     stopChart();
 });
+
+function exportPDF(pdf)
+{
+    //ctx.save();
+    //ctx.scale(4,4);
+    //var render = ctx.canvas.toDataURL('image/jpeg',1.0);
+    //ctx.restore();
+
+    var render = ctx.canvas.toDataURL("image/png", 1.0);
+
+    if(pdf)
+    {
+        //console.log($('.tab-pane.active').find('p:hidden').text());
+        var doc = new jsPDF('l', 'mm', [279, 215]);
+        doc.setProperties({
+            title: "",
+            subject: "",    
+            author: '',
+            creator: '© 2016'
+        });
+        doc.setDisplayMode(1);
+        doc.setFontSize(28);
+        doc.text(110, 20, activeTabText);
+        
+        doc.addImage(render, 'JPEG' , 18, 40, 250, 120, "graph", "none");
+        doc.save("graph.pdf");
+
+        /*
+        var margins = {
+            top: 32,
+            //bottom: 20,
+            left: 20,
+            //right: 15,
+            //width: 700,
+            //height: 450
+        };
+        var options = {
+            format: 'JPEG',
+            //pagesplit: true,
+            "background": '#000',
+            //"width": margins.width,
+            //"height": margins.height,
+            //"elementHandlers": specialElementHandlers
+        };
+        var date = new Date();
+        //var d = date.Now().format("MM-DD-YYYY h:mma");
+        //console.log(d);
+
+        document.getElementById("canvas").style.backgroundColor = 'rgba(255, 255, 255, 1)';
+        //doc.addHTML($("#render"), 0.5, 2, options,function() {
+        doc.addHTML(ctx.canvas, margins.left, margins.top, options,function() {
+            document.getElementById("canvas").style.backgroundColor = 'rgba(255, 255, 255, 0)';
+            doc.save("graph.pdf");
+        }, margins);
+        */
+    }else{
+
+        var data = atob(render.substring( "data:image/png;base64,".length ) ),
+        asArray = new Uint8Array(data.length);
+
+        for( var i = 0, len = data.length; i < len; ++i ) {
+            asArray[i] = data.charCodeAt(i);    
+        }
+        var blob = new Blob( [ asArray.buffer ], {type: "image/png"} );
+
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "graph.png";
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function() {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);  
+        }, 0); 
+    }
+}
 
 function startChart(init)
 {
@@ -67,32 +164,41 @@ function startChart(init)
     });
 }
 
+function initTimeAxis(seconds)
+{
+    xaxis = [];
+    for (var i = 0; i < seconds; i++) {
+        if((i/10) % 1 != 0)
+        {
+            xaxis.push("");
+        }else{
+            xaxis.push(i);
+        }
+        //xaxis.push(i.toString());
+    }
+    return xaxis;
+}
+
 function initAmperageChart()
 {
     //RMS = LOCKED-ROTOR CURRENT
-
-    xaxis = [];
-     for (var i = 0; i < 200; i++) {
-            xaxis.push("");
-            //xaxis.push(i.toString());
-    }
     data = {
-        labels : xaxis,
+        labels: initTimeAxis(61),
         datasets: [{
             label: "iL1",
             backgroundColor: "rgba(51, 153, 255,0.2)",
-            borderColor: "rgba(255,99,132,1)",
-            borderWidth: 1,
+            borderColor: "rgba(0,0,0,0.2)",
+            borderWidth: 2,
             hoverBackgroundColor: "rgba(51, 153, 255,0.4)",
-            hoverBorderColor: "rgba(255,99,132,1)",
+            hoverBorderColor: "rgba(0,0,0,0.5)",
             data: [0]
         },{
             label: "iL2",
             backgroundColor: "rgba(102, 255, 51,0.2)",
-            borderColor: "rgba(255,99,132,1)",
-            borderWidth: 1,
+            borderColor: "rgba(0,0,0,0.2)",
+            borderWidth: 2,
             hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
-            hoverBorderColor: "rgba(255,99,132,1)",
+            hoverBorderColor: "rgba(0,0,0,0.5)",
             data: [0]
         }]
     };
@@ -103,36 +209,48 @@ function initAmperageChart()
 
     options = {
         legend: {
-            display: false,
+            display: true,
             labels: {
-                fontColor: 'rgb(255, 99, 132)'
+                fontColor: 'rgb(0, 0, 0)'
             }
         },
         elements: {
             point:{
-                radius: 1
+                radius: 0
             }
         },
         tooltips:{
             enabled: false
         },
+        /*
+        tooltipEvents: [],
+        showTooltips: true,
+        onAnimationComplete: function() {
+            this.showTooltip(this.segments, true);
+        },
+        tooltipTemplate: "<%= label %> - <%= value %>",
+        */
         responsive: true,
         //maintainAspectRatio: false,
         scales: {
             xAxes: [{
-                display: false,
+                display: true,
                 position: 'bottom',
                 
                 scaleLabel: {
                     display: true,
-                    labelString: 'Time'
+                    labelString: 'Time (Seconds)'
                 },
                 ticks: {
+                    reverse: false,
                     maxRotation: 0,
-                    reverse: false
+                    stepSize: 50,
+                    //suggestedMin: 0, //important
+                    //suggestedMax: 100 //important
                 }
             }],
             yAxes: [{
+                display: true,
                 position: 'left',
                 scaleLabel: {
                     display: true,
@@ -159,11 +277,12 @@ function initAmperageChart()
             }
         },
         animation: {
-            duration: 0,
-            /*
+            duration: 1000,
             onComplete: function(animation) {
-                //updateChart();
+                //updateChart(["il1","il2"],true);
+                //exportPDF();
             },
+            /*
             onProgress: function () {
             }
             */
@@ -173,20 +292,14 @@ function initAmperageChart()
 
 function initMotorChart()
 {
-    xaxis = [];
-     for (var i = 0; i < 200; i++) {
-            xaxis.push("");
-            //xaxis.push(i.toString());
-    }
-
     data = {
-        labels : xaxis,
+        labels: initTimeAxis(61),
         datasets: [
         {
             label: "Motor Speed",
             backgroundColor: "rgba(255,99,132,0.2)",
             borderColor: "rgba(255,99,132,1)",
-            borderWidth: 1,
+            borderWidth: 2,
             hoverBackgroundColor: "rgba(255,99,132,0.4)",
             hoverBorderColor: "rgba(255,99,132,1)",
             data: [0]
@@ -197,12 +310,12 @@ function initMotorChart()
         legend: {
             display: false,
             labels: {
-                fontColor: 'rgb(255, 99, 132)'
+                fontColor: 'rgb(0, 0, 0)'
             }
         },
         elements: {
             point:{
-                radius: 1
+                radius: 0
             }
         },
         tooltips:{
@@ -212,12 +325,12 @@ function initMotorChart()
         //maintainAspectRatio: false,
         scales: {
             xAxes: [{
-                display: false,
+                display: true,
                 position: 'bottom',
                 
                 scaleLabel: {
                     display: true,
-                    labelString: 'Time'
+                    labelString: 'Time (Seconds)'
                 },
                 ticks: {
                     maxRotation: 0,
@@ -225,10 +338,11 @@ function initMotorChart()
                 }
             }],
             yAxes: [{
+                display: true,
                 position: 'left',
                 scaleLabel: {
                     display: true,
-                    labelString: 'RPM'
+                    labelString: 'Speed (RPM)'
                 },
                 ticks: {
                     reverse: false,
@@ -251,11 +365,12 @@ function initMotorChart()
             }
         },
         animation: {
-            duration: 0,
-            /*
+            duration: 1000,
             onComplete: function(animation) {
-                //updateChart();
+                //updateChart(["il1","il2"],true);
+                //exportPDF();
             },
+            /*
             onProgress: function () {
             }
             */
@@ -265,43 +380,37 @@ function initMotorChart()
 
 function initTemperatureChart()
 {
-    xaxis = [];
-     for (var i = 0; i < 200; i++) {
-            xaxis.push("");
-            //xaxis.push(i.toString());
-    }
-
     data = {
-        labels : xaxis,
+        labels: initTimeAxis(61),
         datasets: [{
             label: "Motor",
             backgroundColor: "rgba(51, 153, 255,0.2)",
-            borderColor: "rgba(255,99,132,1)",
-            borderWidth: 1,
+            borderColor: "rgba(0,0,0,0.2)",
+            borderWidth: 2,
             hoverBackgroundColor: "rgba(51, 153, 255,0.4)",
-            hoverBorderColor: "rgba(255,99,132,1)",
+            hoverBorderColor: "rgba(0,0,0,0.5)",
             data: [0]
         },{
             label: "Inverter",
             backgroundColor: "rgba(102, 255, 51,0.2)",
-            borderColor: "rgba(255,99,132,1)",
-            borderWidth: 1,
+            borderColor: "rgba(0,0,0,0.2)",
+            borderWidth: 2,
             hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
-            hoverBorderColor: "rgba(255,99,132,1)",
+            hoverBorderColor: "rgba(0,0,0,0.5)",
             data: [0]
         }]
     };
 
     options = {
         legend: {
-            display: false,
+            display: true,
             labels: {
-                fontColor: 'rgb(255, 99, 132)'
+                fontColor: 'rgb(0, 0, 0)'
             }
         },
         elements: {
             point:{
-                radius: 1
+                radius: 0
             }
         },
         tooltips:{
@@ -311,12 +420,12 @@ function initTemperatureChart()
         //maintainAspectRatio: false,
         scales: {
             xAxes: [{
-                display: false,
+                display: true,
                 position: 'bottom',
                 
                 scaleLabel: {
                     display: true,
-                    labelString: 'Time'
+                    labelString: 'Time (Seconds)'
                 },
                 ticks: {
                     maxRotation: 0,
@@ -324,10 +433,11 @@ function initTemperatureChart()
                 }
             }],
             yAxes: [{
+                display: true,
                 position: 'left',
                 scaleLabel: {
                     display: true,
-                    labelString: '°C'
+                    labelString: 'Degree °C'
                 },
                 ticks: {
                     reverse: false,
@@ -350,11 +460,12 @@ function initTemperatureChart()
             }
         },
         animation: {
-            duration: 0,
-            /*
+            duration: 1000,
             onComplete: function(animation) {
-                //updateChart();
+                //updateChart(["il1","il2"],true);
+                //exportPDF();
             },
+            /*
             onProgress: function () {
             }
             */
@@ -364,20 +475,14 @@ function initTemperatureChart()
 
 function initBatteryChart()
 {
-    xaxis = [];
-     for (var i = 0; i < 200; i++) {
-            xaxis.push("");
-            //xaxis.push(i.toString());
-    }
-
     data = {
-        labels : xaxis,
+        labels: initTimeAxis(61),
         datasets: [
         {
             label: "Voltage",
             backgroundColor: "rgba(255,99,132,0.2)",
             borderColor: "rgba(255,99,132,1)",
-            borderWidth: 1,
+            borderWidth: 2,
             hoverBackgroundColor: "rgba(255,99,132,0.4)",
             hoverBorderColor: "rgba(255,99,132,1)",
             data: [0]
@@ -397,7 +502,7 @@ function initBatteryChart()
         },
         elements: {
             point:{
-                radius: 1
+                radius: 0
             }
         },
         tooltips:{
@@ -407,12 +512,12 @@ function initBatteryChart()
         //maintainAspectRatio: false,
         scales: {
             xAxes: [{
-                display: false,
+                display: true,
                 position: 'bottom',
                 
                 scaleLabel: {
                     display: true,
-                    labelString: 'Time'
+                    labelString: 'Time (Seconds)'
                 },
                 ticks: {
                     maxRotation: 0,
@@ -420,6 +525,7 @@ function initBatteryChart()
                 }
             }],
             yAxes: [{
+                display: true,
                 position: 'left',
                 scaleLabel: {
                     display: true,
@@ -446,11 +552,12 @@ function initBatteryChart()
             }
         },
         animation: {
-            duration: 0,
-            /*
+            duration: 1000,
             onComplete: function(animation) {
-                //updateChart();
+                //updateChart(["il1","il2"],true);
+                //exportPDF();
             },
+            /*
             onProgress: function () {
             }
             */
@@ -463,20 +570,23 @@ function stopChart()
     clearTimeout(syncronized);
 }
 
-function updateChart(value)
+function updateChart(value, animated)
 {
-    var delay =  $("#speed").slider('getValue');
-    console.log(delay);
+    clearTimeout(syncronized);
+    var delay = 1000; //$("#speed").slider('getValue');
+    //console.log(delay);
 
     syncronized = setTimeout( function ()
     {
         for (var i = 0; i < value.length; i++) {
             try {
                 //getJSONFloatValue(value[i])
-                var point = getJSONFloatValue(value[i]);
-                //var point = getRandom(1.0,80.0);
+                //var point = getJSONFloatValue(value[i]);
+               
+                var point = getRandom(1.0,80.0);
                 //console.log(point);
 
+                point = Math.abs(point);
                 data.datasets[i].data.push(point);
                 
                 if(data.datasets[i].data.length > xaxis.length)
@@ -489,8 +599,8 @@ function updateChart(value)
                 console.log(e);
             }
         }
-
-        updateChart(value);
+        if(!animated)
+            updateChart(value);
 
     },delay);
 }
