@@ -581,9 +581,9 @@ function updateChart(value, animated)
         for (var i = 0; i < value.length; i++) {
             try {
                 //getJSONFloatValue(value[i])
-                //var point = getJSONFloatValue(value[i]);
+                var point = getJSONFloatValue(value[i]);
                
-                var point = getRandom(1.0,80.0);
+                //var point = getRandom(1.0,80.0);
                 //console.log(point);
 
                 point = Math.abs(point);
