@@ -104,7 +104,7 @@ function startPHP($page) {
 		#{
 		#	$shell.Namespace("$env:programfiles\PHP\ext").copyhere($item)
 		#}
-		Copy-Item "$PSScriptRoot\Windows\dio\php_dio.dll" "$env:programfiles\PHP\ext"
+		Copy-Item "$PSScriptRoot\..\Windows\dio\php_dio.dll" "$env:programfiles\PHP\ext"
 		
 		Rename-Item "$env:programfiles\PHP\php.ini-development" php.ini -ErrorAction SilentlyContinue
 		Add-Content "$env:programfiles\PHP\php.ini" "
@@ -130,7 +130,7 @@ extension=php_curl.dll"
 		
 	}else{
 		# COM Port Configure
-		$config_inc = "$PSScriptRoot\Web\config.inc"
+		$config_inc = "$PSScriptRoot\..\Web\config.inc"
 		$comPort = findPort
 		Copy-Item "$config_inc" "$config_inc.php" -force
 		(Get-Content $config_inc).replace("deviceSet(""/dev/cu.usbserial"")", "deviceSet(""$comPort"")") | Set-Content "$config_inc.php"
@@ -141,7 +141,7 @@ extension=php_curl.dll"
 		#================================================
 		#Quick Fix [give it a kick] - Prolific Driver Bug or Windows?
 		#================================================
-		$process = Start-Process -FilePath "$PSScriptRoot\Windows\putty.exe" -ArgumentList "-serial $comPort" -PassThru -WindowStyle Hidden
+		$process = Start-Process -FilePath "$PSScriptRoot\..\Windows\putty.exe" -ArgumentList "-serial $comPort" -PassThru -WindowStyle Hidden
 		try{
 			$process | Wait-Process -Timeout 4 -ErrorAction Stop
 		}catch{
@@ -155,7 +155,7 @@ extension=php_curl.dll"
 		
 		# Start PHP Webserver
 		$scriptPath = Split-Path -Parent $PSCommandPath
-		Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 127.0.0.1:8080 -t ""$scriptPath\Web\""" -Wait
+		Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 127.0.0.1:8080 -t ""$scriptPath\..\Web\""" -Wait
 	}
 }
 
@@ -191,8 +191,8 @@ function checkDrivers {
 				}
 			}
 			Write-Host "...Installing Driver"
-			pnputil -a ""$PSScriptRoot\Windows\driver\ProlificUsbSerial\ser2pl.inf""
-			InfDefaultInstall ""$PSScriptRoot\Windows\driver\ProlificUsbSerial\ser2pl.inf""
+			pnputil -a ""$PSScriptRoot\..\Windows\driver\ProlificUsbSerial\ser2pl.inf""
+			InfDefaultInstall ""$PSScriptRoot\..\Windows\driver\ProlificUsbSerial\ser2pl.inf""
 		}
 	}
 }

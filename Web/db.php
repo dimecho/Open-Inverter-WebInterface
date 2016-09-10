@@ -47,9 +47,9 @@
                                             <button class="browse btn btn-primary" type="button"><i class="icon-list-alt"></i> Set Motor</button>
                                         </div>
                                         <br/><br/>
-                                        <div >
+                                        <div>
                                             <br/>
-                                            <img src="db/img/Toshiba_BY152FGF2A4.jpg" id="motorimage" class = "img-rounded" />
+                                            <img src="db/img/Siemens_1PV5135.jpg" id="motorimage" class = "img-rounded" />
                                             <br/><br/>
                                         </div>
                                     </center>
