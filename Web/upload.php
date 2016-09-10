@@ -1,9 +1,20 @@
 <?php
 require('config.inc.php');
 
-if (count($_FILES))
+if(isset($_GET["db"])){
+    
+    setParameters(getcwd() ."/db/" .$_GET["db"]. ".txt");
+    echo "ok";
+    
+}else if (count($_FILES)){
+
+    setParameters($_FILES['file']['tmp_name']);
+    header("Location:/index.php");
+}
+
+function setParameters($file)
 {
-    $string = file_get_contents($_FILES['file']['tmp_name']);
+    $string = file_get_contents($file);
     $params = (array)json_decode($string);
 
     foreach ($params as $name => $attributes)
@@ -13,7 +24,5 @@ if (count($_FILES))
         $read = $serial->readPort();
     }
 }
-
-header("Location:/index.php");
 
 ?>

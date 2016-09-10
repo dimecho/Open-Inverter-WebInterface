@@ -8,3 +8,4 @@ There are two types of encoders, transmissive (gap type) as TCST2103 and reflect
 The larger the gap of encoder wheel the more problems will occur with ambient light. <a href="http://heliosoph.mit-links.info/make-your-own-rotary-encoder/">Info</a>
 Make ampmin as small as possible to get good economy.
 fslipmin=fslipmax (no slip) useful during debugging.
+Combine film caps (100uF) and elcaps (1500uF) to get optimal current damping.

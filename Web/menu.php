@@ -44,6 +44,7 @@ $(document).ready(function()
                             <li><a tabindex="-1" onClick="startInverterAlert()">Start Inverter</a></li>
                             <li><a tabindex="-1" onClick="stopInverter()">Stop Inverter</a></li>
                             <li><a tabindex="-1" onClick="setDefaults()">Reset to Default</a></li>
+                            <li><a tabindex="-1" href="db.php">Motor Database</a></li>
                             <li class="divider"></li>
                             <li><a tabindex="-1" href="graph.php">Graph</a></li>
                             <li class="divider"></li>
