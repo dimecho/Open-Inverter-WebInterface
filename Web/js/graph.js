@@ -1,11 +1,15 @@
 var activeTab = "#graphA";
 var activeTabText = "Motor";
-var syncronized;
+var syncronizedTimer;
+var syncronizedStop;
+var syncronizedDelay = 1000;
+var syncronizedAccuracy = 0;
 var data;
 var options;
 var xaxis = [];
 var chart;
 var ctx;
+var xhr;
 
 $(document).ready(function()
 {
@@ -17,14 +21,18 @@ $(document).ready(function()
         */
         min: 200,
         max: 3000,
-        value: 1000,
+        value: syncronizedDelay,
         //scale: 'logarithmic',
         step: 1,
         reversed : true
     }).on('slide', function() {
-        var t = $("#speed").slider('getValue');
-        t = Math.round(t / 1000 * 60);
+
+        syncronizedDelay = $("#speed").slider('getValue');
+        chart.options.animation.duration = syncronizedDelay;
+
+        var t = Math.round(syncronizedDelay / 1000 * 60);
         //console.log(t);
+
         chart.config.data.labels = initTimeAxis(t);
         chart.update();
     });
@@ -36,7 +44,16 @@ $(document).ready(function()
 
         startChart();
         stopChart();
-    })
+    });
+    
+    /*
+    $(document).click(function (e) {
+        if(xhr)
+            xhr.abort();
+    });
+    */
+
+    Chart.defaults.global.animationSteps = 12;
 
     ctx = document.getElementById("canvas").getContext("2d");
     /*
@@ -133,25 +150,35 @@ function startChart(init)
     
     stopChart();
 
+    syncronizedStop = false;
+	syncronizedAccuracy = 0;
+
+    var duration = $("#speed").slider('getValue');
+
     if(activeTab === "#graphA")
     {
-        initMotorChart();
-        updateChart(["speed"]);
+        initMotorChart(duration);
+        updateChart(["speed"],true,0.8);
     }
     else  if(activeTab === "#graphB")
     {
-        initTemperatureChart();
+        initTemperatureChart(duration);
         updateChart(["tmpm","tmphs"]);
     }
     else  if(activeTab === "#graphC")
     {
-        initBatteryChart();
-        updateChart(["udc"]);
+        initBatteryChart(duration);
+        updateChart(["udc","uac"]);
     }
     else  if(activeTab === "#graphD")
     {
-        initAmperageChart();
-        updateChart(["il1","il2"]);
+        initAmperageChart(duration);
+        updateChart(["il1rms","idc"]);
+    }
+    else  if(activeTab === "#graphE")
+    {
+        initFrequenciesChart(duration);
+        updateChart(["fstat"]);
     }
 
     if(chart)
@@ -162,6 +189,16 @@ function startChart(init)
         data: data,
         options: options
     });
+}
+
+function stopChart()
+{
+    syncronizedStop = true;
+
+    clearTimeout(syncronizedTimer);
+
+    if(xhr)
+        xhr.abort();
 }
 
 function initTimeAxis(seconds)
@@ -179,13 +216,100 @@ function initTimeAxis(seconds)
     return xaxis;
 }
 
-function initAmperageChart()
+function initFrequenciesChart(duration)
+{
+   data = {
+        labels: initTimeAxis(61),
+        datasets: [{
+            label: "Stator Frequency",
+            backgroundColor: "rgba(51, 153, 255,0.2)",
+            borderColor: "rgba(0,0,0,0.2)",
+            borderWidth: 2,
+            hoverBackgroundColor: "rgba(51, 153, 255,0.4)",
+            hoverBorderColor: "rgba(0,0,0,0.5)",
+            data: [0],
+            //y2axis: true
+        }]
+    };
+
+    var fmax = getJSONFloatValue("fmax");
+    var step = fmax/10;
+
+    options = {
+        //scaleUse2Y: true,
+        legend: {
+            display: true,
+            labels: {
+                fontColor: 'rgb(0, 0, 0)'
+            }
+        },
+        elements: {
+            point:{
+                radius: 0
+            }
+        },
+        tooltips:{
+            enabled: false
+        },
+        responsive: true,
+        //maintainAspectRatio: false,
+        scales: {
+            xAxes: [{
+                display: true,
+                position: 'bottom',
+                
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Time (Seconds)'
+                },
+                ticks: {
+                    reverse: false,
+                    maxRotation: 0,
+                    stepSize: 50,
+                    //suggestedMin: 0, //important
+                    //suggestedMax: 100 //important
+                }
+            }],
+            yAxes: [{
+                display: true,
+                position: 'left',
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Frequency (Hz)'
+                },
+                ticks: {
+                    reverse: false,
+                    stepSize: step,
+                    suggestedMin: 0, //important
+                    suggestedMax: fmax + step //important
+                }
+            }]
+        },
+        pan: {
+            enabled: true,
+            mode: 'xy'
+        },
+        zoom: {
+            enabled: true,
+            mode: 'xy',
+            limits: {
+                max: 100,
+                min: 0.5
+            }
+        },
+        animation: {
+            duration: duration,
+        }
+    };
+}
+
+function initAmperageChart(duration)
 {
     //RMS = LOCKED-ROTOR CURRENT
     data = {
         labels: initTimeAxis(61),
         datasets: [{
-            label: "iL1",
+            label: "AC Current",
             backgroundColor: "rgba(51, 153, 255,0.2)",
             borderColor: "rgba(0,0,0,0.2)",
             borderWidth: 2,
@@ -193,7 +317,7 @@ function initAmperageChart()
             hoverBorderColor: "rgba(0,0,0,0.5)",
             data: [0]
         },{
-            label: "iL2",
+            label: "DC Current",
             backgroundColor: "rgba(102, 255, 51,0.2)",
             borderColor: "rgba(0,0,0,0.2)",
             borderWidth: 2,
@@ -203,9 +327,12 @@ function initAmperageChart()
         }]
     };
 
-    var ocurlim = (0-getJSONFloatValue("ocurlim"));
+    var ocurlim = getJSONFloatValue("ocurlim");
+
     if(ocurlim === 0)
         ocurlim = 100;
+
+	var step = ocurlim/10;
 
     options = {
         legend: {
@@ -254,13 +381,13 @@ function initAmperageChart()
                 position: 'left',
                 scaleLabel: {
                     display: true,
-                    labelString: 'Amperage'
+                    labelString: 'Current (A)'
                 },
                 ticks: {
                     reverse: false,
-                    stepSize: 10,
+                    stepSize: step,
                     suggestedMin: 0, //important
-                    suggestedMax: ocurlim //important
+                    suggestedMax: ocurlim + step //important
                 }
             }]
         },
@@ -277,11 +404,9 @@ function initAmperageChart()
             }
         },
         animation: {
-            duration: 1000,
-            onComplete: function(animation) {
-                //updateChart(["il1","il2"],true);
-                //exportPDF();
-            },
+            duration: duration,
+            //onComplete: function(animation) {
+            //},
             /*
             onProgress: function () {
             }
@@ -290,7 +415,7 @@ function initAmperageChart()
     };
 }
 
-function initMotorChart()
+function initMotorChart(duration)
 {
     data = {
         labels: initTimeAxis(61),
@@ -365,11 +490,9 @@ function initMotorChart()
             }
         },
         animation: {
-            duration: 1000,
-            onComplete: function(animation) {
-                //updateChart(["il1","il2"],true);
-                //exportPDF();
-            },
+            duration: duration,
+            //onComplete: function(animation) {
+            //},
             /*
             onProgress: function () {
             }
@@ -378,7 +501,7 @@ function initMotorChart()
     };
 }
 
-function initTemperatureChart()
+function initTemperatureChart(duration)
 {
     data = {
         labels: initTimeAxis(61),
@@ -460,11 +583,9 @@ function initTemperatureChart()
             }
         },
         animation: {
-            duration: 1000,
-            onComplete: function(animation) {
-                //updateChart(["il1","il2"],true);
-                //exportPDF();
-            },
+            duration: duration,
+            //onComplete: function(animation) {
+            //},
             /*
             onProgress: function () {
             }
@@ -473,13 +594,21 @@ function initTemperatureChart()
     };
 }
 
-function initBatteryChart()
+function initBatteryChart(duration)
 {
     data = {
         labels: initTimeAxis(61),
         datasets: [
         {
-            label: "Voltage",
+            label: "Battery",
+            backgroundColor: "rgba(102, 255, 51,0.2)",
+            borderColor: "rgba(0,0,0,0.2)",
+            borderWidth: 2,
+            hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
+            hoverBorderColor: "rgba(0,0,0,0.5)",
+            data: [0]
+        },{
+            label: "Inverter",
             backgroundColor: "rgba(255,99,132,0.2)",
             borderColor: "rgba(255,99,132,1)",
             borderWidth: 2,
@@ -489,15 +618,20 @@ function initBatteryChart()
         }]
     };
 
-    var udclim = (0-getJSONFloatValue("udclim"));
+    var udclim = getJSONFloatValue("udclim");
+    var step = 50;
+
     if(udclim === 0)
         udclim = 300;
 
+    if(udclim < 100)
+        step = udclim/10;
+
     options = {
         legend: {
-            display: false,
+            display: true,
             labels: {
-                fontColor: 'rgb(255, 99, 132)'
+                fontColor: 'rgb(0, 0, 0)'
             }
         },
         elements: {
@@ -533,7 +667,7 @@ function initBatteryChart()
                 },
                 ticks: {
                     reverse: false,
-                    stepSize: 50,
+                    stepSize: step,
                     suggestedMin: 0, //important
                     suggestedMax: udclim //important
                 }
@@ -552,11 +686,9 @@ function initBatteryChart()
             }
         },
         animation: {
-            duration: 1000,
-            onComplete: function(animation) {
-                //updateChart(["il1","il2"],true);
-                //exportPDF();
-            },
+            duration: duration,
+            //onComplete: function(animation) {
+            //},
             /*
             onProgress: function () {
             }
@@ -565,44 +697,81 @@ function initBatteryChart()
     };
 }
 
-function stopChart()
+function updateChart(value,autosize,accuracy)
 {
-    clearTimeout(syncronized);
-}
+    clearTimeout(syncronizedTimer);
+    //console.log(syncronizedDelay);
 
-function updateChart(value, animated)
-{
-    clearTimeout(syncronized);
-    var delay = 1000; //$("#speed").slider('getValue');
-    //console.log(delay);
-
-    syncronized = setTimeout( function ()
+    syncronizedTimer = setTimeout( function ()
     {
-        for (var i = 0; i < value.length; i++) {
-            try {
-                //getJSONFloatValue(value[i])
-                var point = getJSONFloatValue(value[i]);
-               
+        var l = 0;
+
+        for (var i = 0; i < value.length; i++)
+        {
+            //try {
+
+                var point = 0;
+                //var point = getJSONFloatValue(value[i]);
                 //var point = getRandom(1.0,80.0);
                 //console.log(point);
-
-                point = Math.abs(point);
-                data.datasets[i].data.push(point);
                 
-                if(data.datasets[i].data.length > xaxis.length)
-                    data.datasets[i].data = [];
-                    //data.datasets[0].data.shift();
+				xhr = $.ajax("serial.php?i=" + value[i],{
+                    async: false,
+					success: function(data){
+						point = parseFloat(data.replace("get " + value[i] + "\n",""));
+                        //point = Math.abs(point); //heavy process
+					}
+				});
+				
+				l = data.datasets[i].data.length;
+				if(accuracy)
+				{
+					var p = data.datasets[i].data[l-1];
+					var c = (p*accuracy);
+					//console.log("Last point:" + p + ">" +c);
+					
+					if (syncronizedAccuracy < 3 && point < c){
+						point = p;
+						if(p!=c)
+							syncronizedAccuracy ++;
+					}else{
+						syncronizedAccuracy = 0;
+					}
+				}
+				
+				if(l > xaxis.length)
+					data.datasets[i].data = [];
+					//data.datasets[0].data.shift();
+			
+                data.datasets[i].data.push(point);
+            //} catch (e) { console.log(e); }
+        }
 
-                chart.update();
+        if(autosize)
+        {
+            if(l == 1) //do it at start
+            {
+                var largest = Math.max.apply(Math, data.datasets[0].data);
+                var step = 50;
+    			if(largest > 3000){
+                    step = 1000;
+    			}else if(largest > 1000){
+                    step = 500;
+                }else if(largest > 500){
+                    step = 100;
+                }
 
-            } catch (e) {
-                console.log(e);
+                chart.options.scales.yAxes[0].ticks.suggestedMax = largest + step;
+                chart.options.scales.yAxes[0].ticks.stepSize = step;
             }
         }
-        if(!animated)
-            updateChart(value);
 
-    },delay);
+        chart.update();
+		
+        if(!syncronizedStop)
+            updateChart(value,autosize,accuracy);
+
+    },1000);//syncronizedDelay);
 }
 
 function getRandom(min, max) {

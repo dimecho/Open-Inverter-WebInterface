@@ -55,7 +55,6 @@ $(document).ready(function()
                             <li><a tabindex="-1" href="#" onClick="uploadSnapshot();">Upload Parameters</a></li>
                             <li><a tabindex="-1" href="#" onClick="downloadSnapshot();">Download Parameters</a></li>
                             <li><a tabindex="-1" href="index.php">Advanced Parameters</a></li>
-                            <li><a tabindex="-1" href="simple.php">Simple Parameters</a></li>
                             <!--
                             <li><a tabindex="-1" href="simple.php">Simple Parameters</a></li>
                             -->

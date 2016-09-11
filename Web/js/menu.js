@@ -130,12 +130,10 @@ function getJSONFloatValue(value) {
 
     $.ajax("serial.php?i=" + value,{
     //$.ajax("test/" + value + ".data",{
-        //async: false,
-        //beforeSend: function (req) {
-        //  req.overrideMimeType('text/plain; charset=x-user-defined');
-        //},
+        async: false,
         success: function(data)
         {
+			//console.log(data);
             float = parseFloat(data.replace("get " + value + "\n",""));
         }
     });

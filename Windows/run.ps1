@@ -1,5 +1,5 @@
 $currentVersion = 1.0
-$currentBuild = 24
+$currentBuild = 25
 #=====================
 
 Write-Host "`nHuebner Inverter - Console Management`n"  -ForegroundColor Green
@@ -155,7 +155,7 @@ extension=php_curl.dll"
 		
 		# Start PHP Webserver
 		$scriptPath = Split-Path -Parent $PSCommandPath
-		Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 127.0.0.1:8080 -t ""$scriptPath\..\Web\""" -Wait
+		Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 127.0.0.1:8080 -t ""$scriptPath\..\Web\"""
 	}
 }
 

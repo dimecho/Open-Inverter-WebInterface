@@ -27,16 +27,18 @@
                         <tbody>
                             <td>
                                 <ul class="nav nav-tabs">
-                                  <li class="active"><a data-toggle="tab" href="#graphA">Motor</a></li>
-                                  <li><a data-toggle="tab" href="#graphB">Temperature</a></li>
-                                  <li><a data-toggle="tab" href="#graphC">Battery</a></li>
-                                  <li><a data-toggle="tab" href="#graphD">Sensors</a></li>
+                                    <li class="active"><a data-toggle="tab" href="#graphA">Motor</a></li>
+                                    <li><a data-toggle="tab" href="#graphB">Temperature</a></li>
+                                    <li><a data-toggle="tab" href="#graphC">Battery</a></li>
+                                    <li><a data-toggle="tab" href="#graphD">Sensors</a></li>
+                                    <li><a data-toggle="tab" href="#graphE">Frequencies</a></li>
                                 </ul>
                                 <div class="tab-content">
                                     <div id="graphA" class="tab-pane fade in active"></div>
                                     <div id="graphB" class="tab-pane fade"></div>
                                     <div id="graphC" class="tab-pane fade"></div>
                                     <div id="graphD" class="tab-pane fade"></div>
+                                    <div id="graphE" class="tab-pane fade"></div>
                                 </div>
                                 <canvas id="canvas"></canvas>  
                             </td>
