@@ -178,7 +178,7 @@ function startChart(init)
     else  if(activeTab === "#graphE")
     {
         initFrequenciesChart(duration);
-        updateChart(["fstat"]);
+        updateChart(["fweak","fstat","ampnom"]);
     }
 
     if(chart)
@@ -216,24 +216,64 @@ function initTimeAxis(seconds)
     return xaxis;
 }
 
+function sineWave(phase, amplitude)
+{
+    var array = [];
+    for(var j = 0; j <= phase * Math.PI; j += 0.1) {
+        array.push(Math.sin(j)*amplitude); //[j, Math.sin(j)]
+    }
+    return array;
+}
+
 function initFrequenciesChart(duration)
 {
    data = {
-        labels: initTimeAxis(61),
+        labels: initTimeAxis(62),
         datasets: [{
+            label: "Field Weakening",
+            backgroundColor: "rgba(0, 0, 0, 0)",
+            borderColor: "#ff0000",
+            borderWidth: 1,
+            hoverBackgroundColor: "rgba(0, 0, 0, 0)",
+            hoverBorderColor: "#ff0000",
+            data: [0]
+        },{
             label: "Stator Frequency",
-            backgroundColor: "rgba(51, 153, 255,0.2)",
-            borderColor: "rgba(0,0,0,0.2)",
+            backgroundColor: "rgba(144,202,249,0.8)",
+            borderColor: "#33b5e5",
             borderWidth: 2,
-            hoverBackgroundColor: "rgba(51, 153, 255,0.4)",
-            hoverBorderColor: "rgba(0,0,0,0.5)",
+            hoverBackgroundColor: "rgba(144,202,249,0.8)",
+            hoverBorderColor: "#33b5e5",
             data: [0],
             //y2axis: true
+        },{
+            label: "Amplitude Max",
+            backgroundColor: "rgba(0, 0, 0, 0)",
+            borderColor: "#bdbdbd",
+            borderWidth: 2,
+            hoverBackgroundColor: "rgba(0, 0, 0, 0)",
+            hoverBorderColor: "#bdbdbd",
+            data: [0]
+        },{
+            label: "Amplitude Nominal",
+            backgroundColor: "rgba(0, 0, 0, 0)",
+            borderColor: "#FF8800",
+            borderWidth: 2,
+            hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
+            hoverBorderColor: "#FF8800",
+            data: [0]
         }]
     };
 
+	var fweak = getJSONFloatValue("fweak");
     var fmax = getJSONFloatValue("fmax");
     var step = fmax/10;
+	
+	for (var i = 0; i < 62; i++) {
+		data.datasets[0].data.push(fweak);
+	}
+    data.datasets[2].data = sineWave(4,fmax);
+    //data.datasets[3].data = sineWave(4,80);
 
     options = {
         //scaleUse2Y: true,
@@ -328,7 +368,6 @@ function initAmperageChart(duration)
     };
 
     var ocurlim = getJSONFloatValue("ocurlim");
-
     if(ocurlim === 0)
         ocurlim = 100;
 
@@ -708,42 +747,52 @@ function updateChart(value,autosize,accuracy)
 
         for (var i = 0; i < value.length; i++)
         {
-            //try {
-
-                var point = 0;
-                //var point = getJSONFloatValue(value[i]);
-                //var point = getRandom(1.0,80.0);
-                //console.log(point);
-                
+			if(value[i] != "fweak")
+            {
+				//try {
+				var point = 0;
+				//var point = getJSONFloatValue(value[i]);
+				//var point = getRandom(1.0,80.0);
+				//console.log(point);
+				
 				xhr = $.ajax("serial.php?i=" + value[i],{
-                    async: false,
+					async: false,
 					success: function(data){
 						point = parseFloat(data.replace("get " + value[i] + "\n",""));
-                        //point = Math.abs(point); //heavy process
+						//point = Math.abs(point); //heavy process
 					}
 				});
-				
-				l = data.datasets[i].data.length;
-				if(accuracy)
+
+				if(value[i] == "ampnom")
 				{
-					var p = data.datasets[i].data[l-1];
-					var c = (p*accuracy);
-					//console.log("Last point:" + p + ">" +c);
-					
-					if (syncronizedAccuracy < 3 && point < c){
-						point = p;
-						if(p!=c)
-							syncronizedAccuracy ++;
-					}else{
-						syncronizedAccuracy = 0;
+					var max = Math.max.apply(Math, data.datasets[i].data);
+					data.datasets[i+1].data = sineWave(2, max*point/100);
+
+				}else{
+
+					l = data.datasets[i].data.length;
+					if(accuracy)
+					{
+						var p = data.datasets[i].data[l-1];
+						var c = (p*accuracy);
+						//console.log("Last point:" + p + ">" +c);
+						
+						if (syncronizedAccuracy < 3 && point < c){
+							point = p;
+							if(p!=c)
+								syncronizedAccuracy ++;
+						}else{
+							syncronizedAccuracy = 0;
+						}
 					}
-				}
+					
+					if(l > xaxis.length)
+						data.datasets[i].data = [];
+						//data.datasets[0].data.shift();
 				
-				if(l > xaxis.length)
-					data.datasets[i].data = [];
-					//data.datasets[0].data.shift();
-			
-                data.datasets[i].data.push(point);
+					data.datasets[i].data.push(point);
+				}
+            }
             //} catch (e) { console.log(e); }
         }
 
