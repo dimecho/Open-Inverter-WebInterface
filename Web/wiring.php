@@ -13,6 +13,23 @@
                         <tbody>
                             <tr>
                                 <td>
+                                <center>
+                                    <a href="http://johanneshuebner.com/quickcms/index.html%3Fen_main-board,21.html" target="_blank">Main Board</a>
+                                </center>
+                                </td>
+                                <td>
+                                <center>
+                                    <a href="http://johanneshuebner.com/quickcms/index.html%3Fen_sensor-board,22.html" target="_blank">Sensor Board</a>
+                                </center>
+                                </td>
+                                <td>
+                                <center>
+                                    <a href="http://johanneshuebner.com/quickcms/index.html%3Fen_gate-drivers,23.html" target="_blank">Gate Drivers</a>
+                                </center>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
                                     <img src="img/wiring.png" />
                                 </td>
                             </tr>

@@ -239,10 +239,10 @@ function initFrequenciesChart(duration)
             data: [0]
         },{
             label: "Stator Frequency",
-            backgroundColor: "rgba(144,202,249,0.8)",
+            backgroundColor: "#90caf9",
             borderColor: "#33b5e5",
             borderWidth: 2,
-            hoverBackgroundColor: "rgba(144,202,249,0.8)",
+            hoverBackgroundColor: "#90caf9",
             hoverBorderColor: "#33b5e5",
             data: [0],
             //y2axis: true

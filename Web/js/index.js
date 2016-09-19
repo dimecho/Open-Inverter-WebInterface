@@ -1,3 +1,5 @@
+var dev = 0;
+
 $(document).ready(function()
 {
     $('#parameters').editable({
@@ -12,22 +14,17 @@ $(document).ready(function()
             //dataType: 'json'
         },
         validate: function(value) {
-            
-            if($("#opmode").text() != "0" && this.id != 'ampnom'){
-                /*
-                Allow to change potentiometer while in manual mode.
-                Otherwise stop the inverter before changing parameters
-                */
-                stopInverter();
-                setTimeout(function(){
-                    //TODO: make this ajax
-                    window.location.href = "/index.php";
-                },2000);
-                return 'Inverter must not be in operating mode.';
-            }
+
+			for (var i = 0; i < 2; i++) {
+				if(dev === 0 && getJSONFloatValue("opmode") != "0" && this.id != 'ampnom'){
+					stopInverter();
+					if(i>0)
+						return 'Inverter must not be in operating mode.';
+				}
+			}
 
             if(this.id == 'fmin'){
-                if($.trim(value) > $("#fslipmin").text())
+                if(parseFloat($.trim(value)) > parseFloat($("#fslipmin").text()))
                 {
                     return 'Should be set below fslipmin';
                 }
@@ -37,20 +34,22 @@ $(document).ready(function()
                     return 'Pole pairs = half # of motor poles';
                 }
             }else  if(this.id == 'udcmin'){
-                if($.trim(value) > $("#udcmax").text())
+                if(parseInt($.trim(value)) > parseInt($("#udcmax").text()))
                 {
                     return 'Should be below maximum voltage (udcmax)';
                 }
             }else  if(this.id == 'udcmax'){
-                if($.trim(value) > $("#udclim").text())
-                {
+                if(parseInt($.trim(value)) > parseInt($("#udclim").text())){
                     return 'Should be lower than cut-off voltage (udclim)';
                 }
-            }else  if(this.id == 'udcsw'){
-                if($.trim(value) > $("#udcmax").text())
-                {
+            }else if(this.id == 'udcsw'){
+                if(parseInt($.trim(value)) > parseInt($("#udcmax").text())){
                     return 'Should be below maximum voltage (udcmax)';
                 }
+			}else if(this.id == 'fslipmin'){
+				if(parseFloat($.trim(value)) <= parseFloat($("#fmin").text())){
+					return 'Should be higher than start frequency (fmin)';
+				}
             /*}else  if(this.id == 'fslipmax'){
                 if($.trim(value) / 5 > $("#fslipmin").text())
                 {
