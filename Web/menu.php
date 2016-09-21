@@ -22,7 +22,7 @@ $(document).ready(function()
             //console.log(this.$.attr('value'));
             console.log("release : " + value);
 
-            $.ajax("serial.php?pk=1&name=ampnom&value=" + value);
+            $.ajax("serial.php?pk=1&name=fslipspnt&value=" + value);
         },
         cancel : function () {
             console.log("cancel : ", this);

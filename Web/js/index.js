@@ -16,7 +16,7 @@ $(document).ready(function()
         validate: function(value) {
 
 			for (var i = 0; i < 2; i++) {
-				if(dev === 0 && getJSONFloatValue("opmode") != "0" && this.id != 'ampnom'){
+				if(dev === 0 && getJSONFloatValue("opmode") != "0" && this.id != 'fslipspnt'){
 					stopInverter();
 					if(i>0)
 						return 'Inverter must not be in operating mode.';
