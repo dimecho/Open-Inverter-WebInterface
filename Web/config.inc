@@ -1,6 +1,6 @@
 <?php
 
-require('php_serial.class.php');
+require "php_serial.class.php";
 
 $serial = new phpSerial;
 

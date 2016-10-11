@@ -1,8 +1,9 @@
 <?php
-    require "config.inc.php";
+    require('config.inc.php');
 
     if(isset($_GET["ajax"])){
-         if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
+
+        if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
             //Windows: safe_mode = Off
             $command = "powershell.exe -file '" .$_SERVER["DOCUMENT_ROOT"]. "/../Windows/updater.ps1' '" .$_GET["file"]. "' " .str_replace("\\.\\", "", $serial->_device);
         }else{
@@ -61,6 +62,9 @@
                                                     console.log(data);
                                                     progressBar.css("width","100%");
                                                     $("#output").append($("<pre>").append(data));
+                                                    setTimeout( function (){
+                                                        window.location.href = "/index.php";
+                                                    },2500);
                                                 }
                                             });
                                         });
@@ -69,7 +73,7 @@
                                         <div class="bar" style="width:1%" id="progressBar"></div>
                                     </div>
                                     <span class="label label-warning">Tip: If Olimex is bricked, try pressing "reset" button while flashing</span>
-                                    <br/>
+                                    <br/><br/>
                                     <div id="output"></div>
                                 </td>
                             </tr>

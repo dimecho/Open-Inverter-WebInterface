@@ -1,66 +1,42 @@
 <?php
-require('config.inc.php');
+    require('config.inc.php');
 
-$read = "";
-$cmd = "all";
-
-if(isset($_GET["save"])){
-
-    $serial->sendMessage("save\n");
-    $read = $serial->readPort();
-
-}else if(isset($_GET["start"])){
-
-    $serial->sendMessage("start 2\n");
-    $read = $serial->readPort();
-
-}else if(isset($_GET["stop"])){
-
-    $serial->sendMessage("stop\n");
-    $read = $serial->readPort();
-    
-}else if(isset($_GET["pk"]) && isset($_GET["name"]) && isset($_GET["value"])){
-    
-    $serial->sendMessage("set " .$_GET["name"]. " " .$_GET["value"]. "\n");
-    $read = $serial->readPort();
-
-}else if(isset($_GET["default"])){
-
-    $serial->sendMessage("defaults\n");
-    $read = $serial->readPort();
-
-}else if(isset($_GET["errors"])){
-
-    $serial->sendMessage("errors\n");
-    $read = $serial->readPort();
-
-}else{
-
-    $cmd = "";
-
-    if(isset($_GET["json"]))
+    if(isset($_GET["pk"]) && isset($_GET["name"]) && isset($_GET["value"]))
     {
-        $cmd = "json";
+        echo sendToSerial("set " .$_GET["name"]. " " .$_GET["value"],$serial);
     }
-    else if(isset($_GET["i"]))
+    else if(isset($_GET["get"]))
     {
-        $cmd = "get " . $_GET["i"];
+        echo sendToSerial("get " . $_GET["get"],$serial);
     }
-    
-	$serial->sendMessage($cmd . "\n");
-	$x = 0;
-
-    $read = $serial->readPort();
-    $read = str_replace("json {","{",$read);
-    
-	while($x <= 10 && json_decode($read) != true)
+    else if(isset($_GET["command"]))
     {
-		$serial->sendMessage("\n");
-		$read .= $serial->readPort();
-		$x++;
+       echo sendToSerial($_GET["command"],$serial);
     }
-}
 
-echo $read;
+    function sendToSerial($cmd,$serial)
+    {
+        $cmd = urldecode($cmd). "\n";
+        $serial->sendMessage($cmd);
+        $read = $serial->readPort();
+        
+        if ($cmd === "json\n" || $cmd === "all\n"){
+            //Strange behavior when receiving chunks in OSX
+            //==============================================
+            $x = 0;
+            while($x <= 10 && json_decode($read) != true)
+            //while($x <= 8 && strpos($read, $cmd) == false)
+            {
+                //sleep(1);
+                $serial->sendMessage("\n");
+                $read .= $serial->readPort();
+                $x++;
+            }
+            //==============================================
+        }
 
+        $read = str_replace($cmd,"",$read); //Remove serial echo
+        
+        return $read;
+    }
 ?>

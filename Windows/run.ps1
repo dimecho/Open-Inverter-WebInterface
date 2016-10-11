@@ -1,5 +1,5 @@
 $currentVersion = 1.0
-$currentBuild = 25
+$currentBuild = 26
 #=====================
 
 Write-Host "`nHuebner Inverter - Console Management`n"  -ForegroundColor Green

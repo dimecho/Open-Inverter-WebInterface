@@ -1,3 +1,6 @@
+var knobValue = 0;
+var knobTimer;
+
 $(document).ready(function()
 {
     alertify.dialog('startInverterMode', function() {
@@ -50,6 +53,42 @@ $(document).ready(function()
       }
     }, false, 'confirm');
 
+
+    $(".knob").knob({
+        //"displayPrevious":true,
+        "value":0,
+        change : function (value) {
+            if(value <= knobValue+5) //Avoid hard jumps
+            {
+                //console.log(value);
+                clearTimeout(knobTimer);
+                knobTimer = setTimeout(function () {
+                    $.ajax("serial.php?pk=1&name=fslipspnt&value=" + value,{async: false});
+                },80);
+                knobValue = value;
+            }else{
+                console.log("!" + value + ">" + knobValue);
+                $(".knob").val(knobValue).trigger('change');
+            }
+        },
+        /*
+        release : function (value) {
+            //console.log(this.$.attr('value'));
+            console.log("release : " + value);
+
+            $.ajax("serial.php?pk=1&name=fslipspnt&value=" + value);
+        },
+        cancel : function () {
+            console.log("cancel : ", this);
+        },
+        */
+        /*
+        format : function (value) {
+            return value + '%';
+        },*/
+    });
+    $(".knob").val(0).trigger('change');
+    
     buildParameters(loadJSON(0));
 });
 
@@ -93,7 +132,7 @@ function loadJSON(i)
 {
     var json;
 
-    $.ajax("serial.php?json=1",{
+    $.ajax("serial.php?command=json",{
     //$.ajax("test/json.data",{
         async: false,
         //contentType: "application/text",
@@ -106,7 +145,7 @@ function loadJSON(i)
             if(i < 4)
             {
                 try {
-                    json = JSON.parse(data.slice(5)); //cut out command 'json....' from beginning
+                    json = JSON.parse(data);
                 } catch (e) {
                     i++;
                     json = loadJSON(i);
@@ -128,13 +167,13 @@ function loadJSON(i)
 function getJSONFloatValue(value) {
     var float = 0;
 
-    $.ajax("serial.php?i=" + value,{
+    $.ajax("serial.php?get=" + value,{
     //$.ajax("test/" + value + ".data",{
         async: false,
         success: function(data)
         {
 			//console.log(data);
-            float = parseFloat(data.replace("get " + value + "\n",""));
+            float = parseFloat(data);
         }
     });
     return float;
@@ -144,7 +183,7 @@ function getErrors()
 {
    var value = "";
 
-    $.ajax("serial.php?errors=1",{
+    $.ajax("serial.php?command=errors",{
     //$.ajax("test/errors.data",{
         async: false,
         beforeSend: function (req) {
@@ -153,7 +192,7 @@ function getErrors()
         success: function(data)
         {
             //console.log(data);
-            value = data.replace("errors\n","");
+            value = data;
         }
     });
     return value;
@@ -161,7 +200,7 @@ function getErrors()
 
 function saveChanges(span)
 {
-    $.ajax("serial.php?save=1",{
+    $.ajax("serial.php?command=save",{
         async: false,
         success: function(data)
         {
@@ -200,7 +239,7 @@ function startInverterAlert()
 
 function startInverter(mode)
 {
-    $.ajax("serial.php?start=" + mode,{
+    $.ajax("serial.php?command=start " + mode,{
         async: false,
         success: function(data)
         {
@@ -240,7 +279,7 @@ function startInverter(mode)
 
 function stopInverter()
 {
-    $.ajax("serial.php?stop=1",{
+    $.ajax("serial.php?command=stop",{
         async: false,
         success: function(data)
         {
@@ -268,7 +307,7 @@ function stopInverter()
                 $("#potentiometer").hide();
                 //location.reload();
                 //buildParameters(loadJSON(0));
-            },1200);
+            },1000);
         }
     });
 }
@@ -277,7 +316,7 @@ function setDefaults()
 {
     alertify.confirm('', 'This reset all settings back to default.', function()
     {
-        $.ajax("serial.php?default=1",{
+        $.ajax("serial.php?command=default",{
             async: false,
             success: function(data)
             {
@@ -293,15 +332,13 @@ function setDefaults()
                 {
                     span.addClass('label-success');
                     span.text('everything reset to default');
-                    setTimeout( function ()
-                    {
+                    setTimeout( function (){
                         window.location.href = "/index.php";
                     },1500);
                 }else{
                     span.addClass('label-important');
                     span.text('error');
                 }
-
                 setTimeout( function ()
                 {
                     span.hide();

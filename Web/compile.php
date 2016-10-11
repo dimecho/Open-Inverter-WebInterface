@@ -1,5 +1,4 @@
 <?php
- 
     if(isset($_GET["ajax"])){
         if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
             $command = "cmd.exe /c '" .$_SERVER["DOCUMENT_ROOT"]. "/../Windows/source.bat'";

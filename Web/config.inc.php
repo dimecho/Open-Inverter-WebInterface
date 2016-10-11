@@ -1,6 +1,6 @@
 <?php
 
-require('php_serial.class.php');
+require "php_serial.class.php";
 
 $serial = new phpSerial;
 
@@ -13,5 +13,5 @@ $serial->confStopBits(2);
 $serial->confFlowControl("none");
 $serial->echoOff();
 $serial->deviceOpen();
-
+    
 ?>

@@ -103,6 +103,8 @@ class Application: NSViewController, NSApplicationDelegate
         
         if (fd > 0)
         {
+            let CRTSCTS = 020000000000 /* flow control */
+            
             //fcntl(fd, F_SETFL, 0);
             tcgetattr( fd, &raw)          // merge flags into termios attributes
             //------------------
@@ -114,10 +116,11 @@ class Application: NSViewController, NSApplicationDelegate
             cflag |= UInt(CS8)            // 8-bit
             //cflag |= UInt(PARODD)       // parity
             cflag |= UInt(CSTOPB)         // stop 2
+            
             raw.c_cflag &= ~( UInt(CSIZE) | UInt(PARENB) | UInt(PARODD) | UInt(CSTOPB))	// clear all bits and merge in our selection
             raw.c_cflag &= ~(UInt(IXON) | UInt(IXOFF) | UInt(IXANY)) // shut off xon/xoff ctrl
             raw.c_cflag &= ~(UInt(PARENB) | UInt(PARODD));      // shut off parity
-            //raw.c_cflag &= ~UInt(CRTSCTS);  // no flow control
+            raw.c_cflag &= ~UInt(CRTSCTS);  // no flow control
             raw.c_cflag |= cflag            // set flags
             //------------------
             if (tcsetattr (fd, TCSANOW, &raw) != 0) // set termios

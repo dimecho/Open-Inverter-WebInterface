@@ -219,7 +219,7 @@ function setValue()
     //fmax - 200Hz would result in a maximum speed of about 6000rpm
     //udcsw should be set to about 80% of your nominal pack voltage.
     
-    $.ajax("serial.php?start=2",{
+    $.ajax("serial.php?command=start 2",{
         success: function(data)
         {
             //console.log(data);

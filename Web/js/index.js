@@ -74,7 +74,7 @@ $(document).ready(function()
                 
                 setTimeout(function(){
                     saveChanges(span);
-                },1500);
+                },1000);
                 setTimeout(function(){
                     span.remove();
                 },5000);

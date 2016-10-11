@@ -1,7 +1,9 @@
 <?php
-    require "config.inc.php";
-
+    
     if(isset($_GET["ajax"])){
+
+        require('config.inc.php');
+
         if(isset($_GET["fuse"]))
         {
             //if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {

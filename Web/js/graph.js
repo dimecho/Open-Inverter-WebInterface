@@ -1,7 +1,5 @@
 var activeTab = "#graphA";
 var activeTabText = "Motor";
-var syncronizedTimer;
-var syncronizedStop;
 var syncronizedDelay = 1000;
 var syncronizedAccuracy = 0;
 var data;
@@ -35,6 +33,12 @@ $(document).ready(function()
 
         chart.config.data.labels = initTimeAxis(t);
         chart.update();
+
+        //console.log(syncronizedDelay);
+
+        $.ajax("graph.php?delay=" + syncronizedDelay);
+
+        startChart();
     });
 
     $('a[data-toggle="tab"]').on('shown', function (e) {
@@ -42,8 +46,8 @@ $(document).ready(function()
         activeTab = e.target.hash;
         activeTabText = e.target.text;
 
-        startChart();
         stopChart();
+        initChart();
     });
     
     /*
@@ -63,8 +67,7 @@ $(document).ready(function()
     */
     var count = 10;
 
-    startChart();
-    stopChart();
+    initChart();
 });
 
 function exportPDF(pdf)
@@ -144,43 +147,31 @@ function exportPDF(pdf)
     }
 }
 
-function startChart(init)
+function initChart()
 {
-    //console.log(activeTab);
-    
-    stopChart();
-
-    syncronizedStop = false;
-	syncronizedAccuracy = 0;
-
     var duration = $("#speed").slider('getValue');
 
     if(activeTab === "#graphA")
     {
         initMotorChart(duration);
-        updateChart(["speed"],true,0.8);
     }
     else  if(activeTab === "#graphB")
     {
         initTemperatureChart(duration);
-        updateChart(["tmpm","tmphs"]);
     }
     else  if(activeTab === "#graphC")
     {
         initBatteryChart(duration);
-        updateChart(["udc","uac"]);
     }
     else  if(activeTab === "#graphD")
     {
         initAmperageChart(duration);
-        updateChart(["il1rms","idc"]);
     }
     else  if(activeTab === "#graphE")
     {
         initFrequenciesChart(duration);
-        updateChart(["fweak","fstat","ampnom"]);
     }
-
+    
     if(chart)
         chart.destroy();
     
@@ -191,11 +182,44 @@ function startChart(init)
     });
 }
 
+function startChart()
+{
+    //console.log(activeTab);
+    
+    stopChart();
+    
+    //$.ajax("graph.php?stream=start");
+
+	syncronizedAccuracy = 0;
+
+    var duration = $("#speed").slider('getValue');
+
+    if(activeTab === "#graphA")
+    {
+        updateChart(["speed"],true,0.8);
+    }
+    else  if(activeTab === "#graphB")
+    {
+        updateChart(["tmpm","tmphs"]);
+    }
+    else  if(activeTab === "#graphC")
+    {
+        updateChart(["udc","uac"],true,0.8);
+    }
+    else  if(activeTab === "#graphD")
+    {
+        updateChart(["il1rms","idc"]);
+    }
+    else  if(activeTab === "#graphE")
+    {
+        updateChart(["fweak","fstat","ampnom"]);
+    }
+}
+
 function stopChart()
 {
-    syncronizedStop = true;
-
-    clearTimeout(syncronizedTimer);
+    //clearTimeout(syncronizedTimer);
+    //$.ajax("graph.php?stream=stop");
 
     if(xhr)
         xhr.abort();
@@ -738,89 +762,101 @@ function initBatteryChart(duration)
 
 function updateChart(value,autosize,accuracy)
 {
-    clearTimeout(syncronizedTimer);
-    //console.log(syncronizedDelay);
-
-    syncronizedTimer = setTimeout( function ()
-    {
-        var l = 0;
-
-        for (var i = 0; i < value.length; i++)
-        {
-			if(value[i] != "fweak")
+    //Ajax Streaming (Otherwise HTTP headers consume too much CPU)
+    //============================================================
+    var last_response_len = false;
+    xhr = $.ajax("graph.php?stream=" + value+ "&delay=" + syncronizedDelay , {
+    //xhr = $.ajax("http://127.0.0.1:8081/graph.php?stream=" + value+ "&delay=" + syncronizedDelay , {
+        //crossDomain: true,
+        xhrFields: {
+            onprogress: function(e)
             {
-				//try {
-				var point = 0;
-				//var point = getJSONFloatValue(value[i]);
-				//var point = getRandom(1.0,80.0);
-				//console.log(point);
-				
-				xhr = $.ajax("serial.php?i=" + value[i],{
-					async: false,
-					success: function(data){
-						point = parseFloat(data.replace("get " + value[i] + "\n",""));
-						//point = Math.abs(point); //heavy process
-					}
-				});
+                var this_response, response = e.currentTarget.response;
+                if(last_response_len === false)
+                {
+                    this_response = response;
+                    last_response_len = response.length;
+                }
+                else
+                {
+                    this_response = response.substring(last_response_len);
+                    last_response_len = response.length;
+                }
+                //console.log(this_response);
 
-				if(value[i] == "ampnom")
-				{
-					var max = Math.max.apply(Math, data.datasets[i].data);
-					data.datasets[i+1].data = sineWave(2, max*point/100);
+                var split = this_response.split(",");
+                for (var i = 0; i < value.length; i++)
+                {
+                    if(value[i] != "fweak")
+                    {
+                        var point = parseFloat(split[i]);
+                        //console.log(point);
 
-				}else{
+                        if(value[i] == "ampnom")
+                        {
+                            var max = Math.max.apply(Math, data.datasets[i].data);
+                            data.datasets[i+1].data = sineWave(2, max*point/100);
 
-					l = data.datasets[i].data.length;
-					if(accuracy)
-					{
-						var p = data.datasets[i].data[l-1];
-						var c = (p*accuracy);
-						//console.log("Last point:" + p + ">" +c);
-						
-						if (syncronizedAccuracy < 3 && point < c){
-							point = p;
-							if(p!=c)
-								syncronizedAccuracy ++;
-						}else{
-							syncronizedAccuracy = 0;
-						}
-					}
-					
-					if(l > xaxis.length)
-						data.datasets[i].data = [];
-						//data.datasets[0].data.shift();
-				
-					data.datasets[i].data.push(point);
-				}
-            }
-            //} catch (e) { console.log(e); }
-        }
+                        }else{
 
-        if(autosize)
-        {
-            if(l == 1) //do it at start
-            {
-                var largest = Math.max.apply(Math, data.datasets[0].data);
-                var step = 50;
-    			if(largest > 3000){
-                    step = 1000;
-    			}else if(largest > 1000){
-                    step = 500;
-                }else if(largest > 500){
-                    step = 100;
+                            l = data.datasets[i].data.length;
+                            if(accuracy)
+                            {
+                                var p = data.datasets[i].data[l-1];
+                                var c = (p*accuracy);
+                                //console.log("Last point:" + p + ">" +c);
+                                
+                                if (syncronizedAccuracy < 3 && point < c){
+                                    point = p;
+                                    if(p!=c)
+                                        syncronizedAccuracy ++;
+                                }else{
+                                    syncronizedAccuracy = 0;
+                                }
+                            }
+                            
+                            if(l > xaxis.length)
+                                data.datasets[i].data = [];
+                                //data.datasets[0].data.shift();
+                        
+                            data.datasets[i].data.push(point);
+                        }
+                    }
                 }
 
-                chart.options.scales.yAxes[0].ticks.suggestedMax = largest + step;
-                chart.options.scales.yAxes[0].ticks.stepSize = step;
+                if(autosize)
+                {
+                    if(l == 1) //do it at start
+                    {
+                        var largest = Math.max.apply(Math, data.datasets[0].data);
+                        var step = 50;
+                        if(largest > 3000){
+                            step = 1000;
+                        }else if(largest > 1000){
+                            step = 500;
+                        }else if(largest > 500){
+                            step = 100;
+                        }
+
+                        chart.options.scales.yAxes[0].ticks.suggestedMax = largest + step;
+                        chart.options.scales.yAxes[0].ticks.stepSize = step;
+                    }
+                }
+
+                chart.update();
             }
         }
-
-        chart.update();
-		
-        if(!syncronizedStop)
-            updateChart(value,autosize,accuracy);
-
-    },1000);//syncronizedDelay);
+    });
+    /*
+    .done(function(data)
+    {
+        console.log('Complete response = ' + data);
+    })
+    .fail(function(data)
+    {
+        console.log('Error: ', data);
+    });
+    */
 }
 
 function getRandom(min, max) {

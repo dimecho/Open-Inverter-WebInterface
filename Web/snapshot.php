@@ -1,18 +1,25 @@
 <?php
+    require('serial.php');
 
-require('config.inc.php');
-require('InverterTerminal.class.php');
+    date_default_timezone_set("America/Vancouver");
+    ini_set("display_startup_errors", 1);
+    ini_set("display_errors", 1);
+    
+    header ("Content-Type: text/json");
+    header ("Content-Disposition: attachment; filename=\"snapshot" .date("F_j_Y g-ia"). ".txt\"");
 
-header ("Content-Type: text/json");
-header ("Content-Disposition: attachment; filename=\"snapshot.txt\"");
+    $read = sendToSerial("all",$serial);
+    $split = split("\n", $read);
+    $values = array();
 
-$term = new InverterTerminal($serial);
+    for ($i = 0; $i < count($split); $i++)
+    {
+        $s = split("\t", $split[$i]);
+        if (trim($s[0]) != "")
+        {
+            $values[$s[0]] = str_replace("\r", "", $s[2]);
+        }
+    }
 
-$term->getValues($values);
-
-foreach ($values as $key => &$value)
-    $value = $value->value;
-
-echo json_encode($values, JSON_PRETTY_PRINT);
-
+    echo json_encode($values, JSON_PRETTY_PRINT);
 ?>
