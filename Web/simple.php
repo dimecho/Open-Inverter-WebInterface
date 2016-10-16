@@ -28,10 +28,10 @@
             <div class="row">
                 <div class="span1"></div>
                 <div class="span10">
-                        <table class="table table-bordered" style="background-color:#e6e6e6;"><thead><tr><td><h4>Motor</h4></td></tr></thead></table>
-                        <table class="table table-bordered" style="background-color:#e6e6e6;" id="parameters_Motor"></table>
-                        <table class="table table-bordered" style="background-color:#e6e6e6;"><tbody><tr><td><h4>Battery</h4></td></tr></tbody></table>
-                        <table class="table table-bordered" style="background-color:#e6e6e6;" id="parameters_Battery"></table>
+                        <table class="table table-bordered"><thead><tr><td><h4>Motor</h4></td></tr></thead></table>
+                        <table class="table table-bordered" id="parameters_Motor"></table>
+                        <table class="table table-bordered"><tbody><tr><td><h4>Battery</h4></td></tr></tbody></table>
+                        <table class="table table-bordered" id="parameters_Battery"></table>
                     
                 </div>
                 <div class="span1"></div>

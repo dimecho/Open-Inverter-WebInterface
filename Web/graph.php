@@ -72,7 +72,7 @@
             <div class="row">
                 <div class="span1"></div>
                 <div class="span10">
-                    <table class="table table-bordered" style="background-color:#e6e6e6;" id="render">
+                    <table class="table table-bordered" id="render" style="background-color:#e6e6e6;">
                         <tbody>
                             <td>
                                 <ul class="nav nav-tabs">

@@ -22,7 +22,7 @@
                         </div>
                         </center>
                     </div>
-                    <table class="table table-bordered table-striped table-hover" style="display: none;background-color:#e6e6e6;" id="parameters">
+                    <table class="table table-bordered table-striped table-hover" style="display:none;" id="parameters">
                     </table>
                 </div>
                 <div class="span1"></div>

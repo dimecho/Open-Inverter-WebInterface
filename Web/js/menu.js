@@ -316,7 +316,7 @@ function setDefaults()
 {
     alertify.confirm('', 'This reset all settings back to default.', function()
     {
-        $.ajax("serial.php?command=default",{
+        $.ajax("serial.php?command=defaults",{
             async: false,
             success: function(data)
             {

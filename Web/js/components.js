@@ -10,8 +10,8 @@ $(document).ready(function()
 function buildTable(title,csv)
 {
     var div = $("#components"); //.empty();
-    var header = $("<table>", {class:"table table-bordered", style:"padding-left:10px;background-color:#e6e6e6;"}).append($("<h4>").append(title));
-    var table = $("<table>", {class:"table table-bordered table-striped table-hover", style:"background-color:#e6e6e6;"});
+    var header = $("<table>", {class:"table table-bordered", style:"padding-left:10px;"}).append($("<h4>").append(title));
+    var table = $("<table>", {class:"table table-bordered table-striped table-hover"});
     var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Part")).append($("<th>").append("Value")).append($("<th>").append("Manual")));
     var tbody = $("<tbody>");
 
@@ -37,10 +37,12 @@ function buildTable(title,csv)
                         var a = $("<button>", { class:"btn"}).append("PDF");
                         if(split[4].length > 4)
                         {
-                            a = $("<button>", { id:split[4], class:"btn btn-primary", "data-toggle":"modal", "data-target":"#myModal" }).append("PDF");
+                            //a = $("<button>", { id:split[4], class:"btn btn-primary", "data-toggle":"modal", "data-target":"#myModal" }).append("PDF");
+                            a = $("<button>", { id:split[4], class:"btn btn-primary"}).append("PDF");
                             a.on('click', function(event) {
                                 //console.log(event.target.id);
-                                $("#componentPDF").attr('src', event.target.id);
+                                //$("#componentPDF").attr('src', event.target.id);
+                                window.open(event.target.id, '_blank');
                             });
                         }
 

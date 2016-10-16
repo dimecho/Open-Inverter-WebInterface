@@ -37,7 +37,7 @@
             <div class="row">
                 <div class="span1"></div>
                 <div class="span10">
-                    <table class="table table-bordered" style="background-color:#e6e6e6;">
+                    <table class="table table-bordered">
                         <tbody>
                         <?php if(isset($_FILES["firmware"])){ ?>
                             <tr>

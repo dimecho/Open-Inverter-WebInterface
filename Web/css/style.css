@@ -1,7 +1,18 @@
 body {
-  /*background-color: #666666;*/
-  background-attachment: fixed;
-  background-image:url(../img/background.jpg);
+    /*
+    Background by Harry
+    http://www.freepik.com/free-vector/technological-background-with-full-color-circuits_951748.htm
+    */
+    background-image: url(../img/background.png);
+    background-attachment: fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.table-bordered{
+    background: rgba(230, 230, 230, 0.8); 
 }
 
 .svg-inject{

@@ -46,9 +46,9 @@ function confirmDownload(app)
         title = "CadSoft EAGLE PCB Design Software.";
         msg = "Install EAGLE - Download 50MB";
         if(os === "Mac"){
-            url = "http://web.cadsoft.de/ftp/eagle/program/7.6/eagle-mac64-7.6.0.zip";
+            url = "http://web.cadsoft.de/ftp/eagle/program/7.7/eagle-mac64-7.7.0.zip";
         }else if(os === "Windows"){
-            url = "http://web.cadsoft.de/ftp/eagle/program/7.6/eagle-x64-7.6.0.zip";
+            url = "http://web.cadsoft.de/ftp/eagle/program/7.7/eagle-x64-7.7.0.zip";
         }
     }else if(app === "arm"){
         title = "arm-none-eabi-gcc";

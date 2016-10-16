@@ -36,7 +36,7 @@ $(document).ready(function()
 
         //console.log(syncronizedDelay);
 
-        $.ajax("graph.php?delay=" + syncronizedDelay);
+        //$.ajax("graph.php?delay=" + syncronizedDelay);
 
         startChart();
     });
@@ -204,7 +204,7 @@ function startChart()
     }
     else  if(activeTab === "#graphC")
     {
-        updateChart(["udc","uac"],true,0.8);
+        updateChart(["udc","uac"],true);
     }
     else  if(activeTab === "#graphD")
     {

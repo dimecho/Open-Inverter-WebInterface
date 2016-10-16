@@ -37,7 +37,7 @@
             <div class="row">
                 <div class="span1"></div>
                 <div class="span10">
-                    <table class="table table-bordered" style="background-color:#e6e6e6;">
+                    <table class="table table-bordered">
                         <tbody>
                         <?php if(isset($_FILES["firmware"])){ ?>
                             <tr>
@@ -91,9 +91,7 @@
                                             <button class="browse btn btn-primary" type="button"><i class="icon-search"></i> Select BIN</button>
                                         </div>
                                         <br/><br/>
-                                        <div style="background-color:#ffffff;">
-                                            <img src="img/olimex-arm-usb-ocd-h.jpg" id="jtagimage" />
-                                        </div>
+                                        <img src="img/olimex-arm-usb-ocd-h.jpg" id="jtagimage" class="img-rounded" />
                                     </center>
                                 </td>
                             </tr>

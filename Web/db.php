@@ -28,7 +28,7 @@
             <div class="row">
                 <div class="span1"></div>
                 <div class="span10">
-                    <table class="table table-bordered" style="background-color:#e6e6e6;">
+                    <table class="table table-bordered">
                         <tbody>
                             <tr>
                                 <td>
@@ -49,7 +49,7 @@
                                         <br/><br/>
                                         <div>
                                             <br/>
-                                            <img src="db/img/Siemens_1PV5135.jpg" id="motorimage" class = "img-rounded" />
+                                            <img src="db/img/Siemens_1PV5135.jpg" id="motorimage" class="img-rounded" />
                                             <br/><br/>
                                         </div>
                                     </center>

@@ -54,7 +54,7 @@
                 <div class="span1"></div>
                 <div class="span10">
                     <center>
-                        <table class="table table-bordered" style="background-color:#e6e6e6;">
+                        <table class="table table-bordered">
                             <tbody>
                                 <tr>
                                     <td>
