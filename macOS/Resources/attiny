@@ -7,8 +7,7 @@ if [ ! -f "/usr/local/CrossPack-AVR/bin/avr-gcc" ]; then
     hdiutil detach /Volumes/CrossPack-AVR
 else
     export PATH="$PATH:/usr/local/CrossPack-AVR/bin/"
-    cd ~/Documents/firmware/
-
+    
     #Read
     #avrdude -c ponyser -p attiny13 -P /dev/cu.usbserial  -U flash:r:flash.bin:r
 

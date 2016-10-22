@@ -2,19 +2,28 @@
     
     if(isset($_GET["ajax"])){
 
-        require('config.inc.php');
-
         if(isset($_GET["fuse"]))
         {
-            //if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
-            //}else{
-                $command = "avrdude -c " .$_GET["isp"]. " -p attiny13 -P " .$serial->_device. " -U lfuse:w:0x7A:m -U hfuse:w:0xFF:m";
-            //}
+            if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
+                $command = "cmd.exe /c '" .$_SERVER["DOCUMENT_ROOT"]. "/../Windows/fuse.bat'";
+            }else{
+                $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../fuse'";
+            }
+            $command = $command. " " .$_GET["isp"]. " " .$_GET["serial"];
+
         }else{
-            $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../attiny' " .$_GET["file"]. " " .$_GET["isp"]. " " .$serial->_device;
+            if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
+                $command = "cmd.exe /c '" .$_SERVER["DOCUMENT_ROOT"]. "/../Windows/attiny.bat'";
+            }else{
+                $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../attiny'";
+            }
+
+            $command = $command. " " .$_GET["file"]. " " .$_GET["isp"]. " " .$_GET["serial"];
         }
 
-        exec($command . " 2>&1", $output, $return);
+        echo $command;
+
+        exec($command. " 2>&1", $output, $return);
 
         foreach ($output as $line) {
             echo "$line\n";
@@ -32,7 +41,7 @@
             });
 
             $(document).on('click', '.fuses', function(){
-                window.location.href = "attiny.php?fuses=1";
+                window.location.href = "attiny.php?fuses=1&isp=" + $("#ispList option:selected").text() + "&serial=" + $("#serialList option:selected").text();
             });
         </script>
     </head>
@@ -41,8 +50,8 @@
             <?php include "menu.php" ?>
             <br/><br/>
             <div class="row">
-                <div class="span1"></div>
-                <div class="span10">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
                     <table class="table table-bordered">
                         <tbody>
                         <?php if(isset($_GET["fuses"])){ ?>
@@ -67,15 +76,14 @@
                                         });
                                     </script>
                                     <div class="progress progress-striped active">
-                                        <div class="bar" style="width:1%" id="progressBar"></div>
+                                        <div class="progress-bar" style="width:1%" id="progressBar"></div>
                                     </div>
-                                    <span class='label label-success'>Fuses Reset</span><br/><br/>
-                                    <label class="checkbox"><input type="checkbox" checked="checked"> SPIEN *</label>
-                                    <label class="checkbox"><input type="checkbox"> CKDIV8</label>
-                                    <label class="checkbox"><input type="checkbox" checked="checked"> SUT0</label>
-                                    <label class="checkbox"><input type="checkbox" checked="checked"> CKSEL0</label>
-                                    <br/>
-                                    <a href="http://eleccelerator.com/fusecalc/fusecalc.php?chip=attiny13a&LOW=7A&HIGH=FF&LOCKBIT=FF">Fuse Calculator</a>
+                                    <input type="checkbox" checked="checked"> SPIEN *
+                                    <input type="checkbox"> CKDIV8
+                                    <input type="checkbox" checked="checked"> SUT0
+                                    <input type="checkbox" checked="checked"> CKSEL0
+                                    <br/><br/>
+                                    <a href="http://eleccelerator.com/fusecalc/fusecalc.php?chip=attiny13a&LOW=7A&HIGH=FF&LOCKBIT=FF" target="_blank">Fuse Calculator</a>
                                     <br/>
                                     <div id="output"></div>
                                 </td>
@@ -109,33 +117,51 @@
                                         });
                                     </script>
                                     <div class="progress progress-striped active">
-                                        <div class="bar" style="width:1%" id="progressBar"></div>
+                                        <div class="progress-bar" style="width:1%" id="progressBar"></div>
                                     </div>
                                     <div id="output"></div>
                                 </td>
                             </tr>
                         <?php }else{ ?>
+                            <script>
+                                $(document).ready(function() {
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "serial.php?com=list",
+                                        success: function(data){
+                                            //console.log(data);
+                                            var s = data.split(',');
+                                            for (i = 0; i < s.length; i++) {
+                                                $("#serialList").append($("<option>",{value:s[i],selected:'selected'}).append(s[i]));
+                                            }
+                                        }
+                                    });
+                                });
+                            </script>
                             <tr>
                                 <td>
                                 <center>
-                                    <form enctype="multipart/form-data" action="attiny.php" method="POST" id="Aform">
-                                        <input type="file" name="firmware" class="file" hidden onchange="javascript:this.form.submit();" />
-                                        <input type="submit" hidden />
-                                    </form>
-                                    <div class="input-append">
-                                            <select name="isp" class="form-control" form="Aform">
+                                    <div class="input-group" style="width:80%">
+                                        <span class = "input-group-addon" style="width:30%">
+                                            <select name="isp" class="form-control" form="Aform" id="ispList">
                                                 <option value="ponyser" selected="selected">ponyser</option>
                                                 <option value="usbtiny">usbtiny</option>
                                                 <option value="usbasp">usbasp</option>
                                                 <option value="usbtinyisp">usbtinyisp</option>
                                                 <option value="arduino">arduino</option>
                                             </select>
+                                        </span>
+                                        <span class = "input-group-addon" style="width:70%">
+                                            <select name="serial" class="form-control" form="Aform" id="serialList">
+                                            </select>
+                                        </span>
+                                        <span class = "input-group-addon">
                                             <button class="browse btn btn-primary" type="button"><i class="icon-search"></i> Select HEX</button>
-                                            <button class="fuses btn btn-inverse" type="button"><i class="icon-download-alt icon-white"></i> Reset Fuses</button>
-                                        </form>
+                                            <button class="fuses btn btn-danger" type="button"><i class="icon-download-alt icon-white"></i> Reset Fuses</button>
+                                        </span>
                                     </div>
                                     <br/><br/>
-                                    <span class="label label-important">Prolific chipset USB to Serial adapters will not work, use a "legacy" serial port.</span>
+                                    <span class="label label-lg label-danger">Prolific chipset USB to Serial adapters will not work, use a "legacy" serial port.</span>
                                     <br/><br/>
                                     <div style="background-color:#ffffff;">
                                         <img src="img/avr_programmer_serial.png" />
@@ -148,9 +174,13 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="span1"></div>
+                <div class="col-md-1"></div>
             </div>
         </div>
+        <form enctype="multipart/form-data" action="attiny.php" method="POST" id="Aform">
+            <input type="file" name="firmware" class="file" hidden onchange="javascript:this.form.submit();" />
+            <input type="submit" hidden />
+        </form>
     </body>
 </html>
 <?php } ?>

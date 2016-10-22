@@ -35,8 +35,8 @@
             <?php include "menu.php" ?>
             <br/><br/>
             <div class="row">
-                <div class="span1"></div>
-                <div class="span10">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
                     <table class="table table-bordered">
                         <tbody>
                         <?php if(isset($_FILES["firmware"])){ ?>
@@ -68,27 +68,47 @@
                                         });
                                     </script>
                                     <div class="progress progress-striped active">
-                                        <div class="bar" style="width:1%" id="progressBar"></div>
+                                        <div class="progress-bar" style="width:1%" id="progressBar"></div>
                                     </div>
                                     <div id="output"></div>
                                 </td>
                             </tr>
                         <?php }else{ ?>
+                           <script>
+                                $(document).ready(function() {
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "serial.php?com=list",
+                                        success: function(data){
+                                            //console.log(data);
+                                            var s = data.split(',');
+                                            for (i = 0; i < s.length; i++) {
+                                                $("#serialList").append($("<option>",{value:s[i],selected:'selected'}).append(s[i]));
+                                            }
+                                        }
+                                    });
+                                });
+                            </script>
                             <tr>
                                 <td>
                                     <center>
-                                        <form enctype="multipart/form-data" action="bootloader.php" method="POST" id="Aform">
-                                            <input type="file" name="firmware" class="file" hidden onchange="javascript:this.form.submit();"/>
-                                            <input type="submit" hidden/>
-                                        </form>
-                                        <div class="input-append">
-                                            <select name="rs" class="form-control" form="Aform" onchange="setJTAGImage()" id="jtag" >
-                                                <option value="olimex-arm-usb-ocd-h" selected="selected">olimex-arm-usb-ocd-h</option>
-                                                <option value="olimex-arm-usb-tiny-h">olimex-arm-usb-tiny-h</option>
-                                                <option value="jtag-lock-pick_tiny_2">jtag-lock-pick_tiny_2</option>
-                                                <option value="openocd-usb">openocd-usb</option>
+                                        <div class="input-group" style="width:80%">
+                                            <span class = "input-group-addon" style="width:40%">
+                                                <select name="rs" class="form-control" form="Aform" onchange="setJTAGImage()" id="jtag" >
+                                                    <option value="olimex-arm-usb-ocd-h" selected="selected">olimex-arm-usb-ocd-h</option>
+                                                    <option value="olimex-arm-usb-tiny-h">olimex-arm-usb-tiny-h</option>
+                                                    <option value="jtag-lock-pick_tiny_2">jtag-lock-pick_tiny_2</option>
+                                                    <option value="openocd-usb">openocd-usb</option>
+                                                </select>
+                                            </span>
+                                            <span class = "input-group-addon" style="width:60%">
+                                            <select name="serial" class="form-control" form="Aform" id="serialList">
                                             </select>
-                                            <button class="browse btn btn-primary" type="button"><i class="icon-search"></i> Select BIN</button>
+                                            </span>
+                                            <span class = "input-group-addon">
+                                            
+                                                <button class="browse btn btn-primary" type="button"><i class="icon-search"></i> Select BIN</button>
+                                            </span>
                                         </div>
                                         <br/><br/>
                                         <img src="img/olimex-arm-usb-ocd-h.jpg" id="jtagimage" class="img-rounded" />
@@ -99,9 +119,13 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="span1"></div>
+                <div class="col-md-1"></div>
             </div>
         </div>
+        <form enctype="multipart/form-data" action="bootloader.php" method="POST" id="Aform">
+            <input type="file" name="firmware" class="file" hidden onchange="javascript:this.form.submit();"/>
+            <input type="submit" hidden/>
+        </form>
     </body>
 </html>
 <?php } ?>

@@ -35,8 +35,8 @@
             <?php include "menu.php" ?>
             <br/><br/>
             <div class="row">
-                <div class="span1"></div>
-                <div class="span10">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
                     <table class="table table-bordered">
                         <tbody>
                         <?php if(isset($_FILES["firmware"])){ ?>
@@ -70,9 +70,9 @@
                                         });
                                     </script>
                                     <div class="progress progress-striped active">
-                                        <div class="bar" style="width:1%" id="progressBar"></div>
+                                        <div class="progress-bar" style="width:1%" id="progressBar"></div>
                                     </div>
-                                    <span class="label label-warning">Tip: If Olimex is bricked, try pressing "reset" button while flashing</span>
+                                    <span class="label label-lg label-warning ">Tip: If Olimex is bricked, try pressing "reset" button while flashing</span>
                                     <br/><br/>
                                     <div id="output"></div>
                                 </td>
@@ -80,19 +80,23 @@
                         <?php }else{ ?>
                             <tr>
                                 <td>
+                                    <form enctype="multipart/form-data" action="firmware.php" method="POST" id="Aform">
+                                        <input type="file" name="firmware" class="file" hidden onchange="javascript:this.form.submit();"/>
+                                        <input type="submit" hidden/>
+                                    </form>
                                     <center>
-                                        <form enctype="multipart/form-data" action="firmware.php" method="POST" id="Aform">
-                                            <input type="file" name="firmware" class="file" hidden onchange="javascript:this.form.submit();"/>
-                                            <input type="submit" hidden/>
-                                        </form>
-                                        <div class="input-append">
-                                            <select name="rslist" class="form-control" form="Aform">
-                                                <option value="<?php echo $serial->_device; ?>" selected="selected"><?php echo $serial->_device; ?></option>
-                                            </select>
-                                            <button class="browse btn btn-primary" type="button"><i class="icon-search"></i> Select BIN</button>
+                                        <div class="input-group" style="width:60%">
+                                            <span class = "input-group-addon" style="width:90%">
+                                                <select name="rslist" class="form-control" form="Aform">
+                                                    <option value="<?php echo $serial->_device; ?>" selected="selected"><?php echo $serial->_device; ?></option>
+                                                </select>
+                                            </span>
+                                            <span class = "input-group-addon">
+                                                <button class="browse btn btn-primary" type="button"><i class="icon-search"></i> Select BIN</button>
+                                            </span>
                                         </div>
                                         <br/><br/>
-                                        <span class="label label-warning">Caution: Main board for Olimex powered with 3.3V - Double check your USB-TTL adapter.</span>
+                                        <span class="label label-lg label-warning">Caution: Main board for Olimex powered with 3.3V - Double check your USB-TTL adapter.</span>
                                         <br/><br/>
                                         <img src="img/usb_ttl.jpg" />
                                     </center>
@@ -102,7 +106,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="span1"></div>
+                <div class="col-md-1"></div>
             </div>
         </div>
     </body>

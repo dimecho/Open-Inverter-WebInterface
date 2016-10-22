@@ -58,11 +58,11 @@ function confirmDownload(app)
         }else if(os === "Windows"){
             url = "http://launchpadlibrarian.net/268330693/gcc-arm-none-eabi-5_4-2016q2-20160622-win32.exe";
         }
-    }else if(app === "schematics"){
-
     }else if(app === "source"){
         title = "Inverter Source Code";
-        url = "http://johanneshuebner.com/quickcms/files/inverter.zip";
+        //url = "http://johanneshuebner.com/quickcms/files/inverter.zip";
+        url = "https://github.com/tumanako/tumanako-inverter-fw-motorControl/archive/sync_motor.zip"
+        
         //get_filesize(url, function(size) {
             msg = "Source Code - Download 1MB";
         //});
@@ -86,38 +86,16 @@ function get_filesize(url, callback) {
     xhr.send();
 }
 
-function downloadComplete(app)
-{
-    //console.log(app);
-
-    td = $(".progress").parent().empty();
-    img = $("<img>", {src:"img/loading.gif"});
-    td.append($("<div>").append($("<h2>").append(img).append(" Installing ...")));
-    
-    $.ajax("install.php?app=" + app,{
-        //async: false,
-        success: function(data)
-        {
-            console.log(data);
-            
-            td.empty();
-            if(data === "done"){
-                img = $("<img>", {class:"svg-inject", src:"img/ok.svg"});
-                td.append($("<div>").append($("<h2>").append(img).append(" Installation Successful.")));
-            }else{
-                img = $("<img>", {class:"svg-inject", src:"img/error.svg"});
-                td.append($("<div>").append($("<h2>").append(img).append(" Installation Failed.")));
-            }
-        },
-        error: function(xhr, textStatus, errorThrown){
-        }
-    });
-}
-
 function download(url,app)
 {
     if(!url)
         return;
+
+    var notify = $.notify({
+            message: 'Downloading...',
+        },{
+            type: 'success'
+    });
 
     var progressBar = $("#progressBar");
     $.ajax({
@@ -133,12 +111,33 @@ function download(url,app)
             }, false);
             return xhr;
         },
-        //async: false,
+        async: false,
         type: "GET",
         url: "download.php?download=1&url=" + url,
         data: {},
         success: function(data){
-            downloadComplete(app);
+            
+            notify.update({'type': 'success', 'message': 'Installing ...'});
+            
+            $.ajax("install.php?app=" + app,{
+                async: false,
+                success: function(data)
+                {
+                    //console.log(data);
+                    notify.update({'type': 'success', 'message': 'Installed'});
+
+                    $("#progressBar").css("width","100%");
+                    $("#output").show().append($("<pre>").append(data));
+                    
+                    setTimeout(function ()
+                    {
+                        openExternalApp(app);
+                    },2400);
+                },
+                error: function(xhr, textStatus, errorThrown){
+                }
+            });
+            
         }
     });
 }

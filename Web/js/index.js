@@ -10,6 +10,7 @@ $(document).ready(function()
         showbuttons: true,
         ajaxOptions: {
             type: 'get',
+            async: false,
             //type: 'put',
             //dataType: 'json'
         },
@@ -61,24 +62,58 @@ $(document).ready(function()
                     return 'Current limit should be set as negative';
                 }*/
             }
+
+            var notify = $.notify({
+                    message: this.id + " = " + $.trim(value),
+                },{
+                    //allow_dismiss: false,
+                    //showProgressbar: true,
+                    type: 'warning'
+            });
         },
-        success: function(response, newValue) {
-            //console.log(response);
-            if(response.indexOf("Set OK"))
-            {
-                var id = this.id;
+        success: function(response, newValue)
+        {
+            console.log("'" + response + "'");
+
+            //if(response === "Set OK\n"){
+                //var id = this.id;
                 //console.log(this.id);
                 
-                var span = $("<span>", { class:"label label-warning offset1"}).append("changed");
-                $("#" + id).parent().append(span);
-                
-                setTimeout(function(){
-                    saveChanges(span);
-                },1000);
-                setTimeout(function(){
-                    span.remove();
-                },5000);
-            }
+                $.ajax("serial.php?command=save",{
+                    //async: false,
+                    success: function(data)
+                    {
+                        //console.log(data);
+
+                        if(data.indexOf("Parameters stored") != -1)
+                        {
+                            $.notify({
+                                message: data,
+                            },{
+                                type: 'success'
+                            });
+                            
+                            //setTimeout(function() {
+                            //    notify.update({'type': 'success', 'message': data, 'progress': 25});
+                            //}, 2000);
+
+                        }else{
+                            
+                            $.notify({
+                                icon: 'glyphicon glyphicon-warning-sign',
+                                title: 'Error',
+                                message: data,
+                            },{
+                                type: 'danger'
+                            });
+                            
+                            //setTimeout(function() {
+                            //    notify.update({'type': 'error', 'message': data, 'progress': 25});
+                            //}, 2000);
+                        }
+                    }
+                });
+            //}
         }
     });
     

@@ -22,6 +22,11 @@
                 for (i = 0; i < 100; i++) {
                     setTimeout(function(){ progressBar.css("width", i + "%"); }, i*2000);
                 }
+                var notify = $.notify({
+                        message: 'Compiling ...',
+                    },{
+                        type: 'danger'
+                });
                 $.ajax({
                     /*
                     xhr: function()
@@ -38,7 +43,8 @@
                     url: "compile.php?ajax=1",
                     data: {},
                     success: function(data){
-                        console.log(data);
+                        //console.log(data);
+                        notify.update({'type': 'success', 'message': 'Compiled'});
                         progressBar.css("width","100%");
                         $("#output").append($("<pre>").append(data));
                     }
@@ -51,15 +57,15 @@
             <?php include "menu.php" ?>
             <br/><br/>
             <div class="row">
-                <div class="span1"></div>
-                <div class="span10">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
                     <center>
                         <table class="table table-bordered">
                             <tbody>
                                 <tr>
                                     <td>
                                         <div class="progress progress-striped active">
-                                            <div class="bar" style="width:1%" id="progressBar"></div>
+                                            <div class="progress-bar" style="width:1%" id="progressBar"></div>
                                         </div>
                                         <div id="output"></div>
                                     </td>
@@ -68,7 +74,7 @@
                         </table>
                     </center>
                 </div>
-                <div class="span1"></div>
+                <div class="col-md-1"></div>
             </div>
         </div>
     </body>

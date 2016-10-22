@@ -10,9 +10,12 @@ if(!isset($_GET["url"]) && isset($_GET["app"]))
         $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../" . $_GET["app"] . "'";
     }
 
-    $output = exec($command);
-    //echo $output;
-    echo "done";
+    exec($command . " 2>&1", $output, $return);
+    
+    foreach ($output as $line) {
+        echo "$line\n";
+    }
+    //echo "done";
 }
 else if(isset($_GET["remove"]))
 {
@@ -39,17 +42,12 @@ else if(isset($_GET["remove"]))
 function checkEagle()
 {
     if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-        $path = "/Applications/EAGLE-7.6.0/Eagle.app";
+        $path = "/Applications/EAGLE-7.7.0/Eagle.app";
     }else{
         $path = "C:\\Program Files\\Eagle";
     }
     if(is_dir($path)) {
-        if(checkSource())
-        {
             echo "openExternalApp('eagle')";
-        }else{
-            echo "confirmDownload('source')";
-        }
     }else{
         echo "confirmDownload('eagle')";
     }
@@ -63,12 +61,11 @@ function checkOpenOCD()
         $path = "C:\\Program Files\\GNU ARM Eclipse\\OpenOCD";
     }
     if(is_dir($path)) {
-        if(checkSource())
-        {
+        //if(checkSource("tumanako-inverter-fw-motorControl-sync_motor")){
             echo "openExternalApp('openocd')";
-        }else{
-            echo "confirmDownload('source')";
-        }
+        //}else{
+        //    echo "confirmDownload('openocd')";
+        //}
     }else{
         echo "confirmDownload('openocd')";
     }
@@ -83,7 +80,7 @@ function checkAVRCompiler()
         $path = "C:\\Program Files\\Win-AVR";
     }
     if(is_file($path)) {
-        if(checkSource())
+        if(checkSource("tumanako-inverter-fw-motorControl-sync_motor"))
         {
             echo "openExternalApp('attiny')";
         }else{
@@ -103,7 +100,7 @@ function checkARMCompiler()
     }
     if(is_dir($path))
     {
-        if(checkSource())
+        if(checkSource("tumanako-inverter-fw-motorControl-sync_motor"))
         {
             echo "openExternalApp('source')";
         }else{
@@ -128,12 +125,12 @@ function checkCompiler()
     }       
 }
 
-function checkSource()
+function checkSource($src)
 {
     if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
-        $path = getenv("HOMEPATH"). "\\Documents\\Firmware";
+        $path = getenv("HOMEPATH"). "\\Documents\\" . $src;
     }else{
-        $path = getenv("HOME"). "/Documents/Firmware";
+        $path = getenv("HOME"). "/Documents/" . $src;
     }
     if(is_dir($path)) {
         return true;

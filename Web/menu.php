@@ -14,14 +14,13 @@ function buildEncoderAlert()
 }
 </script>
 <div class="row">
-    <div class="span1"></div>
-    <div class="span10">
-        <div class="navbar navbar-static" >
-            <div class="navbar-inner">
-                <div class="container">
-                    <ul class="nav" role="navigation">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div class="navbar navbar-default">
+            <div class="container-fluid">
+                <ul class="nav navbar-nav">
                     <li class="dropdown">
-                        <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>Menu</b><b class="caret"></b></a>
+                        <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>Motor</b><b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
                             <li><a tabindex="-1" onClick="startInverterAlert()">Start Inverter</a></li>
                             <li><a tabindex="-1" onClick="stopInverter()">Stop Inverter</a></li>
@@ -30,20 +29,19 @@ function buildEncoderAlert()
                             <li class="divider"></li>
                             <li><a tabindex="-1" href="graph.php">Graph</a></li>
                             <li class="divider"></li>
-                            <!--
-                            <li><a tabindex="-1" href="#">Save Parameters to Flash</a></li>
-                            <li><a tabindex="-1" href="#">Save Parameters from Flash</a></li>
-                            -->
                             <li><a tabindex="-1" href="#" onClick="uploadSnapshot();">Upload Parameters</a></li>
                             <li><a tabindex="-1" href="#" onClick="downloadSnapshot();">Download Parameters</a></li>
                             <li><a tabindex="-1" href="index.php">Advanced Parameters</a></li>
                             <!--
                             <li><a tabindex="-1" href="simple.php">Simple Parameters</a></li>
                             -->
-                            <!--
-                            <li><a tabindex="-1" href="graph.php">Show Graph</a></li>
-                            -->
-                            <li class="divider"></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>Inverter</b><b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
                             <li><a tabindex="-1" href="#" onClick="<?php checkOpenOCD(); ?>">Flash Bootloader</a></li>
                             <li><a tabindex="-1" href="firmware.php">Flash Firmware</a></li>
                             <li><a tabindex="-1" href="#" onClick="<?php checkAVRCompiler(); ?>">Flash ATtiny13 Chip</a></li>
@@ -59,24 +57,20 @@ function buildEncoderAlert()
                             <li><a tabindex="-1" href="#" onClick="<?php checkInkscape(); ?>">Build Encoder</a></li>
                         </ul>
                     </li>
-                    <li>
-                        <h3 class="label" id="titleVersion"></h3>&nbsp;&nbsp;<span id="titleOperation"></span>&nbsp;&nbsp;<span id="titleStatus"></span>
-                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
                     <li><div id="opStatus"></div></li>
-                    </ul>
-                </div>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><span><h3 class="label" id="titleVersion" style="color:black;font-weight:normal"></h3></span></li>
+                </ul>
             </div>
         </div>
-        <div class="accordion" id="potentiometer" style="display:none">
-            <div class="accordion-group">
-                <div id="collapseOne" class="accordion-body collapse">
-                    <div class="accordion-inner">
-                        <center>
-                            <input class="knob" data-displayInput=true data-min="0" data-max="100" data-fgColor="#222222" value="0"/>
-                        </center>
-                    </div>
-                </div>
-            </div>
+        <div  id="potentiometer" style="display:none">
+            <center>
+                <input class="knob" data-displayInput=true data-min="0" data-max="100" data-fgColor="#222222" data-bgColor="#FFFFFF" value="0"/>
+            </center>
+            <br/>
         </div>
         <form enctype="multipart/form-data" action="open.php" method="POST">
             <input type="file" name="file" class="fileSVG" hidden onChange="javascript:this.form.submit();" accept=".svg"/>
@@ -87,5 +81,5 @@ function buildEncoderAlert()
             <input type="submit" hidden/>
         </form>
     </div>
-    <div class="span1"></div>
+    <div class="col-md-1"></div>
 </div>

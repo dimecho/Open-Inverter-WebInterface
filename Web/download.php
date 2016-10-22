@@ -118,10 +118,10 @@
             <?php include "menu.php" ?>
             <br/><br/>
             <div class="row">
-                <div class="span1"></div>
-                <div class="span10">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
                     <center>
-                        <table class="table table-bordered" style="background-color:#e6e6e6;">
+                        <table class="table table-bordered">
                             <tbody>
                                 <tr>
                                     <td>
@@ -132,10 +132,17 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div class="progress progress-striped active">
-                                          <div class="bar" style="width:1%" id="progressBar"></div>
+                                        <div class="input-group">
+                                            <span class = "input-group-addon" style="width:90%">
+                                                <div class="progress progress-striped active">
+                                                  <div class="progress-bar" style="width:1%" id="progressBar"></div>
+                                                </div>
+                                            </span>
+                                            <span class = "input-group-addon">
+                                                <button class="pause btn btn-primary" type="button">Pause</button>
+                                            </span>
                                         </div>
-                                        <button class="pause btn btn-inverse" type="button">Pause</button>
+                                        <div id="output" style="display:none"></div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -147,7 +154,7 @@
                         </table>
                     </center>
                 </div>
-                <div class="span1"></div>
+                <div class="col-md-1"></div>
             </div>
         </div>
     </body>

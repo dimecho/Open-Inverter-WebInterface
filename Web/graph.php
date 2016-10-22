@@ -70,9 +70,9 @@
             <?php include "menu.php" ?>
             <br/>
             <div class="row">
-                <div class="span1"></div>
-                <div class="span10">
-                    <table class="table table-bordered" id="render" style="background-color:#e6e6e6;">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <table class="table table-bordered" id="render">
                         <tbody>
                             <td>
                                 <ul class="nav nav-tabs">
@@ -94,16 +94,16 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="span1"></div>
+                <div class="col-md-1"></div>
             </div>
             <div class="row">
-                <div class="span1"></div>
-                <div class="span10">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
                     <center>
                         <div class="btn-group">
                             <button type="button" class="btn btn-success" onClick="startChart();">Start Graph</button>
                             <button type="button" class="btn btn-danger" onClick="stopChart();">Stop Graph</button>
-                            <div class="btn btn-info">Sync
+                            <button class="btn btn-info">Sync
                                 <input
                                 id="speed"
                                 type="hidden"
@@ -116,15 +116,16 @@
                                 data-slider-orientation="horizontal"
                                 data-slider-selection="after"
                                 data-slider-tooltip="hide" />
-                            </div>
+                            </button>
                             <button type="button" class="btn btn-warning" onClick="exportPDF(true);">Export PDF</button>
                             <button type="button" class="btn btn-info" onClick="exportPDF();">Export Image</button>
                         </div>
                     </center>
                 </div>
-                <div class="span1"></div>
+                <div class="col-md-1"></div>
             </div>
-        </div><br/>
+        </div>
+        <br/>
     </body>
 </html>
 <?php } ?>

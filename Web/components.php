@@ -9,9 +9,9 @@
             <?php include "menu.php" ?>
             <br/>
             <div class="row">
-                <div class="span1"></div>
-                <div class="span10" id="components"></div>
-                <div class="span1"></div>
+                <div class="col-md-1"></div>
+                <div class="col-md-10" id="components"></div>
+                <div class="col-md-1"></div>
             </div>
             <br/><br/><br/><br/><br/><br/>
             <!-- PDF -->

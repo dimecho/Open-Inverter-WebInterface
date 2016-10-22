@@ -41,15 +41,6 @@ $(document).ready(function()
         startChart();
     });
 
-    $('a[data-toggle="tab"]').on('shown', function (e) {
-        //console.log(e);
-        activeTab = e.target.hash;
-        activeTabText = e.target.text;
-
-        stopChart();
-        initChart();
-    });
-    
     /*
     $(document).click(function (e) {
         if(xhr)
@@ -66,6 +57,22 @@ $(document).ready(function()
     ctx.imageSmoothingEnabled = false;
     */
     var count = 10;
+
+    $('.nav-tabs a').click(function(){
+        $(this).tab('show');
+        //console.log(this);
+    });
+
+    $('.nav-tabs a').on('shown.bs.tab', function(event){
+        //var x = $(event.target).text();         // active tab
+        //var y = $(event.relatedTarget).text();  // previous tab
+
+        activeTab = event.target.hash;
+        activeTabText = event.target.text;
+
+        stopChart();
+        initChart();
+    });
 
     initChart();
 });

@@ -1,62 +1,83 @@
 #!/bin/sh
 
-if [ ! -d "~/Downloads/firmware" ]; then
-    tar xzf ~/Downloads/inverter.zip -C ~/Documents/
-fi
+cd ~/Documents/
+if [ ! -d tumanako-inverter-fw-motorControl-sync_motor ]; then
+    tar xzfv ~/Downloads/sync_motor.zip -C ~/Documents/
+else
+    #xcode-select --install
+    #open /Applications/XCode.app
 
-xcode-select --install
-#open /Applications/XCode.app
+    # NOTE: You should also add this line to ~/.bashrc or ~/.bash_profile (in your home directory)
+    # so you don't have to remember to do this every time you want to compile firmware.
+    export PATH="$PATH:/usr/local/gcc_arm/gcc-arm-none-eabi-5_4-2016q2/bin/"
 
-# NOTE: You should also add this line to ~/.bashrc or ~/.bash_profile (in your home directory)
-# so you don't have to remember to do this every time you want to compile firmware.
-export PATH="$PATH:/usr/local/gcc_arm/gcc-arm-none-eabi-5_4-2016q2/bin/"
+    #--------- SOURCECODE ------------
+    #if [ ! -d src ]; then
+    #    git clone -b sync_motor https://github.com/tumanako/tumanako-inverter-fw-motorControl.git
+    #    ditto ./tumanako-inverter-fw-motorControl/src/sine ./src
+    #    rm -rf ./tumanako-inverter-fw-motorControl
+    #fi
 
-cd ~/Documents/firmware/
+    cd ~/Documents/tumanako-inverter-fw-motorControl-sync_motor/
 
-#--------- SOURCECODE ------------
-if [ ! -d src ]; then
-    git clone -b sync_motor https://github.com/tumanako/tumanako-inverter-fw-motorControl.git
-    ditto ./tumanako-inverter-fw-motorControl/src/sine ./src
-    rm -rf ./tumanako-inverter-fw-motorControl
-fi
+    #--------- LIBOPENCM3 ------------
+    if [ ! -d libopencm3 ]; then
+        git clone https://github.com/libopencm3/libopencm3.git
+        cd libopencm3
+        make
+        #cp examples/stm32/f1/Makefile.include ~/Documents/tumanako-inverter-fw-motorControl-sync_motor/src/
+        #cp examples/stm32/f1/stm32-h103/stm32-h103.ld ~/Documents/tumanako-inverter-fw-motorControl-sync_motor/src/
+    fi
 
-#--------- LIBOPENCM3 ------------
-if [ ! -d libopencm3 ]; then
-    git clone https://github.com/libopencm3/libopencm3.git
-    cd libopencm3
+    cd ~/Documents/tumanako-inverter-fw-motorControl-sync_motor
+
+    if [ ! -f /usr/local/gcc_arm/gcc_arm/gcc-arm-none-eabi-5_4-2016q2/arm-none-eabi/lib/libopencm3_stm32f1.a ]; then
+        ditto ./libopencm3/lib /usr/local/gcc_arm/gcc-arm-none-eabi-5_4-2016q2/arm-none-eabi/lib
+    fi
+
+    if [ ! -d /usr/local/gcc_arm/gcc_arm/gcc-arm-none-eabi-5_4-2016q2/arm-none-eabi/include/libopencm3 ]; then
+        ditto ./libopencm3/include /usr/local/gcc_arm/gcc-arm-none-eabi-5_4-2016q2/arm-none-eabi/include
+    fi
+    
+    #--------- BOOTLOADER ------------
+    if [ ! -d ./src/bootloader ]; then
+        tar xzfv "$(dirname "$0")/Web/firmware/bootloader.zip" -C ./src/
+    fi
+    cd ./src/bootloader
+    if [ ! -d include ]; then
+        ln -s /usr/local/gcc_arm/gcc-arm-none-eabi-5_4-2016q2/arm-none-eabi/include/libopencm3 ./include
+    fi
+    make clean
     make
-    #cp examples/stm32/f1/Makefile.include ~/Documents/firmware/src/
-    #cp examples/stm32/f1/stm32-h103/stm32-h103.ld ~/Documents/firmware/src/
+    mv stm32_loader.bin ../../
+    mv stm32_loader.hex ../../
+
+    #--------- FIRMWARE --------------
+    cd ~/Documents/tumanako-inverter-fw-motorControl-sync_motor/src/sine/
+    if [ ! -d include ]; then
+        ln -s /usr/local/gcc_arm/gcc-arm-none-eabi-5_4-2016q2/arm-none-eabi/include/libopencm3 ./include
+    fi
+    #arm-none-eabi-objcopy -O binary stm32_loader ../firmware/stm32_loader.bin
+    #arm-none-eabi-objcopy -O ihex stm32_loader ../firmware/stm32_loader.hex
+    make clean
+    make
+    mv stm32_sine.bin ../../
+    mv stm32_sine.hex ../../
+
+    #--------- ATtiny13 --------------
+    export PATH="$PATH:/usr/local/CrossPack-AVR/bin/"
+
+    cd ~/Documents/tumanako-inverter-fw-motorControl-sync_motor/
+    if [ ! -d ./src/attiny13 ]; then
+        tar xzfv "$(dirname "$0")/Web/firmware/attiny13.zip" -C ./src/
+    fi
+    cd ./src/attiny13
+    avr-gcc -g -mmcu=attiny13 -Os -Os -o volt-pwm-attiny13.o volt-pwm-attiny13.c -DF_CPU=96000000
+    avr-objcopy -R .eeprom -O binary volt-pwm-attiny13.o volt-pwm-attiny13.bin
+    avr-objcopy -R .eeprom -O ihex volt-pwm-attiny13.o volt-pwm-attiny13.hex
+    mv volt-pwm-attiny13.bin ../../
+    mv volt-pwm-attiny13.hex ../../
+    #---------------------------------
+
+    open ~/Documents/tumanako-inverter-fw-motorControl-sync_motor
 fi
-
-#--------- BOOTLOADER ------------
-cd ~/Documents/bootloader/
-
-if [ ! -f /usr/local/gcc_arm/gcc_arm/gcc-arm-none-eabi-5_4-2016q2/arm-none-eabi/lib/libopencm3_stm32f1.a ]; then
-    ditto ../firmware/libopencm3/lib /usr/local/gcc_arm/gcc-arm-none-eabi-5_4-2016q2/arm-none-eabi/lib
-fi
-arm-none-eabi-gcc -I../firmware/libopencm3/include -c stm32_loader.c -o stm32_loader.o
-arm-none-eabi-gcc -L../firmware/libopencm3/lib -T stm32_loader.ld -nostartfiles -Wl,--gc-sections,-Map,linker.map -o stm32_loader stm32_loader.o -lopencm3_stm32f1
-arm-none-eabi-objcopy -O binary stm32_loader ../firmware/stm32_loader.bin
-arm-none-eabi-objcopy -O ihex stm32_loader ../firmware/stm32_loader.hex
-
-#--------- FIRMWARE --------------
-cd ~/Documents/firmware/src/
-if [ ! -d include ]; then
-    mkdir include
-    cp -r ../libopencm3/include/libopencm3 ./include
-fi
-make clean
-make
-mv stm32_sine.bin ../
-mv stm32_sine.hex ../
-
-#--------- ATtiny13 --------------
-export PATH="$PATH:/usr/local/CrossPack-AVR/bin/"
-
-cd ~/Documents/firmware/
-avr-gcc -g -mmcu=attiny13 -Os -Os -o volt-pwm-attiny13.o volt-pwm-attiny13.c -DF_CPU=96000000
-avr-objcopy -R .eeprom -O ihex volt-pwm-attiny13.o volt-pwm-attiny13.hex
-#---------------------------------
-
-open ~/Documents/firmware

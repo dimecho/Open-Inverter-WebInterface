@@ -4,7 +4,7 @@ $(document).ready(function()
     buildTable("Gate Driver v2","bom/gate_driver2.csv");
     buildTable("Sensor Board v3","bom/sensor_board3.csv");
     
-    $("[rel=tooltip]").tooltip();
+    $(".tooltip1").tooltipster();
 });
 
 function buildTable(title,csv)
@@ -50,7 +50,7 @@ function buildTable(title,csv)
 
                         var tr = $("<tr>");
                         var td1 = $("<td>");
-                        var td2 = $("<td>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true"});
+                        var td2 = $("<td>", {class:"tooltip1"});
                         var td3 = $("<td>");
 
                         if(value.length > 1)
@@ -59,12 +59,12 @@ function buildTable(title,csv)
                             if(split[0].indexOf("RN") !=-1)
                                 img = "RN_"+ value;
 
-                            td2.attr("data-title","<img src='bom/img/" + img + ".png' />");
+                            td2.attr("data-tooltip-content","<img src='bom/img/" + img + ".png' />");
                             td2.append(value.replace("u", "&#181;"))
                         }
                         else
                         {
-                            td2.attr("data-title","<img src='bom/img/" + split[3] + ".png' />");
+                            td2.attr("data-tooltip-content","<img src='bom/img/" + split[3] + ".png' />");
                             td2.append(split[3]);
                         }
 

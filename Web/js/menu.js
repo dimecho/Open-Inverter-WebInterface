@@ -88,8 +88,12 @@ $(document).ready(function()
         },*/
     });
     $(".knob").val(0).trigger('change');
-    
+
     buildParameters(loadJSON(0));
+    
+    $(".tooltip1").tooltipster();
+    //var instances = $.tooltipster.instancesLatest();
+    //console.log(instances);
 });
 
 function downloadSnapshot()
@@ -104,12 +108,13 @@ function uploadSnapshot()
 
 function openExternalApp(app)
 {
+    //console.log(app);
     if(app === "inkscape"){
         buildEncoderAlert();
-    }else if(app === "openocd"){
-        window.location.href = "/bootloader.php";
     }else if(app === "openscad"){
         $('.fileSVG').trigger('click');
+    }else if(app === "openocd"){
+        window.location.href = "/bootloader.php";
     }else if(app === "source"){
         window.location.href = "/compile.php";
     }else if(app === "attiny"){
@@ -198,27 +203,6 @@ function getErrors()
     return value;
 }
 
-function saveChanges(span)
-{
-    $.ajax("serial.php?command=save",{
-        async: false,
-        success: function(data)
-        {
-            //console.log(data);
-            span.removeClass('label-warning');
-
-            if(data.indexOf("Parameters stored") != -1)
-            {
-                span.addClass('label-success');
-                span.text("saved");
-            }else{
-                span.addClass('label-important');
-                span.text("error");
-            }
-        }
-    });
-}
-
 function startInverterAlert()
 {
     if(getJSONFloatValue("potnom") > 20)
@@ -245,34 +229,28 @@ function startInverter(mode)
         {
             //console.log(data);
 
-            var span = $("#titleStatus").empty();
-            span.removeClass('label-success');
-            span.removeClass('label-warning');
-            span.removeClass('label-important');
-            span.addClass('label');
-
             if(data.indexOf("Inverter started") != -1)
             {
-                span.addClass('label-success');
-                span.text('started');
+                $.notify({
+                    message: 'Inverter started',
+                },{
+                    type: 'success'
+                });
 
                 if(mode === 2)
                 {
                     $("#potentiometer").show();
                     $(".collapse").collapse('show');
                 }
-
             }else{
-                span.addClass('label-important');
-                span.text('error');
+                $.notify({
+                    icon: 'glyphicon glyphicon-warning-sign',
+                    title: 'Error',
+                    message: data,
+                },{
+                    type: 'danger'
+                });
             }
-
-            setTimeout( function ()
-            {
-                span.hide();
-                //location.reload(); 
-                //buildParameters(loadJSON(0));
-            },1200);
         }
     });
 }
@@ -284,26 +262,28 @@ function stopInverter()
         success: function(data)
         {
             //console.log(data);
-
-            var span = $("#titleStatus").empty();
-            span.removeClass('label-success');
-            span.removeClass('label-warning');
-            span.removeClass('label-important');
-            span.addClass('label');
            
             if(data.indexOf("Inverter halted") != -1)
             {
-                span.addClass('label-warning');
-                span.text('stopped');
+                $.notify({
+                    message: 'Inverter Stopped',
+                },{
+                    type: 'danger'
+                });
             }else{
-                span.addClass('label-important');
-                span.text('error');
+                $.notify({
+                    icon: 'glyphicon glyphicon-warning-sign',
+                    title: 'Error',
+                    message: data,
+                },{
+                    type: 'danger'
+                });
             }
+
             $(".collapse").collapse();
 
             setTimeout( function ()
             {
-                span.hide();
                 $("#potentiometer").hide();
                 //location.reload();
                 //buildParameters(loadJSON(0));
@@ -320,31 +300,28 @@ function setDefaults()
             async: false,
             success: function(data)
             {
-                //console.log(data);
+                console.log(data);
 
-                var span = $("#titleStatus").empty();
-                span.removeClass('label-success');
-                span.removeClass('label-warning');
-                span.removeClass('label-important');
-                span.addClass('label');
-
-                if(data.indexOf("default") != -1)
+                if(data.indexOf("Defaults loaded") != -1)
                 {
-                    span.addClass('label-success');
-                    span.text('everything reset to default');
-                    setTimeout( function (){
-                        window.location.href = "/index.php";
-                    },1500);
+                    $.notify({
+                        message: 'Inverter reset to Default',
+                    },{
+                        type: 'success'
+                    });
                 }else{
-                    span.addClass('label-important');
-                    span.text('error');
+                    $.notify({
+                        icon: 'glyphicon glyphicon-warning-sign',
+                        title: 'Error',
+                        message: data,
+                    },{
+                        type: 'danger'
+                    });
                 }
-                setTimeout( function ()
-                {
-                    span.hide();
-                    location.reload();
-                    //buildParameters(loadJSON(0));
-                },1200);
+
+                setTimeout( function (){
+                        window.location.href = "/index.php";
+                },2000);
             }
         });
     }, function(){});
@@ -358,13 +335,13 @@ function buildHeader(json)
     var img = $("<img>");
 
     //========================
-    $("#titleVersion").empty().append("Inverter Console v" + json.version.value);
+    $("#titleVersion").empty().append("Firmware v" + json.version.value);
     //========================
-    span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true"});
+    span = $("<span>", {class:"tooltip1"});
     img = $("<img>", {class:"svg-inject", src:"img/key.svg"});
     if(json.opmode.value === 0)
     {
-        span.attr("data-title","<h6>Off</h6>");
+        span.attr("data-tooltip-content","<h6>Off</h6>");
         img.addClass("svg-red");
         $("#potentiometer").hide();
     }
@@ -373,16 +350,16 @@ function buildHeader(json)
         if(json.din_start.value === 1)
         {
             img.addClass("svg-yellow");
-            span.attr("data-title","<h6>Pulse Only - Do not leave ON</h6>");
+            span.attr("data-tooltip-content","<h6>Pulse Only - Do not leave ON</h6>");
         }else{
-            span.attr("data-title","<h6>Running</h6>");
+            span.attr("data-tooltip-content","<h6>Running</h6>");
             img.addClass("svg-green");
         }
         $("#potentiometer").hide();
     }
     else if(json.opmode.value === 2)
     {
-        span.attr("data-title","<h6>Manual Mode</h6>");
+        span.attr("data-tooltip-content","<h6>Manual Mode</h6>");
         img.addClass("svg-green");
         $("#potentiometer").show();
     }
@@ -396,7 +373,7 @@ function buildHeader(json)
     opStatus.append(div);
     */
     //========================
-    span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>" + json.udc.value+ "V</h6>"});
+    span = $("<span>", {class:"tooltip1", "data-tooltip-content":"<h6>" + json.udc.value+ "V</h6>"});
     img = $("<img>", {class:"svg-inject", src:"img/battery.svg"});
     if(json.udc.value > json.udcmin.value){
         img.addClass("svg-green");
@@ -406,7 +383,7 @@ function buildHeader(json)
     span.append(img);
     opStatus.append(span);
     //========================
-    span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>" + json.tmpm.value + "°C</h6>"});
+    span = $("<span>", {class:"tooltip1", "data-tooltip-content":"<h6>" + json.tmpm.value + "°C</h6>"});
     img = $("<img>", {class:"svg-inject", src:"img/temperature.svg"})
     if(json.tmpm.value > 150 || json.tmphs.value > 150){
         img.addClass("svg-red");
@@ -427,7 +404,7 @@ function buildHeader(json)
     opStatus.append(div);
     */
     //========================
-    span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>" + json.speed.value + "RPM</h6>"});
+    span = $("<span>", {class:"tooltip1", "data-tooltip-content":"<h6>" + json.speed.value + "RPM</h6>"});
     img = $("<img>", {class:"svg-inject", src:"img/speedometer.svg"});
     if(json.speed.value > 6000){
         img.addClass("svg-red");
@@ -441,7 +418,7 @@ function buildHeader(json)
     //========================
     if(json.din_mprot.value != 1)
     {
-        span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>Probably forgot PIN 11 to 12V</h6>"});
+        span = $("<span>", {class:"tooltip1", "data-tooltip-content":"<h6>Probably forgot PIN 11 to 12V</h6>"});
         span.append($("<img>", {class:"svg-inject", src:"img/alert.svg"}));
         opStatus.append(span);
     }
@@ -449,7 +426,7 @@ function buildHeader(json)
     var errors = getErrors();
     if(errors.indexOf("Unknown command") == -1 && errors.indexOf("No Errors") == -1)
     {
-        span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>" + errors + "</h6>"});
+        span = $("<span>", {class:"tooltip1", "data-tooltip-content":"<h6>" + errors + "</h6>"});
         span.append($("<img>", {class:"svg-inject", src:"img/alert.svg"}));
         opStatus.append(span);
     }
@@ -481,9 +458,9 @@ function buildTips()
 
                 for (var i = 0; i < row.length; ++i)
                 {
-                    if(i == n)
+                    if(i == 0)
                     {
-                        span = $("<span>", {rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h6>Tip: " + row[i] + "</h6>"});
+                        span = $("<span>", {class:"tooltip1", "data-tooltip-content":"<h6>Tip: " + row[i] + "</h6>"});
                         span.append($("<img>", {class:"svg-inject", src:"img/idea.svg"}));
                         opStatus.append(span);
                         break;
@@ -504,9 +481,9 @@ function buildParameters(json)
 {
     //var length = 0;
     //for(var k in json) if(json.hasOwnProperty(k))    length++;
-
-    $("#opStatus").empty().height(32);
-
+    
+    $("#opStatus").empty();
+    
     if(json) //if(Object.keys(json).length > 0)
     {
         var i = 0;
@@ -568,9 +545,9 @@ function buildParameters(json)
                 if(x !=-1)
                     tooltip = description[x];
                 
-                var a = $("<a>", { href:"#", id:name[i], "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":this.unit + " ("+ this.default + ")"}).append(this.value);
+                var a = $("<a>", {href:"#", id:name[i], "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":this.unit + " ("+ this.default + ")"}).append(this.value);
                 var tr = $("<tr>");
-                var td1 = $("<td>", { rel:"tooltip", "data-toggle":"tooltip", "data-container":"body", "data-placement":"bottom", "data-html":"true", "data-title":"<h5>" + tooltip + "</h5>"}).append(name[i]);
+                var td1 = $("<td>", {class:"tooltip1", "data-tooltip-content":"<h5>" + tooltip + "</h5>"}).append(name[i]);
                 var td2 = $("<td>").append(a);
                 var td3 = $("<td>").append(this.unit.replace("","°"));
        
