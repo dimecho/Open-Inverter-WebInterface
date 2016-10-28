@@ -128,8 +128,19 @@ function confirmGCCRemove(e)
 {
     alertify.confirm("Remove Compiler?", "This will clean up over 500MB of space!\n" + e, function()
     {
-        $.ajax("install.php?remove=arm",{async: false});
-        $.ajax("install.php?remove=avr",{async: false});
+        var notify = $.notify({
+            message: "Removing Compiler ...",
+        },{
+            type: 'danger'
+        });
+        
+        $.ajax("install.php?remove=arm",{
+            success: function(data)
+            {
+                notify.update({'type': 'success', 'message': 'Compiler Removed'});
+            }
+        });
+        $.ajax("install.php?remove=avr");
     }, function(){});
 }
 

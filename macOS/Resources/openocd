@@ -1,16 +1,16 @@
 #!/bin/sh
 
-if [ ! -f "/usr/local/gcc_arm/openocd/bin/openocd" ]; then
-    mkdir /usr/local/gcc_arm
-    pkgutil --expand ~/Downloads/gnuarmeclipse-openocd-osx-0.10.0-201601101000-dev.pkg /usr/local/gcc_arm/openocd/
-    cd /usr/local/gcc_arm/openocd/
+if [ ! -f "/usr/local/etc/gcc_arm/openocd/bin/openocd" ]; then
+    mkdir /usr/local/etc/gcc_arm
+    pkgutil --expand ~/Downloads/gnuarmeclipse-openocd-osx-0.10.0-201601101000-dev.pkg /usr/local/etc/gcc_arm/openocd/
+    cd /usr/local/etc/gcc_arm/openocd/
     cat Payload | gzip -d | cpio -id
     rm Bom
     rm PackageInfo
     rm Payload
 else
-    export PATH="$PATH:/usr/local/gcc_arm/openocd/bin/"
-    cd /usr/local/gcc_arm/openocd/scripts/
+    export PATH="$PATH:/usr/local/etc/gcc_arm/openocd/bin/"
+    cd /usr/local/etc/gcc_arm/openocd/scripts/
     
     #halt
     #flash erase_sector 0 0 last

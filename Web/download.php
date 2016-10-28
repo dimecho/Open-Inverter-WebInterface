@@ -53,7 +53,7 @@
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true); // Follow http redirections
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); // Verify SSL certificate of the remote server
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 30); // Wait 30s maximum while trying to connect to the remote server
-        curl_setopt($curl, CURLOPT_MAXREDIRS, 5); // Following a maximum of 2 redirections
+        curl_setopt($curl, CURLOPT_MAXREDIRS, 2); // Following a maximum of 2 redirections
         curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_FTP | CURLPROTO_FTPS); // Only allow http(s) and ftp(s) protocol for connection to the remote server
         curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']); // Define the UserAgent to be used for requests to the remote server.
         //curl_setopt($curl, CURLOPT_REFERER, $_GET["url"]); // Define the Referer to be used for requests to the remote server.
@@ -62,8 +62,10 @@
         {
             if($download_size > 0)
                 echo "," .round($downloaded / $download_size  * 100);
-            //ob_flush();
-            //flush();
+
+            ob_flush();
+            flush();
+
             while($_SESSION["pause"] == "pause")
             {
                 sleep(1);
@@ -110,7 +112,9 @@
                 });
                 
             });
-            $(document).ready(function() { download(<?php echo "\"$source\",\"$app\""; ?>); });
+            $(document).ready(function() {
+                download(<?php echo "\"$source\",\"$app\""; ?>); 
+            });
         </script>
     </head>
     <body>

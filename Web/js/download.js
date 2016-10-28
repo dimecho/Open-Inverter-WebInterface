@@ -48,15 +48,15 @@ function confirmDownload(app)
         if(os === "Mac"){
             url = "http://web.cadsoft.de/ftp/eagle/program/7.7/eagle-mac64-7.7.0.zip";
         }else if(os === "Windows"){
-            url = "http://web.cadsoft.de/ftp/eagle/program/7.7/eagle-x64-7.7.0.zip";
+            url = "http://web.cadsoft.de/ftp/eagle/program/7.7/eagle-win64-7.7.0.exe";
         }
     }else if(app === "arm"){
         title = "arm-none-eabi-gcc";
         msg = "Install GCC ARM Compiler - Download 100MB";
         if(os === "Mac"){
-            url = "http://launchpadlibrarian.net/268330406/gcc-arm-none-eabi-5_4-2016q2-20160622-mac.tar.bz2";
+            url = "https://launchpadlibrarian.net/287101378/gcc-arm-none-eabi-5_4-2016q3-20160926-mac.tar.bz2";
         }else if(os === "Windows"){
-            url = "http://launchpadlibrarian.net/268330693/gcc-arm-none-eabi-5_4-2016q2-20160622-win32.exe";
+            url = "https://launchpadlibrarian.net/287101671/gcc-arm-none-eabi-5_4-2016q3-20160926-win32.exe";
         }
     }else if(app === "source"){
         title = "Inverter Source Code";
@@ -70,7 +70,9 @@ function confirmDownload(app)
 
     alertify.confirm(title, msg, function()
     {
-        window.location.href = "download.php?url=" + url+ "&app=" + app;
+        //window.open(url, '_blank');
+        window.location.href = "download.php?url=" + url + "&app=" + app;
+
     }, function(){});
 }
 
@@ -96,22 +98,21 @@ function download(url,app)
         },{
             type: 'success'
     });
-
-    var progressBar = $("#progressBar");
+    
     $.ajax({
         xhr: function()
         {
             var xhr = new window.XMLHttpRequest();
             xhr.addEventListener("progress", function(e){
                 var s = e.target.responseText.split(",");
-                progressBar.css("width", s.pop() + "%");
+                 $("#progressBar").css("width", s.pop() + "%");
                 //if(a === "100")
                     //downloadComplete(app);
                 //console.log(s.pop());
             }, false);
             return xhr;
         },
-        async: false,
+        //async: false,
         type: "GET",
         url: "download.php?download=1&url=" + url,
         data: {},
@@ -120,7 +121,7 @@ function download(url,app)
             notify.update({'type': 'success', 'message': 'Installing ...'});
             
             $.ajax("install.php?app=" + app,{
-                async: false,
+                //async: false,
                 success: function(data)
                 {
                     //console.log(data);
@@ -132,7 +133,7 @@ function download(url,app)
                     setTimeout(function ()
                     {
                         openExternalApp(app);
-                    },2400);
+                    },4000);
                 },
                 error: function(xhr, textStatus, errorThrown){
                 }

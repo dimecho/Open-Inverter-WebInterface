@@ -76,9 +76,9 @@
 <wire x1="1.143" y1="-7.112" x2="1.143" y2="-5.588" width="0.1524" layer="51"/>
 <pad name="1" x="0" y="6.35" drill="0.8128" shape="long"/>
 <pad name="2" x="0" y="3.81" drill="0.8128" shape="long"/>
-<pad name="4" x="0" y="-3.81" drill="0.8128" shape="long"/>
-<pad name="5" x="0" y="-6.35" drill="0.8128" shape="long"/>
-<pad name="6" x="0" y="-8.89" drill="0.8128" shape="long"/>
+<pad name="4" x="0" y="-1.27" drill="0.8128" shape="long"/>
+<pad name="5" x="0" y="-3.81" drill="0.8128" shape="long"/>
+<pad name="6" x="0" y="-6.35" drill="0.8128" shape="long"/>
 <text x="-4.953" y="9.144" size="1.27" layer="25" ratio="10">&gt;NAME</text>
 <text x="-2.54" y="-3.937" size="1.27" layer="27" ratio="10" rot="R90">&gt;VALUE</text>
 <text x="-4.191" y="-10.16" size="1.016" layer="21" ratio="12">DC-DC</text>

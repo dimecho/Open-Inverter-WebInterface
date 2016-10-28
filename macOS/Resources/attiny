@@ -1,12 +1,20 @@
 #!/bin/sh
 
-if [ ! -f "/usr/local/CrossPack-AVR/bin/avr-gcc" ]; then
-    CrossPack-AVR-20131216.dmg
+if [ ! -f "/usr/local/etc/gcc_arm/avr/bin/avr-gcc" ]; then
+    mkdir /usr/local/etc/gcc_arm
     hdiutil attach ~/Downloads/CrossPack-AVR-20131216.dmg
-    installer -pkg /Volumes/CrossPack-AVR/CrossPack-AVR.pkg -target /
+    pkgutil --expand /Volumes/CrossPack-AVR/CrossPack-AVR.pkg /usr/local/etc/gcc_arm/avr/
+    cd /usr/local/etc/gcc_arm/avr/
+    mv CrossPack-AVR-flat.pkg/Payload ./
+    cat Payload | gzip -d | cpio -id
+    rm -r CrossPack-AVR-flat.pkg
+    rm -r Resources
+    rm Payload
+    rm Distribution
+    mv ./usr/local/CrossPack-AVR-20131216/* ./
     hdiutil detach /Volumes/CrossPack-AVR
 else
-    export PATH="$PATH:/usr/local/CrossPack-AVR/bin/"
+    export PATH="$PATH:/usr/local/etc/gcc_arm/avr/bin/"
     
     #Read
     #avrdude -c ponyser -p attiny13 -P /dev/cu.usbserial  -U flash:r:flash.bin:r
@@ -29,5 +37,5 @@ else
     
     #Write
     #avrdude -c USBasp -p attiny13 -P /dev/cu.usbserial -U flash:w:volt-pwm-attiny13.hex:i -B 1024 -b 19200
-    avrdude -c $2 -p attiny13 -P $3 -U flash:w:$1 -F
+    avrdude -C /usr/local/etc/gcc_arm/avr/etc/avrdude.conf -c $2 -p attiny13 -P $3 -U flash:w:$1 -F
 fi

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ ! -d "/usr/local/gcc_arm/gcc-arm-none-eabi-5_4-2016q2" ]; then
-    mkdir /usr/local/gcc_arm
-    tar xzf ~/Downloads/gcc-arm-none-eabi-5_4-2016q2-20160622-mac.tar.bz2 -C /usr/local/gcc_arm/
+if [ ! -d "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3" ]; then
+    mkdir /usr/local/etc/gcc_arm
+    tar xzfv ~/Downloads/gcc-arm-none-eabi-5_4-2016q3-20160926-mac.tar.bz2 -C /usr/local/etc/gcc_arm/
 fi

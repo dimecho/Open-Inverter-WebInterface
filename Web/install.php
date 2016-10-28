@@ -5,24 +5,25 @@ if(!isset($_GET["url"]) && isset($_GET["app"]))
     set_time_limit(10000);
 
     if (strpos($_SERVER["HTTP_USER_AGENT"], 'Windows') !== false) {
-        $command = "cmd.exe /c \"" .$_SERVER["DOCUMENT_ROOT"]. "\\..\\Windows\\" .$_GET["app"]. ".bat\"";
+        $command = "cmd.exe /c \"\"" .$_SERVER["DOCUMENT_ROOT"]. "\\..\\Windows\\" .$_GET["app"]. ".bat\"\"";
     }else{
         $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../" . $_GET["app"] . "'";
     }
 
     exec($command . " 2>&1", $output, $return);
     
+    //echo "$command\n";
+
     foreach ($output as $line) {
         echo "$line\n";
     }
-    //echo "done";
 }
 else if(isset($_GET["remove"]))
 {
     if($_GET["remove"] == "arm")
     {
         if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-            $path = "/usr/local/gcc_arm";
+            $path = "/usr/local/etc/gcc_arm";
         }else{
             $path = "C:\\Program Files\\GCC_ARM";
         }
@@ -30,7 +31,7 @@ else if(isset($_GET["remove"]))
     }else if($_GET["remove"] == "avr")
     {
         if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-            $path = "/usr/local/CrossPack-AVR-20131216";
+            $path = "/usr/local/etc/CrossPack-AVR-20131216";
         }else{
             $path = "C:\\Program Files\\Win-AVR";
         }
@@ -56,7 +57,7 @@ function checkEagle()
 function checkOpenOCD()
 {
     if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-        $path = "/usr/local/gcc_arm/openocd";
+        $path = "/usr/local/etc/gcc_arm/openocd";
     }else{
         $path = "C:\\Program Files\\GNU ARM Eclipse\\OpenOCD";
     }
@@ -75,7 +76,7 @@ function checkOpenOCD()
 function checkAVRCompiler()
 {
     if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-        $path = "/usr/local/CrossPack-AVR/bin/avr-gcc";
+        $path = "/usr/local/etc/gcc_arm/avr/bin/avr-gcc";
     }else{
         $path = "C:\\Program Files\\Win-AVR";
     }
@@ -94,7 +95,7 @@ function checkAVRCompiler()
 function checkARMCompiler()
 {
     if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-        $path = "/usr/local/gcc_arm/gcc-arm-none-eabi-5_4-2016q2";
+        $path = "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3";
     }else{
         $path = "C:\\Program Files\\GCC_ARM";
     }
@@ -114,7 +115,7 @@ function checkARMCompiler()
 function checkCompiler()
 {
     if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-        $path = "/usr/local/gcc_arm";
+        $path = "/usr/local/etc/gcc_arm";
     }else{
         $path = "C:\\Program Files\\GCC_ARM";
     }

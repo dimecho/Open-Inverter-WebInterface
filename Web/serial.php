@@ -1,5 +1,7 @@
 <?php
 
+set_time_limit(10000);
+
 if(isset($_GET["com"]))
 {
     if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {

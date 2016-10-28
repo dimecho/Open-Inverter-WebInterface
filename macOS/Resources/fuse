@@ -1,11 +1,4 @@
 #!/bin/sh
 
-if [ ! -f "/usr/local/CrossPack-AVR/bin/avr-gcc" ]; then
-    CrossPack-AVR-20131216.dmg
-    hdiutil attach ~/Downloads/CrossPack-AVR-20131216.dmg
-    installer -pkg /Volumes/CrossPack-AVR/CrossPack-AVR.pkg -target /
-    hdiutil detach /Volumes/CrossPack-AVR
-else
-    export PATH="$PATH:/usr/local/CrossPack-AVR/bin/"
-    avrdude -c $1 -p attiny13 -P $2 -U lfuse:w:0x7A:m -U hfuse:w:0xFF:m
-fi
+export PATH="$PATH:/usr/local/etc/gcc_arm/avr/bin/"
+avrdude -C /usr/local/etc/gcc_arm/avr/etc/avrdude.conf -c $1 -p attiny13 -P $2 -U lfuse:w:0x7A:m -U hfuse:w:0xFF:m
