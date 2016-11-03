@@ -9,8 +9,8 @@ else
 
     # NOTE: You should also add this line to ~/.bashrc or ~/.bash_profile (in your home directory)
     # so you don't have to remember to do this every time you want to compile firmware.
-    gcc_arm="/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3"
-    export PATH="$PATH:$gcc_arm/bin/"
+    GCC_ARM="/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3"
+    export PATH="$PATH:$GCC_ARM/bin/"
     
     #--------- SOURCECODE ------------
     #if [ ! -d src ]; then
@@ -31,16 +31,10 @@ else
     if [ ! -f ./libopencm3/lib/libopencm3_stm32f1.a ]; then
         cd libopencm3
         make
-    fi
-
-    cd ~/Documents/tumanako-inverter-fw-motorControl-sync_motor
-    
-    if [ ! -f "$gcc_arm/arm-none-eabi/lib/libopencm3_stm32f1.a" ]; then
-        ditto ./libopencm3/lib "$gcc_arm/arm-none-eabi/lib"
-    fi
-    
-    if [ ! -d "$gcc_arm/arm-none-eabi/include/libopencm3" ]; then
-        ditto ./libopencm3/include "$gcc_arm/arm-none-eabi/include"
+        
+        #Overwrite existing with new version
+        ditto ./libopencm3/lib "$GCC_ARM/arm-none-eabi/lib"
+        ditto ./libopencm3/include "$GCC_ARM/arm-none-eabi/include"
     fi
     
     #--------- BOOTLOADER ------------

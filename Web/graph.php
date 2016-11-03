@@ -20,7 +20,7 @@
         //header('Content-type: application/octet-stream');
         header('Content-type: text/html; charset=utf-8');
 
-        $split = split(",", urldecode($_GET["stream"]));
+        $split = explode(",", urldecode($_GET["stream"]));
         $values = array();
 
         while(true) //$_SESSION["stop"] === 0)

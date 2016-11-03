@@ -75,8 +75,9 @@ function startPHP($page) {
 		Write-Host "...Installing PHP"
 		
 		# Download PHP
-		$phpFile = "php-5.6.24-Win32-VC11-x64.zip"
+		$phpFile = "php-5.6.27-Win32-VC11-x64.zip"
 		if (-Not (Test-Path "$env:TEMP\$phpFile")) {
+			Write-Host "Downloading PHP 5.6"  -ForegroundColor Green
 			Invoke-WebRequest -Uri http://windows.php.net/downloads/releases/$phpFile -OutFile "$env:TEMP\$phpFile"
 		}
 		# Download Dio Extension
@@ -87,6 +88,7 @@ function startPHP($page) {
 		
 		# Visual C++ Redistributable for Visual Studio 2012
 		if (-Not (Test-Path 'HKLM:\SOFTWARE\Classes\Installer\Dependencies\{ca67548a-5ebe-413a-b50c-4b9ceb6d66c6}')) {
+			Write-Host "Downloading C++ Redistributable for Visual Studio 2012"  -ForegroundColor Green
 			Invoke-WebRequest -Uri https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x64.exe -OutFile "$env:TEMP\vcredist_x64.exe"
 			Start-Process "$env:TEMP\vcredist_x64.exe" /q:a -Wait
 		}
@@ -160,6 +162,7 @@ extension=php_curl.dll"
 }
 
 function findPort {
+	$timeout = 0
 	DO
 	{
 		checkDrivers
@@ -171,7 +174,9 @@ function findPort {
 		Write-Host "... Waiting for RS232-USB"
 
 		Start-Sleep -s 4
-	} While ($True)
+		
+		$timeout++
+	} While ($timeout -le 4)
 }
 
 function checkDrivers {

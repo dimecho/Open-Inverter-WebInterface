@@ -9,12 +9,12 @@
     header ("Content-Disposition: attachment; filename=\"snapshot-" .date("F_j_Y g-ia"). ".txt\"");
 
     $read = sendToSerial("all",$serial);
-    $split = split("\n", $read);
+    $split = explode("\n", $read);
     $values = array();
 
     for ($i = 0; $i < count($split); $i++)
     {
-        $s = split("\t", $split[$i]);
+        $s = explode("\t", $split[$i]);
         if (trim($s[0]) != "")
         {
             $values[$s[0]] = str_replace("\r", "", $s[2]);

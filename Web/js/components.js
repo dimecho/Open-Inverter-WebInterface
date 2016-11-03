@@ -1,16 +1,17 @@
 $(document).ready(function()
 {
     buildTable("Main Board v4","bom/base_board4.csv");
-    buildTable("Gate Driver v2","bom/gate_driver2.csv");
+    buildTable("Gate Driver v2","bom/gate_driver2.csv","Note: DC-DC has changed. PCB \"gate_driver2b.brd\" contains different size component RH0515D or IH0515S");
     buildTable("Sensor Board v3","bom/sensor_board3.csv");
     
     $(".tooltip1").tooltipster();
 });
 
-function buildTable(title,csv)
+function buildTable(title,csv,notes)
 {
     var div = $("#components"); //.empty();
     var header = $("<table>", {class:"table table-bordered", style:"padding-left:10px;"}).append($("<h4>").append(title));
+    var label = $("<span>", {class:"label label-lg label-danger"}).append(notes);
     var table = $("<table>", {class:"table table-bordered table-striped table-hover"});
     var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Part")).append($("<th>").append("Value")).append($("<th>").append("Manual")));
     var tbody = $("<tbody>");
@@ -75,6 +76,8 @@ function buildTable(title,csv)
             table.append(thead);
             table.append(tbody);
             div.append(header);
+            if(notes)
+                div.append(label);
             div.append(table);
         },
         error: function(xhr, textStatus, errorThrown){
