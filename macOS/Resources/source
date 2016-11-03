@@ -1,8 +1,8 @@
 #!/bin/sh
 
 cd ~/Documents/
-if [ ! -d tumanako-inverter-fw-motorControl-sync_motor ]; then
-    tar xzfv ~/Downloads/sync_motor.zip -C ~/Documents/
+if [ ! -d tumanako-inverter-fw-motorControl-master ]; then
+    tar xzfv ~/Downloads/master.zip -C ~/Documents/
 else
     #xcode-select --install
     #open /Applications/XCode.app
@@ -18,14 +18,13 @@ else
     #    ditto ./tumanako-inverter-fw-motorControl/src/sine ./src
     #    rm -rf ./tumanako-inverter-fw-motorControl
     #fi
-
-    cd ~/Documents/tumanako-inverter-fw-motorControl-sync_motor/
-
+    
     #--------- LIBOPENCM3 ------------
+    cd ~/Documents/tumanako-inverter-fw-motorControl-master/
     if [ ! -d libopencm3 ]; then
         git clone https://github.com/libopencm3/libopencm3.git --quiet
-        #cp examples/stm32/f1/Makefile.include ~/Documents/tumanako-inverter-fw-motorControl-sync_motor/src/
-        #cp examples/stm32/f1/stm32-h103/stm32-h103.ld ~/Documents/tumanako-inverter-fw-motorControl-sync_motor/src/
+        #cp examples/stm32/f1/Makefile.include ~/Documents/tumanako-inverter-fw-motorControl-master/src/
+        #cp examples/stm32/f1/stm32-h103/stm32-h103.ld ~/Documents/tumanako-inverter-fw-motorControl-master/src/
     fi
 
     if [ ! -f ./libopencm3/lib/libopencm3_stm32f1.a ]; then
@@ -36,8 +35,9 @@ else
         ditto ./libopencm3/lib "$GCC_ARM/arm-none-eabi/lib"
         ditto ./libopencm3/include "$GCC_ARM/arm-none-eabi/include"
     fi
-    
+
     #--------- BOOTLOADER ------------
+    cd ~/Documents/tumanako-inverter-fw-motorControl-master/
     if [ ! -d ./src/bootloader ]; then
         tar xzfv "$(dirname "$0")/Web/firmware/bootloader.zip" -C ./src/
     fi
@@ -51,7 +51,7 @@ else
     mv stm32_loader.hex ../../
 
     #--------- FIRMWARE --------------
-    cd ~/Documents/tumanako-inverter-fw-motorControl-sync_motor
+    cd ~/Documents/tumanako-inverter-fw-motorControl-master
     #if [ ! -d ./src/sine/include ]; then
     #    ln -s libopencm3/include/libopencm3 ./src/sine/include
     #fi
@@ -69,7 +69,7 @@ else
     #--------- ATtiny13 --------------
     export PATH="$PATH:/usr/local/etc/gcc_arm/avr/bin/"
 
-    cd ~/Documents/tumanako-inverter-fw-motorControl-sync_motor/
+    cd ~/Documents/tumanako-inverter-fw-motorControl-master/
     if [ ! -d ./src/attiny13 ]; then
         tar xzfv "$(dirname "$0")/Web/firmware/attiny13.zip" -C ./src/
     fi
@@ -81,5 +81,5 @@ else
     mv volt-pwm-attiny13.hex ../../
     #---------------------------------
 
-    open ~/Documents/tumanako-inverter-fw-motorControl-sync_motor
+    open ~/Documents/tumanako-inverter-fw-motorControl-master
 fi

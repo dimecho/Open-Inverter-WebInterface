@@ -81,7 +81,7 @@ function checkAVRCompiler()
         $path = "C:\\Program Files\\Win-AVR";
     }
     if(is_file($path)) {
-        if(checkSource("tumanako-inverter-fw-motorControl-sync_motor"))
+        if(checkSource("tumanako-inverter-fw-motorControl-master"))
         {
             echo "openExternalApp('attiny')";
         }else{
@@ -101,7 +101,7 @@ function checkARMCompiler()
     }
     if(is_dir($path))
     {
-        if(checkSource("tumanako-inverter-fw-motorControl-sync_motor"))
+        if(checkSource("tumanako-inverter-fw-motorControl-master"))
         {
             echo "openExternalApp('source')";
         }else{

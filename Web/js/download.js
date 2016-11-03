@@ -61,7 +61,7 @@ function confirmDownload(app)
     }else if(app === "source"){
         title = "Inverter Source Code";
         //url = "http://johanneshuebner.com/quickcms/files/inverter.zip";
-        url = "https://github.com/tumanako/tumanako-inverter-fw-motorControl/archive/sync_motor.zip"
+        url = "https://github.com/tumanako/tumanako-inverter-fw-motorControl/archive/master.zip"
         
         //get_filesize(url, function(size) {
             msg = "Source Code - Download 1MB";

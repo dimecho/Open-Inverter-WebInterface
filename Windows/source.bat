@@ -1,21 +1,21 @@
 SET CurrentDir=%~dp0
 
 cd "%USERPROFILE%\Documents\"
-IF NOT EXIST tumanako-inverter-fw-motorControl-sync_motor (
-	Call :UnZipFile "%USERPROFILE%\Documents\" "%USERPROFILE%\Downloads\sync_motor.zip"
+IF NOT EXIST tumanako-inverter-fw-motorControl-master (
+	Call :UnZipFile "%USERPROFILE%\Documents\" "%USERPROFILE%\Downloads\master.zip"
 ) ELSE (
 
     SET GCC_ARM="C:\Program Files (x86)\GNU Tools ARM Embedded\5.4 2016q3"
     ::set PATH=%PATH%;"C:\Program Files (x86)\GNU Tools ARM Embedded\5.4 2016q3\bin"
 
-    cd "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-sync_motor"
+    cd "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-master"
     ::--------- LIBOPENCM3 ------------
     IF NOT EXIST libopencm3 (
     	bitsadmin.exe /transfer "libopencm3" https://github.com/libopencm3/libopencm3/archive/master.zip "%USERPROFILE%\Downloads\libopencm3.zip"
-    	Call :UnZipFile "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-sync_motor\" "%USERPROFILE%\Downloads\libopencm3.zip"
-        robocopy "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-sync_motor\libopencm3\lib" "%GCC_ARM%\arm-none-eabi\lib" /s /e
-        robocopy "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-sync_motor\libopencm3\include" "%GCC_ARM%\arm-none-eabi\include" /s /e
-        ::robocopy "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-sync_motor\libopencm3\include" "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-sync_motor\src\sine\include" /s /e
+    	Call :UnZipFile "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-master\" "%USERPROFILE%\Downloads\libopencm3.zip"
+        robocopy "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-master\libopencm3\lib" "%GCC_ARM%\arm-none-eabi\lib" /s /e
+        robocopy "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-master\libopencm3\include" "%GCC_ARM%\arm-none-eabi\include" /s /e
+        ::robocopy "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-master\libopencm3\include" "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-master\src\sine\include" /s /e
     )
 
     ::--------- GNU MAKE ------------
@@ -26,9 +26,9 @@ IF NOT EXIST tumanako-inverter-fw-motorControl-sync_motor (
     }
 
     ::--------- BOOTLOADER ------------
-    cd "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-sync_motor"
+    cd "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-master"
     IF NOT EXIST .\src\bootloader (
-        Call :UnZipFile "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-sync_motor\src\" "%CurrentDir%\..\Web\firmware\bootloader.zip"
+        Call :UnZipFile "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-master\src\" "%CurrentDir%\..\Web\firmware\bootloader.zip"
     )
     cd .\src\bootloader
     make clean
@@ -37,21 +37,21 @@ IF NOT EXIST tumanako-inverter-fw-motorControl-sync_motor (
     move stm32_loader.hex ../../
 
     ::--------- FIRMWARE --------------
-    cd "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-sync_motor\src\sine"
+    cd "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-master\src\sine"
     make clean
     make
     move stm32_sine.bin ../../
     move stm32_sine.hex ../../
 
     ::--------- ATtiny13 ------------
-    cd "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-sync_motor"
+    cd "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-master"
     IF NOT EXIST .\src\attiny13 (
-        Call :UnZipFile "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-sync_motor\src\" "%CurrentDir%\..\Web\firmware\attiny13.zip"
+        Call :UnZipFile "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-master\src\" "%CurrentDir%\..\Web\firmware\attiny13.zip"
     )
     cd .\src\attiny13
     ::---------------------------------
 
-    explorer "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-sync_motor"
+    explorer "%USERPROFILE%\Documents\tumanako-inverter-fw-motorControl-master"
 )
 
 ::---------------------------------
