@@ -1,16 +1,28 @@
 <?php
+    include_once("common.php");
+    
     session_start();
+
+    detectOS();
 
     if(isset($_GET["url"])){
 
-        $source = $_GET["url"];
+        $source = urldecode(str_replace("|", "&", $_GET["url"]));
+        $filename = basename($source);
 
-        if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
+        if ($os === "Mac") {
+            $destination = getenv("HOME"). "/Downloads/";
+        }else if ($os === "Windows") {
             $destination = getenv("USERPROFILE"). "\\Downloads\\";
-        }else{
+        }else if ($os === "Linux") {
             $destination = getenv("HOME"). "/Downloads/";
         }
-        $destination = $destination . basename($_GET["url"]);
+        
+        if(isset($_GET["filename"])){
+            $filename = $_GET["filename"];
+        }
+        
+        $destination = $destination . $filename;
     }
     
     if(isset($_GET["app"])){
@@ -25,18 +37,29 @@
     }else if(isset($_GET["download"])){
 
         set_time_limit(10000);
-
         $_SESSION["pause"] = "";
-
+        /*
+        $source = file_get_contents($_GET["url"]);
+        if (empty($source)) {
+          die('No Content Received');
+        }
+        if (!is_dir($destination)){
+           echo $error;
+        }
+        if (file_put_contents($destination . $filename , $source)) {
+           echo ",100";
+        }
+        */
+        
         ob_flush();
         flush();
 
         $curl = curl_init();
         
-        curl_setopt($curl, CURLOPT_URL, $_GET["url"]);
+        curl_setopt($curl, CURLOPT_URL, $source);
         if (file_exists($destination)) {
             $from = filesize($destination);
-            curl_setopt($curl, CURLOPT_RANGE, $from . "-");
+            //curl_setopt($curl, CURLOPT_RANGE, $from . "-");
             curl_setopt($curl, CURLOPT_RESUME_FROM, $from);
             $handle = fopen($destination, 'a+');
         }else{
@@ -45,20 +68,8 @@
         if (!$handle) {
             exit;
         }
-        //curl_setopt($curl, CURLOPT_TIMEOUT, 300);
-        curl_setopt($curl, CURLOPT_BINARYTRANSFER, true);
-        curl_setopt($curl, CURLOPT_FILE, $handle); // Set the output file for the curl request
-        //curl_setopt($curl, CURLOPT_HEADER, false);
-        //curl_setopt($curl, CURLOPT_WRITEHEADER, '/dev/null');
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true); // Follow http redirections
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); // Verify SSL certificate of the remote server
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 30); // Wait 30s maximum while trying to connect to the remote server
-        curl_setopt($curl, CURLOPT_MAXREDIRS, 2); // Following a maximum of 2 redirections
-        curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_FTP | CURLPROTO_FTPS); // Only allow http(s) and ftp(s) protocol for connection to the remote server
-        curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']); // Define the UserAgent to be used for requests to the remote server.
-        //curl_setopt($curl, CURLOPT_REFERER, $_GET["url"]); // Define the Referer to be used for requests to the remote server.
-        
-        function callback($resource,$download_size, $downloaded, $upload_size, $uploaded)
+
+        $callback = function($resource,$download_size, $downloaded, $upload_size, $uploaded)
         {
             if($download_size > 0)
                 echo "," .round($downloaded / $download_size  * 100);
@@ -70,21 +81,42 @@
             {
                 sleep(1);
             }
-        }
-        curl_setopt($curl, CURLOPT_BUFFERSIZE, 1024*8);
+        };
+        /*
+        $abort = function()
+        {
+            echo "error";
+        };
+        */
+        //curl_setopt($curl, CURLOPT_TIMEOUT, 300);
+        curl_setopt($curl, CURLOPT_BINARYTRANSFER, true);
+        curl_setopt($curl, CURLOPT_FILE, $handle); // Set the output file for the curl request
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        //curl_setopt($curl, CURLOPT_WRITEHEADER, '/dev/null');
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true); // Follow http redirections
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); // Verify SSL certificate of the remote server
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 30); // Wait 30s maximum while trying to connect to the remote server
+        curl_setopt($curl, CURLOPT_MAXREDIRS, 4); // Following a maximum of 4 redirections
+        curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_FTP | CURLPROTO_FTPS); // Only allow http(s) and ftp(s) protocol for connection to the remote server
+        curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']); // Define the UserAgent to be used for requests to the remote server.
+        curl_setopt($curl, CURLOPT_REFERER, dirname($source)); // Define the Referer to be used for requests to the remote server.
+        curl_setopt($curl, CURLOPT_BUFFERSIZE, 1024);
+
         curl_setopt($curl, CURLOPT_NOPROGRESS, false);
-        curl_setopt($curl, CURLOPT_PROGRESSFUNCTION, 'callback' );
+        curl_setopt($curl, CURLOPT_PROGRESSFUNCTION, $callback);
+        //curl_setopt($curl, CURLOPT_READFUNCTION, $abort); // check if user request abort
+
 
         //$data = curl_exec($curl);
-        //$error = curl_error($curl);
+        $error = curl_error($curl);
         curl_exec($curl);
         curl_close($curl);
         fclose($handle);
 
         ob_flush();
         flush();
-
-        //echo $error;
+        
+        echo $error;
         
     }else{
 ?>
@@ -93,27 +125,8 @@
     <head>
         <?php include "header.php" ?>
         <script>
-            var pause = false;
-            $(document).on('click', '.pause', function(){
-                $.ajax("download.php?pause=" + this.textContent.toLowerCase(),{
-                    //async: false,
-                    success: function(data)
-                    {
-                        console.log(data);
-                        if(data == "Pause")
-                        {
-                            this.textContent = "Resume";
-                        }else{
-                            this.textContent = "Pause";
-                        }
-                    },
-                    error: function(xhr, textStatus, errorThrown){
-                    }
-                });
-                
-            });
             $(document).ready(function() {
-                download(<?php echo "\"$source\",\"$app\""; ?>); 
+                download(<?php echo "\"$source\",\"$filename\",\"$app\""; ?>); 
             });
         </script>
     </head>

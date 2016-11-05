@@ -85,6 +85,8 @@ function exportPDF(pdf)
     //ctx.restore();
 
     var render = ctx.canvas.toDataURL("image/png", 1.0);
+    var d = new Date();
+    //d.setHours(10, 30, 53, 400);
 
     if(pdf)
     {
@@ -99,10 +101,9 @@ function exportPDF(pdf)
         doc.setDisplayMode(1);
         doc.setFontSize(28);
         doc.text(110, 20, activeTabText);
-        
         doc.addImage(render, 'JPEG' , 18, 40, 250, 120, "graph", "none");
-        doc.save("graph.pdf");
-
+        doc.save("graph " + d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + " " + (d.getHours() % 12 || 12) + "-" + d.getMinutes() + " " + (d.getHours() >= 12 ? 'pm' : 'am') + ".pdf");
+        
         /*
         var margins = {
             top: 32,
@@ -144,7 +145,7 @@ function exportPDF(pdf)
         var url = URL.createObjectURL(blob);
         var a = document.createElement("a");
         a.href = url;
-        a.download = "graph.png";
+        a.download = "graph " + d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + " " + (d.getHours() % 12 || 12) + "-" + d.getMinutes() + " " + (d.getHours() >= 12 ? 'pm' : 'am') + ".png";
         document.body.appendChild(a);
         a.click();
         setTimeout(function() {

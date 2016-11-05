@@ -1,6 +1,6 @@
 <?php
-
-    session_save_path(sys_get_temp_dir()); //For accessing same session with different port
+    
+    //session_save_path(sys_get_temp_dir()); //For accessing same session with different port
     session_start();
 
     //Allow for Cross Origin Resource Sharing

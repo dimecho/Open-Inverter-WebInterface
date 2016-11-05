@@ -2,7 +2,7 @@
 
 cd ~/Documents/
 if [ ! -d tumanako-inverter-fw-motorControl-master ]; then
-    tar xzfv ~/Downloads/master.zip -C ~/Documents/
+    tar xzfv ~/Downloads/tumanako-inverter-fw-motorControl-master.zip -C ~/Documents/
 else
     #xcode-select --install
     #open /Applications/XCode.app
@@ -28,12 +28,12 @@ else
     fi
 
     if [ ! -f ./libopencm3/lib/libopencm3_stm32f1.a ]; then
-        cd libopencm3
-        make
+        cd ./libopencm3
+        make TARGETS=stm32/f1
         
         #Overwrite existing with new version
-        ditto ./libopencm3/lib "$GCC_ARM/arm-none-eabi/lib"
-        ditto ./libopencm3/include "$GCC_ARM/arm-none-eabi/include"
+        ditto ./lib "$GCC_ARM/arm-none-eabi/lib"
+        ditto ./include "$GCC_ARM/arm-none-eabi/include"
     fi
 
     #--------- BOOTLOADER ------------

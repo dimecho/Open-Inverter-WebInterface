@@ -1,13 +1,14 @@
 <?php
-
+    include_once("common.php");
+    
+    detectOS();
+    
     if(isset($_GET["ajax"])){
-        //if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
-        //}else{
-            $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../openocd' " .$_GET["file"]. " " .$_GET["rs"];
-        //}
+        
+        $command = runCommand("openocd") . " " .$_GET["file"]. " " .$_GET["rs"];
 
         exec($command . " 2>&1", $output, $return);
-
+        
         foreach ($output as $line) {
             echo "$line\n";
         }

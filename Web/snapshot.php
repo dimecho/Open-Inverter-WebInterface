@@ -6,7 +6,7 @@
     ini_set("display_errors", 1);
     
     header ("Content-Type: text/json");
-    header ("Content-Disposition: attachment; filename=\"snapshot-" .date("F_j_Y g-ia"). ".txt\"");
+    header ("Content-Disposition: attachment; filename=\"snapshot " .date("F-j-Y g-ia"). ".txt\"");
 
     $read = sendToSerial("all",$serial);
     $split = explode("\n", $read);

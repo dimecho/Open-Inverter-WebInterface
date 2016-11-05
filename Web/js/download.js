@@ -1,3 +1,23 @@
+var pause = false;
+
+$(document).on('click', '.pause', function(){
+    $.ajax("download.php?pause=" + this.textContent.toLowerCase(),{
+        //async: false,
+        success: function(data)
+        {
+            console.log(data);
+            if(data == "Pause")
+            {
+                this.textContent = "Resume";
+            }else{
+                this.textContent = "Pause";
+            }
+        },
+        error: function(xhr, textStatus, errorThrown){
+        }
+    });
+});
+
 function confirmDownload(app)
 {
     var title = "";
@@ -25,14 +45,19 @@ function confirmDownload(app)
         msg = "Install XQuartz - Download 40MB";
         url = "https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.9.dmg";
     }else if(app === "gcc"){
-
+        title = "Compiler";
+        msg = "Install GCC Compiler - Download 10MB";
+        if(os === "Windows"){
+            //url = "http://heanet.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/6.2.0/threads-win32/seh/x86_64-6.2.0-release-win32-seh-rt_v5-rev1.7z";
+            url = "https://github.com/develersrl/gccwinbinaries/releases/download/v1.1/gcc-mingw-4.3.3-setup.exe";
+        }
     }else if(app === "attiny"){
         title = "Atmel single-chip microcontroller.";
         msg = "Install AVR Compiler - Download 40MB";
         if(os === "Mac"){
             url = "https://www.obdev.at/downloads/crosspack/CrossPack-AVR-20131216.dmg";
         }else if(os === "Windows"){
-            url = "https://downloads.sourceforge.net/project/winavr/WinAVR/20100110/WinAVR-20100110-install.exe";
+            url = "http://heanet.dl.sourceforge.net/project/winavr/WinAVR/20100110/WinAVR-20100110-install.exe";
         }
     }else if(app === "openocd"){
         title = "OpenOCD";
@@ -52,7 +77,7 @@ function confirmDownload(app)
         }
     }else if(app === "arm"){
         title = "arm-none-eabi-gcc";
-        msg = "Install GCC ARM Compiler - Download 100MB";
+        msg = "Install GCC-ARM Compiler - Download 100MB";
         if(os === "Mac"){
             url = "https://launchpadlibrarian.net/287101378/gcc-arm-none-eabi-5_4-2016q3-20160926-mac.tar.bz2";
         }else if(os === "Windows"){
@@ -60,18 +85,22 @@ function confirmDownload(app)
         }
     }else if(app === "source"){
         title = "Inverter Source Code";
-        //url = "http://johanneshuebner.com/quickcms/files/inverter.zip";
-        url = "https://github.com/tumanako/tumanako-inverter-fw-motorControl/archive/master.zip"
-        
+        url = "https://github.com/tumanako/tumanako-inverter-fw-motorControl/archive/master.zip";
+        filename = "tumanako-inverter-fw-motorControl-master.zip";
         //get_filesize(url, function(size) {
             msg = "Source Code - Download 1MB";
         //});
     }
 
+    if (typeof filename === 'undefined')
+    {
+        filename = url.split(/(\\|\/)/g).pop();
+    }
+
     alertify.confirm(title, msg, function()
     {
         //window.open(url, '_blank');
-        window.location.href = "download.php?url=" + url + "&app=" + app;
+        window.location.href = "download.php?url=" + url.replace('&', '|') + "&filename=" + filename + "&app=" + app;
 
     }, function(){});
 }
@@ -88,7 +117,7 @@ function get_filesize(url, callback) {
     xhr.send();
 }
 
-function download(url,app)
+function download(url,filename,app)
 {
     if(!url)
         return;
@@ -105,7 +134,7 @@ function download(url,app)
             var xhr = new window.XMLHttpRequest();
             xhr.addEventListener("progress", function(e){
                 var s = e.target.responseText.split(",");
-                 $("#progressBar").css("width", s.pop() + "%");
+                $("#progressBar").css("width", s.pop() + "%");
                 //if(a === "100")
                     //downloadComplete(app);
                 //console.log(s.pop());
@@ -114,20 +143,20 @@ function download(url,app)
         },
         //async: false,
         type: "GET",
-        url: "download.php?download=1&url=" + url,
+        url: "download.php?download=1&url=" + url.replace('&', '|') + "&filename=" + filename,
         data: {},
         success: function(data){
             
-            notify.update({'type': 'success', 'message': 'Installing ...'});
+            notify.update({'type': 'success', 'allow_dismiss': false, 'message':'Installing ...'});
             
             $.ajax("install.php?app=" + app,{
                 //async: false,
                 success: function(data)
                 {
                     //console.log(data);
-                    notify.update({'type': 'success', 'message': 'Installed'});
-
-                    $("#progressBar").css("width","100%");
+                    notify.update({'type': 'success', 'allow_dismiss': true, 'message': 'Installed'});
+                    
+                    //$("#progressBar").css("width","100%");
                     $("#output").show().append($("<pre>").append(data));
                     
                     setTimeout(function ()
@@ -138,7 +167,6 @@ function download(url,app)
                 error: function(xhr, textStatus, errorThrown){
                 }
             });
-            
         }
     });
 }

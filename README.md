@@ -22,6 +22,8 @@ All-in-one: PHP helper, RS232-USB drivers, firmware & bootloader flash, ARM/ATti
 
 <a href="https://github.com/poofik/Huebner-Inverter/releases/download/1.0/Huebner.Inverter.Windows.zip"><img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/win.png"> Download for Windows</a>
 
+<a href="https://github.com/poofik/Huebner-Inverter/releases/download/1.0/Huebner.Inverter.Linux.zip"><img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/linux.png"> Download for Linux</a>
+
 ## Author
 
 Dima Dykhman

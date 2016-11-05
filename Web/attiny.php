@@ -1,30 +1,21 @@
 <?php
+    include_once("common.php");
+    
+    detectOS();
     
     if(isset($_GET["ajax"])){
 
         if(isset($_GET["fuse"]))
         {
-            if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
-                $command = "cmd.exe /c '" .$_SERVER["DOCUMENT_ROOT"]. "/../Windows/fuse.bat'";
-            }else{
-                $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../fuse'";
-            }
-            $command = $command. " " .$_GET["isp"]. " " .$_GET["serial"];
-
+            $command = runCommand("fuse") . " " .$_GET["isp"]. " " .$_GET["serial"];
         }else{
-            if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
-                $command = "cmd.exe /c '" .$_SERVER["DOCUMENT_ROOT"]. "/../Windows/attiny.bat'";
-            }else{
-                $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../attiny'";
-            }
-
-            $command = $command. " " .$_GET["file"]. " " .$_GET["isp"]. " " .$_GET["serial"];
+            $command = runCommand("attiny") . " " .$_GET["file"]. " " .$_GET["isp"]. " " .$_GET["serial"];
         }
-
+        
         echo $command;
-
+        
         exec($command. " 2>&1", $output, $return);
-
+        
         foreach ($output as $line) {
             echo "$line\n";
         }

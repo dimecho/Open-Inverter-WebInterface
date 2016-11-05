@@ -1,12 +1,14 @@
 <?php
+    include_once("common.php");
+    
+    detectOS();
+    
     if(isset($_GET["ajax"])){
-        if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
-            $command = "cmd.exe /c '" .$_SERVER["DOCUMENT_ROOT"]. "/../Windows/source.bat'";
-        }else{
-            $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../source'";
-        }
-        exec($command . " 2>&1", $output, $return);
+        
+        set_time_limit(10000);
 
+        exec(runCommand("source") . " 2>&1", $output, $return);
+        
         foreach ($output as $line) {
             echo "$line\n";
         }
@@ -25,6 +27,7 @@
                 var notify = $.notify({
                         message: 'Compiling ...',
                     },{
+                        allow_dismiss: false,
                         type: 'danger'
                 });
                 $.ajax({
@@ -44,7 +47,7 @@
                     data: {},
                     success: function(data){
                         //console.log(data);
-                        notify.update({'type': 'success', 'message': 'Compiled'});
+                        notify.update({'type': 'success', 'allow_dismiss': true, 'message': 'Compiled'});
                         progressBar.css("width","100%");
                         $("#output").append($("<pre>").append(data));
                     }

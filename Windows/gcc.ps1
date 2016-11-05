@@ -1,0 +1,1 @@
+Start-Process "$env:USERPROFILE\Downloads\gcc-mingw-4.3.3-setup.exe" -Wait

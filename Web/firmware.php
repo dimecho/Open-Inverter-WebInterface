@@ -1,17 +1,15 @@
 <?php
     require('config.inc.php');
+    include("common.php");
+    
+    detectOS();
 
     if(isset($_GET["ajax"])){
 
-        if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
-            //Windows: safe_mode = Off
-            $command = "powershell.exe -file '" .$_SERVER["DOCUMENT_ROOT"]. "/../Windows/updater.ps1' '" .$_GET["file"]. "' " .str_replace("\\.\\", "", $serial->_device);
-        }else{
-            $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../updater' " .$_GET["file"]. " " .$serial->_device;
-        }
+        $command = runCommand("updater") . " " .$_GET["file"]. " " .$serial->_device;
 
         exec($command . " 2>&1", $output, $return);
-
+        
         foreach ($output as $line) {
             echo "$line\n";
         }

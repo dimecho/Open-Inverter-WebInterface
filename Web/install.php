@@ -1,188 +1,215 @@
 <?php
-
-if(!isset($_GET["url"]) && isset($_GET["app"]))
-{
-    set_time_limit(10000);
-
-    if (strpos($_SERVER["HTTP_USER_AGENT"], 'Windows') !== false) {
-        $command = "cmd.exe /c \"\"" .$_SERVER["DOCUMENT_ROOT"]. "\\..\\Windows\\" .$_GET["app"]. ".bat\"\"";
-    }else{
-        $command = "'" .$_SERVER["DOCUMENT_ROOT"]. "/../" . $_GET["app"] . "'";
-    }
-
-    exec($command . " 2>&1", $output, $return);
+    include_once("common.php");
     
-    //echo "$command\n";
-
-    foreach ($output as $line) {
-        echo "$line\n";
-    }
-}
-else if(isset($_GET["remove"]))
-{
-    if($_GET["remove"] == "arm")
+    detectOS();
+    
+    if(!isset($_GET["url"]) && isset($_GET["app"]))
     {
-        if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-            $path = "/usr/local/etc/gcc_arm";
-        }else{
-            $path = "C:\\Program Files\\GCC_ARM";
+        set_time_limit(10000);
+        
+        exec(runCommand($_GET["app"]) . " 2>&1", $output, $return);
+        
+        //echo "$command\n";
+        
+        foreach ($output as $line) {
+            echo "$line\n";
         }
-        removeDirectory($path);
-    }else if($_GET["remove"] == "avr")
+    }
+    else if(isset($_GET["remove"]))
     {
-        if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-            $path = "/usr/local/etc/CrossPack-AVR-20131216";
+        if($_GET["remove"] == "arm")
+        {
+            checkARMCompiler(true);
+        }
+        else if($_GET["remove"] == "avr")
+        {
+            checkAVRCompiler(true);
+        }
+        echo "done";
+    }
+
+    function checkEagle()
+    {
+        global $os;
+        if ($os === "Mac") {
+            $path = "/Applications/EAGLE-7.7.0/Eagle.app";
+        }else if ($os === "Windows") {
+            $path = "C:\\EAGLE-7.7.0";
+        }else if ($os === "Linux") {
+            $path = "/usr/share/applications/EAGLE-7.7.0";
+        }
+        if(is_dir($path)) {
+                echo "openExternalApp('eagle')";
         }else{
+            echo "confirmDownload('eagle')";
+        }
+    }
+
+    function checkOpenOCD()
+    {
+        global $os;
+        if ($os === "Mac") {
+            $path = "/usr/local/etc/gcc_arm/openocd";
+        }else if ($os === "Windows") {
+            $path = "C:\\Program Files\\GNU ARM Eclipse\\OpenOCD";
+        }else if ($os === "Linux") {
+            $path = "/usr/local/etc/gcc_arm/openocd";
+        }
+        if(is_dir($path)) {
+            //if(checkSource("tumanako-inverter-fw-motorControl-sync_motor")){
+                echo "openExternalApp('openocd')";
+            //}else{
+            //    echo "confirmDownload('openocd')";
+            //}
+        }else{
+            echo "confirmDownload('openocd')";
+        }
+    }
+
+    function checkAVRCompiler($remove)
+    {
+        global $os;
+        if ($os === "Mac") {
+            $path = "/usr/local/etc/gcc_arm/avr";
+        }else if ($os === "Windows") {
             $path = "C:\\Program Files\\Win-AVR";
+        }else if ($os === "Linux") {
+            $path = "/usr/local/etc/gcc_arm/avr";
         }
-        removeDirectory($path);
-    }
-    echo "done";
-}
-
-function checkEagle()
-{
-    if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-        $path = "/Applications/EAGLE-7.7.0/Eagle.app";
-    }else{
-        $path = "C:\\Program Files\\Eagle";
-    }
-    if(is_dir($path)) {
-            echo "openExternalApp('eagle')";
-    }else{
-        echo "confirmDownload('eagle')";
-    }
-}
-
-function checkOpenOCD()
-{
-    if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-        $path = "/usr/local/etc/gcc_arm/openocd";
-    }else{
-        $path = "C:\\Program Files\\GNU ARM Eclipse\\OpenOCD";
-    }
-    if(is_dir($path)) {
-        //if(checkSource("tumanako-inverter-fw-motorControl-sync_motor")){
-            echo "openExternalApp('openocd')";
-        //}else{
-        //    echo "confirmDownload('openocd')";
-        //}
-    }else{
-        echo "confirmDownload('openocd')";
-    }
-}
-
-
-function checkAVRCompiler()
-{
-    if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-        $path = "/usr/local/etc/gcc_arm/avr/bin/avr-gcc";
-    }else{
-        $path = "C:\\Program Files\\Win-AVR";
-    }
-    if(is_file($path)) {
-        if(checkSource("tumanako-inverter-fw-motorControl-master"))
-        {
-            echo "openExternalApp('attiny')";
+        if(is_dir($path)) {
+            if($remove)
+            {
+                removeDirectory($path);
+            }else{
+                if(checkSource("tumanako-inverter-fw-motorControl-master"))
+                {
+                    echo "openExternalApp('attiny')";
+                }else{
+                    echo "confirmDownload('source')";
+                }
+            }
         }else{
-            echo "confirmDownload('source')";
+            echo "confirmDownload('attiny')";
         }
-    }else{
-        echo "confirmDownload('attiny')";
     }
-}
 
-function checkARMCompiler()
-{
-    if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-        $path = "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3";
-    }else{
-        $path = "C:\\Program Files\\GCC_ARM";
-    }
-    if(is_dir($path))
+    function checkARMCompiler($remove)
     {
-        if(checkSource("tumanako-inverter-fw-motorControl-master"))
+        global $os;
+        if ($os === "Mac") {
+            $path = "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3";
+        }else if ($os === "Windows") {
+            $path = "C:\\Program Files (x86)\\GNU Tools ARM Embedded\\5.4 2016q3";
+        }else if ($os === "Linux") {
+            $path = "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3";
+        }
+        if(is_dir($path))
         {
-            echo "openExternalApp('source')";
+            if($remove)
+            {
+                removeDirectory($path);
+            }else{
+                if(checkCompiler())
+                {
+                    if(checkSource("tumanako-inverter-fw-motorControl-master"))
+                    {
+                        echo "openExternalApp('source')";
+                    }else{
+                        
+                        echo "confirmDownload('source')";
+                    }
+                }else{
+                    echo "confirmDownload('gcc')";
+                }
+            }
         }else{
-            echo "confirmDownload('source')";
+            echo "confirmDownload('arm')";
         }
-    }else{
-        echo "confirmDownload('arm')";
     }
-}
 
-function checkCompiler()
-{
-    if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-        $path = "/usr/local/etc/gcc_arm";
-    }else{
-        $path = "C:\\Program Files\\GCC_ARM";
-    }
-    if(is_dir($path)) {
-        return true;
-    }else{
-        return false;
-    }       
-}
-
-function checkSource($src)
-{
-    if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false) {
-        $path = getenv("HOMEPATH"). "\\Documents\\" . $src;
-    }else{
-        $path = getenv("HOME"). "/Documents/" . $src;
-    }
-    if(is_dir($path)) {
-        return true;
-    }else{
-        return false;
-    }
-}
-
-function checkInkscape()
-{
-    $xquartz = true;
-    if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-        $path = "/Applications/Inkscape.app";
-        if(!is_dir("/Applications/Utilities/XQuartz.app")) {
-            $xquartz = false;
+    function checkSource($src)
+    {
+        global $os;
+        if ($os === "Mac") {
+            $path = getenv("HOME"). "/Documents/" . $src;
+        }else if ($os === "Windows") {
+            $path = getenv("HOMEPATH"). "\\Documents\\" . $src;
+        }else if ($os === "Linux") {
+            $path = getenv("HOME"). "/Documents/" . $src;
         }
-    }else{
-        $path = "C:\\Program Files\\Inkscape";
-    }
-    if(is_dir($path)) {
-        if($xquartz == true)
-        {
-            echo "openExternalApp('inkscape')";
+        if(is_dir($path)) {
+            return true;
         }else{
-            echo "confirmDownload('xquartz')";
+            return false;
         }
-    }else{
-        echo "confirmDownload('inkscape')";
     }
-}
 
-function checkOpenSCAD()
-{
-    if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-        $path = "/Applications/OpenSCAD.app";
-    }else{
-        $path = "C:\\Program Files\\OpenSCAD";
+    function checkCompiler()
+    {
+        global $os;
+        if ($os === "Mac") {
+            $path = "/usr/bin/gcc";
+        }else if ($os === "Windows") {
+            $path = "C:\\mingw\\bin\\gcc.exe";
+        }else if ($os === "Linux") {
+            $path = "/usr/bin/gcc";
+        }
+        if(is_file($path)) {
+            return true;
+        }else{
+            return false;
+        }
     }
-    if(is_dir($path)) {
-        echo "openExternalApp('openscad')";
-    }else{
-        echo "confirmDownload('openscad')";
-    }
-}
 
-function removeDirectory($path) {
-    $files = glob($path . '/*');
-    foreach ($files as $file) {
-        is_dir($file) ? removeDirectory($file) : unlink($file);
+    function checkInkscape()
+    {
+        global $os;
+        $xquartz = true;
+        if ($os === "Mac") {
+            $path = "/Applications/Inkscape.app";
+            if(!is_dir("/Applications/Utilities/XQuartz.app")) {
+                $xquartz = false;
+            }
+        }else if ($os === "Windows") {
+            $path = "C:\\Program Files\\Inkscape";
+        }else if ($os === "Linux") {
+            $path = "/usr/share/applications/Inkscape";
+        }
+        if(is_dir($path)) {
+            if($xquartz == true)
+            {
+                echo "openExternalApp('inkscape')";
+            }else{
+                echo "confirmDownload('xquartz')";
+            }
+        }else{
+            echo "confirmDownload('inkscape')";
+        }
     }
-    rmdir($path);
-    return;
-}
+
+    function checkOpenSCAD()
+    {
+        global $os;
+        if ($os === "Mac") {
+            $path = "/Applications/OpenSCAD.app";
+        }else if ($os === "Windows") {
+            $path = "C:\\Program Files\\OpenSCAD";
+        }else if ($os === "Linux") {
+            $path = "/usr/share/OpenSCAD";
+        }
+        if(is_dir($path)) {
+            echo "openExternalApp('openscad')";
+        }else{
+            echo "confirmDownload('openscad')";
+        }
+    }
+
+    function removeDirectory($path) {
+        $files = glob($path . '/*');
+        foreach ($files as $file) {
+            is_dir($file) ? removeDirectory($file) : unlink($file);
+        }
+        rmdir($path);
+        return;
+    }
 ?>
