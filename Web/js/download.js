@@ -46,10 +46,10 @@ function confirmDownload(app)
         url = "https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.9.dmg";
     }else if(app === "gcc"){
         title = "Compiler";
-        msg = "Install GCC Compiler - Download 10MB";
+        msg = "Install GCC Compiler - Download 50MB";
         if(os === "Windows"){
-            //url = "http://heanet.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/6.2.0/threads-win32/seh/x86_64-6.2.0-release-win32-seh-rt_v5-rev1.7z";
-            url = "https://github.com/develersrl/gccwinbinaries/releases/download/v1.1/gcc-mingw-4.3.3-setup.exe";
+            //url = "http://sysprogs.com/files/gnutoolchains/mingw32/mingw32-gcc4.8.1.exe";
+            url = "http://sysprogs.com/files/gnutoolchains/mingw32/mingw32-gcc4.7.2.exe";
         }
     }else if(app === "attiny"){
         title = "Atmel single-chip microcontroller.";
@@ -84,6 +84,8 @@ function confirmDownload(app)
             url = "https://launchpadlibrarian.net/287101378/gcc-arm-none-eabi-5_4-2016q3-20160926-mac.tar.bz2";
         }else if(os === "Windows"){
             url = "https://launchpadlibrarian.net/287101671/gcc-arm-none-eabi-5_4-2016q3-20160926-win32.exe";
+        }else if(os === "Linux"){
+            url = "https://launchpadlibrarian.net/287101520/gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2";
         }
     }else if(app === "source"){
         title = "Inverter Source Code";

@@ -470,7 +470,7 @@ function buildTips()
 
                 for (var i = 0; i < row.length; ++i)
                 {
-                    if(i == 0)
+                    if(i == n)
                     {
                         span = $("<span>", {class:"tooltip1", "data-tooltip-content":"<h6>Tip: " + row[i] + "</h6>"});
                         span.append($("<img>", {class:"svg-inject", src:"img/idea.svg"}));

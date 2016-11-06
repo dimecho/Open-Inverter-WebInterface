@@ -13,19 +13,8 @@
             }else if ($os === "Windows") {
                 $command = "cmd.exe /c \"\"C:\\Progra~1\\Inkscape\\inkscape.com\"\" " .$args. "";
             }else if ($os === "Linux") {
-                $command = "inkscape " .$args. "";
+                $command = "su \$SUDO_USER -c \"inkscape " .$args. "\"";
             }
-        }else if(isset($_FILES["file"])){
-    		$name = basename($_FILES['file']['tmp_name']);
-            $tmp_name = "/tmp/$name.svg";
-            move_uploaded_file($_FILES['file']['tmp_name'], $tmp_name);
-    		$args = " -f '" .$tmp_name. "' --verb EditSelectAll --verb SelectionUnGroup --verb SelectionSymDiff --verb command.extrude.openscad";
-            if ($os === "Mac") {
-                $command  = "/Applications/Inkscape.app/Contents/Resources/bin/inkscape" .$args;
-            }else if ($os === "Windows") {
-                $command  = "cmd.exe /c \"C:\\Progra~1\\Inkscape\\inkscape.com\" " .$args. "";
-            }
-            header("Location:/index.php");
         }else if($_GET["app"] == "arm"){
             $command  = "arm";
         }else if($_GET["app"] == "openocd" || $_GET["app"] == "bootloader"){
@@ -41,7 +30,7 @@
                 //$command = "explorer.exe " .getenv("HOMEPATH"). "/Documents/pcb/";
                 $command = "explorer.exe \"" .$_SERVER["DOCUMENT_ROOT"]. "\\pcb\"";
             }else if ($os === "Linux") {
-                $command = "su \$SUDO_USER -c \"xdg-open '" .$_SERVER["DOCUMENT_ROOT"]. "/pcb'\" &";
+                $command = "su \$SUDO_USER -c \"xdg-open '" .$_SERVER["DOCUMENT_ROOT"]. "/pcb'\"";
             }
         }
         
@@ -53,6 +42,22 @@
         //echo $pid;
         
         echo $command;
+
+    }else if(isset($_FILES["file"])){
+        $name = basename($_FILES['file']['tmp_name']);
+        $tmp_name = "/tmp/$name.svg";
+        move_uploaded_file($_FILES['file']['tmp_name'], $tmp_name);
+
+        $args = " -f '" .$tmp_name. "' --verb EditSelectAll --verb SelectionUnGroup --verb SelectionSymDiff --verb command.extrude.openscad";
+        if ($os === "Mac") {
+            $command = "/Applications/Inkscape.app/Contents/Resources/bin/inkscape" .$args;
+        }else if ($os === "Windows") {
+            $command = "cmd.exe /c \"\"C:\\Progra~1\\Inkscape\\inkscape.com\"\" " .$args. "";
+        }else if ($os === "Linux") {
+            $command = "su \$SUDO_USER -c \"inkscape " .$args. "\"";
+        }
+        exec($command,$op);
+        //header("Location:/index.php");
     }else{
         echo "open.php?app=";
     }

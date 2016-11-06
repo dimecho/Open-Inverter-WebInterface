@@ -7,7 +7,7 @@
     {
         set_time_limit(10000);
         
-        exec(runCommand($_GET["app"]) . " 2>&1", $output, $return);
+        exec(runCommand($_GET["app"]), $output, $return);
         
         //echo "$command\n";
         
@@ -34,7 +34,7 @@
         if ($os === "Mac") {
             $path = "/Applications/EAGLE-7.7.0/Eagle.app/Contents/MacOS/Eagle";
         }else if ($os === "Windows") {
-            $path = "C:\\EAGLE-7.7.0\\Eagle.exe";
+            $path = "C:\\EAGLE-7.7.0\\bin\eagle.exe";
         }else if ($os === "Linux") {
             $path = "/opt/eagle-7.7.0/bin/eagle";
         }
@@ -150,7 +150,7 @@
         if ($os === "Mac") {
             $path = "/usr/bin/gcc";
         }else if ($os === "Windows") {
-            $path = "C:\\mingw\\bin\\gcc.exe";
+            $path = "C:\\SysGCC\\MinGW32\\bin\\gcc.exe";
         }else if ($os === "Linux") {
             $path = "/usr/bin/gcc";
         }

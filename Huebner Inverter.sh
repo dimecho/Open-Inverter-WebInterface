@@ -3,11 +3,11 @@
 checkUSB()
 {
     shopt -s nocasematch
-    for ((i = 0 ; i < 4 ; i++ )); do
-        if [ ! -d '/dev/$1*' ]; then
+    for ((i = 0 ; i < 30 ; i++ )); do
+        if [ -f '/dev/$1*' ]; then
             serial=$(ls /dev/$1* | tail -n 1)
             if grep -q $serial "$(dirname "$0")/Web/config.inc.php"; then
-                /usr/bin/firefox http://localhost:8080
+                /usr/bin/firefox http://localhost:8080 &
             else
                 cp -R "$(dirname "$0")/Web/config.inc" "$(dirname "$0")/Web/config.inc.php"
                 sed -i -e "s~/dev/cu.usbserial~$serial~g" "$(dirname "$0")/Web/config.inc.php"
@@ -17,7 +17,7 @@ checkUSB()
         fi
         echo "... Waiting for RS232-USB"
         if [[ $i -eq 1 ]]; then
-            /usr/bin/firefox http://localhost:8080/connect.html
+            /usr/bin/firefox http://localhost:8080/connect.html &
         fi
         sleep 2
     done
