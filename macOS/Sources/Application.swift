@@ -78,7 +78,7 @@ class Application: NSViewController, NSApplicationDelegate
             
             for i in 0...(serialPathArray.count-1)
             {
-                print(serialPathArray[i])
+                //print(serialPathArray[i])
                 
                 if (serialPathArray[i].uppercaseString.rangeOfString("USB") != nil)
                 {
@@ -87,7 +87,7 @@ class Application: NSViewController, NSApplicationDelegate
                     found = true
                 }
             }
-            sleep(2)
+            sleep(4)
         }while found != true
     }
     

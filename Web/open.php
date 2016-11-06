@@ -12,6 +12,8 @@
                 $command = "/Applications/Inkscape.app/Contents/Resources/bin/inkscape" .$args;
             }else if ($os === "Windows") {
                 $command = "cmd.exe /c \"\"C:\\Progra~1\\Inkscape\\inkscape.com\"\" " .$args. "";
+            }else if ($os === "Linux") {
+                $command = "inkscape " .$args. "";
             }
         }else if(isset($_FILES["file"])){
     		$name = basename($_FILES['file']['tmp_name']);
@@ -38,6 +40,8 @@
             }else if ($os === "Windows") {
                 //$command = "explorer.exe " .getenv("HOMEPATH"). "/Documents/pcb/";
                 $command = "explorer.exe \"" .$_SERVER["DOCUMENT_ROOT"]. "\\pcb\"";
+            }else if ($os === "Linux") {
+                $command = "su \$SUDO_USER -c \"xdg-open '" .$_SERVER["DOCUMENT_ROOT"]. "/pcb'\" &";
             }
         }
         

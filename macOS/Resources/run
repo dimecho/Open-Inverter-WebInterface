@@ -1,5 +1,7 @@
 #!/bin/sh
 
+shopt -s nocasematch
+
 cd "$(dirname "$0")"
 clear
 
@@ -26,33 +28,6 @@ pkill -9 php
 /usr/bin/php -S 127.0.0.1:8080 -t "$(dirname "$0")/Web/" -c /usr/local/etc/php.ini &
 sleep 4
 
-connect=0
-while true; do
-    serial=$(ls /dev/cu.* | tail -n 1)
-    #serial=$(ls /dev/tty.* | tail -n 1)
-    shopt -s nocasematch
-    if [[ $serial == *"usb"* ]]; then
-        if grep -q $serial "$(dirname "$0")/Web/config.inc.php"; then
-            echo "config.inc.php OK"
-        else
-            cp -R "$(dirname "$0")/Web/config.inc" "$(dirname "$0")/Web/config.inc.php"
-            sed -i -e "s~/dev/cu.usbserial~$serial~g" "$(dirname "$0")/Web/config.inc.php"
-        fi
-        echo $serial
-        break
-    fi
-    echo "... Waiting for RS232-USB"
-
-    if [[ $connect -eq 0 ]]; then
-        open -a $browser http://localhost:8080/connect.html
-        connect=1
-    fi
-    sleep 1
-done
-
-#stty -f $serial 115200 parodd cs8 cstopb -crtscts -echo & cat $serial &
-#stty -f $serial 115200 & screen $serial 115200 &
-
 if [ ! -d "/Library/Extensions/ProlificUsbSerial.kext" ]; then
     open -a $browser http://localhost:8080/drivers.html
     echo "============================"
@@ -61,4 +36,26 @@ if [ ! -d "/Library/Extensions/ProlificUsbSerial.kext" ]; then
     osascript -e "do shell script \"$(dirname "$0")/driver\" with administrator privileges"
 fi
 
-open -a $browser http://localhost:8080
+for ((i = 0 ; i < 4 ; i++ )); do
+    for serial in $(ls /dev/cu.*); do
+        if [[ $serial == *"usb"* ]]; then
+            if grep -q $serial "$(dirname "$0")/Web/config.inc.php"; then
+                open -a $browser http://localhost:8080
+            else
+                cp -R "$(dirname "$0")/Web/config.inc" "$(dirname "$0")/Web/config.inc.php"
+                sed -i -e "s~/dev/cu.usbserial~$serial~g" "$(dirname "$0")/Web/config.inc.php"
+            fi
+            $i = 10
+            break
+        fi
+    done
+    echo "... Waiting for RS232-USB"
+    if [[ $i -eq 1 ]]; then
+        open -a $browser http://localhost:8080/connect.html
+    fi
+    sleep 2
+done
+
+#stty -f $serial 115200 parodd cs8 cstopb -crtscts -echo & cat $serial &
+#stty -f $serial 115200 & screen $serial 115200 &
+#open -a $browser http://localhost:8080

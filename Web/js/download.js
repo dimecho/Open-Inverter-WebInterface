@@ -74,6 +74,8 @@ function confirmDownload(app)
             url = "http://web.cadsoft.de/ftp/eagle/program/7.7/eagle-mac64-7.7.0.zip";
         }else if(os === "Windows"){
             url = "http://web.cadsoft.de/ftp/eagle/program/7.7/eagle-win64-7.7.0.exe";
+        }else if(os === "Linux"){
+            url = "http://web.cadsoft.de/ftp/eagle/program/7.7/eagle-lin64-7.7.0.run";
         }
     }else if(app === "arm"){
         title = "arm-none-eabi-gcc";
@@ -119,9 +121,6 @@ function get_filesize(url, callback) {
 
 function download(url,filename,app)
 {
-    if(!url)
-        return;
-
     var notify = $.notify({
             message: 'Downloading...',
         },{

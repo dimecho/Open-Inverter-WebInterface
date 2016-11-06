@@ -32,13 +32,13 @@
     {
         global $os;
         if ($os === "Mac") {
-            $path = "/Applications/EAGLE-7.7.0/Eagle.app";
+            $path = "/Applications/EAGLE-7.7.0/Eagle.app/Contents/MacOS/Eagle";
         }else if ($os === "Windows") {
-            $path = "C:\\EAGLE-7.7.0";
+            $path = "C:\\EAGLE-7.7.0\\Eagle.exe";
         }else if ($os === "Linux") {
-            $path = "/usr/share/applications/EAGLE-7.7.0";
+            $path = "/opt/eagle-7.7.0/bin/eagle";
         }
-        if(is_dir($path)) {
+        if(is_file($path)) {
                 echo "openExternalApp('eagle')";
         }else{
             echo "confirmDownload('eagle')";
@@ -166,16 +166,16 @@
         global $os;
         $xquartz = true;
         if ($os === "Mac") {
-            $path = "/Applications/Inkscape.app";
+            $path = "/Applications/Inkscape.app/Contents/MacOS/Inkscape";
             if(!is_dir("/Applications/Utilities/XQuartz.app")) {
                 $xquartz = false;
             }
         }else if ($os === "Windows") {
-            $path = "C:\\Program Files\\Inkscape";
+            $path = "C:\\Program Files\\Inkscape\\inkscape.exe";
         }else if ($os === "Linux") {
-            $path = "/usr/share/applications/Inkscape";
+            $path = "/usr/share/applications/inkscape.desktop";
         }
-        if(is_dir($path)) {
+        if(is_file($path)) {
             if($xquartz == true)
             {
                 echo "openExternalApp('inkscape')";
@@ -191,13 +191,13 @@
     {
         global $os;
         if ($os === "Mac") {
-            $path = "/Applications/OpenSCAD.app";
+            $path = "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD";
         }else if ($os === "Windows") {
-            $path = "C:\\Program Files\\OpenSCAD";
+            $path = "C:\\Program Files\\OpenSCAD\\OpenSCAD.exe";
         }else if ($os === "Linux") {
-            $path = "/usr/share/OpenSCAD";
+            $path = "/usr/share/applications/openscad.desktop";
         }
-        if(is_dir($path)) {
+        if(is_file($path)) {
             echo "openExternalApp('openscad')";
         }else{
             echo "confirmDownload('openscad')";

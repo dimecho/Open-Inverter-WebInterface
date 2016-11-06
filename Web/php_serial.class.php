@@ -98,7 +98,8 @@ class phpSerial
 			{
 				if (preg_match("@^COM(\d+):?$@i", $device, $matches))
 				{
-					$device = "/dev/ttyS" . ($matches[1] - 1);
+					#$device = "/dev/ttyS" . ($matches[1] - 1);
+					$device = "/dev/ttyUSB" . ($matches[1] - 1);
 				}
 
 				if ($this->_exec("stty -F " . $device) === 0)
