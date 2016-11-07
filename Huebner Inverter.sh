@@ -4,15 +4,16 @@ checkUSB()
 {
     shopt -s nocasematch
     for ((i = 0 ; i < 30 ; i++ )); do
-        if [ -f '/dev/$1*' ]; then
-            serial=$(ls /dev/$1* | tail -n 1)
+        serial=$(ls /dev/$1* | tail -n 1) || echo ""
+        if [[ $serial == *"usb"* ]]; then
             if grep -q $serial "$(dirname "$0")/Web/config.inc.php"; then
-                /usr/bin/firefox http://localhost:8080 &
+                i=30
             else
                 cp -R "$(dirname "$0")/Web/config.inc" "$(dirname "$0")/Web/config.inc.php"
                 sed -i -e "s~/dev/cu.usbserial~$serial~g" "$(dirname "$0")/Web/config.inc.php"
             fi
             echo "true"
+            /usr/bin/firefox http://localhost:8080 &
             return
         fi
         echo "... Waiting for RS232-USB"

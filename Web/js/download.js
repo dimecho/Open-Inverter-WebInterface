@@ -51,6 +51,12 @@ function confirmDownload(app)
             //url = "http://sysprogs.com/files/gnutoolchains/mingw32/mingw32-gcc4.8.1.exe";
             url = "http://sysprogs.com/files/gnutoolchains/mingw32/mingw32-gcc4.7.2.exe";
         }
+    }else if(app === "python"){
+        title = "Python";
+        msg = "Install Python - Download 15MB";
+        if(os === "Windows"){
+            url = "https://www.python.org/ftp/python/3.6.0/python-3.6.0b3.exe";
+        }
     }else if(app === "attiny"){
         title = "Atmel single-chip microcontroller.";
         msg = "Install AVR Compiler - Download 40MB";

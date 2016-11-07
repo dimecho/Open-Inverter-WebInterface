@@ -17,13 +17,12 @@
     }
     else if(isset($_GET["remove"]))
     {
-        if($_GET["remove"] == "arm")
+        checkARMCompiler(true);
+        checkAVRCompiler(true);
+        
+        if($os === "Windows")
         {
-            checkARMCompiler(true);
-        }
-        else if($_GET["remove"] == "avr")
-        {
-            checkAVRCompiler(true);
+            checkPythoCompiler(true);
         }
         echo "done";
     }
@@ -111,12 +110,16 @@
             }else{
                 if(checkCompiler())
                 {
-                    if(checkSource("tumanako-inverter-fw-motorControl-master"))
+                    if(checkPythonCompiler())
                     {
-                        echo "openExternalApp('source')";
+                        if(checkSource("tumanako-inverter-fw-motorControl-master"))
+                        {
+                            echo "openExternalApp('source')";
+                        }else{
+                            echo "confirmDownload('source')";
+                        }
                     }else{
-                        
-                        echo "confirmDownload('source')";
+                        echo "confirmDownload('python')";
                     }
                 }else{
                     echo "confirmDownload('gcc')";
@@ -147,14 +150,31 @@
     function checkCompiler()
     {
         global $os;
-        if ($os === "Mac") {
+        if ($os === "Mac" || $os === "Linux") {
             $path = "/usr/bin/gcc";
         }else if ($os === "Windows") {
             $path = "C:\\SysGCC\\MinGW32\\bin\\gcc.exe";
-        }else if ($os === "Linux") {
-            $path = "/usr/bin/gcc";
         }
         if(is_file($path)) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    function checkPythonCompiler($remove)
+    {
+        global $os;
+        if ($os === "Mac" || $os === "Linux") {
+            $path = "/usr/bin/python";
+        }else if ($os === "Windows") {
+            $path = "C:\\Python\\python.exe";
+        }
+        if(is_file($path)) {
+            if($remove)
+            {
+                removeDirectory($path);
+            }
             return true;
         }else{
             return false;
