@@ -3,8 +3,6 @@ IL1_IL2_UDC_TMPHS_VCC,35,,PINHD-1X8,
 C1,5,100nF,C-EU025-024X044,
 C2,8,100µF,CPOL-EUE2-5,
 C3,2,1µF*,C-EU025-024X044,
-C4,,100nF**,C-EU025-024X044,
-C5,,100nF**,C-EU025-024X044,
 C6,2,1µF*,C-EU025-024X044,
 C7,2,1µF*,C-EU025-024X044,
 IC1,32,,LM2902N,http://www.ti.com/lit/ds/symlink/lm2902.pdf
@@ -28,5 +26,5 @@ R16,18,500R*,R-EU_0207/10,
 R17,19,10k*,R-EU_0207/10,
 L1,13,10µH,L-EU,http://www.protostack.com/download/sp0203.pdf
 TMPHS,35,,PINHD-1X2,
-U$1,41,,L06P800S05,http://www.tamuracorp.com/clientuploads/pdfs/engineeringdocs/L06PXXXS05.pdf
-U$2,41,,L06P800S05,http://www.tamuracorp.com/clientuploads/pdfs/engineeringdocs/L06PXXXS05.pdf
+U$1,41,,L06P800S05/L01Z_S05/LEM HTFS ,http://www.tamuracorp.com/clientuploads/pdfs/engineeringdocs/L06PXXXS05.pdf
+U$2,41,,L06P800S05/L01Z_S05/LEM HTFS ,http://www.tamuracorp.com/clientuploads/pdfs/engineeringdocs/L06PXXXS05.pdf

@@ -7,12 +7,13 @@ checkUSB()
         for serial in $(ls /dev/$1*); do
             if [[ $serial == *"usb"* ]]; then
                 if grep -q $serial "$(dirname "$0")/Web/config.inc.php"; then
-                    open -a $browser http://localhost:8080 &
+                    i=30
                 else
                     cp -R "$(dirname "$0")/Web/config.inc" "$(dirname "$0")/Web/config.inc.php"
                     sed -i -e "s~/dev/cu.usbserial~$serial~g" "$(dirname "$0")/Web/config.inc.php"
                 fi
                 echo "true"
+                open -a $browser http://localhost:8080 &
                 return
             fi
         done
