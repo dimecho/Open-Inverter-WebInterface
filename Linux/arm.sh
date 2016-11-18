@@ -1,4 +1,5 @@
 #!/bin/bash
+
 if [ ! -d "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3" ]; then
     sudo mkdir /usr/local/etc/gcc_arm
     if [ ! -f $HOME/Downloads/gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar ]; then

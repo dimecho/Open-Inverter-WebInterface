@@ -19,11 +19,7 @@
     {
         checkARMCompiler(true);
         checkAVRCompiler(true);
-        
-        if($os === "Windows")
-        {
-            checkPythoCompiler(true);
-        }
+
         echo "done";
     }
 
@@ -108,7 +104,7 @@
             {
                 removeDirectory($path);
             }else{
-                if(checkCompiler())
+                if(checkGCCCompiler())
                 {
                     if(checkPythonCompiler())
                     {
@@ -147,7 +143,7 @@
         }
     }
 
-    function checkCompiler()
+    function checkGCCCompiler()
     {
         global $os;
         if ($os === "Mac" || $os === "Linux") {
@@ -162,19 +158,15 @@
         }
     }
 
-    function checkPythonCompiler($remove)
+    function checkPythonCompiler()
     {
         global $os;
         if ($os === "Mac" || $os === "Linux") {
             $path = "/usr/bin/python";
         }else if ($os === "Windows") {
-            $path = "C:\\Python\\python.exe";
+            $path = getenv("HOMEPATH"). "\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe";
         }
         if(is_file($path)) {
-            if($remove)
-            {
-                removeDirectory($path);
-            }
             return true;
         }else{
             return false;

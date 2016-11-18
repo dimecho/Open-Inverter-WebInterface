@@ -193,6 +193,8 @@ function initChart()
 function startChart()
 {
     //console.log(activeTab);
+
+    clearTimeout(headerRefreshTimer);
     
     stopChart();
     

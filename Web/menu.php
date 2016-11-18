@@ -46,7 +46,7 @@ function buildEncoderAlert()
                             <li><a tabindex="-1" href="firmware.php">Flash Firmware</a></li>
                             <li><a tabindex="-1" href="#" onClick="<?php checkAVRCompiler(false); ?>">Flash ATtiny13 Chip</a></li>
                             <li><a tabindex="-1" href="#" onClick="<?php checkARMCompiler(false); ?>">Compile from Source</a></li>
-                            <?php if(checkCompiler()) { ?>
+                            <?php if(checkGCCCompiler()) { ?>
                                 <li><a tabindex="-1" href="#" onClick="confirmGCCRemove()">Remove GCC ARM Compiler</a></li>
                             <?php } ?>
                             <li class="divider"></li>

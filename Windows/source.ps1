@@ -12,10 +12,16 @@ if (-Not (Test-Path tumanako-inverter-fw-motorControl-master)){
 }else{
     if ($console -eq 1)
     {
+		$env:Path += ";C:\msys\1.0\bin"
         $env:Path += ";C:\SysGCC\MinGW32\bin"
         $GCC_ARM = "C:\Program Files (x86)\GNU Tools ARM Embedded\5.4 2016q3"
         $env:Path += ";" + $GCC_ARM + "\bin"
-
+		
+		#--------- MSYS Fix --------------
+		Rename-Item C:\msys\1.0\bin\make.exe makeOLD.exe
+		Rename-Item C:\SysGCC\MinGW32\bin\mingw32-make.exe make.exe
+		Copy-Item C:\msys\1.0\bin\sh.exe shell.exe
+		
         #--------- LIBOPENCM3 ------------
         Set-Location "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master"
         if (-Not (Test-Path libopencm3)) {
@@ -34,18 +40,18 @@ if (-Not (Test-Path tumanako-inverter-fw-motorControl-master)){
 
         if (-Not (Test-Path libopencm3\li\libopencm3_stm32f1.a)) {
             Write-Host "Building Libopencm3" -ForegroundColor Green
-
-            $env:Path += ";C:\Python27"
-            #$env:Path += ";C:\Python27\Tools\Scripts"
-            #$env:PythonPath +=";C:\Python27;C:\Python27\DLLs;C:\Python27\Lib"
+			
+            $env:Path += ";$env:USERPROFILE\AppData\Local\Programs\Python\Python36-32\"
+            $env:Path += ";$env:USERPROFILE\AppData\Local\Programs\Python\Python36-32\Scripts\"
             ##!c:/Python27/python.exe
-
+			
             Set-Location libopencm3
-            mingw32-make.exe TARGETS=stm32/f1
-
+			make.exe clean
+            make.exe TARGETS=stm32/f1
+			
             #Overwrite existing with new version
-            #Copy-Item lib "$GCC_ARM\arm-none-eabi\lib\" -Recurse
-            #Copy-Item include "$GCC_ARM\arm-none-eabi\include\" -Recurse
+            Copy-Item lib "$GCC_ARM\arm-none-eabi\lib\" -Recurse -ErrorAction SilentlyContinue
+            Copy-Item include "$GCC_ARM\arm-none-eabi\include\" -Recurse -ErrorAction SilentlyContinue
         }
         #--------- BOOTLOADER ------------
         Set-Location "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master"
@@ -57,16 +63,16 @@ if (-Not (Test-Path tumanako-inverter-fw-motorControl-master)){
             }
         }
         Set-Location src\bootloader
-        mingw32-make.exe clean
-        mingw32-make.exe
+        make.exe clean
+        make.exe
         Move-Item stm32_loader.bin (Split-Path (Split-Path (Get-Location) -Parent) -Parent)
         Move-Item stm32_loader.hex (Split-Path (Split-Path (Get-Location) -Parent) -Parent)
 
         #--------- FIRMWARE --------------
         Set-Location "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master"
         Set-Location src\sine
-        mingw32-make.exe clean
-        mingw32-make.exe
+        make.exe clean
+        make.exe
         Move-Item stm32_sine.bin (Split-Path (Split-Path (Get-Location) -Parent) -Parent)
         Move-Item stm32_sine.hex (Split-Path (Split-Path (Get-Location) -Parent) -Parent)
 

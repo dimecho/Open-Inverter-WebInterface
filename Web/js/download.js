@@ -46,9 +46,8 @@ function confirmDownload(app)
         url = "https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.9.dmg";
     }else if(app === "gcc"){
         title = "Compiler";
-        msg = "Install GCC Compiler - Download 50MB";
+        msg = "Install GCC Compiler - Download 100MB";
         if(os === "Windows"){
-            //url = "http://sysprogs.com/files/gnutoolchains/mingw32/mingw32-gcc4.8.1.exe";
             url = "http://sysprogs.com/files/gnutoolchains/mingw32/mingw32-gcc4.7.2.exe";
         }
     }else if(app === "python"){

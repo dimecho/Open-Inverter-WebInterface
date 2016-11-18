@@ -6,6 +6,7 @@
     if(isset($_GET["app"]))
     {
         $command = "echo";
+        
         if($_GET["app"] == "inkscape"){
     		$args = " --verb dgkelectronics.com.encoder.disk.generator";
             if ($os === "Mac") {
@@ -15,6 +16,8 @@
             }else if ($os === "Linux") {
                 $command = "su \$SUDO_USER -c \"inkscape " .$args. "\"";
             }
+        }else if($_GET["app"] == "gcc"){
+            header("Location:/compile.php");
         }else if($_GET["app"] == "arm"){
             $command  = "arm";
         }else if($_GET["app"] == "openocd" || $_GET["app"] == "bootloader"){

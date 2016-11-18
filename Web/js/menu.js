@@ -1,5 +1,6 @@
 var knobValue = 0;
 var knobTimer;
+var headerRefreshTimer;
 
 $(document).ready(function()
 {
@@ -89,7 +90,11 @@ $(document).ready(function()
     });
     $(".knob").val(0).trigger('change');
 
-    buildParameters(loadJSON(0));
+    buildHeader();
+
+    buildTips();
+
+    //buildParameters();
     
     $(".tooltip1").tooltipster();
     //var instances = $.tooltipster.instancesLatest();
@@ -236,7 +241,7 @@ function startInverterAlert()
 function startInverter(mode)
 {
     $.ajax("serial.php?command=start " + mode,{
-        async: false,
+        //async: false,
         success: function(data)
         {
             //console.log(data);
@@ -270,7 +275,7 @@ function startInverter(mode)
 function stopInverter()
 {
     $.ajax("serial.php?command=stop",{
-        async: false,
+        //async: false,
         success: function(data)
         {
             //console.log(data);
@@ -309,7 +314,7 @@ function setDefaults()
     alertify.confirm('', 'This reset all settings back to default.', function()
     {
         $.ajax("serial.php?command=defaults",{
-            async: false,
+            //async: false,
             success: function(data)
             {
                 console.log(data);
@@ -339,37 +344,49 @@ function setDefaults()
     }, function(){});
 }
 
-function buildHeader(json)
+function buildHeader()
 {
-    var opStatus = $("#opStatus");
-    //var div = $("<div>").height(32);
-    var span = $("<span>");
-    var img = $("<img>");
+    var version = getCookie("version");
+    //========================
+    if(version === undefined) {
+        version = getJSONFloatValue("version");
+        setCookie("version", version, 1);
+    }
+    $("#titleVersion").empty().append("Firmware v" + version);
+    //========================
+    var opStatus = $("<span>");
+    var opmode = getJSONFloatValue("opmode");
+    var udc = getJSONFloatValue("udc");
+    var udcmin = getJSONFloatValue("udcmin");
+    var tmpm = getJSONFloatValue("tmpm");
+    var tmphs = getJSONFloatValue("tmphs");
+    var speed = getJSONFloatValue("speed");
 
-    //========================
-    $("#titleVersion").empty().append("Firmware v" + json.version.value);
-    //========================
-    span = $("<span>", {class:"tooltip1"});
-    img = $("<img>", {class:"svg-inject", src:"img/key.svg"});
-    if(json.opmode.value === 0)
+    var span = $("<span>", {class:"tooltip1"});
+    var img = $("<img>", {class:"svg-inject", src:"img/key.svg"});
+
+    if(opmode=== 0)
     {
         span.attr("data-tooltip-content","<h6>Off</h6>");
         img.addClass("svg-red");
         $("#potentiometer").hide();
     }
-    else if(json.opmode.value === 1 && json.din_emcystop.value === 1)
+    else if(opmode === 1)
     {
-        if(json.din_start.value === 1)
+        if(getJSONFloatValue("din_emcystop") === 1)
         {
-            img.addClass("svg-yellow");
-            span.attr("data-tooltip-content","<h6>Pulse Only - Do not leave ON</h6>");
-        }else{
-            span.attr("data-tooltip-content","<h6>Running</h6>");
-            img.addClass("svg-green");
+            if(getJSONFloatValue("din_start") === 1)
+            {
+                img.addClass("svg-yellow");
+                span.attr("data-tooltip-content","<h6>Pulse Only - Do not leave ON</h6>");
+            }else{
+                span.attr("data-tooltip-content","<h6>Running</h6>");
+                img.addClass("svg-green");
+            }
+            $("#potentiometer").hide();
         }
-        $("#potentiometer").hide();
     }
-    else if(json.opmode.value === 2)
+    else if(opmode === 2)
     {
         span.attr("data-tooltip-content","<h6>Manual Mode</h6>");
         img.addClass("svg-green");
@@ -385,9 +402,9 @@ function buildHeader(json)
     opStatus.append(div);
     */
     //========================
-    span = $("<span>", {class:"tooltip1", "data-tooltip-content":"<h6>" + json.udc.value+ "V</h6>"});
+    span = $("<span>", {class:"tooltip1", "data-tooltip-content":"<h6>" + udc + "V</h6>"});
     img = $("<img>", {class:"svg-inject", src:"img/battery.svg"});
-    if(json.udc.value > json.udcmin.value){
+    if(udc > udcmin){
         img.addClass("svg-green");
     }else{
         img.addClass("svg-red");
@@ -395,13 +412,13 @@ function buildHeader(json)
     span.append(img);
     opStatus.append(span);
     //========================
-    span = $("<span>", {class:"tooltip1", "data-tooltip-content":"<h6>" + json.tmpm.value + "°C</h6>"});
+    span = $("<span>", {class:"tooltip1", "data-tooltip-content":"<h6>" + tmpm + "°C</h6>"});
     img = $("<img>", {class:"svg-inject", src:"img/temperature.svg"})
-    if(json.tmpm.value > 150 || json.tmphs.value > 150){
+    if(tmpm > 150 || tmphs > 150){
         img.addClass("svg-red");
         span.append(img);
         opStatus.append(span);
-    }else if(json.tmpm.value > 100 || json.tmphs.value > 100){
+    }else if(tmpm > 100 || tmphs > 100){
         img.addClass("svg-yellow");
         span.append(img);
         opStatus.append(span);
@@ -416,19 +433,19 @@ function buildHeader(json)
     opStatus.append(div);
     */
     //========================
-    span = $("<span>", {class:"tooltip1", "data-tooltip-content":"<h6>" + json.speed.value + "RPM</h6>"});
+    span = $("<span>", {class:"tooltip1", "data-tooltip-content":"<h6>" + speed + "RPM</h6>"});
     img = $("<img>", {class:"svg-inject", src:"img/speedometer.svg"});
-    if(json.speed.value > 6000){
+    if(speed > 6000){
         img.addClass("svg-red");
         span.append(img);
         opStatus.append(span);
-    }else if(json.speed.value > 3000){
+    }else if(speed > 3000){
         img.addClass("svg-yellow");
         span.append(img);
         opStatus.append(span);
     }
     //========================
-    if(json.din_mprot.value != 1)
+    if(getJSONFloatValue("din_mprot") != 1)
     {
         span = $("<span>", {class:"tooltip1", "data-tooltip-content":"<h6>Probably forgot PIN 11 to 12V</h6>"});
         span.append($("<img>", {class:"svg-inject", src:"img/alert.svg"}));
@@ -443,19 +460,27 @@ function buildHeader(json)
         opStatus.append(span);
     }
 
+    $("#opStatus").empty().append(opStatus);
+
     var SVGInject = document.querySelectorAll('img.svg-inject');
     SVGInjector(SVGInject);
+
+    headerRefreshTimer = setTimeout( function () {
+        buildHeader();
+        buildTips();
+        $(".tooltip1").tooltipster();
+    },12000);
 }
 
 function buildTips()
 {
     var show = Math.random() >= 0.5;
 
-    var opStatus = $("#opStatus");
-    var span = $("<span>");
-
     if(show == true)
     {
+        var opStatus = $("#opStatus");
+        var span = $("<span>");
+
         $.ajax("tips.csv",{
             async: false,
             //contentType: "application/text",
@@ -482,94 +507,26 @@ function buildTips()
             error: function(xhr, textStatus, errorThrown){
             }
         });
-    }
 
-    span = $("<a>", {href:"#", onClick:"window.location.reload()"});
-    span.append($("<img>", {class:"svg-inject", src:"img/refresh.svg"}));
-    opStatus.append(span);
+        opStatus.append(span);
+    }
 }
 
-function buildParameters(json)
-{
-    //var length = 0;
-    //for(var k in json) if(json.hasOwnProperty(k))    length++;
-    
-    $("#opStatus").empty();
-    
-    if(json) //if(Object.keys(json).length > 0)
-    {
-        var i = 0;
-        var name = [];
-        for(var k in json)
-            name.push(k);
+function setCookie(c_name, value, exdays) {
+    var exdate = new Date();
+    exdate.setDate(exdate.getDate() + exdays);
+    var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+    document.cookie = c_name + "=" + c_value;
+}
 
-        buildHeader(json);
-
-        var menu = $("#parameters").empty().show();
-        if(menu)
-        {
-            //======================
-            var parameters = [];
-            var description = [];
-         
-            $.ajax("description.csv",{
-                async: false,
-                //contentType: "application/text",
-                beforeSend: function (req) {
-                  req.overrideMimeType('text/plain; charset=x-user-defined');
-                },
-                //dataType: 'text',
-                success: function(data)
-                {
-                    var row = data.split("\n");
-
-                    for (var i = 0; i < row.length; ++i)
-                    {
-                        var split = row[i].split(",");
-                        var d;
-
-                        if(split.length > 6){
-                            for (var c = 5; c < split.length; ++c)
-                                d += split[c];
-                        }else{
-                            d = split[5];
-                        }
-
-                        parameters.push(split[0]);
-                        description.push(d);
-                    }
-                },
-                error: function(xhr, textStatus, errorThrown){
-                }
-            });
-            //=================
-
-            var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("Type")));
-            var tbody = $("<tbody>");
-
-            menu.append(thead);
-            $.each(json, function()
-            {
-                //console.log(this)
-
-                var tooltip = "";
-                var x = parameters.indexOf(name[i]);
-                if(x !=-1)
-                    tooltip = description[x];
-                
-                var a = $("<a>", {href:"#", id:name[i], "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":this.unit + " ("+ this.default + ")"}).append(this.value);
-                var tr = $("<tr>");
-                var td1 = $("<td>", {class:"tooltip1", "data-tooltip-content":"<h5>" + tooltip + "</h5>"}).append(name[i]);
-                var td2 = $("<td>").append(a);
-                var td3 = $("<td>").append(this.unit.replace("","°"));
-       
-                tbody.append(tr.append(td1).append(td2).append(td3));
-                
-                i++;
-            });
-            menu.append(tbody);
+function getCookie(c_name) {
+    var i, x, y, ARRcookies = document.cookie.split(";");
+    for (i = 0; i < ARRcookies.length; i++) {
+        x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
+        y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
+        x = x.replace(/^\s+|\s+$/g, "");
+        if (x == c_name) {
+            return unescape(y);
         }
     }
-
-    buildTips();
 }
