@@ -28,11 +28,27 @@
             <div class="row">
                 <div class="col-md-1"></div>
                 <div class="col-md-10">
-                        <table class="table table-bordered"><thead><tr><td><h4>Motor</h4></td></tr></thead></table>
-                        <table class="table table-bordered" id="parameters_Motor"></table>
-                        <table class="table table-bordered"><tbody><tr><td><h4>Battery</h4></td></tr></tbody></table>
-                        <table class="table table-bordered" id="parameters_Battery"></table>
-                    
+                    <table class="table table-bordered"><tbody><tr><td><h4>Auto Tuning</h4></td></tr></tbody></table>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <button class="browse btn btn-primary" type="button" onclick="modeCheck();boostTuning();"><i class="glyphicon glyphicon-flash"></i> Boost Tuning</button>
+                            </td>
+                            <td>
+                                <button class="browse btn btn-primary" type="button" onclick="modeCheck();fweakTuning(10);"><i class="glyphicon glyphicon-random"></i> Fweak Tuning</button>
+                            </td>
+                            <td>
+                                <button class="browse btn btn-primary" type="button" onclick="modeCheck();polePairTest();"><i class="glyphicon glyphicon-transfer"></i> Pole Pair Test</button>
+                            </td>
+                            <td>
+                                <button class="browse btn btn-primary" type="button" onclick="modeCheck();numimpTest();"><i class="glyphicon glyphicon-record"></i> Encoder Pulse Test</button>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="table table-bordered"><thead><tr><td><h4>Motor</h4></td></tr></thead></table>
+                    <table class="table table-bordered" id="parameters_Motor"></table>
+                    <table class="table table-bordered"><tbody><tr><td><h4>Battery</h4></td></tr></tbody></table>
+                    <table class="table table-bordered" id="parameters_Battery"></table>
                 </div>
                 <div class="col-md-1"></div>
             </div>

@@ -147,8 +147,8 @@
                                             </select>
                                         </span>
                                         <span class = "input-group-addon">
-                                            <button class="browse btn btn-primary" type="button"><i class="icon-search"></i> Select HEX</button>
-                                            <button class="fuses btn btn-danger" type="button"><i class="icon-download-alt icon-white"></i> Reset Fuses</button>
+                                            <button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select HEX</button>
+                                            <button class="fuses btn btn-danger" type="button"><i class="glyphicon glyphicon-download-alt"></i> Reset Fuses</button>
                                         </span>
                                     </div>
                                     <br/><br/>

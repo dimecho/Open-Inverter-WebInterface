@@ -6,9 +6,6 @@ if [ ! -d "$HOME/Documents/tumanako-inverter-fw-motorControl-master" ]; then
     fi
     unzip "$HOME/Downloads/tumanako-inverter-fw-motorControl-master.zip" -d "$HOME/Documents/"
 else
-    GCC_ARM="/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3"
-    export PATH="$PATH:$GCC_ARM/bin/"
-
     #--------- LIBOPENCM3 ------------
     cd "$HOME/Documents/tumanako-inverter-fw-motorControl-master"
     if [ ! -d libopencm3 ]; then
@@ -23,8 +20,8 @@ else
         make TARGETS=stm32/f1
         
         #Overwrite existing with new version
-        rsync -avh ./lib/* "$GCC_ARM/arm-none-eabi/lib"
-        rsync -avh ./include/* "$GCC_ARM/arm-none-eabi/include"
+        sudo rsync -avh ./lib/* "/usr/arm-none-eabi/lib"
+        sudo rsync -avh ./include/* "/usr/arm-none-eabi/include"
     fi
 
     #--------- BOOTLOADER ------------

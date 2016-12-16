@@ -39,6 +39,19 @@
         {
            echo sendToSerial($_GET["command"],$serial);
         }
+        else if(isset($_GET["average"]))
+        {
+            $serial->sendMessage("get " + $_GET["average"]);
+            $serial->readPort();
+
+            $sum = 0;
+            for ($x = 0; $x <= 10; $x++) {
+                $serial->sendMessage("!");
+                $sum += (float)str_replace('!', '', $serial->readPort());
+            }
+            
+            echo $sum / 10;
+        }
     }
 
     function sendToSerial($cmd,$serial)

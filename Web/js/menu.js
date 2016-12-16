@@ -188,7 +188,7 @@ function loadJSON(i)
 
 function getJSONFloatValue(value) {
     var float = 0;
-
+    
     $.ajax("serial.php?get=" + value,{
     //$.ajax("test/" + value + ".data",{
         async: false,
@@ -199,7 +199,22 @@ function getJSONFloatValue(value) {
         }
     });
     return float;
-}
+};
+
+function getJSONAverageFloatValue(value) {
+    var float = 0;
+    
+    $.ajax("serial.php?average=" + value,{
+    //$.ajax("test/" + value + ".data",{
+        async: false,
+        success: function(data)
+        {
+            //console.log(data);
+            float = parseFloat(data);
+        }
+    });
+    return float;
+};
 
 function getErrors()
 {
@@ -493,7 +508,7 @@ function buildTips()
                 var row = data.split("\n");
                 var n = Math.floor(Math.random() * (row.length));
 
-                for (var i = 0; i < row.length; ++i)
+                for (var i = 0; i < row.length; i++)
                 {
                     if(i == n)
                     {

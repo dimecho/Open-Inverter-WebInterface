@@ -48,7 +48,7 @@ function confirmDownload(app)
         title = "Compiler";
         msg = "Install GCC Compiler - Download 100MB";
         if(os === "Windows"){
-            url = "http://sysprogs.com/files/gnutoolchains/mingw32/mingw32-gcc4.7.2.exe";
+            url = "http://sysprogs.com/files/gnutoolchains/mingw32/mingw32-gcc4.8.1.exe";
         }
     }else if(app === "python"){
         title = "Python";
@@ -89,8 +89,6 @@ function confirmDownload(app)
             url = "https://launchpadlibrarian.net/287101378/gcc-arm-none-eabi-5_4-2016q3-20160926-mac.tar.bz2";
         }else if(os === "Windows"){
             url = "https://launchpadlibrarian.net/287101671/gcc-arm-none-eabi-5_4-2016q3-20160926-win32.exe";
-        }else if(os === "Linux"){
-            url = "https://launchpadlibrarian.net/287101520/gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2";
         }
     }else if(app === "source"){
         title = "Inverter Source Code";
@@ -112,7 +110,7 @@ function confirmDownload(app)
         window.location.href = "download.php?url=" + url.replace('&', '|') + "&filename=" + filename + "&app=" + app;
 
     }, function(){});
-}
+};
 
 function get_filesize(url, callback) {
     var xhr = new XMLHttpRequest();
@@ -124,7 +122,7 @@ function get_filesize(url, callback) {
         }
     };
     xhr.send();
-}
+};
 
 function download(url,filename,app)
 {
@@ -175,4 +173,4 @@ function download(url,filename,app)
             });
         }
     });
-}
+};

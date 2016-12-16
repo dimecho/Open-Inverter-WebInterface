@@ -90,7 +90,7 @@
                                                 </select>
                                             </span>
                                             <span class = "input-group-addon">
-                                                <button class="browse btn btn-primary" type="button"><i class="icon-search"></i> Select BIN</button>
+                                                <button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select BIN</button>
                                             </span>
                                         </div>
                                         <br/><br/>
