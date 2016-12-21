@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 checkUSB()
 {
     shopt -s nocasematch
-    for ((i = 0 ; i < 30 ; i++ )); do
+    for i in {0..30} ; do
         serial=$(ls /dev/$1* | tail -n 1) || echo ""
         if [[ $serial == *"usb"* ]]; then
             if grep -q $serial "$(dirname "$0")/Web/config.inc.php"; then

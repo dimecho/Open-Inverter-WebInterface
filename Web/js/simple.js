@@ -126,6 +126,8 @@ $(document).ready(function()
     });
 
     //var delay =  speed.slider('getValue');
+
+    $.notify({ message: 'Experimental Area' },{ type: 'danger' });
 });
 
 function calculateCurve(value) {

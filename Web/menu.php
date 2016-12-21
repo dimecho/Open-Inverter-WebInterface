@@ -48,6 +48,7 @@ function buildEncoderAlert()
                                 <li><a tabindex="-1" href="#" onClick="confirmGCCRemove()">Remove GCC ARM Compiler</a></li>
                             <?php } ?>
                             <li class="divider"></li>
+                            <li><a tabindex="-1" href="design.php">Power Stage</a></li>
                             <li><a tabindex="-1" href="#" onClick="<?php checkEagle(); ?>">Schematics</a></li>
                             <li><a tabindex="-1" href="components.php">Components</a></li>
                             <li><a tabindex="-1" href="wiring.php">Wiring Diagram</a></li>
