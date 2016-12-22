@@ -3,6 +3,7 @@ var knobTimer;
 var headerRefreshTimer;
 
 $(document).ready(function () {
+
     alertify.dialog('startInverterMode', function () {
         return {
             setup: function setup() {
@@ -16,6 +17,9 @@ $(document).ready(function () {
                     }, {
                         text: 'Boost Charger',
                         className: alertify.defaults.theme.cancel
+                    }, {
+                        text: 'Buck Stepdown',
+                        className: alertify.defaults.theme.cancel
                     }],
                     focus: {
                         //element: 0,
@@ -27,6 +31,27 @@ $(document).ready(function () {
                         resizable: false
                     }
                 };
+            },
+            callback:function(closeEvent){
+
+                //0=Off, 1=Run, 2=ManualRun, 3=Boost, 4=Buck, 5=Sine, 6=AcHeat
+                if (getJSONFloatValue("potnom") > 20) {
+                    alertify.alert("High RPM Warning", "Adjust your Potentiometer down to zero before starting Inverter.", function () {
+                        alertify.message('OK');
+                    });
+                } else {
+                    if(closeEvent.index === 0) {
+                        startInverter(5);
+                    }else if(closeEvent.index === 1) {
+                        startInverter(2);
+                    }else if(closeEvent.index === 2) {
+                        $.notify({ message: "Experimental Area" }, { type: 'danger' });
+                        startInverter(3);
+                    }else if(closeEvent.index === 3) {
+                        $.notify({ message: "Experimental Area" }, { type: 'danger' });
+                        startInverter(4);
+                    }
+                }
             }
         };
     }, false, 'confirm');
@@ -96,6 +121,7 @@ function uploadSnapshot() {
 };
 
 function openExternalApp(app) {
+
     //console.log(app);
     if (app === "inkscape") {
         buildEncoderAlert();
@@ -114,6 +140,7 @@ function openExternalApp(app) {
 };
 
 function confirmGCCRemove(e) {
+
     alertify.confirm("Remove Compiler?", "This will clean up over 500MB of space!\n" + e, function () {
         var notify = $.notify({
             message: "Removing Compiler ..."
@@ -131,6 +158,7 @@ function confirmGCCRemove(e) {
 };
 
 function loadJSON(i) {
+
     var json;
 
     $.ajax("serial.php?command=json", {
@@ -163,6 +191,7 @@ function loadJSON(i) {
 };
 
 function getJSONFloatValue(value) {
+
     var float = 0;
 
     $.ajax("serial.php?get=" + value, {
@@ -177,6 +206,7 @@ function getJSONFloatValue(value) {
 };
 
 function getJSONAverageFloatValue(value) {
+
     var float = 0;
 
     $.ajax("serial.php?average=" + value, {
@@ -191,6 +221,7 @@ function getJSONAverageFloatValue(value) {
 };
 
 function getErrors() {
+
     var value = "";
 
     $.ajax("serial.php?command=errors", {
@@ -205,22 +236,6 @@ function getErrors() {
         }
     });
     return value;
-};
-
-function startInverterAlert() {
-    if (getJSONFloatValue("potnom") > 20) {
-        alertify.alert("High RPM Warning", "Adjust your Potentiometer down to zero before starting Inverter.", function () {
-            alertify.message('OK');
-        });
-    } else {
-        alertify.startInverterMode("Inverter Mode", function () {
-            startInverter(2);
-        }, function () {
-            startInverter(1);
-        }, function () {
-            $.notify({ message:"Not Available"}, {type:'danger'});
-        });
-    }
 };
 
 function startInverter(mode) {
@@ -255,6 +270,7 @@ function startInverter(mode) {
 };
 
 function stopInverter() {
+
     $.ajax("serial.php?command=stop", {
         //async: false,
         success: function success(data) {
@@ -288,6 +304,7 @@ function stopInverter() {
 };
 
 function setDefaults() {
+
     alertify.confirm('', 'This reset all settings back to default.', function () {
         $.ajax("serial.php?command=defaults", {
             //async: false,
@@ -319,6 +336,7 @@ function setDefaults() {
 };
 
 function buildHeader() {
+
     var version = getCookie("version");
     //========================
     if (version === undefined) {
@@ -437,6 +455,7 @@ function buildHeader() {
 };
 
 function buildTips() {
+
     var show = Math.random() >= 0.5;
 
     if (show === true) {
@@ -471,6 +490,7 @@ function buildTips() {
 };
 
 function setCookie(c_name, value, exdays) {
+
     var exdate = new Date();
     exdate.setDate(exdate.getDate() + exdays);
     var c_value = escape(value) + (exdays == null ? "" : "; expires=" + exdate.toUTCString());
@@ -478,6 +498,7 @@ function setCookie(c_name, value, exdays) {
 };
 
 function getCookie(c_name) {
+    
     var i,
         x,
         y,

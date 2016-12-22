@@ -22,7 +22,7 @@ function buildEncoderAlert()
                     <li class="dropdown">
                         <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>Motor</b><b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                            <li><a tabindex="-1" onClick="startInverterAlert()">Start Inverter</a></li>
+                            <li><a tabindex="-1" onClick="alertify.startInverterMode('Inverter Mode');">Start Inverter</a></li>
                             <li><a tabindex="-1" onClick="stopInverter()">Stop Inverter</a></li>
                             <li><a tabindex="-1" onClick="setDefaults()">Reset to Default</a></li>
                             <li><a tabindex="-1" href="db.php">Motor Database</a></li>

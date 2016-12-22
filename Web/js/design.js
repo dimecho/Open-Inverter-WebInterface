@@ -84,7 +84,7 @@ function initialize3D(id) {
 
                 //Blender Exporter Fix
                 if(mesh.name.indexOf("Cube") !== -1)
-                    mesh.material.opacity = 0.7;
+                    mesh.material.opacity = 0.6;
 
                 mesh.material.shading = THREE.FlatShading;
                 
@@ -137,7 +137,7 @@ function fill3DTable() {
     var table = $("#ideaTable");
     var tbody = $("<tbody>");
     var tr = $("<tr>");
-    var td = $("<td>");
+    var td = $("<td>",{align:"center"});
 
     $.ajax("3d//index.json", {
         contentType: "application/json",
@@ -145,7 +145,7 @@ function fill3DTable() {
         success: function success(data) {
             $.each(data.list, function () {
                 var a = $("<a>", { href: "design.php?id=" + this.id });
-                var img = $("<img>", { src: "3d/" + this.id + ".png", class: "img-rounded" });
+                var img = $("<img>", { src: "3d/" + this.id + ".png", class: "img-rounded", style: "margin:10px;width:400px;height:220px"});
                 td.append(a.append(img));
             });
         },
@@ -158,6 +158,7 @@ function fill3DTable() {
 };
 
 function explode(outwards, value) {
+    
     var dir = outwards === true ? 1 : -1;
     var i = 0;
 
