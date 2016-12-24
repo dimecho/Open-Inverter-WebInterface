@@ -339,7 +339,7 @@ function buildHeader() {
 
     var version = getCookie("version");
     //========================
-    if (version === undefined) {
+    if (version ===undefined || version === "NaN") {
         version = getJSONFloatValue("version");
         setCookie("version", version, 1);
     }
@@ -489,15 +489,25 @@ function buildTips() {
     }
 };
 
-function setCookie(c_name, value, exdays) {
+function deleteCookie(name, path, domain) {
+
+  if(getCookie(name)) {
+    document.cookie = name + "=" +
+      ((path) ? ";path="+path:"")+
+      ((domain)?";domain="+domain:"") +
+      ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+  }
+};
+
+function setCookie(name, value, exdays) {
 
     var exdate = new Date();
     exdate.setDate(exdate.getDate() + exdays);
     var c_value = escape(value) + (exdays == null ? "" : "; expires=" + exdate.toUTCString());
-    document.cookie = c_name + "=" + c_value;
+    document.cookie = name + "=" + c_value;
 };
 
-function getCookie(c_name) {
+function getCookie(name) {
     
     var i,
         x,
@@ -508,7 +518,7 @@ function getCookie(c_name) {
         x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
         y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
         x = x.replace(/^\s+|\s+$/g, "");
-        if (x == c_name) {
+        if (x == name) {
             return unescape(y);
         }
     }

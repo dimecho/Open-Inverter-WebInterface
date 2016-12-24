@@ -12,7 +12,7 @@
         }else if ($os === "Windows") {
             $command = "";
         }else if ($os === "Linux") {
-            $command = "ls /dev/tty.*";
+            $command = "ls /dev/ttyUSB*";
         }
 
         $output = exec($command);

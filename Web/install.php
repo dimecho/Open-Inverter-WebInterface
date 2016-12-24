@@ -48,7 +48,7 @@
         }else if ($os === "Windows") {
             $path = "C:\\Program Files\\GNU ARM Eclipse\\OpenOCD";
         }else if ($os === "Linux") {
-            $path = "/usr/local/etc/gcc_arm/openocd";
+            $path = "/usr/share/openocd";
         }
         if(is_dir($path)) {
             //if(checkSource("tumanako-inverter-fw-motorControl-sync_motor")){
@@ -65,13 +65,13 @@
     {
         global $os;
         if ($os === "Mac") {
-            $path = "/usr/local/etc/gcc_arm/avr";
+            $path = "/usr/local/etc/gcc_arm/avr/bin/avrdude";
         }else if ($os === "Windows") {
-            $path = "C:\\Program Files\\Win-AVR";
+            $path = "C:\\Program Files\\Win-AVR\\avrdude.exe";
         }else if ($os === "Linux") {
-            $path = "/usr/local/etc/gcc_arm/avr";
+            $path = "/usr/bin/avrdude";
         }
-        if(is_dir($path)) {
+        if(is_file($path)) {
             if($remove)
             {
                 removeDirectory($path);
@@ -96,7 +96,7 @@
         }else if ($os === "Windows") {
             $path = "C:\\Program Files (x86)\\GNU Tools ARM Embedded\\5.4 2016q3";
         }else if ($os === "Linux") {
-            $path = "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3";
+            $path = "/usr/share/gcc-arm-embedded";
         }
         if(is_dir($path))
         {

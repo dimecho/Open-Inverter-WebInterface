@@ -7,15 +7,13 @@
 
         if(isset($_GET["fuse"]))
         {
-            $command = runCommand("fuse") . " " .$_GET["isp"]. " " .$_GET["serial"];
+            $command = runCommand("fuse " .$_GET["isp"]. " " .$_GET["serial"]);
         }else{
-            $command = runCommand("attiny") . " " .$_GET["file"]. " " .$_GET["isp"]. " " .$_GET["serial"];
+            $command = runCommand("attiny " .$_GET["file"]. " " .$_GET["isp"]. " " .$_GET["serial"]);
         }
+        exec($command, $output, $return);
         
-        echo $command;
-        
-        exec($command. " 2>&1", $output, $return);
-        
+        echo "$command\n";
         foreach ($output as $line) {
             echo "$line\n";
         }
@@ -57,7 +55,6 @@
                                             $.ajax({
                                                 type: "GET",
                                                 url: "attiny.php?ajax=1&fuse=1",
-                                                data: {},
                                                 success: function(data){
                                                     console.log(data);
                                                     progressBar.css("width","100%");
@@ -90,17 +87,23 @@
                                             }
                                             $.ajax({
                                                 type: "GET",
-                                                url: "attiny.php?ajax=1<?php
-                                                    $name = basename($_FILES['firmware']['tmp_name']);
-                                                    $tmp_name = "/tmp/$name.bin";
+                                                url:
+                                                <?php
+                                                    echo "'";
+                                                    echo "attiny.php?ajax=1";
+                                                    if ($os === "Mac") {
+                                                        $tmp_name = "/tmp/" .basename($_FILES['firmware']['tmp_name']). ".bin";
+                                                    }else{
+                                                        $tmp_name = sys_get_temp_dir(). "/" .basename($_FILES['firmware']['tmp_name']). ".bin";
+                                                    }
                                                     move_uploaded_file($_FILES['firmware']['tmp_name'], $tmp_name);
-                                                    //echo $_FILES['firmware']['tmp_name'];
                                                     echo "&file=" .$tmp_name;
+                                                    echo "&serial=" .$_POST["serial"];
                                                     echo "&isp=" .$_POST["isp"];
-                                                ?>",
-                                                data: {},
+                                                    echo "'";
+                                                ?>,
                                                 success: function(data){
-                                                    console.log(data);
+                                                    //console.log(data);
                                                     progressBar.css("width","100%");
                                                     $("#output").append($("<pre>").append(data));
                                                 }

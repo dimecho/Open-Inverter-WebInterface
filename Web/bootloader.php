@@ -5,10 +5,10 @@
     
     if(isset($_GET["ajax"])){
         
-        $command = runCommand("openocd") . " " .$_GET["file"]. " " .$_GET["rs"];
-
-        exec($command . " 2>&1", $output, $return);
+        $command = runCommand("openocd " .$_GET["file"]. " " .$_GET["serial"]);
+        exec($command, $output, $return);
         
+        echo "$command\n";
         foreach ($output as $line) {
             echo "$line\n";
         }
@@ -51,17 +51,22 @@
                                             }
                                             $.ajax({
                                                 type: "GET",
-                                                url: "bootloader.php?ajax=1<?php
-                                                    $name = basename($_FILES['firmware']['tmp_name']);
-                                                    $tmp_name = "/tmp/$name.bin";
+                                                url:
+                                                <?php
+                                                    echo "'";
+                                                    echo "bootloader.php?ajax=1";
+                                                    if ($os === "Mac") {
+                                                        $tmp_name = "/tmp/" .basename($_FILES['firmware']['tmp_name']). ".bin";
+                                                    }else{
+                                                        $tmp_name = sys_get_temp_dir(). "/" .basename($_FILES['firmware']['tmp_name']). ".bin";
+                                                    }
                                                     move_uploaded_file($_FILES['firmware']['tmp_name'], $tmp_name);
-                                                    //echo $_FILES['firmware']['tmp_name'];
                                                     echo "&file=" .$tmp_name;
-                                                    echo "&rs=" .$_POST["rs"];
-                                                ?>",
-                                                data: {},
+                                                    echo "&serial=" .$_POST["serial"];
+                                                    echo "'";
+                                                ?>,
                                                 success: function(data){
-                                                    console.log(data);
+                                                    //console.log(data);
                                                     progressBar.css("width","100%");
                                                     $("#output").append($("<pre>").append(data));
                                                 }
@@ -95,7 +100,7 @@
                                     <center>
                                         <div class="input-group" style="width:80%">
                                             <span class = "input-group-addon" style="width:40%">
-                                                <select name="rs" class="form-control" form="Aform" onchange="setJTAGImage()" id="jtag" >
+                                                <select name="serial" class="form-control" form="Aform" onchange="setJTAGImage()" id="jtag" >
                                                     <option value="olimex-arm-usb-ocd-h" selected="selected">olimex-arm-usb-ocd-h</option>
                                                     <option value="olimex-arm-usb-tiny-h">olimex-arm-usb-tiny-h</option>
                                                     <option value="jtag-lock-pick_tiny_2">jtag-lock-pick_tiny_2</option>
@@ -103,8 +108,7 @@
                                                 </select>
                                             </span>
                                             <span class = "input-group-addon" style="width:60%">
-                                            <select name="serial" class="form-control" form="Aform" id="serialList">
-                                            </select>
+                                                <select name="serial" class="form-control" form="Aform" id="serialList"></select>
                                             </span>
                                             <span class = "input-group-addon">
                                             
@@ -124,7 +128,7 @@
             </div>
         </div>
         <form enctype="multipart/form-data" action="bootloader.php" method="POST" id="Aform">
-            <input type="file" name="firmware" class="file" hidden onchange="javascript:this.form.submit();"/>
+            <input name="firmware" type="file" class="file" hidden onchange="javascript:this.form.submit();"/>
             <input type="submit" hidden/>
         </form>
     </body>
