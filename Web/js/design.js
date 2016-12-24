@@ -4,101 +4,106 @@ var explodeDirection = [];
 
 function initialize3D(id) {
 
-    scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0xE0E0E0, 0.02);
+    $.getScript("js/OrbitControls.js").done(function(){
 
-    camera = new THREE.PerspectiveCamera(20, window.innerWidth*0.7 / window.innerHeight*0.9, 0.1, 50);
-    scene.add(camera);
+        $.getScript("js/Projector.js");
 
-    scene.add(new THREE.AmbientLight( 0xE0E0E0  ));
-    //scene.add(new THREE.AmbientLight(0x404040));
+        scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0xE0E0E0, 0.02);
 
-    var grid = new THREE.GridHelper( 5, 20, 0xffffff, 0xffffff);
-    grid.position.y = -1;
-    scene.add(grid);
-    
-    var light = new THREE.DirectionalLight(0xE0E0E0 , 1.5);
-    light.position.set( 0, 0, 0 );
-    //scene.add(light);
+        camera = new THREE.PerspectiveCamera(20, window.innerWidth*0.7 / window.innerHeight*0.9, 0.1, 50);
+        scene.add(camera);
 
-    var spotLight = new THREE.SpotLight(0xE0E0E0);
-    spotLight.position.set(-40, 50, -40);
-    scene.add(spotLight);
+        scene.add(new THREE.AmbientLight( 0xE0E0E0  ));
+        //scene.add(new THREE.AmbientLight(0x404040));
 
-    var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.8);
-    hemiLight.position.set( 10, 40, 10 );
-    //scene.add(hemiLight);
-
-    var directionalLight = new THREE.DirectionalLight( 0xffffff );
-    directionalLight.position.set( 1, 10, 0.5 ).normalize();
-    //scene.add( directionalLight );
-
-    var pointLight = new THREE.PointLight( 0xffaa00 );
-    pointLight.position.set( 0, 0, 0 );
-    //scene.add( pointLight );
-
-    renderer = new THREE.WebGLRenderer({antialias: true});
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize( window.innerWidth*0.7, window.innerHeight*0.9);
-    //renderer.setClearColor(scene.fog.color);
-    renderer.setClearColor( scene.fog.color, 1 );
-    document.getElementById('container').appendChild(renderer.domElement);
-
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFShadowMap;
-
-    var controls = new THREE.OrbitControls( camera, renderer.domElement );
-    controls.zoomSpeed = 0.5;
-
-    var loader = new THREE.ObjectLoader();
-    loader.setTexturePath("3d/textures/");
-
-    loader.load("3d/" + id + ".json", function (object) {
-
-        object.rotation.y = -90;
-        scene.add(object);
-        camera.position.set(5, 10, 5);
-
-        var movementSpeed = 0.1;
+        var grid = new THREE.GridHelper( 5, 20, 0xffffff, 0xffffff);
+        grid.position.y = -1;
+        scene.add(grid);
         
+        var light = new THREE.DirectionalLight(0xE0E0E0 , 0.75);
+        light.position.set( 0, -20, 0 );
+        scene.add(light);
 
-        /*
-        object.traverse( function(child) {
-            if( child instanceof THREE.Mesh ) {
-            child.material = new THREE.MeshBasicMaterial( { color: 0x009900, wireframe: true, vertexColors: THREE.VertexColors } ); 
-            //child.scale.set(20,20,20);
-                object.add( child );
-            }
+        var spotLight = new THREE.SpotLight(0xE0E0E0);
+        spotLight.position.set(-10, 20, -10);
+        scene.add(spotLight);
+
+        var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.8);
+        hemiLight.position.set( 10, 40, 10 );
+        //scene.add(hemiLight);
+
+        var directionalLight = new THREE.DirectionalLight( 0xffffff );
+        directionalLight.position.set( 1, 10, 0.5 ).normalize();
+        //scene.add( directionalLight );
+
+        var pointLight = new THREE.PointLight( 0xffaa00 );
+        pointLight.position.set( 0, 0, 0 );
+        //scene.add( pointLight );
+
+        renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize( window.innerWidth*0.7, window.innerHeight*0.9);
+        //renderer.setClearColor(scene.fog.color);
+        renderer.setClearColor( scene.fog.color, 1 );
+        document.getElementById('container').appendChild(renderer.domElement);
+
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFShadowMap;
+
+        var controls = new THREE.OrbitControls( camera, renderer.domElement );
+        controls.zoomSpeed = 0.5;
+
+        var loader = new THREE.ObjectLoader();
+        loader.setTexturePath("3d/textures/");
+
+        loader.load("3d/" + id + ".json", function (object) {
+
+            object.rotation.y = -90;
+            scene.add(object);
+            camera.position.set(5, 10, 5);
+
+            var movementSpeed = 0.1;
+            
+
+            /*
+            object.traverse( function(child) {
+                if( child instanceof THREE.Mesh ) {
+                child.material = new THREE.MeshBasicMaterial( { color: 0x009900, wireframe: true, vertexColors: THREE.VertexColors } ); 
+                //child.scale.set(20,20,20);
+                    object.add( child );
+                }
+            });
+            */
+
+            //object.material.shading = THREE.FlatShading;
+
+            scene.traverse(function (mesh) {
+
+                if(mesh instanceof THREE.Mesh) {
+            
+                    //mesh.geometry.computeFaceNormals();
+                    //mesh.geometry.computeVertexNormals();
+                    mesh.geometry.computeBoundingBox();
+
+                    //Blender Exporter Fix
+                    if(mesh.name.indexOf("Cube") !== -1)
+                        mesh.material.opacity = 0.6;
+
+                    mesh.material.shading = THREE.FlatShading;
+                    
+                    mesh.original = [mesh.position.x,mesh.position.y,mesh.position.z];
+
+                    //var distance = mesh.geometry.boundingSphere.center.distanceTo(vector) * 1;
+                    explodeDirection.push({x:(Math.random() * movementSpeed)-(movementSpeed/2),y:(Math.random() * movementSpeed)-(movementSpeed/2),z:(Math.random() * movementSpeed)-(movementSpeed/2)});
+                }
+            });
         });
-        */
 
-        //object.material.shading = THREE.FlatShading;
+        window.addEventListener( 'resize', onWindowResize, false );
 
-        scene.traverse(function (mesh) {
-
-            if(mesh instanceof THREE.Mesh) {
-        
-                //mesh.geometry.computeFaceNormals();
-                //mesh.geometry.computeVertexNormals();
-                mesh.geometry.computeBoundingBox();
-
-                //Blender Exporter Fix
-                if(mesh.name.indexOf("Cube") !== -1)
-                    mesh.material.opacity = 0.6;
-
-                mesh.material.shading = THREE.FlatShading;
-                
-                mesh.original = [mesh.position.x,mesh.position.y,mesh.position.z];
-
-                //var distance = mesh.geometry.boundingSphere.center.distanceTo(vector) * 1;
-                explodeDirection.push({x:(Math.random() * movementSpeed)-(movementSpeed/2),y:(Math.random() * movementSpeed)-(movementSpeed/2),z:(Math.random() * movementSpeed)-(movementSpeed/2)});
-            }
-        });
+        animate();
     });
-
-    window.addEventListener( 'resize', onWindowResize, false );
-
-    animate();
 
     $("#explode").slider({
         min: 0,
