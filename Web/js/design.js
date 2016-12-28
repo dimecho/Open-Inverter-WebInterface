@@ -14,28 +14,29 @@ function initialize3D(id) {
         camera = new THREE.PerspectiveCamera(20, window.innerWidth*0.7 / window.innerHeight*0.9, 0.1, 50);
         scene.add(camera);
 
-        scene.add(new THREE.AmbientLight( 0xE0E0E0  ));
-        //scene.add(new THREE.AmbientLight(0x404040));
+        //var ambient = new THREE.AmbientLight( 0xE0E0E0 );
+        var ambient = new THREE.AmbientLight( 0xC1C1C1);
+        scene.add(ambient);
 
         var grid = new THREE.GridHelper( 5, 20, 0xffffff, 0xffffff);
         grid.position.y = -1;
         scene.add(grid);
         
-        var light = new THREE.DirectionalLight(0xE0E0E0 , 0.75);
-        light.position.set( 0, -20, 0 );
+        var light = new THREE.DirectionalLight(0xE0E0E0 , 0.8);
+        light.position.set( 0, -1, 0 );
         scene.add(light);
 
         var spotLight = new THREE.SpotLight(0xE0E0E0);
-        spotLight.position.set(-10, 20, -10);
-        scene.add(spotLight);
+        spotLight.position.set(-1, 20, -1);
+        //scene.add(spotLight);
 
-        var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.8);
+        var hemiLight = new THREE.HemisphereLight( 0xE5E5E5, 0xE5E5E5, 0.8);
         hemiLight.position.set( 10, 40, 10 );
         //scene.add(hemiLight);
 
-        var directionalLight = new THREE.DirectionalLight( 0xffffff );
-        directionalLight.position.set( 1, 10, 0.5 ).normalize();
-        //scene.add( directionalLight );
+        var directionalLight = new THREE.DirectionalLight( 0xE5E5E5);
+        directionalLight.position.set(0, 10, -1 ).normalize();
+        scene.add( directionalLight );
 
         var pointLight = new THREE.PointLight( 0xffaa00 );
         pointLight.position.set( 0, 0, 0 );
@@ -75,8 +76,6 @@ function initialize3D(id) {
                 }
             });
             */
-
-            //object.material.shading = THREE.FlatShading;
 
             scene.traverse(function (mesh) {
 

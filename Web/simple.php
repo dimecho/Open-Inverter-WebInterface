@@ -3,9 +3,7 @@
     <head>
         <?php include "header.php" ?>
         <link rel="stylesheet" type="text/css" href="css/bootstrap-slider.css" />
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-editable.css" />
         <script type="text/javascript" src="js/bootstrap-slider.js"></script>
-        <script type="text/javascript" src="js/bootstrap-editable.js"></script>
         <script type="text/javascript" src="js/simple.js"></script>
         <style>
             /*
@@ -15,9 +13,16 @@
             #udc .slider-track-low {
                 background: red;
             }
-            */
             #udc .slider-selection {
                 background: yellow;
+            }
+            */
+            .tooltip-inner {
+                user-select: none;
+                -moz-user-select: none;
+                -khtml-user-select: none;
+                -webkit-user-select: none;
+                -o-user-select: none;
             }
         </style>
     </head>
@@ -32,16 +37,16 @@
                     <table class="table table-bordered">
                         <tr>
                             <td>
-                                <button class="browse btn btn-primary" type="button" onclick="modeCheck();boostTuning();"><i class="glyphicon glyphicon-flash"></i> Boost Tuning</button>
+                                <button class="browse btn btn-primary" type="button" onclick="boostTuning();"><i class="glyphicon glyphicon-flash"></i> Boost Tuning</button>
                             </td>
                             <td>
-                                <button class="browse btn btn-primary" type="button" onclick="modeCheck();fweakTuning(10);"><i class="glyphicon glyphicon-random"></i> Fweak Tuning</button>
+                                <button class="browse btn btn-primary" type="button" onclick="fweakTuning();"><i class="glyphicon glyphicon-random"></i> Fweak Tuning</button>
                             </td>
                             <td>
-                                <button class="browse btn btn-primary" type="button" onclick="modeCheck();polePairTest();"><i class="glyphicon glyphicon-transfer"></i> Pole Pair Test</button>
+                                <button class="browse btn btn-primary" type="button" onclick="polePairTest();"><i class="glyphicon glyphicon-transfer"></i> Pole Pair Test</button>
                             </td>
                             <td>
-                                <button class="browse btn btn-primary" type="button" onclick="modeCheck();numimpTest();"><i class="glyphicon glyphicon-record"></i> Encoder Pulse Test</button>
+                                <button class="browse btn btn-primary" type="button" onclick="numimpTest();"><i class="glyphicon glyphicon-record"></i> Encoder Pulse Test</button>
                             </td>
                         </tr>
                     </table>

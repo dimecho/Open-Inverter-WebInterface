@@ -1,18 +1,3 @@
-<?php include "install.php"; ?>
-<script>
-function buildEncoderAlert()
-{
-    alertify.buildEncoder("Build encoder",
-        function() {
-            $.ajax("open.php?app=inkscape");
-        },
-        function() {
-            <?php checkOpenSCAD(); ?>;
-            //$.ajax("open.php?app=inkscape_openscad");
-        }
-    );
-}
-</script>
 <div class="row">
     <div class="col-md-1"></div>
     <div class="col-md-10">

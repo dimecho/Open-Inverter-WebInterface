@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>14A283o</string>
+	<string>14A314h</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
@@ -19,7 +19,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>4.10.11</string>
+	<string>4.10.15</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
@@ -361,6 +361,31 @@
 			<key>idVendor</key>
 			<integer>2625</integer>
 		</dict>
+		<key>3D Tek -1</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>3DTek</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>35606</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
 		<key>AES GmbH - 1</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
@@ -633,6 +658,31 @@
 			<integer>0</integer>
 			<key>idProduct</key>
 			<integer>34275</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
+		<key>Brim Brothers Ltd -1</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>Zone DPMX charging dock</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>35170</integer>
 			<key>idVendor</key>
 			<integer>4292</integer>
 		</dict>
@@ -911,6 +961,31 @@
 			<key>idVendor</key>
 			<integer>4292</integer>
 		</dict>
+		<key>Coolon USB</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>Coolon USB</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>34202</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
 		<key>DataApex USB Interface</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
@@ -1061,6 +1136,31 @@
 			<key>idVendor</key>
 			<integer>4292</integer>
 		</dict>
+		<key>FluxData, Inc. - 1</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>FluxData USB to UART Bridge</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>55298</integer>
+			<key>idVendor</key>
+			<integer>11047</integer>
+		</dict>
 		<key>Garmin USB Interface</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
@@ -1183,6 +1283,31 @@
 			<integer>0</integer>
 			<key>idProduct</key>
 			<integer>32816</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
+		<key>Juniper Networks, Inc.- 1</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>Juniper Networks BX Series System Console</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>33904</integer>
 			<key>idVendor</key>
 			<integer>4292</integer>
 		</dict>
@@ -2261,6 +2386,31 @@
 			<key>idVendor</key>
 			<integer>4292</integer>
 		</dict>
+		<key>NETGEAR</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>NETGEAR</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>4352</integer>
+			<key>idVendor</key>
+			<integer>2118</integer>
+		</dict>
 		<key>NetBurner, Inc.</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
@@ -2335,6 +2485,31 @@
 			<integer>12288</integer>
 			<key>idVendor</key>
 			<integer>6607</integer>
+		</dict>
+		<key>Planar UltraRes</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>Planar UltraRes</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>34038</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
 		</dict>
 		<key>Planet Innovation</key>
 		<dict>

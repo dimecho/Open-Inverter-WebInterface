@@ -1,6 +1,7 @@
 <?php
-    include("common.php");
-    
+
+    include_once("common.php");
+
     detectOS();
 
     if(isset($_GET["ajax"])){

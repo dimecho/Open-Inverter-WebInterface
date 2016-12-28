@@ -1,8 +1,9 @@
 <?php
+
     include_once("common.php");
-    
+
     detectOS();
-    
+
     if(!isset($_GET["url"]) && isset($_GET["app"]))
     {
         set_time_limit(10000);
@@ -225,3 +226,17 @@
         return;
     }
 ?>
+<script>
+function buildEncoderAlert()
+{
+    alertify.buildEncoder("Build encoder",
+        function() {
+            $.ajax("open.php?app=inkscape");
+        },
+        function() {
+            <?php checkOpenSCAD(); ?>;
+            //$.ajax("open.php?app=inkscape_openscad");
+        }
+    );
+}
+</script>

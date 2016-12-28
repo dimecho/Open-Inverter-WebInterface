@@ -4,7 +4,7 @@ checkUSB()
 {
     shopt -s nocasematch
     for i in {0..30} ; do
-        serial=$(ls /dev/$1* | tail -n 1) || echo ""
+        serial=$(ls /dev/ttyUSB* | tail -n 1) || echo ""
         if [[ $serial == *"usb"* ]]; then
             if grep -q $serial "$(dirname "$0")/Web/config.inc.php"; then
                 i=30
@@ -12,7 +12,6 @@ checkUSB()
                 cp -R "$(dirname "$0")/Web/config.inc" "$(dirname "$0")/Web/config.inc.php"
                 sed -i -e "s~/dev/cu.usbserial~$serial~g" "$(dirname "$0")/Web/config.inc.php"
             fi
-            echo "true"
             /usr/bin/firefox http://localhost:8080;bash
             return
         fi
@@ -22,7 +21,6 @@ checkUSB()
         fi
         sleep 2
     done
-    echo "false"
 }
 
 if [[ $(type -p php) ]]; then
@@ -37,11 +35,7 @@ if [[ $(type -p php) ]]; then
     sudo $(type -p php) -S 127.0.0.1:8080 -t "$(dirname "$0")/Web/" &
     sleep 4
     
-    checkUSB ttyUSB
-    
-    #if [[ "$(checkUSB ttyUSB)" == "false" ]];then
-    #    checkUSB ttyS
-    #fi
+    checkUSB
 else
 
     echo "PHP not Installed ...Install? [Y/n]"

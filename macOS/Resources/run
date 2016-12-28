@@ -4,7 +4,7 @@ checkUSB()
 {
     shopt -s nocasematch
     for ((i = 0 ; i < 30 ; i++ )); do
-        for serial in $(ls /dev/$1*); do
+        for serial in $(ls /dev/cu.*); do
             if [[ $serial == *"usb"* ]]; then
                 if grep -q $serial "$(dirname "$0")/Web/config.inc.php"; then
                     i=30
@@ -12,7 +12,6 @@ checkUSB()
                     cp -R "$(dirname "$0")/Web/config.inc" "$(dirname "$0")/Web/config.inc.php"
                     sed -i -e "s~/dev/cu.usbserial~$serial~g" "$(dirname "$0")/Web/config.inc.php"
                 fi
-                echo "true"
                 open -a $browser http://localhost:8080 &
                 return
             fi
@@ -23,7 +22,6 @@ checkUSB()
         fi
         sleep 2
     done
-    echo "false"
 }
 
 cd "$(dirname "$0")"
@@ -59,7 +57,7 @@ if [ ! -d "/Library/Extensions/ProlificUsbSerial.kext" ]; then
     osascript -e "do shell script \"$(dirname "$0")/driver\" with administrator privileges"
 fi
 
-checkUSB cu.
+checkUSB
 
 #stty -f $serial 115200 parodd cs8 cstopb -crtscts -echo & cat $serial &
 #stty -f $serial 115200 & screen $serial 115200 &

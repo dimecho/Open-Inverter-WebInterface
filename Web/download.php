@@ -1,8 +1,8 @@
 <?php
-    include_once("common.php");
-    
     session_start();
 
+    include_once("common.php");
+    
     detectOS();
     
     if(isset($_GET["url"])){
