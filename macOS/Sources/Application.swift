@@ -11,59 +11,28 @@ class Application: NSViewController, NSApplicationDelegate
     var serialPath = String()
     var serialPathArray = [String]()
     
-    func applicationDidFinishLaunching(aNotification: NSNotification)
+    func applicationDidFinishLaunching(_ aNotification: Notification)
     {
-        self.performSelectorInBackground(#selector(checkConnect), withObject:nil)
+        self.performSelector(inBackground: #selector(checkConnect), with:nil)
         
-        let task = NSTask()
-        task.launchPath = NSBundle.mainBundle().pathForResource("run", ofType:nil)
+        let task = Process()
+        task.launchPath = Bundle.main.path(forResource: "run", ofType:nil)
         task.launch()
         //task.waitUntilExit()
         //system("open -a Terminal \"" + NSBundle.mainBundle().pathForResource("run", ofType:nil)! + "\"")
     }
 
-    func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool
     {
         return true
     }
     
-    func applicationWillTerminate(notification: NSNotification)
+    func applicationWillTerminate(_ notification: Notification)
     {
-        system("pkill -9 php");
-    }
-    
-    @IBAction func checkUpdates(sender: AnyObject)
-    {
-        let data = NSData(contentsOfURL: NSURL(string: "http://github.com/poofik/huebner-inverter/raw/master/macOS/Info.plist")!)
-        let plist = (try! NSPropertyListSerialization.propertyListWithData(data!, options: NSPropertyListMutabilityOptions.MutableContainersAndLeaves, format: nil)) as! NSMutableDictionary
-        let onlineVersion = plist.valueForKey("CFBundleShortVersionString") as? String
-        let currentVersion = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as? String
-        let onlineBuild = plist.valueForKey("CFBundleVersion") as? String
-        let currentBuild = NSBundle.mainBundle().infoDictionary!["CFBundleVersion"] as? String
-        let alert = NSAlert()
-        
-        if(Double(onlineVersion!)! == Double(currentVersion!)! && Int(onlineBuild!)! == Int(currentBuild!)!)
-        {
-            alert.messageText = "Version " + onlineVersion! + " Build " + currentBuild!
-            alert.informativeText = "You already have the latest and greatest"
-            alert.addButtonWithTitle("OK")
-            alert.runModal()
-        }else{
-            alert.messageText = "New Version " + onlineVersion! + " Build " + onlineBuild! + " is Available"
-            alert.informativeText = "Go to GitHub to Download?"
-            alert.addButtonWithTitle("OK")
-            alert.addButtonWithTitle("Cancel")
-            if (alert.runModal() == NSAlertFirstButtonReturn)
-            {
-                let github = "https://github.com/poofik/Huebner-Inverter/releases"
-                if NSFileManager.defaultManager().fileExistsAtPath("/Applications/FireFox.app")
-                {
-                    system("open -a Firefox '" + github + "'")
-                }else{
-                    NSWorkspace.sharedWorkspace().openURL(NSURL(string:github)!)
-                }
-            }
-        }
+        let task = Process()
+        task.launchPath = "pkill"
+        task.arguments =  ["-9" , "php"]
+        task.launch()
     }
     
     func checkConnect()
@@ -80,7 +49,7 @@ class Application: NSViewController, NSApplicationDelegate
             {
                 //print(serialPathArray[i])
                 
-                if (serialPathArray[i].uppercaseString.rangeOfString("USB") != nil)
+                if (serialPathArray[i].uppercased().range(of: "USB") != nil)
                 {
                     serialPath = serialPathArray[i]
                     openSerial()
@@ -98,7 +67,7 @@ class Application: NSViewController, NSApplicationDelegate
         }
         
         var raw = Darwin.termios()
-        let path = String.fromCString(serialPath)
+        let path = String(serialPath)
         let fd = open(path!, (O_RDWR | O_NOCTTY | O_NDELAY))
         
         if (fd > 0)
@@ -140,12 +109,12 @@ class Application: NSViewController, NSApplicationDelegate
         }
     }
     //================= C Wrapper ======================
-    func printSerialPath(portIterator: io_iterator_t) {
+    func printSerialPath(_ portIterator: io_iterator_t) {
         var serialService: io_object_t
         repeat {
             serialService = IOIteratorNext(portIterator)
             if (serialService != 0) {
-                let key: CFString! = "IOCalloutDevice"
+                let key: CFString! = "IOCalloutDevice" as CFString!
                 let bsdPathAsCFtring: AnyObject? =
                     IORegistryEntryCreateCFProperty(serialService, key, kCFAllocatorDefault, 0).takeUnretainedValue()
                 let bsdPath = bsdPathAsCFtring as! String?
@@ -156,12 +125,12 @@ class Application: NSViewController, NSApplicationDelegate
             }
         } while serialService != 0
     }
-    func findSerialDevices(deviceType: String, inout serialPortIterator: io_iterator_t ) -> kern_return_t {
+    func findSerialDevices(_ deviceType: String, serialPortIterator: inout io_iterator_t ) -> kern_return_t {
         var result: kern_return_t = KERN_FAILURE
         let classesToMatch = IOServiceMatching(kIOSerialBSDServiceValue)//.takeUnretainedValue()
-        var classesToMatchDict = (classesToMatch as NSDictionary) as! Dictionary<String, AnyObject>
-        classesToMatchDict[kIOSerialBSDTypeKey] = deviceType
-        let classesToMatchCFDictRef = (classesToMatchDict as NSDictionary) as CFDictionaryRef
+        var classesToMatchDict = (classesToMatch! as NSDictionary) as! Dictionary<String, AnyObject>
+        classesToMatchDict[kIOSerialBSDTypeKey] = deviceType as AnyObject?
+        let classesToMatchCFDictRef = (classesToMatchDict as NSDictionary) as CFDictionary
         result = IOServiceGetMatchingServices(kIOMasterPortDefault, classesToMatchCFDictRef, &serialPortIterator);
         return result
     }

@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/icon.png" alt="" width="153" height="131" />
+<img src="https://github.com/poofik/huebner-inverter/raw/master/macOS/Assets.xcassets/AppIcon.appiconset/128x128.png">
 </p>
 
 # Huebner Inverter - Console Management#
@@ -9,16 +9,16 @@ Serial console management application written for Open-Source [Inverter Project]
 All-in-one: PHP helper, RS232-USB drivers, firmware & bootloader flash, ARM/ATtiny compilers, IGBT test and wiring instructions.
 
 <p align="center">
-  <img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/screenshot.jpg">
+<img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/screenshot.jpg">
 </p>
 
 <p align="center">
-  <img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/photo.jpg">
+<img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/photo.jpg">
 </p>
 
 ## Download
 
-<a href="https://github.com/poofik/Huebner-Inverter/releases/download/1.0/Huebner.Inverter.zip"><img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/mac.png"> Download for Mac</a>
+<a href="https://github.com/poofik/Huebner-Inverter/releases/download/1.0/Huebner.Inverter.dmg"><img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/mac.png"> Download for Mac</a>
 
 <a href="https://github.com/poofik/Huebner-Inverter/releases/download/1.0/Huebner.Inverter.Windows.zip"><img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/win.png"> Download for Windows</a>
 

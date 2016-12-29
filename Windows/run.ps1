@@ -1,7 +1,3 @@
-$currentVersion = 1.0
-$currentBuild = 28
-#=====================
-
 Write-Host "`nHuebner Inverter - Console Management`n"  -ForegroundColor Green
 
 function Elevate() {
@@ -17,42 +13,6 @@ function Elevate() {
 		[System.Diagnostics.Process]::Start($newProcess); # Start the new process
 		exit # Exit from the current, unelevated, process
 	}
-}
-
-function checkUpdates() {
-	Try {
-		$i = Get-Random -Minimum 1 -Maximum 3
-		if($i -eq 1)
-		{
-			$data = New-Object System.Xml.XmlDocument
-			$data.Load("http://github.com/poofik/huebner-inverter/raw/master/macOS/Info.plist")
-			$plist = [xml]$data
-			$plist.plist.dict |
-			Foreach {
-				$vals = $_.SelectNodes('string'); $_.SelectNodes('key') | 
-				Foreach {$ht=@{};$i=0} {$ht[$_.'#text'] = $vals[$i++].'#text'} {
-					$onlineVersion = (New-Object PSObject -Prop $ht | Select-Object -ExpandProperty CFBundleShortVersionString) -as [double]
-					$onlineBuild = (New-Object PSObject -Prop $ht | Select-Object -ExpandProperty CFBundleVersion) -as [int]
-				}
-			}
-			if($onlineVersion -eq $currentVersion -And $onlineBuild -eq $currentBuild){
-				Write-Host "[Version:$onlineVersion Build:$onlineBuild]`n"
-			}else{
-				$title = "New Version:$onlineVersion  Build:$onlineBuild is Available"
-				$message = "Go to GitHub to Download?"
-				$yes = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", ""
-				$no = New-Object System.Management.Automation.Host.ChoiceDescription "&No", ""
-				$options = [System.Management.Automation.Host.ChoiceDescription[]]($yes, $no)
-				$result = $host.ui.PromptForChoice($title, $message, $options, 0) 
-				switch ($result)
-				{
-					0 {openBrowser "https://github.com/poofik/Huebner-Inverter/releases"}
-					#1 {}
-				}
-			}
-		}
-	}Catch{}
-	startPHP "index.php"
 }
 
 function openBrowser($url) {
@@ -212,5 +172,5 @@ function Uninstall {
 	Remove-Item -Recurse -Force "$env:programfiles\PHP"
 }
 
-checkUpdates
+startPHP "index.php"
 #startPHP "serial.php?json=1"

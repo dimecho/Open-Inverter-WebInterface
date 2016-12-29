@@ -86,14 +86,14 @@ $(document).ready(function () {
         "value": 0,
         change: function change(value) {
             if (value <= knobValue + 5) //Avoid hard jumps
-                {
-                    //console.log(value);
-                    clearTimeout(knobTimer);
-                    knobTimer = setTimeout(function () {
-                        $.ajax("serial.php?pk=1&name=fslipspnt&value=" + value, { async: false });
-                    }, 80);
-                    knobValue = value;
-                } else {
+            {
+                //console.log(value);
+                clearTimeout(knobTimer);
+                knobTimer = setTimeout(function () {
+                    $.ajax("serial.php?pk=1&name=fslipspnt&value=" + value, { async: false });
+                }, 80);
+                knobValue = value;
+            } else {
                 console.log("!" + value + ">" + knobValue);
                 $(".knob").val(knobValue).trigger('change');
             }
@@ -105,11 +105,7 @@ $(document).ready(function () {
 
     buildTips();
 
-    //buildParameters();
-
-    $(".tooltip1").tooltipster();
-    //var instances = $.tooltipster.instancesLatest();
-    //console.log(instances);
+    checkUpdates();
 });
 
 function downloadSnapshot() {
@@ -142,15 +138,12 @@ function openExternalApp(app) {
 function confirmGCCRemove(e) {
 
     alertify.confirm("Remove Compiler?", "This will clean up over 500MB of space!\n" + e, function () {
-        var notify = $.notify({
-            message: "Removing Compiler ..."
-        }, {
-            type: 'danger'
-        });
+
+        var notify = $.notify({ message: "Removing Compiler ..." }, { type: "danger" });
 
         $.ajax("install.php?remove=arm", {
             success: function success(data) {
-                notify.update({ 'type': 'success', 'message': 'Compiler Removed' });
+                notify.update({ message: "Compiler Removed", type: "success" });
             }
         });
         $.ajax("install.php?remove=avr");
@@ -162,12 +155,8 @@ function loadJSON(i) {
     var json;
 
     $.ajax("serial.php?command=json", {
-        //$.ajax("test/json.data",{
         async: false,
         //contentType: "application/text",
-        beforeSend: function beforeSend(req) {
-            req.overrideMimeType('text/plain; charset=x-user-defined');
-        },
         success: function success(data) {
             //console.log(data);
             if (i < 4) {
@@ -190,79 +179,84 @@ function loadJSON(i) {
     return json;
 };
 
-function getJSONFloatValue(value) {
+function checkUpdates() {
 
-    var float = 0;
+    var check = Math.random() >= 0.5;
+    if (check === true) {
+        $.ajax("update.php", {
+            success: function success(data) {
+                //console.log(data);
+                if(data !== "") {
+                    $.notify({
+                        icon: "glyphicon glyphicon-download-alt",
+                        title: "New Version",
+                        message: "Update available <a href='https://github.com/poofik/Huebner-Inverter/releases' target='_blank'>Download</a> " + data
+                    }, {
+                        type: 'success'
+                    });
+                }
+            }
+        });
+    }
+};
+
+function getJSONFloatValue(value) {
 
     $.ajax("serial.php?get=" + value, {
         //$.ajax("test/" + value + ".data",{
         async: false,
         success: function success(data) {
             //console.log(data);
-            float = parseFloat(data);
+            return parseFloat(data);
         }
     });
-    return float;
+    return 0;
 };
 
 function getJSONAverageFloatValue(value) {
-
-    var float = 0;
 
     $.ajax("serial.php?average=" + value, {
         //$.ajax("test/" + value + ".data",{
         async: false,
         success: function success(data) {
             //console.log(data);
-            float = parseFloat(data);
+            return parseFloat(data);
         }
     });
-    return float;
+    return 0;
 };
 
 function getErrors() {
 
-    var value = "";
-
     $.ajax("serial.php?command=errors", {
-        //$.ajax("test/errors.data",{
         async: false,
-        beforeSend: function beforeSend(req) {
-            req.overrideMimeType('text/plain; charset=x-user-defined');
-        },
         success: function success(data) {
             //console.log(data);
-            value = data;
+            return data;
         }
     });
-    return value;
+    return "";
 };
 
 function startInverter(mode) {
 
     $.ajax("serial.php?command=start " + mode, {
-        //async: false,
+        async: false,
         success: function success(data) {
             //console.log(data);
-
-            if (data.indexOf("Inverter started") != -1) {
-                $.notify({
-                    message: 'Inverter started'
-                }, {
-                    type: 'success'
-                });
-
+            if (data.indexOf("started") != -1) {
+                $.notify({ message: "Inverter started" }, { type: "success" });
                 if (mode === 2) {
                     $("#potentiometer").show();
                     $(".collapse").collapse('show');
                 }
             } else {
                 $.notify({
-                    icon: 'glyphicon glyphicon-warning-sign',
-                    title: 'Error',
+                    icon: "glyphicon glyphicon-warning-sign",
+                    title: "Error",
                     message: data
                 }, {
-                    type: 'danger'
+                    type: "danger"
                 });
             }
         }
@@ -272,32 +266,25 @@ function startInverter(mode) {
 function stopInverter() {
 
     $.ajax("serial.php?command=stop", {
-        //async: false,
+        async: false,
         success: function success(data) {
             //console.log(data);
-
-            if (data.indexOf("Inverter halted") != -1) {
-                $.notify({
-                    message: 'Inverter Stopped'
-                }, {
-                    type: 'danger'
-                });
+            if (data.indexOf("halted") != -1) {
+                $.notify({ message: "Inverter Stopped"}, { type: "danger" });
             } else {
                 $.notify({
-                    icon: 'glyphicon glyphicon-warning-sign',
-                    title: 'Error',
+                    icon: "glyphicon glyphicon-warning-sign",
+                    title: "Error",
                     message: data
                 }, {
-                    type: 'danger'
+                    type: "danger"
                 });
             }
-
             $(".collapse").collapse();
 
             setTimeout(function () {
                 $("#potentiometer").hide();
                 //location.reload();
-                //buildParameters(loadJSON(0));
             }, 1000);
         }
     });
@@ -307,23 +294,19 @@ function setDefaults() {
 
     alertify.confirm('', 'This reset all settings back to default.', function () {
         $.ajax("serial.php?command=defaults", {
-            //async: false,
+            async: false,
             success: function success(data) {
                 console.log(data);
 
                 if (data.indexOf("Defaults loaded") != -1) {
-                    $.notify({
-                        message: 'Inverter reset to Default'
-                    }, {
-                        type: 'success'
-                    });
+                    $.notify({ message: "Inverter reset to Default" }, { type: "success" });
                 } else {
                     $.notify({
-                        icon: 'glyphicon glyphicon-warning-sign',
-                        title: 'Error',
+                        icon: "glyphicon glyphicon-warning-sign",
+                        title: "Error",
                         message: data
                     }, {
-                        type: 'danger'
+                        type: "danger"
                     });
                 }
 
@@ -339,118 +322,128 @@ function buildHeader() {
 
     var version = getCookie("version");
     //========================
-    if (version ===undefined || version === "NaN") {
+    if (version === undefined || version === "NaN") {
         version = getJSONFloatValue("version");
         setCookie("version", version, 1);
     }
     $("#titleVersion").empty().append("Firmware v" + version);
     //========================
     var opStatus = $("<span>");
-    var opmode = getJSONFloatValue("opmode");
-    var udc = getJSONFloatValue("udc");
-    var udcmin = getJSONFloatValue("udcmin");
-    var tmpm = getJSONFloatValue("tmpm");
-    var tmphs = getJSONFloatValue("tmphs");
-    var speed = getJSONFloatValue("speed");
 
-    var span = $("<span>", { class: "tooltip1" });
-    var img = $("<img>", { class: "svg-inject", src: "img/key.svg" });
+    $.ajax("serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot", {
+        //async: false,
+        success: function success(data) {
 
-    if (opmode === 0) {
-        span.attr("data-tooltip-content", "<h6>Off</h6>");
-        img.addClass("svg-red");
-        $("#potentiometer").hide();
-    } else if (opmode === 1) {
-        if (getJSONFloatValue("din_emcystop") === 1) {
-            if (getJSONFloatValue("din_start") === 1) {
-                img.addClass("svg-yellow");
-                span.attr("data-tooltip-content", "<h6>Pulse Only - Do not leave ON</h6>");
-            } else {
-                span.attr("data-tooltip-content", "<h6>Running</h6>");
-                img.addClass("svg-green");
+            data = data.replace("\n\n", "\n");
+            data = data.split("\n");
+
+            //console.log(data);
+            if(data.length > 1) {
+
+                var span = $("<span>", { class: "tooltip1" });
+                var img = $("<img>", { class: "svg-inject", src: "img/key.svg" });
+                if (parseFloat(data[0]) === 0) {
+                    span.attr("data-tooltip-content", "<h6>Off</h6>");
+                    img.addClass("svg-red");
+                    $("#potentiometer").hide();
+                } else if (parseFloat(data[0]) === 1) {
+                        if (parseFloat(data[6]) === 1) {
+                            img.addClass("svg-yellow");
+                            span.attr("data-tooltip-content", "<h6>Pulse Only - Do not leave ON</h6>");
+                        } else {
+                            span.attr("data-tooltip-content", "<h6>Running</h6>");
+                            img.addClass("svg-green");
+                        }
+                        $("#potentiometer").hide();
+                } else if (parseFloat(data[0]) === 2) {
+                    span.attr("data-tooltip-content", "<h6>Manual Mode</h6>");
+                    img.addClass("svg-green");
+                    $("#potentiometer").show();
+                }
+                span.append(img);
+                opStatus.append(span);
+                //========================
+                /*
+                if(json.ocurlim.value > 0){
+                    div.append($("<img>", {src:"img/amperage.svg"}));
+                }
+                opStatus.append(div);
+                */
+                //========================
+                span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + data[1] + "V</h6>" });
+                img = $("<img>", { class: "svg-inject", src: "img/battery.svg" });
+                if (parseFloat(data[1]) > parseFloat(data[2])) {
+                    img.addClass("svg-green");
+                } else {
+                    img.addClass("svg-red");
+                }
+                span.append(img);
+                opStatus.append(span);
+                //========================
+                span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + data[3] + "°C</h6>" });
+                img = $("<img>", { class: "svg-inject", src: "img/temperature.svg" });
+                if (parseFloat(data[3]) > 150 || parseFloat(data[4]) > 150) {
+                    img.addClass("svg-red");
+                    span.append(img);
+                    opStatus.append(span);
+                } else if (parseFloat(data[3]) > 100 || parseFloat(data[4]) > 100) {
+                    img.addClass("svg-yellow");
+                    span.append(img);
+                    opStatus.append(span);
+                }
+                //========================
+                span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + data[5] + "ms</h6>" });
+                img = $("<img>", { class: "svg-inject", src: "img/magnet.svg" });
+                if(parseFloat(data[5]) < 22){
+                    img.addClass("svg-red");
+                    span.append(img);
+                    opStatus.append(span);
+                }
+                //========================
+                /*
+                span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + speed + "RPM</h6>" });
+                img = $("<img>", { class: "svg-inject", src: "img/speedometer.svg" });
+                if (speed > 6000) {
+                    img.addClass("svg-red");
+                    span.append(img);
+                    opStatus.append(span);
+                } else if (speed > 3000) {
+                    img.addClass("svg-yellow");
+                    span.append(img);
+                    opStatus.append(span);
+                }
+                */
+                //========================
+                if (parseFloat(data[7]) != 1) {
+                    span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>Probably forgot PIN 11 to 12V</h6>" });
+                    span.append($("<img>", { class: "svg-inject", src: "img/alert.svg" }));
+                    opStatus.append(span);
+                }
+                //========================
+                var errors = getErrors();
+                if (errors != "") {
+                    span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + errors + "</h6>" });
+                    span.append($("<img>", { class: "svg-inject", src: "img/alert.svg" }));
+                    opStatus.append(span);
+                }
+            }else{
+                span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>Inverter Disconnected</h6>" });
+                span.append($("<img>", { class: "svg-inject", src: "img/alert.svg" }));
+                opStatus.append(span);
             }
-            $("#potentiometer").hide();
+            $(".tooltipstered").tooltipster("destroy");
+            $(".tooltip1").tooltipster();
+
+            var SVGInject = document.querySelectorAll('img.svg-inject');
+            SVGInjector(SVGInject);
         }
-    } else if (opmode === 2) {
-        span.attr("data-tooltip-content", "<h6>Manual Mode</h6>");
-        img.addClass("svg-green");
-        $("#potentiometer").show();
-    }
-    span.append(img);
-    opStatus.append(span);
-    //========================
-    /*
-    if(json.ocurlim.value > 0){
-        div.append($("<img>", {src:"img/amperage.svg"}));
-    }
-    opStatus.append(div);
-    */
-    //========================
-    span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + udc + "V</h6>" });
-    img = $("<img>", { class: "svg-inject", src: "img/battery.svg" });
-    if (udc > udcmin) {
-        img.addClass("svg-green");
-    } else {
-        img.addClass("svg-red");
-    }
-    span.append(img);
-    opStatus.append(span);
-    //========================
-    span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + tmpm + "°C</h6>" });
-    img = $("<img>", { class: "svg-inject", src: "img/temperature.svg" });
-    if (tmpm > 150 || tmphs > 150) {
-        img.addClass("svg-red");
-        span.append(img);
-        opStatus.append(span);
-    } else if (tmpm > 100 || tmphs > 100) {
-        img.addClass("svg-yellow");
-        span.append(img);
-        opStatus.append(span);
-    }
-    //========================
-    /*
-    if(json.deadtime.value < 30){
-        div.append($("<img>", {class:"svg-inject svg-red", src:"img/magnet.svg", title:"deadtime"}));
-    }else if(this.value < 60){
-        div.append($("<img>", {class:"svg-inject svg-yellow", src:"img/magnet.svg"}));
-    }
-    opStatus.append(div);
-    */
-    //========================
-    span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + speed + "RPM</h6>" });
-    img = $("<img>", { class: "svg-inject", src: "img/speedometer.svg" });
-    if (speed > 6000) {
-        img.addClass("svg-red");
-        span.append(img);
-        opStatus.append(span);
-    } else if (speed > 3000) {
-        img.addClass("svg-yellow");
-        span.append(img);
-        opStatus.append(span);
-    }
-    //========================
-    if (getJSONFloatValue("din_mprot") != 1) {
-        span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>Probably forgot PIN 11 to 12V</h6>" });
-        span.append($("<img>", { class: "svg-inject", src: "img/alert.svg" }));
-        opStatus.append(span);
-    }
-    //========================
-    var errors = getErrors();
-    if (errors.indexOf("Unknown command") == -1 && errors.indexOf("No Errors") == -1) {
-        span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + errors + "</h6>" });
-        span.append($("<img>", { class: "svg-inject", src: "img/alert.svg" }));
-        opStatus.append(span);
-    }
+    });
 
     $("#opStatus").empty().append(opStatus);
-
-    var SVGInject = document.querySelectorAll('img.svg-inject');
-    SVGInjector(SVGInject);
 
     headerRefreshTimer = setTimeout(function () {
         buildHeader();
         buildTips();
-        $(".tooltip1").tooltipster();
     }, 12000);
 };
 
@@ -459,16 +452,12 @@ function buildTips() {
     var show = Math.random() >= 0.5;
 
     if (show === true) {
+
         var opStatus = $("#opStatus");
         var span = $("<span>");
 
         $.ajax("tips.csv", {
-            async: false,
-            //contentType: "application/text",
-            beforeSend: function beforeSend(req) {
-                req.overrideMimeType('text/plain; charset=x-user-defined');
-            },
-            //dataType: 'text',
+            //async: false,
             success: function success(data) {
                 var row = data.split("\n");
                 var n = Math.floor(Math.random() * row.length);
@@ -481,6 +470,8 @@ function buildTips() {
                         break;
                     }
                 }
+                $(".tooltipstered").tooltipster("destroy");
+                $(".tooltip1").tooltipster();
             },
             error: function error(xhr, textStatus, errorThrown) {}
         });
