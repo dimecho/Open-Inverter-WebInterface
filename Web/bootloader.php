@@ -5,7 +5,7 @@
     
     if(isset($_GET["ajax"])){
         
-        $command = runCommand("openocd " .$_GET["file"]. " " .$_GET["serial"]);
+        $command = runCommand("openocd " .$_GET["file"]. " " .$_GET["interface"]);
         exec($command, $output, $return);
         
         echo "$command\n";
@@ -21,14 +21,22 @@
             include "header.php";
         ?>
         <script>
+            var jtag_interface = [
+                "olimex-arm-usb-ocd-h",
+                "olimex-arm-usb-tiny-h",
+                "jtag-lock-pick_tiny_2",
+                "stlink-v2",
+                "openocd-usb"
+            ];
+
+            function setJTAGImage() {
+                $("#jtag-image").attr("src", "img/" + $("#jtag-interface").val() + ".jpg");
+            }
+
             $(document).on('click', '.browse', function(){
                 var file = $('.file');
                 file.trigger('click');
             });
-
-            function setJTAGImage(){
-                $("#jtagimage").attr("src", "img/" + $("#jtag").val() + ".jpg");
-            }
         </script>
     </head>
     <body>
@@ -62,7 +70,7 @@
                                                     }
                                                     move_uploaded_file($_FILES['firmware']['tmp_name'], $tmp_name);
                                                     echo "&file=" .$tmp_name;
-                                                    echo "&serial=" .$_POST["serial"];
+                                                    echo "&interface=" .$_POST["interface"];
                                                     echo "'";
                                                 ?>,
                                                 success: function(data){
@@ -82,41 +90,25 @@
                         <?php }else{ ?>
                            <script>
                                 $(document).ready(function() {
-                                    $.ajax({
-                                        type: "GET",
-                                        url: "serial.php?com=list",
-                                        success: function(data){
-                                            //console.log(data);
-                                            var s = data.split(',');
-                                            for (i = 0; i < s.length; i++) {
-                                                $("#serialList").append($("<option>",{value:s[i],selected:'selected'}).append(s[i]));
-                                            }
-                                        }
-                                    });
+                                    for (var i = 0; i < jtag_interface.length; i++) {
+                                        $("#jtag-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_interface[i]));
+                                    }
+                                    setJTAGImage();
                                 });
                             </script>
                             <tr>
                                 <td>
                                     <center>
-                                        <div class="input-group" style="width:80%">
+                                        <div class="input-group" style="width:60%">
+                                            <span class = "input-group-addon" style="width:80%">
+                                                <select name="interface" class="form-control" form="Aform" onchange="setJTAGImage()" id="jtag-interface"></select>
+                                            </span>
                                             <span class = "input-group-addon" style="width:40%">
-                                                <select name="serial" class="form-control" form="Aform" onchange="setJTAGImage()" id="jtag" >
-                                                    <option value="olimex-arm-usb-ocd-h" selected="selected">olimex-arm-usb-ocd-h</option>
-                                                    <option value="olimex-arm-usb-tiny-h">olimex-arm-usb-tiny-h</option>
-                                                    <option value="jtag-lock-pick_tiny_2">jtag-lock-pick_tiny_2</option>
-                                                    <option value="openocd-usb">openocd-usb</option>
-                                                </select>
-                                            </span>
-                                            <span class = "input-group-addon" style="width:60%">
-                                                <select name="serial" class="form-control" form="Aform" id="serialList"></select>
-                                            </span>
-                                            <span class = "input-group-addon">
-                                            
                                                 <button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select BIN</button>
                                             </span>
                                         </div>
                                         <br/><br/>
-                                        <img src="img/olimex-arm-usb-ocd-h.jpg" id="jtagimage" class="img-rounded" />
+                                        <img src="" id="jtag-image" class="img-rounded" />
                                     </center>
                                 </td>
                             </tr>

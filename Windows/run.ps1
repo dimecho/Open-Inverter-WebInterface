@@ -35,7 +35,7 @@ function startPHP($page) {
 		Write-Host "...Installing PHP"
 		
 		# Download PHP
-		$phpFile = "php-5.6.27-Win32-VC11-x64.zip"
+		$phpFile = "php-5.6.29-Win32-VC11-x64.zip"
 		if (-Not (Test-Path "$env:TEMP\$phpFile")) {
 			Write-Host "Downloading PHP 5.6"  -ForegroundColor Green
 			Invoke-WebRequest -Uri http://windows.php.net/downloads/releases/$phpFile -OutFile "$env:TEMP\$phpFile"
@@ -74,6 +74,7 @@ function startPHP($page) {
 error_log=C:\WINDOWS\temp\PHP55_errors.log
 upload_tmp_dir=C:\WINDOWS\temp
 session.save_path=C:\WINDOWS\temp
+allow_url_fopen=1
 cgi.force_redirect=0
 cgi.fix_pathinfo=1
 fastcgi.impersonate=1
@@ -81,7 +82,8 @@ fastcgi.logging=0
 date.timezone=America/Los_Angeles
 extension_dir = `'ext`'
 extension=php_dio.dll
-extension=php_curl.dll"
+extension=php_curl.dll
+extension=php_openssl.dll"
 
 		# Firewall Configuration
 		#if (!(Get-NetFirewallRule | where {$_.Name -eq "TCP8080"})) {
