@@ -220,42 +220,39 @@ function checkUpdates() {
 };
 
 function getJSONFloatValue(value) {
-
     var f = 0;
     $.ajax("serial.php?get=" + value, {
-        //$.ajax("test/" + value + ".data",{
         async: false,
         success: function success(data) {
             f = parseFloat(data);
         }
     });
-    console.log(f);
+    //console.log(f);
     return f;
 };
 
 function getJSONAverageFloatValue(value) {
-
+    var f = 0;
     $.ajax("serial.php?average=" + value, {
-        //$.ajax("test/" + value + ".data",{
         async: false,
         success: function success(data) {
-            //console.log(data);
-            return parseFloat(data);
+            f = parseFloat(data);
         }
     });
-    return 0;
+    //console.log(f);
+    return f;
 };
 
 function getErrors() {
-
+    var e = ""
     $.ajax("serial.php?command=errors", {
         async: false,
         success: function success(data) {
-            //console.log(data);
-            return data;
+            e = data;
         }
     });
-    return "";
+    //console.log(e);
+    return e;
 };
 
 function startInverter(mode) {
