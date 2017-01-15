@@ -249,15 +249,6 @@ function buildSimpleParameters(json) {
     });
 };
 
-function sendCommand(cmd, value, save, notify){
-
-    $.ajax("serial.php?pk=1&name=" + cmd + "&value=" + value, { async: false });
-    if(save)
-        $.ajax("serial.php?command=save"); //don't forget to save
-    if(notify)
-        $.notify({ message: cmd + "=" + value}, { type: "success" });
-};
-
 function slider_adjustment(id,array) {
 
     var value = $("#" + id).data('slider').getValue();

@@ -47,9 +47,19 @@ $(document).ready(function () {
                     }else if(closeEvent.index === 2) {
                         $.notify({ message: "Experimental Area" }, { type: 'danger' });
                         startInverter(3);
+                        sendCommand("chargemode", 3, false, true);
                     }else if(closeEvent.index === 3) {
                         $.notify({ message: "Experimental Area" }, { type: 'danger' });
                         startInverter(4);
+                        sendCommand("chargemode", 4, false, true);
+                    }
+
+                    if(closeEvent.index === 2 || closeEvent.index === 3) {
+                        if(getJSONFloatValue("chargecur") === 0) {
+                            alertify.prompt("Current Limit", "Enter Charge Current Limit (A)", "", function (event, input) {
+                                sendCommand("chargecur", input, true, true);
+                            }, function () {});
+                        }
                     }
                 }
             }
@@ -107,6 +117,15 @@ $(document).ready(function () {
 
     checkUpdates();
 });
+
+function sendCommand(cmd, value, save, notify){
+
+    $.ajax("serial.php?pk=1&name=" + cmd + "&value=" + value, { async: false });
+    if(save)
+        $.ajax("serial.php?command=save"); //don't forget to save
+    if(notify)
+        $.notify({ message: cmd + "=" + value}, { type: "success" });
+};
 
 function downloadSnapshot() {
     window.location.href = "/snapshot.php";
@@ -202,15 +221,16 @@ function checkUpdates() {
 
 function getJSONFloatValue(value) {
 
+    var f = 0;
     $.ajax("serial.php?get=" + value, {
         //$.ajax("test/" + value + ".data",{
         async: false,
         success: function success(data) {
-            //console.log(data);
-            return parseFloat(data);
+            f = parseFloat(data);
         }
     });
-    return 0;
+    console.log(f);
+    return f;
 };
 
 function getJSONAverageFloatValue(value) {
@@ -271,6 +291,7 @@ function stopInverter() {
             //console.log(data);
             if (data.indexOf("halted") != -1) {
                 $.notify({ message: "Inverter Stopped"}, { type: "danger" });
+                sendCommand("chargemode", "0", false, false);
             } else {
                 $.notify({
                     icon: "glyphicon glyphicon-warning-sign",
@@ -330,7 +351,7 @@ function buildHeader() {
     //========================
     var opStatus = $("<span>");
 
-    $.ajax("serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot", {
+    $.ajax("serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
         //async: false,
         success: function success(data) {
 
@@ -342,19 +363,25 @@ function buildHeader() {
 
                 var span = $("<span>", { class: "tooltip1" });
                 var img = $("<img>", { class: "svg-inject", src: "img/key.svg" });
-                if (parseFloat(data[0]) === 0) {
+                $("#potentiometer").hide();
+
+                if (parseFloat(data[15]) === 3) {
+                    span.attr("data-tooltip-content", "<h6>Boost Mode</h6>");
+                    img.addClass("svg-yellow");
+                } else if (parseFloat(data[15]) === 4) {
+                    span.attr("data-tooltip-content", "<h6>Buck Mode</h6>");
+                    img.addClass("svg-yellow");
+                }else if (parseFloat(data[0]) === 0) {
                     span.attr("data-tooltip-content", "<h6>Off</h6>");
                     img.addClass("svg-red");
-                    $("#potentiometer").hide();
                 } else if (parseFloat(data[0]) === 1) {
-                        if (parseFloat(data[6]) === 1) {
-                            img.addClass("svg-yellow");
-                            span.attr("data-tooltip-content", "<h6>Pulse Only - Do not leave ON</h6>");
-                        } else {
-                            span.attr("data-tooltip-content", "<h6>Running</h6>");
-                            img.addClass("svg-green");
-                        }
-                        $("#potentiometer").hide();
+                    if (parseFloat(data[6]) === 1) {
+                        img.addClass("svg-yellow");
+                        span.attr("data-tooltip-content", "<h6>Pulse Only - Do not leave ON</h6>");
+                    } else {
+                        span.attr("data-tooltip-content", "<h6>Running</h6>");
+                        img.addClass("svg-green");
+                    }
                 } else if (parseFloat(data[0]) === 2) {
                     span.attr("data-tooltip-content", "<h6>Manual Mode</h6>");
                     img.addClass("svg-green");
@@ -372,7 +399,7 @@ function buildHeader() {
                 //========================
                 span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + data[1] + "V</h6>" });
                 img = $("<img>", { class: "svg-inject", src: "img/battery.svg" });
-                if (parseFloat(data[1]) > parseFloat(data[2])) {
+                if (parseFloat(data[1]) > parseFloat(data[2]) ||  parseFloat(data[15]) !== 0) {
                     img.addClass("svg-green");
                 } else {
                     img.addClass("svg-red");
@@ -414,7 +441,7 @@ function buildHeader() {
                 }
                 */
                 //========================
-                if (parseFloat(data[7]) != 1) {
+                if (parseFloat(data[7]) != 1 && parseFloat(data[15]) === 0) {
                     span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>Probably forgot PIN 11 to 12V</h6>" });
                     span.append($("<img>", { class: "svg-inject", src: "img/alert.svg" }));
                     opStatus.append(span);

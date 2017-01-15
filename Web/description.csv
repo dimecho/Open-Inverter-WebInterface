@@ -70,3 +70,5 @@ din_emcystop,,,,,"State of digital input ""emergency stop"". Shuts down the inve
 din_ocur,,,,,Over current detected
 din_bms,,,,,BMS over voltage/under voltage
 tm_meas,us,,,,Time taken to calculate new duty cycle in PWM service routine
+chargemode,,,,,"Charging mode. 0=Off, 3=Boost, 4=Buck"
+chargecur,A,-500,500,0,Hardware over current limit.

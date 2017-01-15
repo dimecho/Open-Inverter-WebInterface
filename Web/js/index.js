@@ -154,14 +154,15 @@ function buildParameters()
                 {
                     var row = data.split("\n");
 
-                    for (var i = 0; i < row.length; ++i)
-                    {
+                    for (var i = 0; i < row.length; i++) {
+                        
                         var split = row[i].split(",");
-                        var d;
+                        var d = "";
 
-                        if(split.length > 6){
-                            for (var c = 5; c < split.length; ++c)
+                        if(split.length > 6) { //contains , in decription
+                            for (var c = 5; c < split.length; ++c) {
                                 d += split[c];
+                            }
                         }else{
                             d = split[5];
                         }
