@@ -95,12 +95,11 @@ $(document).ready(function () {
         //"displayPrevious":true,
         "value": 0,
         change: function change(value) {
-            if (value <= knobValue + 5) //Avoid hard jumps
-            {
+            if (value <= knobValue + 5) { //Avoid hard jumps
                 //console.log(value);
                 clearTimeout(knobTimer);
                 knobTimer = setTimeout(function () {
-                    $.ajax("serial.php?pk=1&name=fslipspnt&value=" + value, { async: false });
+                    sendCommand("fslipspnt", value);
                 }, 80);
                 knobValue = value;
             } else {
@@ -445,7 +444,7 @@ function buildHeader() {
                 }
                 //========================
                 var errors = getErrors();
-                if (errors != "") {
+                if (errors != "" && errors.indexOf("No Errors") === -1) {
                     span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + errors + "</h6>" });
                     span.append($("<img>", { class: "svg-inject", src: "img/alert.svg" }));
                     opStatus.append(span);

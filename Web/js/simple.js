@@ -336,14 +336,14 @@ function boostTuning_start() {
 
     alertify.confirm("Safety Check", "Please be aware that the current you entered will actually be run through motor and power stage\nDo you understand the consequences of that [y/N]?\n", function () {
         
-        sendCommand("fweak","400");
-        sendCommand("boost","0");
+        sendCommand("fweak",400);
+        sendCommand("boost",0);
 
         alertify.confirm("Safety Check", "Now put the car into the highest gear and pull the handbrake, torque will be put on the motor!!\n", function () {
             var notify = $.notify({ message: "Current: " + current }, { type: "danger" });
 
-            sendCommand("fslipspnt","1.5");
-            sendCommand("ampnom","100");
+            sendCommand("fslipspnt",1.5);
+            sendCommand("ampnom",100);
 
             var current = 0;
             var boost = 900;
@@ -406,9 +406,9 @@ function fweakTuning(wait) {
             var fmax = getJSONFloatValue("fmax");
             var ampnom = getJSONFloatValue("ampnom");
 
-            sendCommand("fslipspnt","0");
-            sendCommand("fmax","1000");
-            sendCommand("ampnom","10");
+            sendCommand("fslipspnt",0);
+            sendCommand("fmax",1000);
+            sendCommand("ampnom",10);
 
             var fweak = 200;
             var notify = $.notify({ message: "Starting fweak " + fweak }, { type: "success" });
@@ -461,16 +461,17 @@ function polePairTest(wait) {
             modeCheck(0,"polePairTest");
         }else{
             alertify.confirm("Safety Check", "Mark your motor shaft with something to observe when it finishes a rotation\nWill now slowly spin the shaft", function () {
-                $.ajax("serial.php?pk=1&name=ampnom&value=50");
-                $.ajax("serial.php?pk=1&name=fslipspnt&value=2");
+
+                sendCommand("ampnom",50);
+                sendCommand("fslipspnt",2);
 
                 setTimeout(function() {
-                    $.ajax("serial.php?pk=1&name=fslipspnt&value=0");
 
+                    sendCommand("fslipspnt",0);
                     alertify.prompt("Input", "How many turns did the shaft complete in 10s? (Round up)", "", function (event, turns) {
                         var polepairs = Math.floor(20 / turns);
                         $.notify({ message: "The motor has " + polepairs + " pole pairs" }, { type: "success" });
-                        $.ajax("serial.php?pk=1&name=polepairs&value=" + polepairs);
+                        sendCommand("polepairs",polepairs);
                         return polepairs;
                     }, function () {});
                 }, 10000);
@@ -488,8 +489,9 @@ function numimpTest(wait) {
             modeCheck(0,"numimpTest");
         }else{
             alertify.confirm("Safety Check", "We will now spin the motor shaft @60Hz and try to determine how many pulses per rotation we get\n", function () {
-                $.ajax("serial.php?pk=1&name=numimp&value=8");
-                $.ajax("serial.php?pk=1&name=ampnom&value=70");
+ 
+                sendCommand("numimp",8);
+                sendCommand("ampnom",70);
 
                 var polepairs = getJSONFloatValue("polepairs");
                 var expectedSpeed = 59.9 * 60 / polepairs;
@@ -497,10 +499,10 @@ function numimpTest(wait) {
 
                 setTimeout(function() {
                     var speed = getJSONAverageFloatValue("speed");
-                    $.ajax("serial.php?pk=1&name=ampnom&value=0");
+                    sendCommand("ampnom",0);
                     var numimp = round(speed / expectedSpeed * 8);
                     $.notify({ message: 'Your encoder seems to have ' + numimp + ' pulses per rotation' }, { type: 'success' });
-                    $.ajax("serial.php?pk=1&name=numimp&value=" + numimp);
+                    sendCommand("numimp",numimp);
                 }, 2000);
             }, function () {});
         }
@@ -510,7 +512,7 @@ function numimpTest(wait) {
 function rampFrequency(_from, to) {
     
     for (var framp = _from; framp < to; framp++) {
-        $.ajax("serial.php?pk=1&name=fslipspnt&value=" + framp);
+        sendCommand("fslipspnt",framp);
     }
 };
 

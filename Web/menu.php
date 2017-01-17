@@ -37,6 +37,14 @@
                             <li><a tabindex="-1" href="#" onClick="<?php checkEagle(); ?>">Schematics</a></li>
                             <li><a tabindex="-1" href="components.php">Components</a></li>
                             <li><a tabindex="-1" href="wiring.php">Wiring Diagram</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>User</b><b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
+                            <li><a tabindex="-1" href="motor-class.php">Motor Classification</a></li>
                             <li><a tabindex="-1" href="igbt-test.php">IGBT Test</a></li>
                             <li><a tabindex="-1" href="#" onClick="<?php checkInkscape(); ?>">Build Encoder</a></li>
                         </ul>

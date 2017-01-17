@@ -168,7 +168,7 @@ function buildParameters()
                         }
 
                         parameters.push(split[0]);
-                        description.push(d);
+                        description.push(d.replace(/"/g, ''));
                     }
                 },
                 error: function(xhr, textStatus, errorThrown){

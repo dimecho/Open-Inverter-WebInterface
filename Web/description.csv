@@ -70,5 +70,9 @@ din_emcystop,,,,,"State of digital input ""emergency stop"". Shuts down the inve
 din_ocur,,,,,Over current detected
 din_bms,,,,,BMS over voltage/under voltage
 tm_meas,us,,,,Time taken to calculate new duty cycle in PWM service routine
+brkout,,,,,PA7 port to trigger brake light independently from braking
+idlethrotlim,,,,,Depends on you gearing and motor
+syncmode,,,,,Experimental: Running synchronous motors
+syncofs,,,,,"Experimental: Configure a pin as an input for the north marker. When the interrupt fires, reset the angle"
 chargemode,,,,,"Charging mode. 0=Off, 3=Boost, 4=Buck"
-chargecur,A,-500,500,0,Hardware over current limit.
+chargecur,A,-500,500,0,Hardware over current limit
