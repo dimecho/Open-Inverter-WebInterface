@@ -1,13 +1,6 @@
 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 <title>Huebner Inverter</title>
 
-<link rel="stylesheet" type="text/css" href="css/style.css" />
-<link rel="stylesheet" type="text/css" href="css/alertify.css">
-<link rel="stylesheet" type="text/css" href="css/animate.css" />
-<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
-<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
-<link rel="stylesheet" type="text/css" href="css/tooltipster.css" />
-
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/bootstrap.js"></script>
 <script type="text/javascript" src="js/svg-injector.js"></script>
@@ -17,6 +10,14 @@
 <script type="text/javascript" src="js/menu.js"></script>
 <script type="text/javascript" src="js/jquery.knob.js"></script>
 <script type="text/javascript" src="js/bootstrap-notify.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+<link rel="stylesheet" type="text/css" href="css/alertify.css">
+<link rel="stylesheet" type="text/css" href="css/animate.css" />
+<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
+<link rel="stylesheet" type="text/css" href="css/tooltipster.css" />
+
 <script type="text/javascript">
     alertify.defaults.transition = "slide";
     alertify.defaults.theme.ok = "btn btn-primary";

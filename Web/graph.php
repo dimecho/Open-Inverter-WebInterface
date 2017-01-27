@@ -101,10 +101,11 @@
                 <div class="col-md-10">
                     <center>
                         <div class="btn-group">
-                            <button type="button" class="btn btn-success" onClick="startChart();">Start Graph</button>
-                            <button type="button" class="btn btn-danger" onClick="stopChart();">Stop Graph</button>
-                            <button class="btn btn-info">Sync
-                                <input
+                            <button class="btn btn-success" onClick="startChart();">Start Graph</button>
+                            <button class="btn btn-danger" onClick="stopChart();" >Stop Graph</button>
+                            <div class="btn btn-info" style="height:34px">
+                            Sync
+                            <input
                                 id="speed"
                                 type="hidden"
                                 data-provide="slider"
@@ -116,7 +117,7 @@
                                 data-slider-orientation="horizontal"
                                 data-slider-selection="after"
                                 data-slider-tooltip="hide" />
-                            </button>
+                            </div>
                             <button type="button" class="btn btn-warning" onClick="exportPDF(true);">Export PDF</button>
                             <button type="button" class="btn btn-info" onClick="exportPDF();">Export Image</button>
                         </div>

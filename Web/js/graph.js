@@ -19,13 +19,13 @@ $(document).ready(function () {
         */
         min: 200,
         max: 3000,
+        step: 1,
         value: syncronizedDelay,
         //scale: 'logarithmic',
-        step: 1,
         reversed: true
-    }).on('slide', function () {
+    }).on('slide', function (e) {
 
-        syncronizedDelay = $("#speed").slider('getValue');
+        syncronizedDelay = e.value;
         chart.options.animation.duration = syncronizedDelay;
 
         var t = Math.round(syncronizedDelay / 1000 * 60);

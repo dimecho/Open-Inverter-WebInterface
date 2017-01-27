@@ -26,11 +26,20 @@
                 "olimex-arm-usb-tiny-h",
                 "jtag-lock-pick_tiny_2",
                 "stlink-v2",
-                "openocd-usb"
+                "cmsis-dap"
+            ];
+
+            var jtag_name = [
+                "Olimex OCD-H",
+                "Olimex Tiny-H",
+                "Lock-Pick Tiny v2.0",
+                "STlink v2.0",
+                "CoLinkEx v1.2"
             ];
 
             function setJTAGImage() {
                 $("#jtag-image").attr("src", "img/" + $("#jtag-interface").val() + ".jpg");
+                $("#jtag-name").html(jtag_name[$("#jtag-interface option:selected").index()]);
             }
 
             $(document).on('click', '.browse', function(){
@@ -93,6 +102,7 @@
                                     for (var i = 0; i < jtag_interface.length; i++) {
                                         $("#jtag-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_interface[i]));
                                     }
+                                    $("#jtag-interface").prop('selectedIndex', 0);
                                     setJTAGImage();
                                 });
                             </script>
@@ -108,6 +118,7 @@
                                             </span>
                                         </div>
                                         <br/><br/>
+                                        <h2 id="jtag-name"></h2>
                                         <img src="" id="jtag-image" class="img-rounded" />
                                     </center>
                                 </td>
