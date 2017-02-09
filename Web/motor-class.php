@@ -13,8 +13,10 @@
                         <tbody>
                              <tr>
                                 <td>
-                                    <h2>Electric motors classification</h2>
-                                    <img src="img/motor-class.png" class="img-rounded" />
+                                    <center><h2>Electric motors classification</h2></center>
+                                    <a href="img/motor-class.png" data-lightbox="image-1">
+                                        <img src="img/motor-class.png" class="img-thumbnail img-rounded" />
+                                    </a>
                                     <br/><br/><a href="http://www.emcu.it/MotorControls/STMotorControl-Nov2012-MKT.pdf" target="_blank">http://www.emcu.it/MotorControls/STMotorControl-Nov2012-MKT.pdf</a>
                                 </td>
                             </tr>

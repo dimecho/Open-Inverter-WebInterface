@@ -136,7 +136,7 @@ function uploadSnapshot() {
 
 function openExternalApp(app) {
 
-    //console.log(app);
+    console.log(app);
     if (app === "inkscape") {
         buildEncoderAlert();
     } else if (app === "openscad") {

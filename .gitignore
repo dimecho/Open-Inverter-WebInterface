@@ -1,3 +1,2 @@
-#don't include blender local backups
 *.blend1
-
+.DS_Store

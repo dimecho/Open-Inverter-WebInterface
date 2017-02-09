@@ -24,6 +24,23 @@
         echo "done";
     }
 
+    function checkArduino()
+    {
+        global $os;
+        if ($os === "Mac") {
+            $path = "/Applications/Arduino.app/Contents/MacOS/Arduino";
+        }else if ($os === "Windows") {
+            $path = "C:\\Program Files\Arduino\\arduino.exe";
+        }else if ($os === "Linux") {
+            $path = "/opt/arduino/bin/arduino";
+        }
+        if(is_file($path)) {
+                echo "openExternalApp('arduino')";
+        }else{
+            echo "confirmDownload('arduino')";
+        }
+    }
+
     function checkEagle()
     {
         global $os;

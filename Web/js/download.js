@@ -90,6 +90,14 @@ function confirmDownload(app)
         }else if(os === "Windows"){
             url = "https://launchpadlibrarian.net/287101671/gcc-arm-none-eabi-5_4-2016q3-20160926-win32.exe";
         }
+    }else if(app === "arduino"){
+        title = "Arduino 1.8.1";
+        msg = "Install Arduino IDE - Download 150MB";
+        if(os === "Mac"){
+            url = "https://www.arduino.cc/download_handler.php?f=/arduino-1.8.1-macosx.zip";
+        }else if(os === "Windows"){
+            url = "https://www.arduino.cc/download_handler.php?f=/arduino-1.8.1-windows.exe";
+        }
     }else if(app === "source"){
         title = "Inverter Source Code";
         url = "https://github.com/tumanako/tumanako-inverter-fw-motorControl/archive/master.zip";

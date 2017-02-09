@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>14A314h</string>
+	<string>14A298i</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
@@ -19,7 +19,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>4.10.15</string>
+	<string>4.10.14</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
@@ -2385,31 +2385,6 @@
 			<integer>33631</integer>
 			<key>idVendor</key>
 			<integer>4292</integer>
-		</dict>
-		<key>NETGEAR</key>
-		<dict>
-			<key>CFBundleIdentifier</key>
-			<string>com.silabs.driver.CP210xVCPDriver</string>
-			<key>IOClass</key>
-			<string>com_silabs_driver_CP210xVCPDriver</string>
-			<key>IOKitDebug</key>
-			<integer>0</integer>
-			<key>IOMatchCategory</key>
-			<string>com_silabs_driver_CP210xVCPDriver</string>
-			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
-			<key>New Interface Detected Action</key>
-			<string>None</string>
-			<key>USB Product Name</key>
-			<string>NETGEAR</string>
-			<key>bConfigurationValue</key>
-			<integer>1</integer>
-			<key>bInterfaceNumber</key>
-			<integer>0</integer>
-			<key>idProduct</key>
-			<integer>4352</integer>
-			<key>idVendor</key>
-			<integer>2118</integer>
 		</dict>
 		<key>NetBurner, Inc.</key>
 		<dict>

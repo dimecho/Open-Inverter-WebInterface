@@ -7,7 +7,8 @@
     {
         $command = "echo";
         
-        if($_GET["app"] == "inkscape"){
+        if($_GET["app"] == "inkscape")
+        {
     		$args = " --verb dgkelectronics.com.encoder.disk.generator";
             if ($os === "Mac") {
                 $command = "/Applications/Inkscape.app/Contents/Resources/bin/inkscape" .$args;
@@ -16,21 +17,36 @@
             }else if ($os === "Linux") {
                 $command = "su \$SUDO_USER -c \"inkscape " .$args. "\"";
             }
-        }else if($_GET["app"] == "gcc"){
+
+        }else if($_GET["app"] == "gcc")
+        {
             header("Location:/compile.php");
-        }else if($_GET["app"] == "arm"){
+        }else if($_GET["app"] == "arm")
+        {
             $command  = "arm";
-        }else if($_GET["app"] == "openocd" || $_GET["app"] == "bootloader"){
+        }else if($_GET["app"] == "openocd" || $_GET["app"] == "bootloader")
+        {
             $command = runCommand("openocd");
             header("Location:/bootloader.php");
-        }else if($_GET["app"] == "source"){
+        }else if($_GET["app"] == "source")
+        {
             $command = runCommand("source");
             header("Location:/compile.php");
-        }else if($_GET["app"] == "eagle"){
+        }else if($_GET["app"] == "arduino")
+        {
+            $args = $_SERVER["DOCUMENT_ROOT"]. "/arduino/lcd_display/lcd_display.ino";
+            if ($os === "Mac") {
+                $command = "/Applications/Arduino.app/Contents/MacOS/Arduino \"" .$args. "\"";
+            }else if ($os === "Windows") {
+                $command = "arduino.exe \"" .$args. "\"";
+            }else if ($os === "Linux") {
+                $command = "su \$SUDO_USER -c \"arduino '" .$args. "'\"";
+            }
+        }else if($_GET["app"] == "eagle")
+        {
             if ($os === "Mac") {
                 $command = "open \"" .$_SERVER["DOCUMENT_ROOT"]. "/pcb\"";
             }else if ($os === "Windows") {
-                //$command = "explorer.exe " .getenv("HOMEPATH"). "/Documents/pcb/";
                 $command = "explorer.exe \"" .$_SERVER["DOCUMENT_ROOT"]. "\\pcb\"";
             }else if ($os === "Linux") {
                 $command = "su \$SUDO_USER -c \"xdg-open '" .$_SERVER["DOCUMENT_ROOT"]. "/pcb'\"";
@@ -46,7 +62,8 @@
         
         echo $command;
 
-    }else if(isset($_FILES["file"])){
+    }else if(isset($_FILES["file"]))
+    {
         $name = basename($_FILES['file']['tmp_name']);
         $tmp_name = "/tmp/$name.svg";
         move_uploaded_file($_FILES['file']['tmp_name'], $tmp_name);
@@ -55,9 +72,9 @@
         if ($os === "Mac") {
             $command = "/Applications/Inkscape.app/Contents/Resources/bin/inkscape" .$args;
         }else if ($os === "Windows") {
-            $command = "cmd.exe /c \"\"C:\\Progra~1\\Inkscape\\inkscape.com\"\" " .$args. "";
+            $command = "cmd.exe /c \"\"C:\\Progra~1\\Inkscape\\inkscape.com\"\"" .$args. "";
         }else if ($os === "Linux") {
-            $command = "su \$SUDO_USER -c \"inkscape " .$args. "\"";
+            $command = "su \$SUDO_USER -c \"inkscape" .$args. "\"";
         }
         exec($command,$op);
         //header("Location:/index.php");
