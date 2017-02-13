@@ -2,6 +2,9 @@
 <html>
     <head>
         <?php include "header.php" ?>
+        <link rel="stylesheet" href="css/androidstudio.css">
+        <script src="js/highlight.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
         <div class="container">
@@ -81,6 +84,23 @@
                                     <a href="arduino/img/DSC03852.jpg" data-lightbox="image-2">
                                         <img src="arduino/img/DSC03852.jpg" class="img-thumbnail img-rounded" />
                                     </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <pre>
+                                        <code><?php
+                                        $code = file_get_contents('./arduino/lcd_display/lcd_display.ino');
+                                        $code = str_replace("<", "&lt;", $code);
+                                        $code = str_replace("<", "&gt;", $code);
+                                        echo $code;
+                                        ?></code>
+                                    </pre>
                                 </td>
                             </tr>
                         </tbody>

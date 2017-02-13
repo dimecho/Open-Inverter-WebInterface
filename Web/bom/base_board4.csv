@@ -21,7 +21,7 @@ C18,5,0.1µF,C-EU050-024X044,bom/capacitor_tags.pdf
 C19,5,0.1µF,C-EU050-024X044,bom/capacitor_tags.pdf
 C20,6,220µF,CPOL-EUE2-4,
 C21,7,680µF,CPOL-EUE2.5-5,
-C23,2,1µF,C-EU025-024X044,
+C23,2,1µF,C-EU025-024X044,C-EU025-024X044,bom/capacitor_tags.pdf
 D1,9,,SB540E-G,http://www.sirectsemi.com/pdf/SB540E~SB5100E-DO27.pdf
 IC1,45,,LM2901,http://www.ti.com/lit/ds/symlink/lm2901.pdf
 IC2,30,,74F00,http://www.ti.com/lit/ds/symlink/sn74f00.pdf
