@@ -42,8 +42,8 @@ function confirmDownload(app)
         }
     }else if(app === "xquartz"){
         title = "X Window System that runs on OS X.";
-        msg = "Install XQuartz - Download 40MB";
-        url = "https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.9.dmg";
+        msg = "Install XQuartz - Download 80MB";
+        url = "https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.11.dmg";
     }else if(app === "gcc"){
         title = "Compiler";
         msg = "Install GCC Compiler - Download 100MB";

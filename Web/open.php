@@ -3,6 +3,9 @@
 
     detectOS();
 
+    //OSX Fix: If XQuartz remains running apps do not open properly.
+    $killXQuartz = "kill -9 `ps -A | grep XQuartz | awk '{print $1}'`";
+
     if(isset($_GET["app"]))
     {
         $command = "echo";
@@ -10,11 +13,12 @@
         if($_GET["app"] == "inkscape")
         {
     		$args = " --verb dgkelectronics.com.encoder.disk.generator";
-            if ($os === "Mac") {
-                $command = "/Applications/Inkscape.app/Contents/Resources/bin/inkscape" .$args;
-            }else if ($os === "Windows") {
+            if ($GLOBALS["OS"] === "Mac") {
+                exec($killXQuartz);
+                $command = $GLOBALS["X11"]. " \"/Applications/Inkscape.app/Contents/Resources/bin/inkscape" .$args. "\" 2>&1 &";
+            }else if ($GLOBALS["OS"] === "Windows") {
                 $command = "cmd.exe /c \"\"C:\\Progra~1\\Inkscape\\inkscape.com\"\" " .$args. "";
-            }else if ($os === "Linux") {
+            }else if ($GLOBALS["OS"] === "Linux") {
                 $command = "su \$SUDO_USER -c \"inkscape " .$args. "\"";
             }
 
@@ -35,20 +39,20 @@
         }else if($_GET["app"] == "arduino")
         {
             $args = $_SERVER["DOCUMENT_ROOT"]. "/arduino/lcd_display/lcd_display.ino";
-            if ($os === "Mac") {
+            if ($GLOBALS["OS"] === "Mac") {
                 $command = "/Applications/Arduino.app/Contents/MacOS/Arduino \"" .$args. "\"";
-            }else if ($os === "Windows") {
+            }else if ($GLOBALS["OS"] === "Windows") {
                 $command = "arduino.exe \"" .$args. "\"";
-            }else if ($os === "Linux") {
+            }else if ($GLOBALS["OS"] === "Linux") {
                 $command = "su \$SUDO_USER -c \"arduino '" .$args. "'\"";
             }
         }else if($_GET["app"] == "eagle")
         {
-            if ($os === "Mac") {
+            if ($GLOBALS["OS"] === "Mac") {
                 $command = "open \"" .$_SERVER["DOCUMENT_ROOT"]. "/pcb\"";
-            }else if ($os === "Windows") {
+            }else if ($GLOBALS["OS"] === "Windows") {
                 $command = "explorer.exe \"" .$_SERVER["DOCUMENT_ROOT"]. "\\pcb\"";
-            }else if ($os === "Linux") {
+            }else if ($GLOBALS["OS"] === "Linux") {
                 $command = "su \$SUDO_USER -c \"xdg-open '" .$_SERVER["DOCUMENT_ROOT"]. "/pcb'\"";
             }
         }
@@ -69,11 +73,12 @@
         move_uploaded_file($_FILES['file']['tmp_name'], $tmp_name);
 
         $args = " -f '" .$tmp_name. "' --verb EditSelectAll --verb SelectionUnGroup --verb SelectionSymDiff --verb command.extrude.openscad";
-        if ($os === "Mac") {
-            $command = "/Applications/Inkscape.app/Contents/Resources/bin/inkscape" .$args;
-        }else if ($os === "Windows") {
+        if ($GLOBALS["OS"] === "Mac") {
+            exec($killXQuartz);
+            $command = $GLOBALS["X11"]. " \"/Applications/Inkscape.app/Contents/Resources/bin/inkscape" .$args. "\" 2>&1 &";
+        }else if ($GLOBALS["OS"] === "Windows") {
             $command = "cmd.exe /c \"\"C:\\Progra~1\\Inkscape\\inkscape.com\"\"" .$args. "";
-        }else if ($os === "Linux") {
+        }else if ($GLOBALS["OS"] === "Linux") {
             $command = "su \$SUDO_USER -c \"inkscape" .$args. "\"";
         }
         exec($command,$op);

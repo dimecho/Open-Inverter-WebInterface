@@ -35,6 +35,8 @@ void setup()
 
     Serial.begin(115200);
     Serial.setTimeout(2000);
+
+    lcd.clear();
 }
 
 void loop()
@@ -45,54 +47,81 @@ void loop()
         if(mode == 2)   // Only two modes
             mode = 0;   // Reset back to 0
         delay(2000);    // Wait for button to depress
+        lcd.clear();    // Clear LCD
     }
 
     if(mode == 0)
     {
-        float v = 0;
-        float a = 0;
+        float udc = 0;
+        float idc = 0;
         float rpm = 0;
 
-        Serial.println("get udc,idc,speed");  // Bulk parameter request
-
+        Serial.println("get udc,idc,speed\n");  // Bulk parameter request
+        delay(100);
+        
         if (Serial.available() > 0)
         {
-            //float x = Serial.parseFloat();
-            v = Serial.readStringUntil('\n').toFloat();
-            a = Serial.readStringUntil('\n').toFloat();
+            Serial.readStringUntil('\n'); // Consume echo
+            udc = Serial.readStringUntil('\n').toFloat();
+            idc = Serial.readStringUntil('\n').toFloat();
             rpm = Serial.readStringUntil('\n').toFloat();
         }
 
-        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("V:" + String(udc) + "  A:" + String(idc));
+        lcd.setCursor(0,1);
+        lcd.print("RPM:" +  String(rpm) + "   ");
+        delay(1000);
+
+    }else if(mode == 1){
+      
+        float udcsw = 0;
+        float ocurlim = 0;
+        
+        Serial.println("get udcsw,ocurlim\n");  // Bulk parameter request
+        delay(100);
+        
+        if (Serial.available() > 0)
+        {
+            Serial.readStringUntil('\n'); // Consume echo                 
+            udcsw = Serial.readStringUntil('\n').toFloat();
+            ocurlim =  Serial.readStringUntil('\n').toFloat();
+        }
 
         lcd.setCursor(0,0);
-        lcd.print("V:" + String(v) + "  A:" + String(a)); 
-
+        lcd.print("udcsw:" + String(udcsw));
         lcd.setCursor(0,1);
-        lcd.print("RPM: " +  String(rpm));
-
-        delay(500);
+        lcd.print("ocurlim:" + String(ocurlim));
+        delay(5000);
       
     }else if(mode == -1){
 
-        Serial.println("get version");
-
+        Serial.println("get version\n");
+        delay(100);
+        
         if (Serial.available() > 0)
         {
-            mode = 0;
-            lcd.clear();
+            Serial.readStringUntil('\n'); // Consume echo
+            delay(100);
+            
+            float _version = Serial.readStringUntil('\n').toFloat();
+            
             lcd.setCursor(0,0);
-            lcd.print("Version:" + Serial.readStringUntil('\n')); 
+            lcd.print("Version:" + String(_version));
+            
+            mode = 0;
+            
         }else{
-            lcd.clear();
+            
             lcd.setCursor(0,0);
             lcd.print("TX/RX Error");
         }
-
-        delay(2500);
-
+        
+        delay(4000);
+        
+        lcd.clear();
+        
     }else{
-
       delay(1000);
     }
 }

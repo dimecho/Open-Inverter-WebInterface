@@ -10,11 +10,11 @@
         $source = urldecode(str_replace("|", "&", $_GET["url"]));
         $filename = basename($source);
         
-        if ($os === "Mac") {
+        if ($GLOBALS["OS"] === "Mac") {
             $destination = getenv("HOME"). "/Downloads/";
-        }else if ($os === "Windows") {
+        }else if ($GLOBALS["OS"]=== "Windows") {
             $destination = getenv("USERPROFILE"). "\\Downloads\\";
-        }else if ($os === "Linux") {
+        }else if ($GLOBALS["OS"] === "Linux") {
             $destination = getenv("HOME"). "/Downloads/";
         }
         

@@ -1,45 +1,40 @@
 <?php
-    global $os;
-
+    $GLOBALS["OS"] = "Linux";
+    $GLOBALS["X11"] = "/Applications/Utilities/XQuartz.app/Contents/MacOS/X11";
+    
     function detectOS()
     {
-        global $os;
-
-        $os = "Uknown";
         if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
-            $os = "Mac";
+            $GLOBALS["OS"] = "Mac";
         }elseif (strpos($_SERVER["HTTP_USER_AGENT"], "Windows") !== false) {
-            $os = "Windows";
-        }else{
-            $os = "Linux";
+            $GLOBALS["OS"] = "Windows";
         }
     }
 
     function commandOSCorrection($command)
     {
-        global $os;
         $split = explode(" ",$command);
 
         if(!empty($split)){
 
-            if ($os === "Mac") {
+            if ($GLOBALS["OS"] === "Mac") {
                 $command = $split[0]. "\"";
-            }else if ($os === "Windows") {
+            }else if ($GLOBALS["OS"] === "Windows") {
                 $command = $split[0]. ".ps1\" -Arguments";
-            }else if ($os === "Linux") {
+            }else if ($GLOBALS["OS"] === "Linux") {
                 $command = $split[0].".sh";
             }
             
             unset($split[0]);
 
             foreach ($split as $key){
-                if ($os === "Mac" || $os === "Windows") {
+                if ($GLOBALS["OS"] === "Mac" || $GLOBALS["OS"] === "Windows") {
                     $command .= " \"" .$key. "\""; //wrap individual arguments
                 }else {
                     $command .= " " .$key; //no wrap
                 }
             }
-            if ($os === "Linux")
+            if ($GLOBALS["OS"] === "Linux")
                 $command .= "\""; //close quote
         }else{
             $command .= "\"";
@@ -50,14 +45,13 @@
 
     function runCommand($command)
     {
-        global $os;
         $command = commandOSCorrection($command);
 
-        if ($os === "Mac") {
-            return "\"" .$_SERVER["DOCUMENT_ROOT"]. "/../" .$command. " 2>&1";
-        }else if ($os === "Windows") {
+        if ($GLOBALS["OS"] === "Mac") {
+            return "\"" .$_SERVER["DOCUMENT_ROOT"]. "/../" .$command. " 2>&1 &";
+        }else if ($GLOBALS["OS"] === "Windows") {
             return "powershell.exe -ExecutionPolicy Bypass -File \"" .$_SERVER["DOCUMENT_ROOT"] . "\\..\\Windows\\" .$command. " 2>&1";
-        }else if ($os === "Linux") {
+        }else if ($GLOBALS["OS"] === "Linux") {
             if(is_file("/usr/bin/gnome-terminal")){
                 //More transparent of what's going on
                 return "gnome-terminal -e 'bash -c \"" .$_SERVER["DOCUMENT_ROOT"]. "/../Linux/" .$command. ";bash' 2>&1";

@@ -26,12 +26,11 @@
 
     function checkArduino()
     {
-        global $os;
-        if ($os === "Mac") {
+        if ($GLOBALS["OS"] === "Mac") {
             $path = "/Applications/Arduino.app/Contents/MacOS/Arduino";
-        }else if ($os === "Windows") {
+        }else if ($GLOBALS["OS"] === "Windows") {
             $path = "C:\\Program Files\Arduino\\arduino.exe";
-        }else if ($os === "Linux") {
+        }else if ($GLOBALS["OS"] === "Linux") {
             $path = "/opt/arduino/bin/arduino";
         }
         if(is_file($path)) {
@@ -43,12 +42,11 @@
 
     function checkEagle()
     {
-        global $os;
-        if ($os === "Mac") {
+        if ($GLOBALS["OS"] === "Mac") {
             $path = "/Applications/EAGLE-7.7.0/Eagle.app/Contents/MacOS/Eagle";
-        }else if ($os === "Windows") {
+        }else if ($GLOBALS["OS"] === "Windows") {
             $path = "C:\\EAGLE-7.7.0\\bin\eagle.exe";
-        }else if ($os === "Linux") {
+        }else if ($GLOBALS["OS"] === "Linux") {
             $path = "/opt/eagle-7.7.0/bin/eagle";
         }
         if(is_file($path)) {
@@ -60,12 +58,11 @@
 
     function checkOpenOCD()
     {
-        global $os;
-        if ($os === "Mac") {
+        if ($GLOBALS["OS"] === "Mac") {
             $path = "/usr/local/etc/gcc_arm/openocd";
-        }else if ($os === "Windows") {
+        }else if ($GLOBALS["OS"] === "Windows") {
             $path = "C:\\Program Files\\GNU ARM Eclipse\\OpenOCD";
-        }else if ($os === "Linux") {
+        }else if ($GLOBALS["OS"] === "Linux") {
             $path = "/usr/share/openocd";
         }
         if(is_dir($path)) {
@@ -81,12 +78,11 @@
 
     function checkAVRCompiler($remove)
     {
-        global $os;
-        if ($os === "Mac") {
+        if ($GLOBALS["OS"] === "Mac") {
             $path = "/usr/local/etc/gcc_arm/avr/bin/avrdude";
-        }else if ($os === "Windows") {
+        }else if ($GLOBALS["OS"] === "Windows") {
             $path = "C:\\Program Files\\Win-AVR\\avrdude.exe";
-        }else if ($os === "Linux") {
+        }else if ($GLOBALS["OS"] === "Linux") {
             $path = "/usr/bin/avrdude";
         }
         if(is_file($path)) {
@@ -108,12 +104,11 @@
 
     function checkARMCompiler($remove)
     {
-        global $os;
-        if ($os === "Mac") {
+        if ($GLOBALS["OS"] === "Mac") {
             $path = "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3";
-        }else if ($os === "Windows") {
+        }else if ($GLOBALS["OS"] === "Windows") {
             $path = "C:\\Program Files (x86)\\GNU Tools ARM Embedded\\5.4 2016q3";
-        }else if ($os === "Linux") {
+        }else if ($GLOBALS["OS"] === "Linux") {
             $path = "/usr/share/gcc-arm-embedded";
         }
         if(is_dir($path))
@@ -146,12 +141,11 @@
 
     function checkSource($src)
     {
-        global $os;
-        if ($os === "Mac") {
+        if ($GLOBALS["OS"] === "Mac") {
             $path = getenv("HOME"). "/Documents/" . $src;
-        }else if ($os === "Windows") {
+        }else if ($GLOBALS["OS"] === "Windows") {
             $path = getenv("HOMEPATH"). "\\Documents\\" . $src;
-        }else if ($os === "Linux") {
+        }else if ($GLOBALS["OS"] === "Linux") {
             $path = getenv("HOME"). "/Documents/" . $src;
         }
         if(is_dir($path)) {
@@ -163,10 +157,9 @@
 
     function checkGCCCompiler()
     {
-        global $os;
-        if ($os === "Mac" || $os === "Linux") {
+        if ($GLOBALS["OS"] === "Mac" || $GLOBALS["OS"] === "Linux") {
             $path = "/usr/bin/gcc";
-        }else if ($os === "Windows") {
+        }else if ($GLOBALS["OS"] === "Windows") {
             $path = "C:\\SysGCC\\MinGW32\\bin\\gcc.exe";
         }
         if(is_file($path)) {
@@ -178,10 +171,9 @@
 
     function checkPythonCompiler()
     {
-        global $os;
-        if ($os === "Mac" || $os === "Linux") {
+        if ($GLOBALS["OS"] === "Mac" || $GLOBALS["OS"] === "Linux") {
             $path = "/usr/bin/python";
-        }else if ($os === "Windows") {
+        }else if ($GLOBALS["OS"] === "Windows") {
             $path = getenv("HOMEPATH"). "\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe";
         }
         if(is_file($path)) {
@@ -193,16 +185,15 @@
 
     function checkInkscape()
     {
-        global $os;
         $xquartz = true;
-        if ($os === "Mac") {
+        if ($GLOBALS["OS"] === "Mac") {
             $path = "/Applications/Inkscape.app/Contents/MacOS/Inkscape";
-            if(!is_dir("/Applications/Utilities/XQuartz.app")) {
+            if(!is_file($GLOBALS["X11"])) {
                 $xquartz = false;
             }
-        }else if ($os === "Windows") {
+        }else if ($GLOBALS["OS"] === "Windows") {
             $path = "C:\\Program Files\\Inkscape\\inkscape.exe";
-        }else if ($os === "Linux") {
+        }else if ($GLOBALS["OS"] === "Linux") {
             $path = "/usr/share/applications/inkscape.desktop";
         }
         if(is_file($path)) {
@@ -219,12 +210,11 @@
 
     function checkOpenSCAD()
     {
-        global $os;
-        if ($os === "Mac") {
+        if ($GLOBALS["OS"] === "Mac") {
             $path = "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD";
-        }else if ($os === "Windows") {
+        }else if ($GLOBALS["OS"] === "Windows") {
             $path = "C:\\Program Files\\OpenSCAD\\OpenSCAD.exe";
-        }else if ($os === "Linux") {
+        }else if ($GLOBALS["OS"] === "Linux") {
             $path = "/usr/share/applications/openscad.desktop";
         }
         if(is_file($path)) {
@@ -243,17 +233,3 @@
         return;
     }
 ?>
-<script>
-function buildEncoderAlert()
-{
-    alertify.buildEncoder("Build encoder",
-        function() {
-            $.ajax("open.php?app=inkscape");
-        },
-        function() {
-            <?php checkOpenSCAD(); ?>;
-            //$.ajax("open.php?app=inkscape_openscad");
-        }
-    );
-}
-</script>

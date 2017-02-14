@@ -91,7 +91,7 @@
                                                 <?php
                                                     echo "'";
                                                     echo "attiny.php?ajax=1";
-                                                    if ($os === "Mac") {
+                                                    if ($GLOBALS["OS"] === "Mac") {
                                                         $tmp_name = "/tmp/" .basename($_FILES['firmware']['tmp_name']). ".bin";
                                                     }else{
                                                         $tmp_name = sys_get_temp_dir(). "/" .basename($_FILES['firmware']['tmp_name']). ".bin";

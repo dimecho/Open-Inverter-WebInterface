@@ -137,9 +137,8 @@ function uploadSnapshot() {
 function openExternalApp(app) {
 
     console.log(app);
-    if (app === "inkscape") {
-        buildEncoderAlert();
-    } else if (app === "openscad") {
+    
+    if (app === "openscad") {
         $('.fileSVG').trigger('click');
     } else if (app === "openocd") {
         window.location.href = "/bootloader.php";

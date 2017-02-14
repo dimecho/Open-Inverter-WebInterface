@@ -4,8 +4,6 @@ Clean flux, it attracts moisture and causes shorts.
 You can use pin18 on main board for temperature indicator.<br/><img src="img/temp_indicator.png" />
 If encoder requires 5V leave out R2 and connect Pin 2 directly to 5V.
 The faster the switching (pwmfrq) the higher the losses in the inverter and the lower the losses in the motor.
-There are two types of encoders, transmissive (gap type) as TCST2103 and reflective.<br/><img src="img/TCST2103.jpg" />
-The larger the gap of encoder wheel the more problems will occur with ambient light.<br/><a href="http://heliosoph.mit-links.info/make-your-own-rotary-encoder/">Info</a>
 Make ampmin as small as possible to get good economy.
 fslipmin=fslipmax (no slip) useful during debugging.
 Combine film caps (100uF) and elcaps (1500uF) to get optimal current damping.
