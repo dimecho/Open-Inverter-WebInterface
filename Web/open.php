@@ -66,23 +66,28 @@
         
         echo $command;
 
-    }else if(isset($_FILES["file"]))
-    {
-        $name = basename($_FILES['file']['tmp_name']);
-        $tmp_name = "/tmp/$name.svg";
+    }else if(isset($_FILES["file"])) {
+		
+		 if ($GLOBALS["OS"] === "Mac") {
+			$tmp_name = "/tmp/" .basename($_FILES['file']['tmp_name']). ".svg";
+		}else{
+			$tmp_name = sys_get_temp_dir(). "/" .basename($_FILES['file']['tmp_name']). ".svg";
+		}
         move_uploaded_file($_FILES['file']['tmp_name'], $tmp_name);
-
-        $args = " -f '" .$tmp_name. "' --verb EditSelectAll --verb SelectionUnGroup --verb SelectionSymDiff --verb command.extrude.openscad";
+		
+        $args = " -f \"" .$tmp_name. "\" --verb EditSelectAll --verb SelectionUnGroup --verb SelectionSymDiff --verb command.extrude.openscad";
         if ($GLOBALS["OS"] === "Mac") {
             exec($killXQuartz);
             $command = $GLOBALS["X11"]. " \"/Applications/Inkscape.app/Contents/Resources/bin/inkscape" .$args. "\" 2>&1 &";
         }else if ($GLOBALS["OS"] === "Windows") {
-            $command = "cmd.exe /c \"\"C:\\Progra~1\\Inkscape\\inkscape.com\"\"" .$args. "";
+            $command = "C:\\Progra~1\\Inkscape\\inkscape.com" .$args. " > NUL";
         }else if ($GLOBALS["OS"] === "Linux") {
             $command = "su \$SUDO_USER -c \"inkscape" .$args. "\"";
         }
-        exec($command,$op);
-        //header("Location:/index.php");
+		header("Location:/encoder.php");
+		
+        exec($command);
+		
     }else{
         echo "open.php?app=";
     }

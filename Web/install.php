@@ -90,12 +90,7 @@
             {
                 removeDirectory($path);
             }else{
-                if(checkSource("tumanako-inverter-fw-motorControl-master"))
-                {
-                    echo "openExternalApp('attiny')";
-                }else{
-                    echo "confirmDownload('source')";
-                }
+                echo "openExternalApp('attiny')";
             }
         }else{
             echo "confirmDownload('attiny')";

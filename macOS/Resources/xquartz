@@ -1,5 +1,5 @@
 #!/bin/sh
 
-hdiutil attach ~/Downloads/XQuartz-2.7.9.dmg
-osascript -e "do shell script \"installer -pkg /Volumes/XQuartz-2.7.9/XQuartz.pkg -target /\" with administrator privileges"
-hdiutil detach /Volumes/XQuartz-2.7.9
+hdiutil attach ~/Downloads/XQuartz-2.7.11.dmg
+osascript -e "do shell script \"installer -pkg /Volumes/XQuartz-2.7.11/XQuartz.pkg -target /\" with administrator privileges"
+hdiutil detach /Volumes/XQuartz-2.7.11

@@ -173,7 +173,7 @@ function download(url,filename,app)
                     
                     setTimeout(function ()
                     {
-                        openExternalApp(app);
+                        downloadComplete(app)
                     },4000);
                 },
                 error: function(xhr, textStatus, errorThrown){
@@ -182,3 +182,14 @@ function download(url,filename,app)
         }
     });
 };
+
+function downloadComplete(app) {
+	
+	$("#progressBar").css("width", "100%");
+	
+	if (app === "openscad") {
+		window.location.href = "/encoder.php";
+	}else{
+		openExternalApp(app);
+	}
+}

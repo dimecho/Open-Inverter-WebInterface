@@ -147,7 +147,6 @@ function openExternalApp(app) {
     } else if (app === "attiny") {
         window.location.href = "/attiny.php";
     } else {
-        $("#progressBar").css("width", "100%");
         $.ajax("open.php?app=" + app);
     }
 };

@@ -8,7 +8,7 @@ x=1
 while [ $x -le 20 ]
 do
     if [ -d /Applications/Inkscape.app ]; then
-        rsync -avh ./encoder/* ~/.config/inkscape/
+        rsync -avh ./Web/encoder/* ~/.config/inkscape/
         exit
     fi
     x=$(( $x + 1 ))
