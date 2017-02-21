@@ -73,7 +73,7 @@
                             <tr>
                                 <td>
                                     <center>
-                                        <img src="img/TCST2103.png" class="img-thumbnail img-rounded" />
+                                        <img src="encoder/img/TCST2103.png" class="img-thumbnail img-rounded" />
                                     </center>
                                 </td>
                                 <td>

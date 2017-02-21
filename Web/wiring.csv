@@ -1,0 +1,25 @@
+Pin,Name
+1,GND
+2,30mA output for IR diode
+3,Encoder input
+4,3.3V
+5,Cruise Control Input (12V)
+6,Throttle Input (0-3.3V)
+7,Start input (12V)
+8,Regen Pot Input (0-3.3V)
+9,Brake Input (12V)
+10,GND
+11,Motor Protection Switch (12V PWM inhibit when low)
+12,DC contactor output (open collector 3A)
+13,Forward (12V)
+14,Error Signal (open collector 3A)
+15,Reverse (12V)
+16,Over/Under Voltage (open collector 3A)
+17,Emergency Stop (12V PWM inhibit when low)
+18,Temperature PWM output (open collector 100mA)
+19,BMS Over/Under Voltage input (12V)
+20,Precharge Output (open collector 2A)
+21,Motor Temperature Input -
+22,Motor Temperature Input +
+23,GND
+24,Vcc (7-26V)

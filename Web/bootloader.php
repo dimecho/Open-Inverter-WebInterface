@@ -26,6 +26,7 @@
                 "olimex-arm-usb-tiny-h",
                 "jtag-lock-pick_tiny_2",
                 "stlink-v2",
+                "black-magic",
                 "cmsis-dap"
             ];
 
@@ -34,11 +35,12 @@
                 "Olimex Tiny-H",
                 "Lock-Pick Tiny v2.0",
                 "STlink v2.0",
+                "Black Magic Probe v2.1",
                 "CoLinkEx v1.2"
             ];
 
             function setJTAGImage() {
-                $("#jtag-image").attr("src", "img/" + $("#jtag-interface").val() + ".jpg");
+                $("#jtag-image").attr("src", "firmware/img/" + $("#jtag-interface").val() + ".jpg");
                 $("#jtag-name").html(jtag_name[$("#jtag-interface option:selected").index()]);
             }
 

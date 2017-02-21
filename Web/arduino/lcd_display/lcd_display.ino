@@ -44,14 +44,38 @@ void loop()
     if(digitalRead(buttonPin) == HIGH)   // When push button pressed
     {
         mode++;         // Increment mode
-        if(mode == 2)   // Only two modes
+        if(mode == 3)   // Only two modes
             mode = 0;   // Reset back to 0
         delay(2000);    // Wait for button to depress
         lcd.clear();    // Clear LCD
     }
 
-    if(mode == 0)
-    {
+    if(mode == -1){
+
+        Serial.println("get version\n");
+        delay(100);
+        
+        if (Serial.available() > 0)
+        {
+            Serial.readStringUntil('\n'); // Consume echo
+            float _version = Serial.readStringUntil('\n').toFloat();
+            lcd.setCursor(0,0);
+            lcd.print("Version:" + String(_version));
+            
+            mode = 0;
+            
+        }else{
+            
+            lcd.setCursor(0,0);
+            lcd.print("TX/RX Error");
+        }
+        
+        delay(4000);
+        
+        lcd.clear();
+        
+    }else if(mode == 0){
+      
         float udc = 0;
         float idc = 0;
         float rpm = 0;
@@ -83,7 +107,7 @@ void loop()
         
         if (Serial.available() > 0)
         {
-            Serial.readStringUntil('\n'); // Consume echo                 
+            Serial.readStringUntil('\n'); // Consume echo          
             udcsw = Serial.readStringUntil('\n').toFloat();
             ocurlim =  Serial.readStringUntil('\n').toFloat();
         }
@@ -93,33 +117,12 @@ void loop()
         lcd.setCursor(0,1);
         lcd.print("ocurlim:" + String(ocurlim));
         delay(5000);
-      
-    }else if(mode == -1){
 
-        Serial.println("get version\n");
-        delay(100);
+    }else if(mode == 2){
         
-        if (Serial.available() > 0)
-        {
-            Serial.readStringUntil('\n'); // Consume echo
-            delay(100);
-            
-            float _version = Serial.readStringUntil('\n').toFloat();
-            
-            lcd.setCursor(0,0);
-            lcd.print("Version:" + String(_version));
-            
-            mode = 0;
-            
-        }else{
-            
-            lcd.setCursor(0,0);
-            lcd.print("TX/RX Error");
-        }
-        
-        delay(4000);
-        
-        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("Debug Mode");
+        delay(5000);
         
     }else{
       delay(1000);

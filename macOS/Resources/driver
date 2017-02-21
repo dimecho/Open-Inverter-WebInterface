@@ -2,19 +2,8 @@
 
 cd "$(dirname "$0")"
 
-if [ ! -d "/Library/Extensions/ProlificUsbSerial.kext" ]; then
-    cp -R ./kext/ProlificUsbSerial.kext /Library/Extensions/
-fi
-
-if [ ! -d "/Library/Extensions/usbserial.kext" ]; then
-    cp -R ./kext/usbserial.kext /Library/Extensions/
-fi
-
-if [ ! -d "/Library/Extensions/SiLabsUSBDriver.kext" ]; then
-    cp -R ./kext/SiLabsUSBDriver.kext /Library/Extensions/
-fi
-
-if [ ! -d "/Library/Extensions/FTDIUSBSerialDriver.kext" ]; then
-    cp -R ./kext/FTDIUSBSerialDriver.kext /Library/Extensions/
-    #sudo kextload -b com.FTDI.driver.FTDIUSBSerialDriver
-fi
+cp -R ./kext/ProlificUsbSerial.kext /Library/Extensions/
+cp -R ./kext/usbserial.kext /Library/Extensions/
+cp -R ./kext/SiLabsUSBDriver.kext /Library/Extensions/
+cp -R ./kext/FTDIUSBSerialDriver.kext /Library/Extensions/
+#sudo kextload -b com.FTDI.driver.FTDIUSBSerialDriver

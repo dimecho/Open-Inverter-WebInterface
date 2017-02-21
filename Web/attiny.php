@@ -158,8 +158,9 @@
                                     <span class="label label-lg label-danger">Prolific chipset USB to Serial adapters will not work, use a "legacy" serial port.</span>
                                     <br/><br/>
                                     <div style="background-color:#ffffff;">
-                                        <img src="img/avr_programmer_serial.png" />
-                                        <br/><img src="img/attiny13.png" /><img src="img/avr_programmer.jpg" /><br/>
+                                        <img src="firmware/img/avr_programmer_serial.png" /><br/>
+                                        <img src="firmware/img/attiny13.png" />
+                                        <img src="firmware/img/avr_programmer.jpg" /><br/>
                                     </div>
                                 </center>
                                 </td>

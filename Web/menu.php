@@ -33,10 +33,10 @@
                                 <li><a tabindex="-1" href="#" onClick="confirmGCCRemove()">Remove GCC ARM Compiler</a></li>
                             <?php } ?>
                             <li class="divider"></li>
-                            <li><a tabindex="-1" href="design.php">Power Stage</a></li>
+                            <li><a tabindex="-1" href="wiring.php">Wiring Diagram</a></li>
                             <li><a tabindex="-1" href="#" onClick="<?php checkEagle(); ?>">Schematics</a></li>
                             <li><a tabindex="-1" href="components.php">Components</a></li>
-                            <li><a tabindex="-1" href="wiring.php">Wiring Diagram</a></li>
+                            <li><a tabindex="-1" href="stm32.php">STM32 Processor</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -48,6 +48,7 @@
                             <li><a tabindex="-1" href="igbt-test.php">IGBT Test</a></li>
                             <li><a tabindex="-1" href="encoder.php">Encoder</a></li>
                             <li><a tabindex="-1" href="arduino.php">Arduino LCD</a></li>
+                            <li><a tabindex="-1" href="design.php">Power Stage</a></li>
                         </ul>
                     </li>
                 </ul>

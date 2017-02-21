@@ -16,7 +16,6 @@
 		32D281B61CF0066F00606B12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32D281B51CF0066F00606B12 /* Assets.xcassets */; };
 		32D281B91CF0066F00606B12 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32D281B71CF0066F00606B12 /* Main.storyboard */; };
 		32D281F31CF00EF200606B12 /* dio in Resources */ = {isa = PBXBuildFile; fileRef = 32D281ED1CF00EF200606B12 /* dio */; };
-		32D281F41CF00EF200606B12 /* encoder in Resources */ = {isa = PBXBuildFile; fileRef = 32D281EE1CF00EF200606B12 /* encoder */; };
 		32D281F51CF00EF200606B12 /* inkscape in Resources */ = {isa = PBXBuildFile; fileRef = 32D281EF1CF00EF200606B12 /* inkscape */; };
 		32D281F81CF00EF200606B12 /* xquartz in Resources */ = {isa = PBXBuildFile; fileRef = 32D281F21CF00EF200606B12 /* xquartz */; };
 		32D5A3431D6AD27C008F9EFB /* arm in Resources */ = {isa = PBXBuildFile; fileRef = 32D5A3421D6AD27C008F9EFB /* arm */; };
@@ -40,7 +39,6 @@
 		32D281B81CF0066F00606B12 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		32D281BA1CF0066F00606B12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		32D281ED1CF00EF200606B12 /* dio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = dio; path = macOS/Resources/dio; sourceTree = "<group>"; };
-		32D281EE1CF00EF200606B12 /* encoder */ = {isa = PBXFileReference; lastKnownFileType = folder; name = encoder; path = macOS/Resources/encoder; sourceTree = "<group>"; };
 		32D281EF1CF00EF200606B12 /* inkscape */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = inkscape; path = macOS/Resources/inkscape; sourceTree = "<group>"; };
 		32D281F21CF00EF200606B12 /* xquartz */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = xquartz; path = macOS/Resources/xquartz; sourceTree = "<group>"; };
 		32D5A3421D6AD27C008F9EFB /* arm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = arm; path = macOS/Resources/arm; sourceTree = "<group>"; };
@@ -98,7 +96,6 @@
 				32F25DD01CF2499F00494B1C /* kext */,
 				32DE5F901CF0D03000113FCF /* Web */,
 				32D281ED1CF00EF200606B12 /* dio */,
-				32D281EE1CF00EF200606B12 /* encoder */,
 				328002001D6AAA4A001C5E4E /* run */,
 				32F25DD21CF24A2600494B1C /* driver */,
 				324C22E71CF429E7003A1AF5 /* eagle */,
@@ -191,7 +188,6 @@
 				32DF0C841CF7FF78008F19AC /* updater in Resources */,
 				32D281F81CF00EF200606B12 /* xquartz in Resources */,
 				32F25DD11CF2499F00494B1C /* kext in Resources */,
-				32D281F41CF00EF200606B12 /* encoder in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
