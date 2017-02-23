@@ -43,6 +43,7 @@
                                     <ul>
                                         <li><a href="https://www.olimex.com/Products/ARM/ST/STM32-H103/resources/STM32-H103.pdf" target="_blank">Olimex H103 Datasheet</a></li>
                                         <li><a href="http://www.st.com/content/st_com/en/products/microcontrollers/stm32-32-bit-arm-cortex-mcus/stm32f1-series/stm32f103/stm32f103rb.html" target="_blank">STM32F103RB Datasheet</a></li>
+                                        <li><a href="http://www.st.com/en/development-tools/stm32cubemx.html" target="_blank">STM32CubeMX Software</a></li>
                                     </ul>
                                 </td>
                             </tr>

@@ -1,4 +1,4 @@
-MCU,H103,Usage
+MCU,H103 (Extension.Pin),Usage
 PA0,2.4,
 PA1,2.8,
 PA2,2.7,brake_in

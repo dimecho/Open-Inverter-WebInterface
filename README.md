@@ -6,7 +6,20 @@
 
 Serial console management application written for Open-Source [Inverter Project](http://johanneshuebner.com/quickcms/index.html%3Fde_electric-car-conversion-site,14.html) controlling 3-Phase AC Induction Motors.
 
-All-in-one: PHP helper, RS232-USB drivers, firmware & bootloader flash, ARM/ATtiny compilers, IGBT test and wiring instructions.
+All-in-One:
+<ul>
+<li>RS232-USB Drivers</li>
+<li>Auto Tunning</li>
+<li>Live Graphs</li>
+<li>Simple and Advanced Parameters</li>
+<li>Firmware and Bootloader Flash</li>
+<li>ARM/AVR Compilers</li>
+<li>Wiring Diagrams</li>
+<li>PCB Schematics</li>
+<li>Component List</li>
+<li>Encoder Builder</li>
+<li>IGBT Test</li>
+</ul>
 
 <p align="center">
 <img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/screenshot.jpg">

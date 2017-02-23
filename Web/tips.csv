@@ -10,3 +10,4 @@ Combine film caps (100uF) and elcaps (1500uF) to get optimal current damping.
 Signal from encoder is translated by BC547 transistor - 5V to encoder is OK.
 Measuring Pin3 from encoder 0.8V is normal, it is the Vbe of any bipolar transistor.
 Modifying encoder for high impedance low-pass filtered digital input.<br/>Remove R1, R3 and T1 and bridge the base to the collector (bridge two pins of T1 that are NOT connected to the ground).<br/><img src="img/encoder_lowpass.png" />
+Which phase connects + charging line for boost charger? Use outside phases and do not connect to the middle phase.

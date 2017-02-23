@@ -67,20 +67,22 @@ function confirmDownload(app)
     }else if(app === "openocd"){
         title = "OpenOCD";
         msg = "Install OpenoCD Debugger - Download 2.5MB";
+        url = "https://github.com/gnuarmeclipse/openocd/releases/download/gae-0.10.0-20160110/";
         if(os === "Mac"){
-            url = "https://github.com/gnuarmeclipse/openocd/releases/download/gae-0.10.0-20160110/gnuarmeclipse-openocd-osx-0.10.0-201601101000-dev.pkg";
+            url += "gnuarmeclipse-openocd-osx-0.10.0-201601101000-dev.pkg";
         }else if(os === "Windows"){
-            url = "https://github.com/gnuarmeclipse/openocd/releases/download/gae-0.10.0-20160110/gnuarmeclipse-openocd-win64-0.10.0-201601101000-dev-setup.exe";
+            url += "gnuarmeclipse-openocd-win64-0.10.0-201601101000-dev-setup.exe";
         }
     }else if(app === "eagle"){
         title = "CadSoft EAGLE PCB Design Software.";
-        msg = "Install EAGLE - Download 50MB";
+        msg = "Install EAGLE - Download 80MB";
+        url = "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/";
         if(os === "Mac"){
-            url = "http://web.cadsoft.de/ftp/eagle/program/7.7/eagle-mac64-7.7.0.zip";
+            url += "Autodesk_EAGLE_8.0.1_English_Mac_64bit.pkg"
         }else if(os === "Windows"){
-            url = "http://web.cadsoft.de/ftp/eagle/program/7.7/eagle-win64-7.7.0.exe";
+            url += "Autodesk_EAGLE_8.0.1_English_Win_64bit.exe"
         }else if(os === "Linux"){
-            url = "http://web.cadsoft.de/ftp/eagle/program/7.7/eagle-lin64-7.7.0.run";
+            url += "Autodesk_EAGLE_8.0.1_English_Linux_64bit.tar.gz"
         }
     }else if(app === "arm"){
         title = "arm-none-eabi-gcc";
@@ -93,10 +95,11 @@ function confirmDownload(app)
     }else if(app === "arduino"){
         title = "Arduino 1.8.1";
         msg = "Install Arduino IDE - Download 150MB";
+        url = "https://www.arduino.cc/download_handler.php?f=/";
         if(os === "Mac"){
-            url = "https://www.arduino.cc/download_handler.php?f=/arduino-1.8.1-macosx.zip";
+            url += "arduino-1.8.1-macosx.zip";
         }else if(os === "Windows"){
-            url = "https://www.arduino.cc/download_handler.php?f=/arduino-1.8.1-windows.exe";
+            url += "arduino-1.8.1-windows.exe";
         }
     }else if(app === "source"){
         title = "Inverter Source Code";
@@ -189,6 +192,9 @@ function downloadComplete(app) {
 	
 	if (app === "openscad") {
 		window.location.href = "/encoder.php";
+    }else if (app === "eagle") {
+        window.location.href = "/components.php";
+        openExternalApp(app);
 	}else{
 		openExternalApp(app);
 	}

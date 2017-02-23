@@ -72,7 +72,9 @@
                             </tr>
                             <tr>
                                 <td colspan="3">
-                                    <img src="img/wiring.png" />
+                                    <a href="img/wiring.png" data-lightbox="image-1">
+                                        <img src="img/wiring.png" class="img-thumbnail img-rounded" />
+                                    </a>
                                 </td>
                             </tr>
                              <tr>
