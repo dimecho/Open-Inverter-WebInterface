@@ -4,29 +4,35 @@
 
 # Huebner Inverter - Console Management#
 
-Serial console management application written for Open-Source [Inverter Project](http://johanneshuebner.com/quickcms/index.html%3Fde_electric-car-conversion-site,14.html) controlling 3-Phase AC Induction Motors.
+Console management application written for Open-Source [Inverter Project](http://johanneshuebner.com/quickcms/index.html%3Fde_electric-car-conversion-site,14.html) controlling 3-Phase AC Induction Motors.
 
-All-in-One:
-<ul>
-<li>RS232-USB Drivers</li>
-<li>Auto Tunning</li>
-<li>Live Graphs</li>
-<li>Simple and Advanced Parameters</li>
-<li>Firmware and Bootloader Flash</li>
-<li>ARM/AVR Compilers</li>
-<li>Wiring Diagrams</li>
-<li>PCB Schematics</li>
-<li>Component List</li>
-<li>Encoder Builder</li>
-<li>IGBT Test</li>
-</ul>
+<table>
+    <tr>
+        <td>
+            All-in-One:
+            <ul>
+            <li>RS232-USB Drivers</li>
+            <li>Auto Tunning</li>
+            <li>Live Graphs</li>
+            <li>Simple and Advanced Parameters</li>
+            <li>Firmware and Bootloader Flash</li>
+            <li>ARM/AVR Compilers</li>
+            <li>Wiring Diagrams</li>
+            <li>PCB Schematics</li>
+            <li>Component List</li>
+            <li>Encoder Builder</li>
+            <li>IGBT Test</li>
+            </ul>
+        </td>
+        <td>
+            <img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/photo.jpg">
+        </td>
+    </tr>
+</table>
+<br/>
 
 <p align="center">
 <img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/screenshot.jpg">
-</p>
-
-<p align="center">
-<img src="https://github.com/poofik/huebner-inverter/raw/master/Web/img/photo.jpg">
 </p>
 
 ## Download
