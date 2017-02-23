@@ -6,7 +6,7 @@
 
 Console management application written for Open-Source [Inverter Project](http://johanneshuebner.com/quickcms/index.html%3Fde_electric-car-conversion-site,14.html) controlling 3-Phase AC Induction Motors.
 
-<table>
+<table border="0">
     <tr>
         <td>
             All-in-One:
