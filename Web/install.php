@@ -29,7 +29,7 @@
         if ($GLOBALS["OS"] === "Mac") {
             $path = "/Applications/Arduino.app/Contents/MacOS/Arduino";
         }else if ($GLOBALS["OS"] === "Windows") {
-            $path = "C:\\Program Files\Arduino\\arduino.exe";
+            $path = "C:\\Program Files (x86)\Arduino\\arduino.exe";
         }else if ($GLOBALS["OS"] === "Linux") {
             $path = "/opt/arduino/bin/arduino";
         }

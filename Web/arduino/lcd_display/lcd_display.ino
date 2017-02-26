@@ -30,12 +30,10 @@ void setup()
 
     lcd.setCursor(0,1);
     lcd.print("Initializing ...");
-
+    
     delay(3200);
-
+    
     Serial.begin(115200);
-    Serial.setTimeout(2000);
-
     lcd.clear();
 }
 
@@ -46,7 +44,18 @@ void loop()
         mode++;         // Increment mode
         if(mode == 3)   // Only two modes
             mode = 0;   // Reset back to 0
-        delay(2000);    // Wait for button to depress
+
+        lcd.clear();    // Clear LCD
+        lcd.setCursor(0,0);
+        lcd.print("Mode:" + String(mode));
+        
+        Serial.end();
+        
+        if(mode != 2){   //Do not interfere with USB serial
+            Serial.begin(115200);
+        }
+        
+        delay(1800);    // Wait for button to depress
         lcd.clear();    // Clear LCD
     }
 
@@ -70,10 +79,6 @@ void loop()
             lcd.print("TX/RX Error");
         }
         
-        delay(4000);
-        
-        lcd.clear();
-        
     }else if(mode == 0){
       
         float udc = 0;
@@ -95,8 +100,7 @@ void loop()
         lcd.print("V:" + String(udc) + "  A:" + String(idc));
         lcd.setCursor(0,1);
         lcd.print("RPM:" +  String(rpm) + "   ");
-        delay(1000);
-
+        
     }else if(mode == 1){
       
         float udcsw = 0;
@@ -116,15 +120,12 @@ void loop()
         lcd.print("udcsw:" + String(udcsw));
         lcd.setCursor(0,1);
         lcd.print("ocurlim:" + String(ocurlim));
-        delay(5000);
 
     }else if(mode == 2){
         
         lcd.setCursor(0,0);
         lcd.print("Debug Mode");
-        delay(5000);
-        
-    }else{
-      delay(1000);
     }
+    
+    delay(1000);
 }

@@ -1,29 +1,25 @@
 body {
-    /*
-    Background by Harry
-    http://www.freepik.com/free-vector/technological-background-with-full-color-circuits_951748.htm
-    */
-    background-image: url(../img/background.png);
-    background-attachment: fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+  /*
+  Background by Harry
+  http://www.freepik.com/free-vector/technological-background-with-full-color-circuits_951748.htm
+  */
+  background-image: url(../img/background.png);
+  background-attachment: fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
-
 form {
-    display: none;
+  display: none;
 }
-
 .table-bordered{
-    background: rgba(230, 230, 230, 0.8); 
+  background: rgba(230, 230, 230, 0.8); 
 }
-
 .label-lg {
-    font-size:13px !important;
-    font-weight:normal !important;
+  font-size:13px !important;
+  font-weight:normal !important;
 }
-
 .svg-inject{
   width:32px;
   height:32px;
@@ -39,4 +35,24 @@ form {
 }
 .svg-red * {
   fill:#b52808;
+}
+.circle-green {
+  width: 20px;
+  height: 20px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  border-style: solid;
+  border-color: #00cc00;
+  background: #00ff00
+}
+.circle-red {
+  width: 20px;
+  height: 20px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  border-style: solid;
+  border-color: #e62e00;
+  background: #ff704d
 }

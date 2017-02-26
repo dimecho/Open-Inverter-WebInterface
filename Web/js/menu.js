@@ -9,16 +9,16 @@ $(document).ready(function () {
             setup: function setup() {
                 return {
                     buttons: [{
-                        text: 'Sine Wave',
+                        text: '(2) Slip Control',
                         className: alertify.defaults.theme.ok
                     }, {
-                        text: 'Slip Control',
+                        text: '(5) Sine Wave',
                         className: alertify.defaults.theme.ok
                     }, {
-                        text: 'Boost Charger',
+                        text: '(3) Charger',
                         className: alertify.defaults.theme.cancel
                     }, {
-                        text: 'Buck Stepdown',
+                        text: '(4) Stepdown',
                         className: alertify.defaults.theme.cancel
                     }],
                     focus: {
@@ -26,7 +26,7 @@ $(document).ready(function () {
                         select: false
                     },
                     options: {
-                        title: '',
+                        title: 'Inverter Mode',
                         maximizable: false,
                         resizable: false
                     }
@@ -41,9 +41,9 @@ $(document).ready(function () {
                     });
                 } else {
                     if(closeEvent.index === 0) {
-                        startInverter(5);
-                    }else if(closeEvent.index === 1) {
                         startInverter(2);
+                    }else if(closeEvent.index === 1) {
+                        startInverter(5);
                     }else if(closeEvent.index === 2) {
                         $.notify({ message: "Experimental Area" }, { type: 'danger' });
                         startInverter(3);
@@ -108,6 +108,7 @@ $(document).ready(function () {
             }
         }
     });
+    
     $(".knob").val(0).trigger('change');
 
     buildHeader();
@@ -136,7 +137,7 @@ function uploadSnapshot() {
 
 function openExternalApp(app) {
 
-    console.log(app);
+    //console.log(app);
     
     if (app === "openscad") {
         $('.fileSVG').trigger('click');
@@ -203,10 +204,18 @@ function checkUpdates() {
             success: function success(data) {
                 //console.log(data);
                 if(data !== "") {
+                    var url = "https://github.com/poofik/Huebner-Inverter/releases/download/1.0/";
+                    if(os === "Mac"){
+                        url += "Huebner.Inverter.dmg";
+                    }else if(os === "Windows"){
+                        url += "Huebner.Inverter.Windows.zip";
+                    }else if(os === "Linux"){
+                        url += "Huebner.Inverter.Linux.tgz";
+                    }
                     $.notify({
                         icon: "glyphicon glyphicon-download-alt",
                         title: "New Version",
-                        message: "Update available <a href='https://github.com/poofik/Huebner-Inverter/releases' target='_blank'>Download</a> " + data
+                        message: "Update available <a href='" + url + "'>Download</a> " + data
                     }, {
                         type: 'success'
                     });
@@ -260,7 +269,7 @@ function startInverter(mode) {
             //console.log(data);
             if (data.indexOf("started") != -1) {
                 $.notify({ message: "Inverter started" }, { type: "success" });
-                if (mode === 2) {
+                if (mode === 2 || mode === 5) {
                     $("#potentiometer").show();
                     $(".collapse").collapse('show');
                 }
@@ -339,9 +348,11 @@ function buildHeader() {
     //========================
     if (version === undefined || version === "NaN") {
         version = getJSONFloatValue("version");
-        setCookie("version", version, 1);
-    }
-    $("#titleVersion").empty().append("Firmware v" + version);
+        if(version > 0)
+            setCookie("version", version, 1);
+    }else{
+		$("#firmwareVersion").empty().append("Firmware v" + version);
+	}
     //========================
     var opStatus = $("<span>");
 
@@ -351,13 +362,14 @@ function buildHeader() {
 
             data = data.replace("\n\n", "\n");
             data = data.split("\n");
-
+            
             //console.log(data);
-            if(data.length > 1) {
+            
+            if(data.length > 8) {
 
                 var span = $("<span>", { class: "tooltip1" });
                 var img = $("<img>", { class: "svg-inject", src: "img/key.svg" });
-                $("#potentiometer").hide();
+                //$("#potentiometer").hide();
 
                 if (parseFloat(data[15]) === 3) {
                     span.attr("data-tooltip-content", "<h6>Boost Mode</h6>");

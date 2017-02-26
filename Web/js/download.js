@@ -27,18 +27,20 @@ function confirmDownload(app)
     if(app === "inkscape"){
         title = "Inkscape is a Vector Graphics Software.";
         msg = "Install Inkscape - Download 70MB";
+        url = "https://inkscape.org/en/gallery/item/";
         if(os === "Mac"){
-            url = "https://inkscape.org/en/gallery/item/3896/Inkscape-0.91-1-x11-10.7-x86_64.dmg";
+            url += "3896/Inkscape-0.91-1-x11-10.7-x86_64.dmg";
         }else if(os === "Windows"){
-            url = "https://inkscape.org/en/gallery/item/3956/inkscape-0.91-x64.msi";
+            url += "3956/inkscape-0.91-x64.msi";
         }
     }else if(app === "openscad"){
         title = "OpenSCAD is for creating solid 3D CAD objects.";
         msg = "Install OpenSCAD - Download 25MB";
+        url = "http://files.openscad.org/";
         if(os === "Mac"){
-            url = "http://files.openscad.org/OpenSCAD-2015.03-3.dmg";
+            url += "OpenSCAD-2015.03-3.dmg";
         }else if(os === "Windows"){
-            url = "http://files.openscad.org/OpenSCAD-2015.03-x86-64-Installer.exe";
+            url += "OpenSCAD-2015.03-x86-64-Installer.exe";
         }
     }else if(app === "xquartz"){
         title = "X Window System that runs on OS X.";
@@ -87,15 +89,16 @@ function confirmDownload(app)
     }else if(app === "arm"){
         title = "arm-none-eabi-gcc";
         msg = "Install GCC-ARM Compiler - Download 100MB";
+        url = "https://launchpadlibrarian.net/";
         if(os === "Mac"){
-            url = "https://launchpadlibrarian.net/287101378/gcc-arm-none-eabi-5_4-2016q3-20160926-mac.tar.bz2";
+            url += "287101378/gcc-arm-none-eabi-5_4-2016q3-20160926-mac.tar.bz2";
         }else if(os === "Windows"){
-            url = "https://launchpadlibrarian.net/287101671/gcc-arm-none-eabi-5_4-2016q3-20160926-win32.exe";
+            url += "287101671/gcc-arm-none-eabi-5_4-2016q3-20160926-win32.exe";
         }
     }else if(app === "arduino"){
         title = "Arduino 1.8.1";
         msg = "Install Arduino IDE - Download 150MB";
-        url = "https://www.arduino.cc/download_handler.php?f=/";
+        url = "https://downloads.arduino.cc/";
         if(os === "Mac"){
             url += "arduino-1.8.1-macosx.zip";
         }else if(os === "Windows"){

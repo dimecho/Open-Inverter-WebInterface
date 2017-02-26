@@ -42,7 +42,7 @@
             if ($GLOBALS["OS"] === "Mac") {
                 $command = "/Applications/Arduino.app/Contents/MacOS/Arduino \"" .$args. "\"";
             }else if ($GLOBALS["OS"] === "Windows") {
-                $command = "arduino.exe \"" .$args. "\"";
+				$command = "C:\\Progra~2\\Arduino\\arduino.exe \"" .$args. "\"";
             }else if ($GLOBALS["OS"] === "Linux") {
                 $command = "su \$SUDO_USER -c \"arduino '" .$args. "'\"";
             }

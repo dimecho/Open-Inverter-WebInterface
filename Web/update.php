@@ -9,7 +9,7 @@ $_build = 0;
 $CFBundleShortVersionString = false;
 $CFBundleVersion = false;
 
-$plist = file_get_contents(base64_decode("aHR0cDovL2dpdGh1Yi5jb20vcG9vZmlrL2h1ZWJuZXItaW52ZXJ0ZXIvcmF3L21hc3Rlci9tYWNPUy9JbmZvLnBsaXN0"));
+$plist = file_get_contents(base64_decode("aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3Bvb2Zpay9odWVibmVyLWludmVydGVyL21hc3Rlci9tYWNPUy9JbmZvLnBsaXN0"));
 $lines = explode("\n", $plist);
 foreach ($lines as $line)
 {

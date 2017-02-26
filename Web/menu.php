@@ -7,7 +7,7 @@
                     <li class="dropdown">
                         <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>Motor</b><b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                            <li><a tabindex="-1" onClick="alertify.startInverterMode('Inverter Mode');">Start Inverter</a></li>
+                            <li><a tabindex="-1" onClick="alertify.startInverterMode('2=ManualRun, 3=Boost, 4=Buck, 5=Sine');">Start Inverter</a></li>
                             <li><a tabindex="-1" onClick="stopInverter()">Stop Inverter</a></li>
                             <li><a tabindex="-1" onClick="setDefaults()">Reset to Default</a></li>
                             <li><a tabindex="-1" href="db.php">Motor Database</a></li>
@@ -16,8 +16,10 @@
                             <li class="divider"></li>
                             <li><a tabindex="-1" href="#" onClick="uploadSnapshot();">Upload Parameters</a></li>
                             <li><a tabindex="-1" href="#" onClick="downloadSnapshot();">Download Parameters</a></li>
+                            <li class="divider"></li>
                             <li><a tabindex="-1" href="index.php">Advanced Parameters</a></li>
                             <li><a tabindex="-1" href="simple.php">Simple Parameters</a></li>
+                            <li><a tabindex="-1" href="dashboard.php">Dashboard Check</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -56,7 +58,7 @@
                     <li><div id="opStatus"></div></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><span><h3 class="label" id="titleVersion" style="color:black;font-weight:normal"></h3></span></li>
+                    <li><span><h3 class="label" id="firmwareVersion" style="color:black;font-weight:normal"></h3></span></li>
                 </ul>
             </div>
         </div>
