@@ -39,12 +39,12 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <a href="encoder/img/encoder_2d.png" data-lightbox="image-1">
+                                    <a data-fancybox="gallery" href="encoder/img/encoder_2d.png">
                                         <img src="encoder/img/encoder_2d.png" class="img-thumbnail img-rounded" />
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="encoder/img/encoder_3d.png" data-lightbox="image-2">
+                                    <a data-fancybox="gallery" href="encoder/img/encoder_3d.png">
                                         <img src="encoder/img/encoder_3d.png" class="img-thumbnail img-rounded" />
                                     </a>
                                 </td>

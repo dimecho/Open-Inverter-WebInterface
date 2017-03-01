@@ -76,12 +76,12 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <a href="arduino/img/DSC03848.jpg" data-lightbox="image-1">
+                                    <a data-fancybox="gallery" href="arduino/img/DSC03848.jpg">
                                         <img src="arduino/img/DSC03848.jpg" class="img-thumbnail img-rounded" />
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="arduino/img/DSC03852.jpg" data-lightbox="image-2">
+                                    <a data-fancybox="gallery" href="arduino/img/DSC03852.jpg">
                                         <img src="arduino/img/DSC03852.jpg" class="img-thumbnail img-rounded" />
                                     </a>
                                 </td>

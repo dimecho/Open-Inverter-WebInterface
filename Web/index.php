@@ -5,6 +5,21 @@
         <link rel="stylesheet" type="text/css" href="css/bootstrap-editable.css" />
         <script type="text/javascript" src="js/bootstrap-editable.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
+        <script>
+            $(document).ready(function() {
+                $(".safety").fancybox({
+                    maxWidth    : 800,
+                    maxHeight   : 640,
+                    fitToView   : false,
+                    width       : '80%',
+                    height      : '80%',
+                    autoSize    : false,
+                    closeClick  : false,
+                    openEffect  : 'none',
+                    closeEffect : 'none'
+                });
+            });
+        </script>
     </head>
     <body>
         <div class="container">
@@ -27,6 +42,24 @@
                 </div>
                 <div class="col-md-1"></div>
             </div>
+        </div>
+        <a class="safety" data-fancybox data-src="#warning" href="javascript:;" style="display: none;"></a>
+        <div id="warning" style="display:none;width:640px;">
+            <center>
+                <img src="img/safety.png" />
+            </center>
+            <p>
+            This project is for educational purpose. High power electronics can cause damage, death or injury. You have decided to build your own inverter so you are responsible for what you do.
+            </p>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>
+                            <center><button type="button" class="btn btn-danger" onClick="$.fancybox.close();setCookie('safety', 1, 360);"><i class="glyphicon glyphicon-cog"></i> I Agree</button></center>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </body>
 </html>

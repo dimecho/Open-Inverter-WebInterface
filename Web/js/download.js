@@ -80,11 +80,11 @@ function confirmDownload(app)
         msg = "Install EAGLE - Download 80MB";
         url = "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/";
         if(os === "Mac"){
-            url += "Autodesk_EAGLE_8.0.1_English_Mac_64bit.pkg"
+            url += "Autodesk_EAGLE_8.0.2_English_Mac_64bit.pkg"
         }else if(os === "Windows"){
-            url += "Autodesk_EAGLE_8.0.1_English_Win_64bit.exe"
+            url += "Autodesk_EAGLE_8.0.2_English_Win_64bit.exe"
         }else if(os === "Linux"){
-            url += "Autodesk_EAGLE_8.0.1_English_Linux_64bit.tar.gz"
+            url += "Autodesk_EAGLE_8.0.2_English_Linux_64bit.tar.gz"
         }
     }else if(app === "arm"){
         title = "arm-none-eabi-gcc";

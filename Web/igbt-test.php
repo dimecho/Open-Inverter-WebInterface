@@ -36,12 +36,12 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <a href="img/igbt-test-c1.png" data-lightbox="image-1">
+                                    <a data-fancybox="gallery" href="img/igbt-test-c1.png">
                                         <img src="img/igbt-test-c1.png" class="img-thumbnail img-rounded" />
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="img/igbt-test-e2.png" data-lightbox="image-2">
+                                    <a data-fancybox="gallery" href="img/igbt-test-e2.png">
                                         <img src="img/igbt-test-e2.png" class="img-thumbnail img-rounded" />
                                     </a>
                                 </td>

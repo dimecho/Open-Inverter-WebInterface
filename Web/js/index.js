@@ -2,6 +2,11 @@ var dev = 0;
 
 $(document).ready(function()
 {
+    var safety = getCookie("safety");
+    if (safety === undefined) {
+        $(".safety").trigger('click');
+    }
+
     $('#parameters').editable({
         selector: 'a',
         url: 'serial.php',
@@ -43,13 +48,17 @@ $(document).ready(function()
                 if(parseInt($.trim(value)) > parseInt($("#udclim").text())){
                     return 'Should be lower than cut-off voltage (udclim)';
                 }
+            }else  if(this.id == 'udclim'){
+                if(parseInt($.trim(value)) <= parseInt($("#udcmax").text())){
+                    return 'Should be above maximum voltage (udcmax)';
+                }
             }else if(this.id == 'udcsw'){
                 if(parseInt($.trim(value)) > parseInt($("#udcmax").text())){
                     return 'Should be below maximum voltage (udcmax)';
                 }
 			}else if(this.id == 'fslipmin'){
 				if(parseFloat($.trim(value)) <= parseFloat($("#fmin").text())){
-					return 'Should be higher than start frequency (fmin)';
+					return 'Should be above starting frequency (fmin)';
 				}
             /*}else  if(this.id == 'fslipmax'){
                 if($.trim(value) / 5 > $("#fslipmin").text())

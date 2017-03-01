@@ -43,11 +43,11 @@
     function checkEagle()
     {
         if ($GLOBALS["OS"] === "Mac") {
-            $path = "/Applications/EAGLE-8.0.1/Eagle.app/Contents/MacOS/Eagle";
+            $path = "/Applications/EAGLE-8.0.2/Eagle.app/Contents/MacOS/Eagle";
         }else if ($GLOBALS["OS"] === "Windows") {
-            $path = "C:\\EAGLE-8.0.1\\bin\eagle.exe";
+            $path = "C:\\EAGLE-8.0.2\\bin\eagle.exe";
         }else if ($GLOBALS["OS"] === "Linux") {
-            $path = "/opt/eagle-8.0.1/bin/eagle";
+            $path = "/opt/eagle-8.0.2/bin/eagle";
         }
         if(is_file($path)) {
                 echo "openExternalApp('eagle')";

@@ -51,6 +51,7 @@ $(document).ready(function () {
     Chart.defaults.global.animationSteps = 12;
 
     ctx = document.getElementById("canvas").getContext("2d");
+
     /*
     ctx.webkitImageSmoothingEnabled = false;
     ctx.mozImageSmoothingEnabled = false;
@@ -167,12 +168,16 @@ function initChart() {
         initAmperageChart(duration);
     } else if (activeTab === "#graphE") {
         initFrequenciesChart(duration);
+    } else if (activeTab === "#graphF") {
+        initPWMAnalogChart(duration);
+    } else if (activeTab === "#graphG") {
+        initPWMDeltaChart(duration);
     }
 
     if (chart) chart.destroy();
-
     chart = new Chart(ctx, {
-        type: 'line',
+        //type: 'line',
+        type: 'bar',
         data: data,
         options: options
     });
@@ -202,6 +207,10 @@ function startChart() {
         updateChart(["il1rms", "idc"]);
     } else if (activeTab === "#graphE") {
         updateChart(["fweak", "fstat", "ampnom"]);
+    } else if (activeTab === "#graphF") {
+
+    } else if (activeTab === "#graphG") {
+
     }
 };
 
@@ -227,12 +236,228 @@ function initTimeAxis(seconds) {
     return xaxis;
 };
 
-function sineWave(phase, amplitude) {
+function sineWave(phase, amplitude, step) {
+    if(step == undefined)
+        step = 0.1;
+
     var array = [];
-    for (var j = 0; j <= phase * Math.PI; j += 0.1) {
+    for (var j = 0; j <= phase * Math.PI; j += step) {
         array.push(Math.sin(j) * amplitude); //[j, Math.sin(j)]
     }
     return array;
+}
+
+function sinePWM(array, phase, amplitude, start, step) {
+    for (var j = start; j <= phase * Math.PI; j += step) {
+        //console.log(j);
+        array.push(Math.sin(j) * amplitude); //[j, Math.sin(j)]
+    }
+}
+
+function pulsePWM() {
+    //TODO:
+}
+
+function initPWMDeltaChart(duration) {
+
+    data = {
+        labels: initTimeAxis(62),
+        datasets: [ {
+            type: "line",
+            label: "L1", //red
+            backgroundColor: "rgba(255, 51, 0, 0.6)",
+            borderColor: "#ff3300",
+            borderWidth: 1,
+            data: []
+        }, {
+            type: "line",
+            label: "L2", //green
+            backgroundColor: "rgba(102, 255, 51, 0.6)",
+            borderColor: "#39e600",
+            borderWidth: 1,
+            data: []
+        }, {
+            type: "line",
+            label: "L3", //blue
+            backgroundColor: "rgba(51, 133, 255, 0.5)",
+            borderColor: "#0066ff",
+            borderWidth: 1,
+            data: []
+        }]
+    };
+
+    pulsePWM(data.datasets[0].data,4, 1, -2.25,0.1); //red
+    pulsePWM(data.datasets[1].data,4, 1, 2.0,0.1); //green
+    pulsePWM(data.datasets[2].data,4, 1, 0,0.1); //blue
+
+    options = {
+        //scaleUse2Y: true,
+        legend: {
+            display: true,
+            labels: {
+                fontColor: 'rgb(0, 0, 0)'
+            }
+        },
+        elements: {
+            point: {
+                radius: 0
+            }
+        },
+        tooltips: {
+            enabled: false
+        },
+        responsive: true,
+        //maintainAspectRatio: false,
+        scales: {
+            xAxes: [{
+                display: true,
+                position: 'bottom',
+
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Time (Milliseconds)'
+                },
+                ticks: {
+                    reverse: false,
+                    maxRotation: 0,
+                }
+            }],
+            yAxes: [{
+                display: true,
+                position: 'left',
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Pulse'
+                },
+                ticks: {
+                    reverse: false,
+                    stepSize: 1,
+                    suggestedMin: 0, //important
+                    suggestedMax: 2 //important
+                }
+            }]
+        },
+        pan: {
+            enabled: true,
+            mode: 'xy'
+        },
+        zoom: {
+            enabled: true,
+            mode: 'xy',
+            limits: {
+                max: 100,
+                min: 0.5
+            }
+        },
+        animation: {
+            duration: duration
+        }
+    };
+}
+
+function initPWMAnalogChart(duration) {
+
+    var udclim = 12; //getJSONFloatValue("udclim");
+    var pwmfrq = 8.8; //getJSONFloatValue("pwmfrq");
+    var step = udclim / 10;
+
+    data = {
+        labels: initTimeAxis(pwmfrq * 10),
+        datasets: [ {
+            type: "bar",
+            label: "L1", //red
+            backgroundColor: "rgba(255, 51, 0, 0.6)",
+            borderColor: "#ff3300",
+            borderWidth: 1,
+            data: []
+        }, {
+            type: "bar",
+            label: "L2", //green
+            backgroundColor: "rgba(102, 255, 51, 0.6)",
+            borderColor: "#39e600",
+            borderWidth: 1,
+            data: []
+        }, {
+            type: "bar",
+            label: "L3", //blue
+            backgroundColor: "rgba(51, 133, 255, 0.5)",
+            borderColor: "#0066ff",
+            borderWidth: 1,
+            data: []
+        }]
+    };
+
+    sinePWM(data.datasets[0].data,4, udclim, -2.25,0.1); //red
+    sinePWM(data.datasets[1].data,4, udclim, 2.0,0.1); //green
+    sinePWM(data.datasets[2].data,4, udclim, 0,0.1); //blue
+
+    options = {
+        //scaleUse2Y: true,
+        legend: {
+            display: true,
+            labels: {
+                fontColor: 'rgb(0, 0, 0)'
+            }
+        },
+        elements: {
+            point: {
+                radius: 0
+            }
+        },
+        tooltips: {
+            enabled: false
+        },
+        responsive: true,
+        //maintainAspectRatio: false,
+        scales: {
+            xAxes: [{
+                display: true,
+                position: 'bottom',
+                barPercentage: 1.0,
+                categoryPercentage: 2.0,
+
+                scaleLabel: {
+                    display: true,
+                    //labelString: 'PWM (kHz/Cycle)'
+                    labelString: 'Time (Milliseconds)'
+                },
+                ticks: {
+                    reverse: false,
+                    maxRotation: 0,
+                    stepSize: 50
+                }
+            }],
+            yAxes: [{
+                display: true,
+                position: 'left',
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Voltage (VDC)'
+                },
+                ticks: {
+                    reverse: false,
+                    //stepSize: step,
+                    suggestedMin: 0, //important
+                    suggestedMax: udclim + step //important
+                }
+            }]
+        },
+        pan: {
+            enabled: true,
+            mode: 'xy'
+        },
+        zoom: {
+            enabled: true,
+            mode: 'xy',
+            limits: {
+                max: 100,
+                min: 0.5
+            }
+        },
+        animation: {
+            duration: duration
+        }
+    };
 }
 
 function initFrequenciesChart(duration) {
@@ -240,6 +465,7 @@ function initFrequenciesChart(duration) {
     data = {
         labels: initTimeAxis(62),
         datasets: [{
+            type: 'line',
             label: "Field Weakening",
             backgroundColor: "rgba(0, 0, 0, 0)",
             borderColor: "#ff0000",
@@ -248,6 +474,7 @@ function initFrequenciesChart(duration) {
             hoverBorderColor: "#ff0000",
             data: [0]
         }, {
+            type: 'line',
             label: "Stator Frequency",
             backgroundColor: "#90caf9",
             borderColor: "#33b5e5",
@@ -256,6 +483,7 @@ function initFrequenciesChart(duration) {
             hoverBorderColor: "#33b5e5",
             data: [0]
         }, {
+            type: 'line',
             label: "Amplitude Max",
             backgroundColor: "rgba(0, 0, 0, 0)",
             borderColor: "#bdbdbd",
@@ -264,6 +492,7 @@ function initFrequenciesChart(duration) {
             hoverBorderColor: "#bdbdbd",
             data: [0]
         }, {
+            type: 'line',
             label: "Amplitude Nominal",
             backgroundColor: "rgba(0, 0, 0, 0)",
             borderColor: "#FF8800",
@@ -356,6 +585,7 @@ function initAmperageChart(duration) {
     data = {
         labels: initTimeAxis(61),
         datasets: [{
+            type: 'line',
             label: "AC Current",
             backgroundColor: "rgba(51, 153, 255,0.2)",
             borderColor: "rgba(0,0,0,0.2)",
@@ -364,6 +594,7 @@ function initAmperageChart(duration) {
             hoverBorderColor: "rgba(0,0,0,0.5)",
             data: [0]
         }, {
+            type: 'line',
             label: "DC Current",
             backgroundColor: "rgba(102, 255, 51,0.2)",
             borderColor: "rgba(0,0,0,0.2)",
@@ -457,6 +688,7 @@ function initMotorChart(duration) {
     data = {
         labels: initTimeAxis(61),
         datasets: [{
+            type: 'line',
             label: "Motor Speed",
             backgroundColor: "rgba(255,99,132,0.2)",
             borderColor: "rgba(255,99,132,1)",
@@ -536,6 +768,7 @@ function initTemperatureChart(duration) {
     data = {
         labels: initTimeAxis(61),
         datasets: [{
+            type: 'line',
             label: "Motor",
             backgroundColor: "rgba(51, 153, 255,0.2)",
             borderColor: "rgba(0,0,0,0.2)",
@@ -544,6 +777,7 @@ function initTemperatureChart(duration) {
             hoverBorderColor: "rgba(0,0,0,0.5)",
             data: [0]
         }, {
+            type: 'line',
             label: "Inverter",
             backgroundColor: "rgba(102, 255, 51,0.2)",
             borderColor: "rgba(0,0,0,0.2)",
@@ -623,6 +857,7 @@ function initBatteryChart(duration) {
     data = {
         labels: initTimeAxis(61),
         datasets: [{
+            type: 'line',
             label: "Battery",
             backgroundColor: "rgba(102, 255, 51,0.2)",
             borderColor: "rgba(0,0,0,0.2)",
@@ -631,6 +866,7 @@ function initBatteryChart(duration) {
             hoverBorderColor: "rgba(0,0,0,0.5)",
             data: [0]
         }, {
+            type: 'line',
             label: "Inverter",
             backgroundColor: "rgba(255,99,132,0.2)",
             borderColor: "rgba(255,99,132,1)",

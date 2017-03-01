@@ -80,26 +80,41 @@ void loop()
         }
         
     }else if(mode == 0){
-      
+
+        int pot = 0;
+        int potnom = 0;
         float udc = 0;
+        float udcsw = 0;
         float idc = 0;
         float rpm = 0;
-
-        Serial.println("get udc,idc,speed\n");  // Bulk parameter request
+        
+        Serial.println("get pot,potnom,udc,udcsw,idc,speed\n");  // Bulk parameter request
         delay(100);
         
         if (Serial.available() > 0)
         {
             Serial.readStringUntil('\n'); // Consume echo
+            pot = Serial.readStringUntil('\n').toInt();
+            potnom = Serial.readStringUntil('\n').toInt();
             udc = Serial.readStringUntil('\n').toFloat();
+            udcsw = Serial.readStringUntil('\n').toFloat();
             idc = Serial.readStringUntil('\n').toFloat();
             rpm = Serial.readStringUntil('\n').toFloat();
         }
 
         lcd.setCursor(0,0);
-        lcd.print("V:" + String(udc) + "  A:" + String(idc));
+        if(udc >=  udcsw){
+            lcd.print("V:" + String(udc) + " A:" + String(idc) + "   ");
+        }else{
+            lcd.print("V:" + String(udc) + " C:" + String(udcsw) + "   ");
+        }
+        
         lcd.setCursor(0,1);
-        lcd.print("RPM:" +  String(rpm) + "   ");
+        if(rpm >  0){
+          lcd.print("RPM:" +  String(rpm) + "    ");
+        }else{
+          lcd.print("POT:" +  String(pot) + " " + String(potnom) + "%   ");
+        }
         
     }else if(mode == 1){
       

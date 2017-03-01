@@ -54,12 +54,12 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <a href="img/smt32-h103-top.jpg" data-lightbox="image-1">
+                                    <a data-fancybox="gallery" href="img/smt32-h103-top.jpg">
                                         <img src="img/smt32-h103-top.jpg" class="img-thumbnail img-rounded" />
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="img/STMF103RxTx_pinout.png" data-lightbox="image-2">
+                                    <a data-fancybox="gallery" href="img/STMF103RxTx_pinout.png">
                                         <img src="img/STMF103RxTx_pinout.png" class="img-thumbnail img-rounded" />
                                     </a>
                                 </td>

@@ -6,6 +6,7 @@
         ?>
         <script>
             $(document).on('click', '.browse', function(){
+                $(this).attr("disabled", true);
                 $.ajax("upload.php?db=" + $("#motor").val(),{
                     async: false,
                     success: function(data){
@@ -13,6 +14,7 @@
                         window.location.href = "/index.php";
                     }
                 });
+                $(this).removeAttr("disabled");
             });
 
             function setMotorImage(){
