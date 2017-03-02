@@ -81,8 +81,8 @@
                                     <li><a data-toggle="tab" href="#graphC">Battery</a></li>
                                     <li><a data-toggle="tab" href="#graphD">Sensors</a></li>
                                     <li><a data-toggle="tab" href="#graphE">Frequencies</a></li>
-                                    <li><a data-toggle="tab" href="#graphF">PWM (Analog)</a></li>
-                                    <li><a data-toggle="tab" href="#graphG">PWM (Delta)</a></li>
+                                    <li><a data-toggle="tab" href="#graphF">Pulse Amplitude</a></li>
+                                    <li><a data-toggle="tab" href="#graphG">Pulse Width</a></li>
                                 </ul>
                                 <div class="tab-content">
                                     <div id="graphA" class="tab-pane fade in active"></div>

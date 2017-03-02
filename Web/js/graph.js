@@ -169,9 +169,9 @@ function initChart() {
     } else if (activeTab === "#graphE") {
         initFrequenciesChart(duration);
     } else if (activeTab === "#graphF") {
-        initPWMAnalogChart(duration);
+        initPAMChart(duration);
     } else if (activeTab === "#graphG") {
-        initPWMDeltaChart(duration);
+        initPWMChart(duration);
     }
 
     if (chart) chart.destroy();
@@ -236,59 +236,119 @@ function initTimeAxis(seconds) {
     return xaxis;
 };
 
-function sineWave(phase, amplitude, step) {
-    if(step == undefined)
-        step = 0.1;
+function sineWave(array, phase, amplitude, start, step) {
 
-    var array = [];
-    for (var j = 0; j <= phase * Math.PI; j += step) {
+    for (var j = start; j <= phase * Math.PI; j += step) {
         array.push(Math.sin(j) * amplitude); //[j, Math.sin(j)]
     }
-    return array;
 }
 
-function sinePWM(array, phase, amplitude, start, step) {
+function sinePAM(array, phase, amplitude, start, step) {
+
     for (var j = start; j <= phase * Math.PI; j += step) {
         //console.log(j);
         array.push(Math.sin(j) * amplitude); //[j, Math.sin(j)]
     }
 }
 
-function pulsePWM() {
-    //TODO:
+function sinePWM(array, phase, start, step) {
+
+    for (var j = start; j <= phase * Math.PI; j += step) {
+        
+        var upper = 10;
+        var lower = 10;
+        var abs = Math.abs(Math.sin(j))
+
+        for (var s = 0; s < 1.1; s+=0.1) { //sample the wave by 10
+
+            //console.log(abs + ":" + s);
+
+            if (Math.sin(j) < 0) //fall
+            {
+                lower = 10;
+                upper-=s+0.4;
+            }
+            else if (Math.sin(j) > 0) //rise
+            {
+                upper = 10;
+                lower-=s+0.4;
+            }
+
+            if (s >= abs)
+                break;
+        }
+
+        for (var i = 0; i < upper; i++) {
+            array.push(1);
+        }
+
+        for (var i = 0; i < lower; i++) {
+            array.push(-1);
+        }
+    }
 }
 
-function initPWMDeltaChart(duration) {
+//Pulse Width Modulation
+function initPWMChart(duration) {
 
     data = {
-        labels: initTimeAxis(62),
+        labels: initTimeAxis(1000),
         datasets: [ {
             type: "line",
-            label: "L1", //red
-            backgroundColor: "rgba(255, 51, 0, 0.6)",
+            label: "L1 Delta", //red
+            backgroundColor: "transparent",
             borderColor: "#ff3300",
             borderWidth: 1,
             data: []
         }, {
+            hidden: true,
             type: "line",
-            label: "L2", //green
-            backgroundColor: "rgba(102, 255, 51, 0.6)",
+            label: "L2 Delta", //green
+            backgroundColor: "transparent",
             borderColor: "#39e600",
             borderWidth: 1,
             data: []
         }, {
+            hidden: true,
             type: "line",
-            label: "L3", //blue
-            backgroundColor: "rgba(51, 133, 255, 0.5)",
+            label: "L3 Delta", //blue
+            backgroundColor: "transparent",
             borderColor: "#0066ff",
             borderWidth: 1,
+            data: [],
+        }, {
+            type: "line",
+            label: "L1 Analog", //red
+            backgroundColor: "transparent",
+            borderColor: "#ff3300",
+            borderWidth: 1,
             data: []
+        }, {
+            hidden: true,
+            type: "line",
+            label: "L2 Analog", //green
+            backgroundColor: "transparent",
+            borderColor: "#39e600",
+            borderWidth: 1,
+            data: []
+        }, {
+            hidden: true,
+            type: "line",
+            label: "L3 Analog", //blue
+            backgroundColor: "transparent",
+            borderColor: "#0066ff",
+            borderWidth: 1,
+            data: [],
         }]
     };
 
-    pulsePWM(data.datasets[0].data,4, 1, -2.25,0.1); //red
-    pulsePWM(data.datasets[1].data,4, 1, 2.0,0.1); //green
-    pulsePWM(data.datasets[2].data,4, 1, 0,0.1); //blue
+    sinePWM(data.datasets[0].data,4,-2.25,0.1); //red
+    sinePWM(data.datasets[1].data,4,2.0,0.1); //green
+    sinePWM(data.datasets[2].data,4,0,0.1); //blue
+
+    sineWave(data.datasets[3].data,4,1,-2.25,0.007); //red
+    sineWave(data.datasets[4].data,4,1,2.0,0.007); //green
+    sineWave(data.datasets[5].data,4,1,0,0.007); //blue
 
     options = {
         //scaleUse2Y: true,
@@ -301,6 +361,9 @@ function initPWMDeltaChart(duration) {
         elements: {
             point: {
                 radius: 0
+            },
+            line: {
+                tension: 0
             }
         },
         tooltips: {
@@ -312,28 +375,30 @@ function initPWMDeltaChart(duration) {
             xAxes: [{
                 display: true,
                 position: 'bottom',
-
+                //stacked: true,
                 scaleLabel: {
                     display: true,
-                    labelString: 'Time (Milliseconds)'
+                    labelString: 'Time (Millisecond)'
                 },
                 ticks: {
                     reverse: false,
-                    maxRotation: 0,
+                    maxRotation: 0
                 }
             }],
             yAxes: [{
                 display: true,
                 position: 'left',
+                //stacked: true,
                 scaleLabel: {
                     display: true,
                     labelString: 'Pulse'
                 },
                 ticks: {
+                    beginAtZero:true,
                     reverse: false,
-                    stepSize: 1,
-                    suggestedMin: 0, //important
-                    suggestedMax: 2 //important
+                    stepSize: 0.5,
+                    suggestedMin: -1.5, //important
+                    suggestedMax: 1.5 //important
                 }
             }]
         },
@@ -355,7 +420,8 @@ function initPWMDeltaChart(duration) {
     };
 }
 
-function initPWMAnalogChart(duration) {
+//Pulse Amplitude Modulation
+function initPAMChart(duration) {
 
     var udclim = 12; //getJSONFloatValue("udclim");
     var pwmfrq = 8.8; //getJSONFloatValue("pwmfrq");
@@ -387,9 +453,9 @@ function initPWMAnalogChart(duration) {
         }]
     };
 
-    sinePWM(data.datasets[0].data,4, udclim, -2.25,0.1); //red
-    sinePWM(data.datasets[1].data,4, udclim, 2.0,0.1); //green
-    sinePWM(data.datasets[2].data,4, udclim, 0,0.1); //blue
+    sinePAM(data.datasets[0].data,4,udclim,-2.25,0.1); //red
+    sinePAM(data.datasets[1].data,4,udclim,2.0,0.1); //green
+    sinePAM(data.datasets[2].data,4,udclim,0,0.1); //blue
 
     options = {
         //scaleUse2Y: true,
@@ -510,8 +576,9 @@ function initFrequenciesChart(duration) {
     for (var i = 0; i < 62; i++) {
         data.datasets[0].data.push(fweak);
     }
-    data.datasets[2].data = sineWave(4, fmax);
-    //data.datasets[3].data = sineWave(4,80);
+
+    sineWave(data.datasets[2].data,4,fmax,0,0.1);
+    //sineWave(data.datasets[3].data4,80,0,0.1);
 
     options = {
         //scaleUse2Y: true,
@@ -977,7 +1044,7 @@ function updateChart(value, autosize, accuracy) {
 
                         if (value[i] == "ampnom") {
                             var max = Math.max.apply(Math, data.datasets[i].data);
-                            data.datasets[i + 1].data = sineWave(2, max * point / 100);
+                            sineWave(data.datasets[i + 1].data,2,(max * point / 100),0,0.1);
                         } else {
 
                             l = data.datasets[i].data.length;
