@@ -19,7 +19,6 @@
                             <li class="divider"></li>
                             <li><a tabindex="-1" href="index.php">Advanced Parameters</a></li>
                             <li><a tabindex="-1" href="simple.php">Simple Parameters</a></li>
-                            <li><a tabindex="-1" href="dashboard.php">Dashboard Check</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -47,6 +46,7 @@
                         <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>User</b><b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
                             <li><a tabindex="-1" href="motor-class.php">Motor Classification</a></li>
+                            <li><a tabindex="-1" href="dashboard.php">Dashboard Check</a></li>
                             <li><a tabindex="-1" href="igbt-test.php">IGBT Test</a></li>
                             <li><a tabindex="-1" href="encoder.php">Encoder</a></li>
                             <li><a tabindex="-1" href="arduino.php">Arduino LCD</a></li>

@@ -35,7 +35,7 @@ function startPHP($page) {
 		Write-Host "...Installing PHP"
 		
 		# Download PHP
-		$phpFile = "php-5.6.29-Win32-VC11-x64.zip"
+		$phpFile = "php-5.6.30-Win32-VC11-x64.zip"
 		if (-Not (Test-Path "$env:TEMP\$phpFile")) {
 			Write-Host "Downloading PHP 5.6"  -ForegroundColor Green
 			Invoke-WebRequest -Uri http://windows.php.net/downloads/releases/$phpFile -OutFile "$env:TEMP\$phpFile"

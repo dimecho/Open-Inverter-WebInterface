@@ -1044,6 +1044,7 @@ function updateChart(value, autosize, accuracy) {
 
                         if (value[i] == "ampnom") {
                             var max = Math.max.apply(Math, data.datasets[i].data);
+                            data.datasets[i + 1].data = [];
                             sineWave(data.datasets[i + 1].data,2,(max * point / 100),0,0.1);
                         } else {
 

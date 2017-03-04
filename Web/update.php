@@ -1,7 +1,7 @@
 <?php
 
 $version = 1.0;
-$build = 31;
+$build = 32;
 
 $_version = 0;
 $_build = 0;

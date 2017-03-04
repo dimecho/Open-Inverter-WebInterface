@@ -55,7 +55,14 @@
                                         <br/><br/>
                                         <div>
                                             <br/>
-                                            <img src="db/img/Siemens_1PV5135.jpg" id="motorimage" class="img-rounded" />
+                                            <?php
+                                                $files = glob(getcwd() ."/db/*.txt");
+                                                foreach($files as $file) {
+                                                    $s = explode("@", basename($file, ".txt"));
+                                                    echo "<img src=\"db/img/" .$s[0].".jpg\" id=\"motorimage\" class=\"img-rounded\" >";
+                                                    break;
+                                                }
+                                            ?>
                                             <br/><br/>
                                         </div>
                                     </center>
