@@ -74,7 +74,7 @@
                                                 <?php
                                                     echo "'";
                                                     echo "bootloader.php?ajax=1";
-                                                    if ($GLOBALS["OS"] === "Mac") {
+                                                    if ($GLOBALS["OS"] === "mac") {
                                                         $tmp_name = "/tmp/" .basename($_FILES['firmware']['tmp_name']). ".bin";
                                                     }else{
                                                         $tmp_name = sys_get_temp_dir(). "/" .basename($_FILES['firmware']['tmp_name']). ".bin";

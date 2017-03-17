@@ -9,7 +9,10 @@ $(document).ready(function () {
             setup: function setup() {
                 return {
                     buttons: [{
-                        text: '(2) Slip Control',
+                        text: '(1) Start Auto',
+                        className: alertify.defaults.theme.ok
+                    },{
+                        text: '(2) Manual Run',
                         className: alertify.defaults.theme.ok
                     }, {
                         text: '(5) Sine Wave',
@@ -28,7 +31,8 @@ $(document).ready(function () {
                     options: {
                         title: 'Inverter Mode',
                         maximizable: false,
-                        resizable: false
+                        resizable: false,
+                        autoReset: true
                     }
                 };
             },
@@ -41,14 +45,16 @@ $(document).ready(function () {
                     });
                 } else {
                     if(closeEvent.index === 0) {
-                        startInverter(2);
+                        startInverter(1);
                     }else if(closeEvent.index === 1) {
-                        startInverter(5);
+                        startInverter(2);
                     }else if(closeEvent.index === 2) {
+                        startInverter(5);
+                    }else if(closeEvent.index === 3) {
                         $.notify({ message: "Experimental Area" }, { type: 'danger' });
                         startInverter(3);
                         sendCommand("chargemode", 3, false, true);
-                    }else if(closeEvent.index === 3) {
+                    }else if(closeEvent.index === 4) {
                         $.notify({ message: "Experimental Area" }, { type: 'danger' });
                         startInverter(4);
                         sendCommand("chargemode", 4, false, true);
@@ -61,6 +67,13 @@ $(document).ready(function () {
                             }, function () {});
                         }
                     }
+                }
+            },
+            hooks: {
+                onshow: function() {
+                    //console.log(this);
+                    this.elements.dialog.style.maxWidth = 'none';
+                    this.elements.dialog.style.width = '600px';
                 }
             }
         };

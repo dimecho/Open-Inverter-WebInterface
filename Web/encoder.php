@@ -13,10 +13,10 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <button type="button" class="btn btn-primary" onClick="<?php checkInkscape(); ?>"><i class="glyphicon glyphicon-cog"></i> Inkscape (2D)</button>
+                                    <button type="button" class="btn btn-primary" onClick="<?php checkSoftware("inkscape"); ?>"><i class="glyphicon glyphicon-cog"></i> Inkscape (2D)</button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-primary" onClick="<?php checkOpenSCAD(); ?>"><i class="glyphicon glyphicon-cog"></i> OpenSCAD (3D)</button>
+                                    <button type="button" class="btn btn-primary" onClick="<?php checkSoftware("openocd"); ?>"><i class="glyphicon glyphicon-cog"></i> OpenSCAD (3D)</button>
                                 </td>
                             </tr>
                         </tbody>

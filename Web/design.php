@@ -5,6 +5,8 @@
         <link rel="stylesheet" type="text/css" href="css/bootstrap-slider.css" />
         <script type="text/javascript" src="js/bootstrap-slider.js"></script>
         <script type="text/javascript" src="js/three.js"></script>
+        <script type="text/javascript" src="js/OrbitControls.js"></script>
+        <script type="text/javascript" src="js/Projector.js"></script>
         <script type="text/javascript" src="js/design.js"></script>
     </head>
     <body>

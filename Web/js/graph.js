@@ -1070,24 +1070,26 @@ function updateChart(value, autosize, accuracy) {
                     }
                 }
 
-                if (autosize) {
-                    if (l == 1) //do it at start
-                        {
-                            var largest = Math.max.apply(Math, data.datasets[0].data);
-                            var step = 50;
-                            if (largest > 3000) {
-                                step = 1000;
-                            } else if (largest > 1000) {
-                                step = 500;
-                            } else if (largest > 500) {
-                                step = 100;
-                            }
+                if (autosize) { //&& l == 1) //do it at start
 
-                            chart.options.scales.yAxes[0].ticks.suggestedMax = largest + step;
-                            chart.options.scales.yAxes[0].ticks.stepSize = step;
-                        }
+                    var largest = Math.max.apply(Math, data.datasets[0].data);
+                    //console.log(largest);
+                    var step = 50;
+
+                    if (largest > 3000) {
+                        step = 1000;
+                    } else if (largest > 2000) {
+                        step = 500;
+                    } else if (largest > 1000) {
+                        step = 500;
+                    } else if (largest > 500) {
+                        step = 100;
+                    }
+
+                    chart.options.scales.yAxes[0].ticks.suggestedMax = largest + step;
+                    chart.options.scales.yAxes[0].ticks.stepSize = step;
                 }
-
+                
                 chart.update();
             }
         }

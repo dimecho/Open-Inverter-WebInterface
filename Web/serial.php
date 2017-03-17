@@ -7,11 +7,11 @@
 
     if(isset($_GET["com"]))
     {
-        if ($GLOBALS["OS"] === "Mac") {
+        if ($GLOBALS["OS"] === "mac") {
             $command = "ls /dev/cu.*";
-        }else if ($GLOBALS["OS"] === "Windows") {
+        }else if ($GLOBALS["OS"] === "windows") {
             $command = "";
-        }else if ($GLOBALS["OS"] === "Linux") {
+        }else if ($GLOBALS["OS"] === "linux") {
             $command = "ls /dev/ttyUSB*";
         }
 

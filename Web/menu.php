@@ -7,7 +7,7 @@
                     <li class="dropdown">
                         <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>Motor</b><b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                            <li><a tabindex="-1" onClick="alertify.startInverterMode('2=ManualRun, 3=Boost, 4=Buck, 5=Sine');">Start Inverter</a></li>
+                            <li><a tabindex="-1" onClick='alertify.startInverterMode("<i class=\"glyphicon glyphicon-dashboard\"></i> Warning: Before starting the inverter set the throttle control to zero.");'>Start Inverter</a></li>
                             <li><a tabindex="-1" onClick="stopInverter()">Stop Inverter</a></li>
                             <li><a tabindex="-1" onClick="setDefaults()">Reset to Default</a></li>
                             <li><a tabindex="-1" href="db.php">Motor Database</a></li>
@@ -26,16 +26,16 @@
                     <li class="dropdown">
                         <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>Inverter</b><b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                            <li><a tabindex="-1" href="#" onClick="<?php checkOpenOCD(); ?>">Flash Bootloader</a></li>
+                            <li><a tabindex="-1" href="#" onClick="<?php checkSoftware("openocd"); ?>">Flash Bootloader</a></li>
                             <li><a tabindex="-1" href="firmware.php">Flash Firmware</a></li>
-                            <li><a tabindex="-1" href="#" onClick="<?php checkAVRCompiler(false); ?>">Flash ATtiny13 Chip</a></li>
-                            <li><a tabindex="-1" href="#" onClick="<?php checkARMCompiler(false); ?>">Compile from Source</a></li>
-                            <?php if(checkGCCCompiler()) { ?>
+                            <li><a tabindex="-1" href="#" onClick="<?php checkSoftware("attiny"); ?>">Flash ATtiny13 Chip</a></li>
+                            <li><a tabindex="-1" href="#" onClick="<?php checkSoftware("arm"); ?>">Compile from Source</a></li>
+                            <?php if(checkSoftware("gcc",true)) { ?>
                                 <li><a tabindex="-1" href="#" onClick="confirmGCCRemove()">Remove GCC ARM Compiler</a></li>
                             <?php } ?>
                             <li class="divider"></li>
                             <li><a tabindex="-1" href="wiring.php">Wiring Diagram</a></li>
-                            <li><a tabindex="-1" href="#" onClick="<?php checkEagle(); ?>">Schematics</a></li>
+                            <li><a tabindex="-1" href="#" onClick="<?php checkSoftware("eagle"); ?>">Schematics</a></li>
                             <li><a tabindex="-1" href="components.php">Components</a></li>
                             <li><a tabindex="-1" href="stm32.php">STM32 Processor</a></li>
                         </ul>

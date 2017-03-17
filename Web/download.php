@@ -4,39 +4,64 @@
     include_once("common.php");
     
     detectOS();
-    
-    if(isset($_GET["url"])){
 
-        $source = urldecode(str_replace("|", "&", $_GET["url"]));
-        $filename = basename($source);
+    if(isset($_GET["start"]) || isset($_GET["download"])){
+
+        $id = $GLOBALS["Software"][$_GET["start"]];
+        if($id == "")
+            $id = $GLOBALS["Software"][$_GET["download"]];
+
+        if($id['download']['all']){
+            $source = $id['download']['all'];
+        }else{
+            $source = $id['download'][$GLOBALS['OS']];
+        }
         
-        if ($GLOBALS["OS"] === "Mac") {
+        if ($GLOBALS["OS"] === "mac") {
             $destination = getenv("HOME"). "/Downloads/";
-        }else if ($GLOBALS["OS"]=== "Windows") {
+        }else if ($GLOBALS["OS"]=== "windows") {
             $destination = getenv("USERPROFILE"). "\\Downloads\\";
-        }else if ($GLOBALS["OS"] === "Linux") {
+        }else if ($GLOBALS["OS"] === "linux") {
             $destination = getenv("HOME"). "/Downloads/";
         }
-        
-        if(isset($_GET["filename"])){
-            $filename = $_GET["filename"];
-        }
-        
+
+        $filename = basename($source);
+            
         $destination = $destination . $filename;
     }
-    
-    if(isset($_GET["app"])){
-        $app = $_GET["app"];
-    }
 
-    if(isset($_GET["pause"])){
+    if(isset($_GET["software"])){
+
+        $array = array (
+            'title' => "",
+            'download' => "",
+            'path' => "",
+            'size' => 0,
+            'version' => ""
+        );
+        
+        $id = $GLOBALS["Software"][$_GET["software"]];
+
+        $array['title'] = $id['title'];
+        if($id['download']['all']){
+            $array['download'] = $id['download']['all'];
+        }else{
+            $array['download'] = $id['download'][$GLOBALS['OS']];
+        }
+        $array['path'] = $id['path'][$GLOBALS['OS']];
+        $array['size'] = $id['download']['size'];
+        $array['version'] = $id['download']['version'];
+
+        echo json_encode($array);
+        
+    }else if(isset($_GET["pause"])){
 
         echo $_GET["pause"];
         $_SESSION["pause"] = $_GET["pause"];
-    
+
     }else if(isset($_GET["download"])){
 
-        if($_GET["url"] != "") //Linux scripts without download
+        if($source != "") //Linux scripts without download
         {
             set_time_limit(10000);
             $_SESSION["pause"] = "";
@@ -120,6 +145,7 @@
             
             echo $error;
         }
+
     }else{
 ?>
 <!DOCTYPE html>
@@ -128,7 +154,7 @@
         <?php include "header.php" ?>
         <script>
             $(document).ready(function() {
-                download(<?php echo "\"$source\",\"$filename\",\"$app\""; ?>); 
+                download(<?php echo "\"".$_GET["start"]."\""; ?>);
             });
         </script>
     </head>
