@@ -26,16 +26,16 @@
                     <li class="dropdown">
                         <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>Inverter</b><b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                            <li><a tabindex="-1" href="#" onClick="<?php checkSoftware("openocd"); ?>">Flash Bootloader</a></li>
+                            <li><a tabindex="-1" href="#" onClick="checkSoftware('openocd')">Flash Bootloader</a></li>
                             <li><a tabindex="-1" href="firmware.php">Flash Firmware</a></li>
-                            <li><a tabindex="-1" href="#" onClick="<?php checkSoftware("attiny"); ?>">Flash ATtiny13 Chip</a></li>
-                            <li><a tabindex="-1" href="#" onClick="<?php checkSoftware("arm"); ?>">Compile from Source</a></li>
+                            <li><a tabindex="-1" href="#" onClick="checkSoftware('attiny')">Flash ATtiny13 Chip</a></li>
+                            <li><a tabindex="-1" href="#" onClick="checkSoftware('arm')">Compile from Source</a></li>
                             <?php if(checkSoftware("gcc",true)) { ?>
                                 <li><a tabindex="-1" href="#" onClick="confirmGCCRemove()">Remove GCC ARM Compiler</a></li>
                             <?php } ?>
                             <li class="divider"></li>
                             <li><a tabindex="-1" href="wiring.php">Wiring Diagram</a></li>
-                            <li><a tabindex="-1" href="#" onClick="<?php checkSoftware("eagle"); ?>">Schematics</a></li>
+                            <li><a tabindex="-1" href="#" onClick="checkSoftware('eagle')">Schematics</a></li>
                             <li><a tabindex="-1" href="components.php">Components</a></li>
                             <li><a tabindex="-1" href="stm32.php">STM32 Processor</a></li>
                         </ul>

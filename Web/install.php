@@ -26,6 +26,10 @@
 
         echo "done";
     }
+    else if(isset($_GET["check"]))
+    {
+        checkSoftware($_GET["check"]);
+    }
 
     function checkSoftware($app,$quite)
     {

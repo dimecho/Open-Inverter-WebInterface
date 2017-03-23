@@ -131,6 +131,16 @@ $(document).ready(function () {
     checkUpdates();
 });
 
+function checkSoftware(app){
+
+    $.ajax("install.php?check=" + app, {
+        success: function success(data) {
+            console.log(data);
+            eval(data);
+        }
+    });
+};
+
 function sendCommand(cmd, value, save, notify){
 
     $.ajax("serial.php?pk=1&name=" + cmd + "&value=" + value, { async: false });
@@ -183,7 +193,6 @@ function confirmGCCRemove(e) {
 function loadJSON(i) {
 
     var json;
-
     $.ajax("serial.php?command=json", {
         async: false,
         //contentType: "application/text",

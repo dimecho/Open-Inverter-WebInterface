@@ -16,7 +16,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <button type="button" class="btn btn-primary" onClick="<?php checkSoftware("arduino"); ?>"><i class="glyphicon glyphicon-th-large"></i> Open Arduino IDE</button>
+                                    <button type="button" class="btn btn-primary" onClick="checkSoftware('arduino')"><i class="glyphicon glyphicon-th-large"></i> Open Arduino IDE</button>
                                 </td>
                             </tr>
                         </tbody>

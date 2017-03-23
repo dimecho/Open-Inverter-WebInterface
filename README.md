@@ -2,7 +2,7 @@
 <img src="https://github.com/poofik/huebner-inverter/raw/master/macOS/Assets.xcassets/AppIcon.appiconset/128x128.png">
 </p>
 
-# Huebner Inverter - Console Management#
+# Huebner Inverter - Console Management
 
 Console management application written for Open-Source [Inverter Project](http://johanneshuebner.com/quickcms/index.html%3Fde_electric-car-conversion-site,14.html) controlling 3-Phase AC Induction Motors.
 
