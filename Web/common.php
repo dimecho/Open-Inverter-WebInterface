@@ -65,11 +65,11 @@
         'arduino' => array (
             'title' => "Arduino IDE",
             'download' => array (
-                'mac' => "https://downloads.arduino.cc/arduino-1.8.1-macosx.zip",
-                'windows' => "https://downloads.arduino.cc/arduino-1.8.1-windows.exe",
+                'mac' => "https://downloads.arduino.cc/arduino-1.8.2-macosx.zip",
+                'windows' => "https://downloads.arduino.cc/arduino-1.8.2-windows.exe",
                 'linux' => "",
                 'size' => 150,
-                'version' => "1.8.1"
+                'version' => "1.8.2"
             ),
             'path' => array (
                 'mac' => "/Applications/Arduino.app/Contents/MacOS/Arduino",
@@ -140,11 +140,11 @@
         'eagle' => array (
             'title' => "AutoCAD EAGLE PCB Design Software",
             'download' => array (
-                'mac' => "https://github.com/gnuarmeclipse/openocd/releases/download/gae-0.10.0-20160110/gnuarmeclipse-openocd-osx-0.10.0-201601101000-dev.pkg",
-                'windows' => "https://github.com/gnuarmeclipse/openocd/releases/download/gae-0.10.0-20160110/gnuarmeclipse-openocd-win64-0.10.0-201601101000-dev-setup.exe",
-                'linux' => "",
-                'size' => 2.5,
-                'version' => "0.10.0-20160110"
+                'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.1.0_English_Mac_64bit.pkg",
+                'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.1.0_English_Win_64bit.exe",
+                'linux' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.1.0_English_Linux_64bit.tar.gz",
+                'size' => 100,
+                'version' => "8.1.0"
             ),
             'path' => array (
                 'mac' => "/Applications/EAGLE-8.1.0/Eagle.app/Contents/MacOS/Eagle",

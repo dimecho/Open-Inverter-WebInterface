@@ -1,1 +1,1 @@
-Start-Process "$env:USERPROFILE\Downloads\arduino-1.8.1-windows.exe" -Wait
+Start-Process "$env:USERPROFILE\Downloads\arduino-1.8.2-windows.exe" -Wait
