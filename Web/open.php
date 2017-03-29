@@ -15,7 +15,7 @@
     		$args = " --verb dgkelectronics.com.encoder.disk.generator";
             if ($GLOBALS["OS"] === "mac") {
                 exec($killXQuartz);
-                $command = $GLOBALS["X11"]. " \"/Applications/Inkscape.app/Contents/Resources/bin/inkscape" .$args. "\" 2>&1 &";
+                $command = $GLOBALS["X11"]. " \"/Applications/Inkscape.app/Contents/Resources/bin/inkscape" .$args. "\" > /dev/null 2>&1 &";
             }else if ($GLOBALS["OS"] === "windows") {
                 $command = "cmd.exe /c \"\"C:\\Progra~1\\Inkscape\\inkscape.com\"\" " .$args. "";
             }else if ($GLOBALS["OS"] === "linux") {
@@ -38,11 +38,11 @@
             header("Location:/compile.php");
         }else if($_GET["app"] == "arduino")
         {
-            $args = $_SERVER["DOCUMENT_ROOT"]. "/arduino/lcd_display/lcd_display.ino";
+            $args = $_SERVER["DOCUMENT_ROOT"]. "/dashboard/arduino/lcd_display/lcd_display.ino";
             if ($GLOBALS["OS"] === "mac") {
-                $command = "/Applications/Arduino.app/Contents/MacOS/Arduino \"" .$args. "\"";
+                $command = "/Applications/Arduino.app/Contents/MacOS/Arduino \"" .$args. "\" > /dev/null 2>&1 &";
             }else if ($GLOBALS["OS"] === "windows") {
-				$command = "C:\\Progra~2\\Arduino\\arduino.exe \"" .$args. "\"";
+				$command = "C:\\Progra~2\\Arduino\\arduino.exe \"" .$args. "\" > NUL";
             }else if ($GLOBALS["OS"] === "linux") {
                 $command = "su \$SUDO_USER -c \"arduino '" .$args. "'\"";
             }
@@ -78,7 +78,7 @@
         $args = " -f \"" .$tmp_name. "\" --verb EditSelectAll --verb SelectionUnGroup --verb SelectionSymDiff --verb command.extrude.openscad";
         if ($GLOBALS["OS"] === "mac") {
             exec($killXQuartz);
-            $command = $GLOBALS["X11"]. " \"/Applications/Inkscape.app/Contents/Resources/bin/inkscape" .$args. "\" 2>&1 &";
+            $command = $GLOBALS["X11"]. " \"/Applications/Inkscape.app/Contents/Resources/bin/inkscape" .$args. "\" > /dev/null 2>&1 &";
         }else if ($GLOBALS["OS"] === "windows") {
             $command = "C:\\Progra~1\\Inkscape\\inkscape.com" .$args. " > NUL";
         }else if ($GLOBALS["OS"] === "linux") {

@@ -2,7 +2,7 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script type="text/javascript" src="js/dashboard.js"></script>
+        <script type="text/javascript" src="js/switch-check.js"></script>
         <style>
             table { table-layout: fixed; }
             td { width: 10%; }

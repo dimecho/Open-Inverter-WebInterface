@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="css/simple-grid.css" />
+        <script src="js/index.js"></script>
+        <script src="js/gauge.js"></script>
+        <script src="js/svg-injector.js"></script>
+    </head>
+    <body>
+        <div class="row center">
+            <div class="col-2-sm">
+               <canvas id='battery'></canvas>
+            </div>
+            <div class="col-4-sm">
+                <canvas id='speed'></canvas>
+            </div>
+            <div class="col-4-sm">
+                <canvas id='rpm'></canvas>
+            </div>
+            <div class="col-2-sm">
+                <canvas id='temp'></canvas>
+            </div>
+        </div>
+        <div class="row center" id="status">
+        </div>
+    </body>
+</html>

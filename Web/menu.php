@@ -43,13 +43,21 @@
                 </ul>
                 <ul class="nav navbar-nav">
                     <li class="dropdown">
+                        <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>Dashboard</b><b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
+                            <li><a tabindex="-1" href="switch-check.php">Switch Check</a></li>
+                            <li><a tabindex="-1" href="arduino.php">Arduino LCD</a></li>
+                            <li><a tabindex="-1" href="raspberrypi.php">RaspberryPi LCD</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
                         <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>User</b><b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
                             <li><a tabindex="-1" href="motor-class.php">Motor Classification</a></li>
-                            <li><a tabindex="-1" href="dashboard.php">Dashboard Check</a></li>
                             <li><a tabindex="-1" href="igbt-test.php">IGBT Test</a></li>
                             <li><a tabindex="-1" href="encoder.php">Encoder</a></li>
-                            <li><a tabindex="-1" href="arduino.php">Arduino LCD</a></li>
                             <li><a tabindex="-1" href="design.php">Power Stage</a></li>
                         </ul>
                     </li>
