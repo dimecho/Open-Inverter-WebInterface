@@ -2,27 +2,52 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="css/simple-grid.css" />
+        <link rel="stylesheet" href="css/index.css" />
         <script src="js/index.js"></script>
         <script src="js/gauge.js"></script>
+        <script src="js/odometer.js"></script>
         <script src="js/svg-injector.js"></script>
     </head>
     <body>
-        <div class="row center">
-            <div class="col-2-sm">
-               <canvas id='battery'></canvas>
-            </div>
-            <div class="col-4-sm">
-                <canvas id='speed'></canvas>
-            </div>
-            <div class="col-4-sm">
-                <canvas id='rpm'></canvas>
-            </div>
-            <div class="col-2-sm">
-                <canvas id='temp'></canvas>
-            </div>
-        </div>
-        <div class="row center" id="status">
-        </div>
+        <table>
+            <tbody>
+                <tr>
+                    <td style="width:20%">
+                        <div align="center">
+                            <canvas id='battery'></canvas>
+                        </div>
+                    </td>
+                    <td style="width:30%">
+                        <div align="center">
+                            <canvas id='speed'></canvas>
+                        </div>
+                    </td>
+                    <td style="width:30%">
+                        <div align="center">
+                            <canvas id='rpm'></canvas>
+                        </div>
+                    </td>
+                    <td style="width:20%">
+                        <div align="center">
+                            <canvas id='temp'></canvas>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <center>
+                            <canvas id="odoCanvas" height="50" width="300"></canvas>
+                        </center>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <center>
+                            <div class="row center" id="status">
+                        </center>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </body>
 </html>

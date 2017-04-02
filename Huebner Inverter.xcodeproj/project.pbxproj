@@ -140,7 +140,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0820;
-				ORGANIZATIONNAME = "Dima Dykhman";
+				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					32D281AD1CF0066E00606B12 = {
 						CreatedOnToolsVersion = 7.3.1;

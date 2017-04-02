@@ -7,11 +7,8 @@ function Elevate() {
 
 	# Check to see if we are currently running "as Administrator"
 	if (!$myWindowsPrincipal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)){
-		$newProcess = New-Object System.Diagnostics.ProcessStartInfo "PowerShell"; # Create a new process object that starts PowerShell
-		$newProcess.Arguments = "& '$PSCommandPath'" # Specify the current script path and name as a parameter
-		$newProcess.Verb = "runas"; # Indicate that the process should be elevated
-		[System.Diagnostics.Process]::Start($newProcess); # Start the new process
-		exit # Exit from the current, unelevated, process
+        Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -File ""$PSCommandPath""" -verb runas
+		exit
 	}
 }
 
@@ -38,6 +35,7 @@ function startPHP($page) {
 		$phpFile = "php-5.6.30-Win32-VC11-x64.zip"
 		if (-Not (Test-Path "$env:TEMP\$phpFile")) {
 			Write-Host "Downloading PHP 5.6"  -ForegroundColor Green
+            Write-Host ""
 			Invoke-WebRequest -Uri http://windows.php.net/downloads/releases/$phpFile -OutFile "$env:TEMP\$phpFile"
 		}
 		# Download Dio Extension
@@ -49,6 +47,7 @@ function startPHP($page) {
 		# Visual C++ Redistributable for Visual Studio 2012
 		if (-Not (Test-Path 'HKLM:\SOFTWARE\Classes\Installer\Dependencies\{ca67548a-5ebe-413a-b50c-4b9ceb6d66c6}')) {
 			Write-Host "Downloading C++ Redistributable for Visual Studio 2012"  -ForegroundColor Green
+            Write-Host ""
 			Invoke-WebRequest -Uri https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x64.exe -OutFile "$env:TEMP\vcredist_x64.exe"
 			Start-Process "$env:TEMP\vcredist_x64.exe" /q:a -Wait
 		}

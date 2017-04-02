@@ -1,3 +1,5 @@
+var odo;
+
 document.addEventListener("DOMContentLoaded", function(event) {
 
     var gauge = new RadialGauge({
@@ -285,8 +287,50 @@ document.addEventListener("DOMContentLoaded", function(event) {
         SVGInjector(img);
         status.appendChild(div.appendChild(img));
     }
+
+    var odometer = CANRead("distance");
+
+    if(odometer)
+    {
+        var n = 320618.7;
+        var ctx = document.getElementById("odoCanvas").getContext("2d");
+        odo = new odometer(ctx, {
+            height: 40,
+            digits: 6,
+            decimals: 1,
+            value: n,
+            wobbleFactor: 0.07
+        });
+        updateOdometer(n);
+    }else{
+        document.getElementById("odoCanvas").style.display = "none";
+    }
     //document.getElementById('distance').innerHTML = calculateDistance(startPos.coords.latitude, startPos.coords.longitude, position.coords.latitude, position.coords.longitude);
 });
+
+function CANRead(value) {
+
+   var xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
+           if (xmlhttp.status == 200) {
+               return xmlhttp.responseText;
+           }else{
+                return xmlhttp.status;
+           }
+        }
+    };
+
+    xmlhttp.open("GET", "can.php", true);
+    xmlhttp.send();
+};
+
+function updateOdometer(n) {
+    n += 0.01
+    odo.setValue(n);
+    setTimeout(function(){updateOdometer(n)}, 80);
+};
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
   var R = 6371; // km
