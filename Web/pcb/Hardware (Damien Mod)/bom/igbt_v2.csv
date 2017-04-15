@@ -1,0 +1,46 @@
+Ref Name,Qty,Component,Value,Package,Manufacturer,MPN,RS Part Number,Description
+CONN1,1,6sil,,DSC,Molex,70543-0040,670-0826,"Molex SL Series, Series Number 70543, 2.54mm Pitch 6 Way 1 Row Straight PCB Header, Solder Termination, 3A"
+IC1,1,ACPL337J,,DSC,Avago Technologies,ACPL-337J-000E,818-8256,"ACPL-337J-000E DC Input IGBT Gate Drive Output Optocoupler, Surface Mount, 16-Pin SO"
+IC2,1,ACPL337J,,DSC,Avago Technologies,ACPL-337J-000E,818-8256,"ACPL-337J-000E DC Input IGBT Gate Drive Output Optocoupler, Surface Mount, 16-Pin SO"
+C9,1,C-USC0805,1uF,C0805,MURATA,GCM21BR71E105KA56L,723-5036,"Murata 0805 GCM 1_F Ceramic Multilayer Capacitor, 25 V dc X7R Dielectric ±10% SMD"
+C10,1,C-USC0805,1uF,C0805,MURATA,GCM21BR71E105KA56L,723-5036,"Murata 0805 GCM 1_F Ceramic Multilayer Capacitor, 25 V dc X7R Dielectric ±10% SMD"
+C11,1,C-USC0805,1uF,C0805,MURATA,GCM21BR71E105KA56L,723-5036,"Murata 0805 GCM 1_F Ceramic Multilayer Capacitor, 25 V dc X7R Dielectric ±10% SMD"
+C12,1,C-USC0805,1uF,C0805,MURATA,GCM21BR71E105KA56L,723-5036,"Murata 0805 GCM 1_F Ceramic Multilayer Capacitor, 25 V dc X7R Dielectric ±10% SMD"
+C13,1,C-USC0805,1uF,C0805,MURATA,GCM21BR71E105KA56L,723-5036,"Murata 0805 GCM 1_F Ceramic Multilayer Capacitor, 25 V dc X7R Dielectric ±10% SMD"
+C14,1,C-USC0805,1uF,C0805,MURATA,GCM21BR71E105KA56L,723-5036,"Murata 0805 GCM 1_F Ceramic Multilayer Capacitor, 25 V dc X7R Dielectric ±10% SMD"
+C21,1,C-USC0805,1uF,C0805,MURATA,GCM21BR71E105KA56L,723-5036,"Murata 0805 GCM 1_F Ceramic Multilayer Capacitor, 25 V dc X7R Dielectric ±10% SMD"
+C22,1,C-USC0805,1uF,C0805,MURATA,GCM21BR71E105KA56L,723-5036,"Murata 0805 GCM 1_F Ceramic Multilayer Capacitor, 25 V dc X7R Dielectric ±10% SMD"
+C3,1,C-USC0805,100n,C0805,AVX,08053C104KAT2A,390-990,"AVX 0805 Standard 100nF Ceramic Multilayer Capacitor, 25 V dc X7R Dielectric ±10% SMD"
+C4,1,C-USC0805,100n,C0805,AVX,08053C104KAT2A,390-990,"AVX 0805 Standard 100nF Ceramic Multilayer Capacitor, 25 V dc X7R Dielectric ±10% SMD"
+C15,1,C-USC0805,220pf,C0805,AVX,08051A221JAT2A,464-6593,"AVX 0805 Standard 220pF Ceramic Multilayer Capacitor, 100 V dc C0G Dielectric ±5% SMD"
+C16,1,C-USC0805,220pf,C0805,AVX,08051A221JAT2A,464-6593,"AVX 0805 Standard 220pF Ceramic Multilayer Capacitor, 100 V dc C0G Dielectric ±5% SMD"
+C17,1,C-USC0805,330pF,C0805,AVX,08051A331JAT2A,464-6616,"AVX 0805 Standard 330pF Ceramic Multilayer Capacitor, 100 V dc C0G Dielectric ±5% SMD"
+C18,1,C-USC0805,330pF,C0805,AVX,08051A331JAT2A,464-6616,"AVX 0805 Standard 330pF Ceramic Multilayer Capacitor, 100 V dc C0G Dielectric ±5% SMD"
+C19,1,C-USC0805,330pF,C0805,AVX,08051A331JAT2A,464-6616,"AVX 0805 Standard 330pF Ceramic Multilayer Capacitor, 100 V dc C0G Dielectric ±5% SMD"
+C20,1,C-USC0805,330pF,C0805,AVX,08051A331JAT2A,464-6616,"AVX 0805 Standard 330pF Ceramic Multilayer Capacitor, 100 V dc C0G Dielectric ±5% SMD"
+C1,1,CPOL-EUE2.5-5,100µ,"E2,5-5",PANASONIC,EEUFC1E101S,449-1040,"POLARIZED CAPACITOR, European symbol"
+C2,1,CPOL-EUE2.5-5,100µ,"E2,5-5",PANASONIC,EEUFC1E101S,449-1040,"POLARIZED CAPACITOR, European symbol"
+C5,1,"CPOL-EUE2,5-6E",100µ,"E2,5-6E",PANASONIC,EEUFC1E101S,449-1040,"POLARIZED CAPACITOR, European symbol"
+C6,1,"CPOL-EUE2,5-6E",100µ,"E2,5-6E",PANASONIC,EEUFC1E101S,449-1040,"POLARIZED CAPACITOR, European symbol"
+C7,1,"CPOL-EUE2,5-6E",100µ,"E2,5-6E",PANASONIC,EEUFC1E101S,449-1040,"POLARIZED CAPACITOR, European symbol"
+C8,1,"CPOL-EUE2,5-6E",100µ,"E2,5-6E",PANASONIC,EEUFC1E101S,449-1040,"POLARIZED CAPACITOR, European symbol"
+DC1,1,DC_DC_IGBT,,DSC,Murata Power Solutions,MGJ2D051505SC,816-3493,"Murata Power Solutions 2W Isolated DC-DC Converter, Vin 4.5 _ 5.5 V, Vout 15 V, -5 V, I/O isolation 5200V dc"
+DC2,1,DC_DC_IGBT,,DSC,Murata Power Solutions,MGJ2D051505SC,816-3493,"Murata Power Solutions 2W Isolated DC-DC Converter, Vin 4.5 _ 5.5 V, Vout 15 V, -5 V, I/O isolation 5200V dc"
+D1,1,DIODE-SMB,,SMB,Taiwan Semiconductor,ES1J R2,652-7444,"Taiwan ES1J R2, Fast Rectifier Diode, 600V, 35ns, 1A, 2-pin SMA"
+D2,1,DIODE-SMB,,SMB,Taiwan Semiconductor,ES1J R2,652-7444,"Taiwan ES1J R2, Fast Rectifier Diode, 600V, 35ns, 1A, 2-pin SMA"
+U1,1,"PDZ5.1B,115",,SOD323-L,DiodesZetex,BAT42WS-7-F,751-3367,"Diodes Inc BAT42WS-7-F, Schottky Diode, 30V, 5ns, 200mA, 2-pin SOD-323 ,Optional. Desat tuning."
+U2,1,"PDZ5.1B,115",,SOD323-L,DiodesZetex,BAT42WS-7-F,751-3367,"Diodes Inc BAT42WS-7-F, Schottky Diode, 30V, 5ns, 200mA, 2-pin SOD-323 , Optional. Desat tuning."
+R4,1,R-US_R0805,1K,R0805,RS,804-6449,804-6449,Thick Film Surface Mount Resistor 0805 Case 1k½ ±1% 0.125W ±100ppm/¡C
+R5,1,R-US_R0805,1K,R0805,RS,804-6449,804-6449,Thick Film Surface Mount Resistor 0805 Case 1k½ ±1% 0.125W ±100ppm/¡C
+R10,1,R-US_R0805,10K,R0805,RS,804-6528,804-6528,Thick Film Surface Mount Resistor 0805 Case 10k½ ±1% 0.125W ±100ppm/¡C
+R11,1,R-US_R0805,10K,R0805,RS,804-6528,804-6528,Thick Film Surface Mount Resistor 0805 Case 10k½ ±1% 0.125W ±100ppm/¡C
+R12,1,R-US_R0805,10K,R0805,RS,804-6528,804-6528,Thick Film Surface Mount Resistor 0805 Case 10k½ ±1% 0.125W ±100ppm/¡C
+R13,1,R-US_R0805,10K,R0805,RS,804-6528,804-6528,Thick Film Surface Mount Resistor 0805 Case 10k½ ±1% 0.125W ±100ppm/¡C
+R6,1,R-US_R0805,150R,R0805,RS,804-6385,804-6385,Thick Film Surface Mount Resistor 0805 Case 150½ ±1% 0.125W ±100ppm/¡C
+R7,1,R-US_R0805,150R,R0805,RS,804-6385,804-6385,Thick Film Surface Mount Resistor 0805 Case 150½ ±1% 0.125W ±100ppm/¡C
+R8,1,R-US_R0805,150R,R0805,RS,804-6385,804-6385,Thick Film Surface Mount Resistor 0805 Case 150½ ±1% 0.125W ±100ppm/¡C
+R9,1,R-US_R0805,150R,R0805,RS,804-6385,804-6385,Thick Film Surface Mount Resistor 0805 Case 150½ ±1% 0.125W ±100ppm/¡C
+R1,1,R2512,4R7,DSC,TE Connectivity,35204R7JT,224-0092,TE Connectivity 3520 Series Thick Film High Power Surface Mount Resistor 2512 Case 4.7½ ±5% 1W ±350ppm/¡C
+R2,1,R2512,4R7,DSC,TE Connectivity,35204R7JT,224-0092,TE Connectivity 3520 Series Thick Film High Power Surface Mount Resistor 2512 Case 4.7½ ±5% 1W ±350ppm/¡C
+ZD1,1,ZENER_SMB,TBD,DSC,,,,Optional. Desat tuning. Link if not used.
+ZD2,1,ZENER_SMB,TBD,DSC,,,,Optional. Desat tuning. Link if not used.

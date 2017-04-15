@@ -37,7 +37,6 @@
                             <li><a tabindex="-1" href="wiring.php">Wiring Diagram</a></li>
                             <li><a tabindex="-1" href="#" onClick="checkSoftware('eagle')">Schematics</a></li>
                             <li><a tabindex="-1" href="components.php">Components</a></li>
-                            <li><a tabindex="-1" href="stm32.php">STM32 Processor</a></li>
                         </ul>
                     </li>
                 </ul>

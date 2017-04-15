@@ -1,10 +1,3 @@
-$(document).ready(function () {
-
-    buildTable("Main Board v4", "bom/base_board4.csv");
-    buildTable("Gate Driver v2", "bom/gate_driver2.csv", "Note: DC-DC has changed. PCB \"gate_driver2b.brd\" contains different size (old) component RH0515D or IH0515S");
-    buildTable("Sensor Board v3", "bom/sensor_board3.csv", "Add C4 & C5 100nF when using LEM HTFS current sensors");
-});
-
 function buildTable(title, csv, notes) {
 
     $.ajax(csv, {
@@ -13,7 +6,7 @@ function buildTable(title, csv, notes) {
             req.overrideMimeType('text/plain; charset=x-user-defined');
         },
         success: function success(data) {
-            var div = $("#components"); //.empty();
+            var div = $("#components");
             var header = $("<table>", { class: "table table-bordered", style: "padding-left:10px;" }).append($("<h4>").append(title));
             var label = $("<span>", { class: "label label-lg label-warning" }).append(notes);
             var table = $("<table>", { class: "table table-bordered table-striped table-hover" });
@@ -58,7 +51,7 @@ function buildTable(title, csv, notes) {
                             }
                             if (split[0].indexOf("RN") != -1) img = "RN_" + img;
 
-                            td2.attr("data-tooltip-content", "<img src='bom/img/" + img + ".png' />");
+                            td2.attr("data-tooltip-content", "<img src='img/bom/" + img + ".png' />");
                             td2.append(value);
                             tbody.append(tr.append(td1.append(split[0])).append(td2).append(td3.append(a)));
                         }

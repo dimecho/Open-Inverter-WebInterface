@@ -1,0 +1,38 @@
+Ref Name,Qty,Component,Value,Package,Manufacturer,MPN,RS Part Number,Description
+CONN3,1,2tb,,DSC,Weidmuller,PM 5.08/2/90 3.5 SW -1760510000,425-8720,"Black 2 way PCB screw terminal,5.08mm"
+CONN2,1,8SIL,,DSC,Molex,70553-0042,670-0888,"Molex SL Series, Series Number 70553, 2.54mm Pitch 8 Way 1 Row Right Angle PCB Header, Solder Termination, 3A"
+U1,1,ACPL-C87A,,SM,Avago Technologies,ACPL-C87A-000E,768-7897,"ACPL-C87A-000E, Isolation Amplifier, 4.5 _ 5.5 V, 8-pin SSO-8"
+C6,1,C-EU050-024X044,10n,C050-024X044,Murata,RPER71H103K2S1A03A,653-0125,"Murata Radial RPER Series 10nF Ceramic Multilayer Capacitor, 50 V dc X7R Dielectric ±10%"
+C7,1,C-EU050-024X044,10n,C050-024X044,Murata,RPER71H103K2S1A03A,653-0125,"Murata Radial RPER Series 10nF Ceramic Multilayer Capacitor, 50 V dc X7R Dielectric ±10%"
+C11,1,C-EU050-024X044,10n,C050-024X044,Murata,RPER71H103K2S1A03A,653-0125,"Murata Radial RPER Series 10nF Ceramic Multilayer Capacitor, 50 V dc X7R Dielectric ±10%"
+C12,1,C-EU050-024X044,10n,C050-024X044,Murata,RPER71H103K2S1A03A,653-0125,"Murata Radial RPER Series 10nF Ceramic Multilayer Capacitor, 50 V dc X7R Dielectric ±10%"
+C13,1,C-EU050-024X044,47n,C050-024X044,Murata,RPER71H473K2S1A03A,653-0197,"Murata Radial RPER Series 47nF Ceramic Multilayer Capacitor, 50 V dc X7R Dielectric ±10%"
+C14,1,C-EU050-024X044,47n,C050-024X044,Murata,RPER71H473K2S1A03A,653-0197,"Murata Radial RPER Series 47nF Ceramic Multilayer Capacitor, 50 V dc X7R Dielectric ±10%"
+C8,1,C-EU050-024X044,100n,C050-024X044,Murata,RPER71H104K2S1A03A,653-0181,"Murata Radial RPER Series 100nF Ceramic Multilayer Capacitor, 50 V dc X7R Dielectric ±10%"
+C9,1,C-EU050-024X044,100n,C050-024X044,Murata,RPER71H104K2S1A03A,653-0181,"Murata Radial RPER Series 100nF Ceramic Multilayer Capacitor, 50 V dc X7R Dielectric ±10%"
+C10,1,C-EU050-024X044,100n,C050-024X044,Murata,RPER71H104K2S1A03A,653-0181,"Murata Radial RPER Series 100nF Ceramic Multilayer Capacitor, 50 V dc X7R Dielectric ±10%"
+C5,1,C-USC0805,10n,C0805,Kemet,C0805C103K2RACTU,148-008,"Kemet 0805 C 10nF Ceramic Multilayer Capacitor, 200 V dc X7R Dielectric ±10% SMD"
+C3,1,C-USC0805,100n,C0805,AVX,08053C104KAT2A,390-990,"AVX 0805 Standard 100nF Ceramic Multilayer Capacitor, 25 V dc X7R Dielectric ±10% SMD"
+C4,1,C-USC0805,100n,C0805,AVX,08053C104KAT2A,390-990,"AVX 0805 Standard 100nF Ceramic Multilayer Capacitor, 25 V dc X7R Dielectric ±10% SMD"
+C2,1,CPOL-EUE2-5,100uf,E2-5,Panasonic,EEUFC1E101S,449-1040,"Panasonic FC Radial 100_F 25 V dc Aluminium Electrolytic Capacitor, ±20%"
+U2,1,DC_DC_5K2,,DSC,Murata Power Solutions,MEJ1S0505SC,829-4828,"Murata Power Solutions 1W Isolated DC-DC Converter, Vin 4.5 _ 5.5 V, Vout 5V, I/O isolation 5.2kV dc"
+U$1,1,LEM HTFS,TAMURA_L01Z_S05,DSC,LEM,HTFS 800-P,532-9255,"Open Loop Hall Effect Current Transducer, ±1200 A, 5 V"
+U$2,1,LEM HTFS,TAMURA_L01Z_S05,DSC,LEM,HTFS 800-P,532-9255,"Open Loop Hall Effect Current Transducer, ±1200 A, 5 V"
+R16,1,R-EU_0207/10,1M2,0207/10,Vishay,MBB02070C1204FCT00,506-5721,Vishay MBB0207 Series Axial Thin Film Resistor 1.2M½ ±1% 0.6W ±50ppm/¡C
+R17,1,R-EU_0207/10,1M2,0207/10,Vishay,MBB02070C1204FCT00,506-5721,Vishay MBB0207 Series Axial Thin Film Resistor 1.2M½ ±1% 0.6W ±50ppm/¡C
+R12,1,R-EU_0207/10,1.2k,0207/10,RS,707-7678,707-7678,Axial Carbon Resistor 1.2k½ ±5% 0.25W -500 _ +350ppm/¡C
+R13,1,R-EU_0207/10,3.3k,0207/10,RS,707-7701,707-7701,Axial Carbon Resistor 3.3k½ ±5% 0.25W -500 _ +350ppm/¡C
+R14,1,R-EU_0207/10,4.7k,0207/10,RS,707-7726,707-7726,Axial Carbon Resistor 4.7k½ ±5% 0.25W -500 _ +350ppm/¡C
+R8,1,R-EU_0207/10,10k,0207/10,RS,707-7745,707-7745,Axial Carbon Resistor 10k½ ±5% 0.25W -500 _ +350ppm/¡C
+R11,1,R-EU_0207/10,10k,0207/10,RS,707-7745,707-7745,Axial Carbon Resistor 10k½ ±5% 0.25W -500 _ +350ppm/¡C
+R15,1,R-EU_0207/10,10k,0207/10,RS,707-7745,707-7745,Axial Carbon Resistor 10k½ ±5% 0.25W -500 _ +350ppm/¡C
+R18,1,R-EU_0207/10,10k,0207/10,RS,707-7745,707-7745,Axial Carbon Resistor 10k½ ±5% 0.25W -500 _ +350ppm/¡C
+R19,1,R-EU_0207/10,10k,0207/10,RS,707-7745,707-7745,Axial Carbon Resistor 10k½ ±5% 0.25W -500 _ +350ppm/¡C
+R20,1,R-EU_0207/10,10k,0207/10,RS,707-7745,707-7745,Axial Carbon Resistor 10k½ ±5% 0.25W -500 _ +350ppm/¡C
+R21,1,R-EU_0207/10,10k,0207/10,RS,707-7745,707-7745,Axial Carbon Resistor 10k½ ±5% 0.25W -500 _ +350ppm/¡C
+R6,1,R-EU_0207/10,100k,0207/10,RS,707-7824,707-7824,Axial Carbon Resistor 100k½ ±5% 0.25W -700 _ 0ppm/¡C
+R7,1,R-EU_0207/10,100k,0207/10,RS,707-7824,707-7824,Axial Carbon Resistor 100k½ ±5% 0.25W -700 _ 0ppm/¡C
+R9,1,R-EU_0207/10,100k,0207/10,RS,707-7824,707-7824,Axial Carbon Resistor 100k½ ±5% 0.25W -700 _ 0ppm/¡C
+R10,1,R-EU_0207/10,100k,0207/10,RS,707-7824,707-7824,Axial Carbon Resistor 100k½ ±5% 0.25W -700 _ 0ppm/¡C
+IC1,1,TLC274P,TLC274P,DIL14,ON Semiconductor,LM2902NG,774-3489,"LM2902NG Op Amp, 1MHz, 3 _ 32 V Unidirectional 0.6V/_s Differential, 14-pin PDIP"
+CONN1,1,WIDE_2TB,,DSC,Phoenix Contact,GMKDS 3/2-7.62,189-5966,"2 way PCB mount screw terminal,7.62mm"

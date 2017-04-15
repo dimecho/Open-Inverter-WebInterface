@@ -3,6 +3,30 @@
     <head>
         <?php include "header.php" ?>
         <script type="text/javascript" src="js/components.js"></script>
+        <script>
+        $(document).ready(function () {
+            <?php
+            if(isset($_GET["hardware"])){
+                if($_GET["hardware"] == "1"){
+            ?>
+                $("#components").empty();
+                buildTable("Main Board v4", "pcb/Hardware v1.0/bom/base_board4.csv");
+                buildTable("Gate Driver v2", "pcb/Hardware v1.0/bom/gate_driver2.csv", "Note: DC-DC has changed. PCB \"gate_driver2b.brd\" contains different size (old) component RH0515D or IH0515S");
+                buildTable("Sensor Board v3", "pcb/Hardware v1.0/bom/sensor_board3.csv", "Add C4 & C5 100nF when using LEM HTFS current sensors");
+            <?php
+                }else if($_GET["hardware"] == "damien"){
+            ?>
+                $("#components").empty();
+                buildTable("Combined Board v6", "pcb/Hardware (Damien Mod)/bom/combi_v6.csv");
+                buildTable("Main Board v2", "pcb/Hardware (Damien Mod)/bom/main_board_v2.csv");
+                buildTable("Gate Driver v2", "pcb/Hardware (Damien Mod)/bom/igbt_v2.csv", "U1, U1 and link out ZD1, ZD2 components are optional for Desat detection tuning");
+                buildTable("Sensor Board v1", "pcb/Hardware (Damien Mod)/bom/sensor_board_v1.csv");
+            <?php } }else{ ?>
+                
+            <?php } ?>
+            $("#components").show();
+        });
+        </script>
     </head>
     <body>
         <div class="container">
@@ -10,7 +34,26 @@
             <br/>
             <div class="row">
                 <div class="col-md-1"></div>
-                <div class="col-md-10" id="components"></div>
+                <div class="col-md-10" id="components" style="display:none">
+                     <table class="table table-bordered">
+                        <tbody>
+                            <tr align="center">
+                                <td>
+                                    <a href="components.php?hardware=1">
+                                        <img src="img/hardware_v1.jpg" class="img-thumbnail img-rounded" />
+                                    </a><br/><br/>
+                                    Hardware v1.0 (Johannes Huebner)
+                                </td>
+                                <td>
+                                    <a href="components.php?hardware=damien">
+                                        <img src="img/hardware_damien.jpg" class="img-thumbnail img-rounded" />
+                                    </a><br/><br/>
+                                    Hardware v1.0 (Damien Maguire)
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <div class="col-md-1"></div>
             </div>
             <br/><br/><br/><br/><br/><br/>
@@ -24,7 +67,7 @@
                         </div>
                         <div class="modal-body">
                             <iframe src="" width="100%" height="100%" frameborder="0" id="componentPDF"></iframe>
-                            <!--<object type="application/pdf" data="bom/capacitor_tags.pdf" width="100%" height="100%">Not Working</object>-->
+                            <!--<object type="application/pdf" data="pcb/Capacitor-Tags.pdf" width="100%" height="100%">Not Working</object>-->
                         </div>
                     </div>
                 </div>

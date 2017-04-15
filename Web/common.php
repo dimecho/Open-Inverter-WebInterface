@@ -14,7 +14,7 @@
             'path' => array (
                 'mac' => "",
                 'windows' => "",
-                'linux' => "",
+                'linux' => ""
             )
         ),
         'gcc' => array (
@@ -29,7 +29,7 @@
             'path' => array (
                 'mac' => "/usr/bin/gcc",
                 'windows' => "C:\\SysGCC\\MinGW32\\bin\\gcc.exe",
-                'linux' => "/usr/bin/gcc",
+                'linux' => "/usr/bin/gcc"
             )
         ),
         'arm' => array (
@@ -44,7 +44,7 @@
             'path' => array (
                 'mac' => "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3/bin/gcc-arm-none-eabi",
                 'windows' => "C:\\Program Files (x86)\\GNU Tools ARM Embedded\\5.4 2016q3\\gcc-arm-none-eabi.exe",
-                'linux' => "/usr/share/gcc-arm-embedded/bin/gcc-arm-none-eabi",
+                'linux' => "/usr/share/gcc-arm-embedded/bin/gcc-arm-none-eabi"
             )
         ),
         'attiny' => array (
@@ -59,7 +59,7 @@
             'path' => array (
                 'mac' => "/usr/local/etc/gcc_arm/avr/bin/avrdude",
                 'windows' => "C:\\Program Files\\Win-AVR\\avrdude.exe",
-                'linux' => "/usr/bin/avrdude",
+                'linux' => "/usr/bin/avrdude"
             )
         ),
         'arduino' => array (
@@ -74,7 +74,7 @@
             'path' => array (
                 'mac' => "/Applications/Arduino.app/Contents/MacOS/Arduino",
                 'windows' => "C:\\Program Files (x86)\Arduino\\arduino.exe",
-                'linux' => "/opt/arduino/bin/arduino",
+                'linux' => "/opt/arduino/bin/arduino"
             )
         ),
         'python' => array (
@@ -89,7 +89,7 @@
             'path' => array (
                 'mac' => "/usr/bin/python",
                 'windows' => getenv("HOMEPATH"). "\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe",
-                'linux' => "/usr/bin/python",
+                'linux' => "/usr/bin/python"
             )
         ),
         'openscad' => array (
@@ -104,7 +104,7 @@
             'path' => array (
                 'mac' => "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD",
                 'windows' => "C:\\Program Files\\OpenSCAD\\OpenSCAD.exe",
-                'linux' => "/usr/share/applications/openscad.desktop",
+                'linux' => "/usr/share/applications/openscad.desktop"
             )
         ),
         'inkscape' => array (
@@ -119,7 +119,7 @@
             'path' => array (
                 'mac' => "/Applications/Inkscape.app/Contents/MacOS/Inkscape",
                 'windows' => "C:\\Program Files\\Inkscape\\inkscape.exe",
-                'linux' => "/usr/share/applications/inkscape.desktop",
+                'linux' => "/usr/share/applications/inkscape.desktop"
             )
         ),
         'openocd' => array (
@@ -134,7 +134,7 @@
             'path' => array (
                 'mac' => "/usr/local/etc/gcc_arm/openocd/bin/openocd",
                 'windows' => "C:\\Program Files\\GNU ARM Eclipse\\OpenOCD\\openocd.exe",
-                'linux' => "/usr/share/openocd/bin/openocd",
+                'linux' => "/usr/share/openocd/bin/openocd"
             )
         ),
         'eagle' => array (
@@ -149,7 +149,22 @@
             'path' => array (
                 'mac' => "/Applications/EAGLE-8.1.0/Eagle.app/Contents/MacOS/Eagle",
                 'windows' => "C:\\EAGLE-8.1.0\\bin\eagle.exe",
-                'linux' => "/opt/eagle-8.1.0/bin/eagle",
+                'linux' => "/opt/eagle-8.1.0/bin/eagle"
+            )
+        ),
+        'sparkpcb' => array (
+            'title' => "DesignSpark PCB Software",
+            'download' => array (
+                'mac' => "",
+                'windows' => "http://pcb.designspark.info/DesignSparkPCB_v8.0.exe",
+                'linux' => "",
+                'size' => 65,
+                'version' => "8.0"
+            ),
+            'path' => array (
+                'mac' => "",
+                'windows' => "C:\\EAGLE-8.1.0\\bin\eagle.exe",
+                'linux' => ""
             )
         ),
         'source' => array (
@@ -162,7 +177,7 @@
             'path' => array (
                 'mac' => getenv("HOME"). "/Documents/tumanako-inverter-fw-motorControl-master",
                 'windows' => getenv("HOMEPATH"). "\\Documents\\tumanako-inverter-fw-motorControl-master",
-                'linux' => getenv("HOME"). "/Documents/tumanako-inverter-fw-motorControl-master",
+                'linux' => getenv("HOME"). "/Documents/tumanako-inverter-fw-motorControl-master"
             )
         )
     );
