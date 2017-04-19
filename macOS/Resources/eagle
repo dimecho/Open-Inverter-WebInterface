@@ -1,3 +1,4 @@
 #!/bin/sh
-
+cd "$(dirname "$0")"
 osascript -e "do shell script \"installer -pkg ~/Downloads/Autodesk_EAGLE_8.1.0_English_Mac_64bit.pkg -target /\" with administrator privileges"
+cp -R ./DesignSparkPCB.app ~/Desktop

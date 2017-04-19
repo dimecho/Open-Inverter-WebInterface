@@ -152,21 +152,6 @@
                 'linux' => "/opt/eagle-8.1.0/bin/eagle"
             )
         ),
-        'sparkpcb' => array (
-            'title' => "DesignSpark PCB Software",
-            'download' => array (
-                'mac' => "",
-                'windows' => "http://pcb.designspark.info/DesignSparkPCB_v8.0.exe",
-                'linux' => "",
-                'size' => 65,
-                'version' => "8.0"
-            ),
-            'path' => array (
-                'mac' => "",
-                'windows' => "C:\\EAGLE-8.1.0\\bin\eagle.exe",
-                'linux' => ""
-            )
-        ),
         'source' => array (
             'title' => "Inverter Source Code",
             'download' => array (

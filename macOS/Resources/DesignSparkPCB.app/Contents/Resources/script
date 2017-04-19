@@ -1,0 +1,45 @@
+#!/bin/sh
+
+if [ ! -d "/Applications/Wine Devel.app" ]; then
+    cd ~/Downloads
+    curl -k -L -O -C - https://dl.winehq.org/wine-builds/macosx/pool/winehq-devel-2.6.pkg
+    osascript -e "do shell script \"installer -pkg ~/Downloads/winehq-devel-2.6.pkg -target /\" with administrator privileges"
+fi
+
+export PATH=$PATH:/Applications/Wine\ Devel.app/Contents/Resources/wine/bin/
+export LANG="en_US"
+export WINEARCH=win32
+export WINEPREFIX="$HOME/.wine"
+export DYLD_FALLBACK_LIBRARY_PATH=/usr/X11/lib
+
+if [ ! -d "$HOME/.wine/drive_c/Program Files/DesignSpark/DesignSpark PCB 8.0" ]; then
+
+    export PATH=$PATH:"$(dirname "$0")"
+    winetricks d3dx9
+    winetricks d3dx10
+    winetricks d3dx11
+    winetricks mfc40
+    winetricks mfc42
+    winetricks mono28
+    winetricks msvc80
+    winetricks msvc90
+    winetricks msvc100
+    winetricks vcrun6
+    winetricks vcrun2005
+    winetricks vcrun2008
+    winetricks vcrun2010
+    winetricks vcrun2012
+    winetricks vcrun2013
+    #winetricks fontsmooth-rgb
+    #winetricks settings fontsmooth=rgb
+
+    if [ ! -f "$HOME/Downloads/DesignSparkPCB_v8.0.exe" ]; then
+        cd "$HOME//Downloads"
+        curl -k -L -O -C - https://pcb.designspark.info/DesignSparkPCB_v8.0.exe
+    fi
+
+    cd "/Applications/Wine Devel.app/Contents/Resources/wine/bin/"
+    ./wine ~/Downloads/DesignSparkPCB_v8.0.exe
+else
+    open -a "Wine Devel" "$HOME/.wine/drive_c/Program Files/DesignSpark/DesignSpark PCB 8.0/DesignSpark.exe" 
+fi

@@ -114,4 +114,4 @@ function downloadComplete(app) {
 	}else{
 		openExternalApp(app);
 	}
-}
+};
