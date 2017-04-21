@@ -1,1 +1,1 @@
-Start-Process "$env:USERPROFILE\Downloads\Autodesk_EAGLE_8.1.0_English_Win_64bit.exe" -ArgumentList "/auto" -Wait
+Start-Process "$env:USERPROFILE\Downloads\Autodesk_EAGLE_8.1.1_English_Win_64bit.exe" -ArgumentList "/auto" -Wait

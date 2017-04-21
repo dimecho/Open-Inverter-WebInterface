@@ -28,7 +28,7 @@
     }
     else if(isset($_GET["check"]))
     {
-        checkSoftware($_GET["check"]);
+        checkSoftware($_GET["check"],false);
     }
 
     function checkSoftware($app,$quite)

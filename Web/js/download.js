@@ -24,6 +24,7 @@ function confirmDownload(app)
         //async: false,
         success: function(data)
         {
+			console.log(data);
             json = JSON.parse(data);
             //console.log(json);
 

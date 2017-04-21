@@ -11,7 +11,7 @@
         if($id == "")
             $id = $GLOBALS["Software"][$_GET["download"]];
 
-        if($id['download']['all']){
+        if(isset($id['download']['all'])){
             $source = $id['download']['all'];
         }else{
             $source = $id['download'][$GLOBALS['OS']];
@@ -43,7 +43,7 @@
         $id = $GLOBALS["Software"][$_GET["software"]];
 
         $array['title'] = $id['title'];
-        if($id['download']['all']){
+        if(isset($id['download']['all'])){
             $array['download'] = $id['download']['all'];
         }else{
             $array['download'] = $id['download'][$GLOBALS['OS']];

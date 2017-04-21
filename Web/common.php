@@ -5,14 +5,14 @@
         'xquartz' => array (
             'title' => "X Window System that runs on OSX",
             'download' => array (
-                'mac' => "https://www.obdev.at/downloads/crosspack/CrossPack-AVR-20131216.dmg",
-                'windows' => "http://heanet.dl.sourceforge.net/project/winavr/WinAVR/20100110/WinAVR-20100110-install.exe",
+                'mac' => "https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.11.dmg",
+                'windows' => "",
                 'linux' => "",
-                'size' => 25,
-                'version' => "20131216"
+                'size' => 75,
+                'version' => "2.7.11"
             ),
             'path' => array (
-                'mac' => "",
+                'mac' => $GLOBALS["X11"],
                 'windows' => "",
                 'linux' => ""
             )
@@ -24,7 +24,7 @@
                 'windows' => "http://sysprogs.com/files/gnutoolchains/mingw32/mingw32-gcc4.8.1.exe",
                 'linux' => "",
                 'size' => 25,
-                'version' => "2015.03"
+                'version' => "4.8"
             ),
             'path' => array (
                 'mac' => "/usr/bin/gcc",
@@ -39,7 +39,7 @@
                 'windows' => "https://launchpadlibrarian.net/gcc-arm-none-eabi-5_4-2016q3-20160926-win32.exe",
                 'linux' => "",
                 'size' => 100,
-                'version' => "5.4-2016q3"
+                'version' => "5.4"
             ),
             'path' => array (
                 'mac' => "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3/bin/gcc-arm-none-eabi",
@@ -140,16 +140,31 @@
         'eagle' => array (
             'title' => "AutoCAD EAGLE PCB Design Software",
             'download' => array (
-                'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.1.0_English_Mac_64bit.pkg",
-                'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.1.0_English_Win_64bit.exe",
-                'linux' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.1.0_English_Linux_64bit.tar.gz",
+                'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.1.1_English_Mac_64bit.pkg",
+                'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.1.1_English_Win_64bit.exe",
+                'linux' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.1.1_English_Linux_64bit.tar.gz",
                 'size' => 100,
-                'version' => "8.1.0"
+                'version' => "8.1.1"
             ),
             'path' => array (
-                'mac' => "/Applications/EAGLE-8.1.0/Eagle.app/Contents/MacOS/Eagle",
-                'windows' => "C:\\EAGLE-8.1.0\\bin\eagle.exe",
-                'linux' => "/opt/eagle-8.1.0/bin/eagle"
+                'mac' => "/Applications/EAGLE-8.1.1/Eagle.app/Contents/MacOS/Eagle",
+                'windows' => "C:\\EAGLE-8.1.1\\bin\eagle.exe",
+                'linux' => "/opt/eagle-8.1.1/bin/eagle"
+            )
+        ),
+        'designsparkpcb' => array (
+            'title' => "DesignSpark PCB",
+            'download' => array (
+                'mac' => "http://pcb.designspark.info/DesignSparkPCB_v8.0.exe",
+                'windows' => "http://pcb.designspark.info/DesignSparkPCB_v8.0.exe",
+                'linux' => "http://pcb.designspark.info/DesignSparkPCB_v8.0.exe",
+                'size' => 65,
+                'version' => "8.0"
+            ),
+            'path' => array (
+                'mac' => "/Applications/DesignSparkPCB.app/Contents/MacOS/DesignSparkPCB",
+                'windows' => "C:\\Program Files (x86)\\DesignSpark\\DesignSpark PCB 8.0\\DesignSpark.exe",
+                'linux' => ""
             )
         ),
         'source' => array (

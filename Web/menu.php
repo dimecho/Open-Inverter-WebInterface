@@ -30,9 +30,6 @@
                             <li><a tabindex="-1" href="firmware.php">Flash Firmware</a></li>
                             <li><a tabindex="-1" href="#" onClick="checkSoftware('attiny')">Flash ATtiny13 Chip</a></li>
                             <li><a tabindex="-1" href="#" onClick="checkSoftware('arm')">Compile from Source</a></li>
-                            <?php if(checkSoftware("gcc",true)) { ?>
-                                <li><a tabindex="-1" href="#" onClick="confirmGCCRemove()">Remove GCC ARM Compiler</a></li>
-                            <?php } ?>
                             <li class="divider"></li>
                             <li><a tabindex="-1" href="wiring.php">Wiring Diagram</a></li>
                             <li><a tabindex="-1" href="#" onClick="checkSoftware('eagle')">Schematics</a></li>
@@ -58,6 +55,16 @@
                             <li><a tabindex="-1" href="igbt-test.php">IGBT Test</a></li>
                             <li><a tabindex="-1" href="encoder.php">Encoder</a></li>
                             <li><a tabindex="-1" href="design.php">Power Stage</a></li>
+                        </ul>
+                    </li>
+                </ul>
+				<ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>Uninstall</b><b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
+                            <li><a tabindex="-1" href="uninstall.php">All Huebner Programs</a></li>
+                            <li><a tabindex="-1" href="#" onClick="confirmGCCRemove()">GCC Compiler</a></li>
+                            <li><a tabindex="-1" href="uninstall.php?app=avr">ARM Compiler</a></li>
                         </ul>
                     </li>
                 </ul>
