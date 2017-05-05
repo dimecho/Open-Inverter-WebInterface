@@ -143,7 +143,7 @@ function findPort {
 	} While ($timeout -le 4)
 }
 
-function checkDrivers {
+function checkProlificDriver {
 	
 	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "Prolific"}
 	if ($Driver)
@@ -164,6 +164,37 @@ function checkDrivers {
 			InfDefaultInstall ""$PSScriptRoot\..\Windows\driver\ProlificUsbSerial\ser2pl.inf""
 		}
 	}
+}
+
+function checkCP2102Driver {
+	
+	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "CP2102"}
+	if ($Driver)
+	{
+		Elevate
+		Write-Host "...Installing Driver"
+		pnputil -a ""$PSScriptRoot\..\Windows\driver\CP210x\slabvcp.inf""
+		InfDefaultInstall ""$PSScriptRoot\..\Windows\driver\CP210x\slabvcp.inf""
+	}
+}
+
+function checkFTDIDriver {
+	
+	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "FTDI"}
+	if ($Driver)
+	{
+		Elevate
+		Write-Host "...Installing Driver"
+		pnputil -a ""$PSScriptRoot\..\Windows\driver\FTDIUsbSerial\ftdiport.inf""
+		InfDefaultInstall ""$PSScriptRoot\..\Windows\driver\FTDIUsbSerial\ftdiport.inf""
+	}
+}
+
+function checkDrivers {
+
+    checkProlificDriver
+    checkCP2102Driver
+    checkFTDIDriver
 }
 
 function Uninstall {

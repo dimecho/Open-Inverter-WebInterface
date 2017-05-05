@@ -1,6 +1,7 @@
 <?php
     include_once("common.php");
-    
+    require("config.inc.php");
+	
     detectOS();
 
     set_time_limit(10000);
@@ -10,7 +11,8 @@
         if ($GLOBALS["OS"] === "mac") {
             $command = "ls /dev/cu.*";
         }else if ($GLOBALS["OS"] === "windows") {
-            $command = "";
+			echo $serial->_device;
+			return;
         }else if ($GLOBALS["OS"] === "linux") {
             $command = "ls /dev/ttyUSB*";
         }
@@ -24,8 +26,6 @@
         echo str_replace(" ", ",", $output);
 
     }else{
-
-        require('config.inc.php');
 
         if(isset($_GET["pk"]) && isset($_GET["name"]) && isset($_GET["value"]))
         {

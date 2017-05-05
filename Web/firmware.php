@@ -8,8 +8,9 @@
         
         $command = runCommand("updater" . " " .$_GET["file"]. " " .$_GET["serial"]);
         exec($command, $output, $return);
-
+		
         echo "$command\n";
+		
         foreach ($output as $line) {
             echo "$line\n";
         }
@@ -58,8 +59,8 @@
                                                         $tmp_name = sys_get_temp_dir(). "/" .basename($_FILES['firmware']['tmp_name']). ".bin";
                                                     }
                                                     move_uploaded_file($_FILES['firmware']['tmp_name'], $tmp_name);
-                                                    echo "&file=" .$tmp_name;
-                                                    echo "&serial=" .$_POST["serial"];
+                                                    echo "&file=" .urlencode($tmp_name);
+                                                    echo "&serial=" .urlencode($_POST["serial"]);
                                                     echo "'";
                                                 ?>,
                                                 success: function(data){

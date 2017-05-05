@@ -36,12 +36,10 @@
         $id = $GLOBALS["Software"][$app];
         $path = $id['path'][$GLOBALS['OS']];
         
-        if($app == "arm")
-        {
+        if($app == "arm"){
             checkARMCompiler($path,false);
-
-        }else  if($app == "inkscape") {
-
+			return false;
+        }else if($app == "inkscape") {
             if ($GLOBALS["OS"] === "mac") {
                 if(!is_file($GLOBALS["X11"]))
                 {
@@ -49,16 +47,23 @@
                     return false;
                 }
             }
+		}else if($app == "eagle") {
+			if ($GLOBALS["OS"] === "windows") {
+                if(!is_file($GLOBALS["Software"]["designsparkpcb"]["path"]["windows"])){
+                    echo "confirmDownload('designsparkpcb')";
+                    return false;
+                }
+            }
         }
-
-        if(is_file($path)) {
+		
+		if(is_file($path)) {
             if(!$quite)
                 echo "openExternalApp('" .$app. "')";
             return true;
         }else{
             if(!$quite)
                 echo "confirmDownload('" .$app. "')";
-            return false;
+			return false;
         }
     }
 
