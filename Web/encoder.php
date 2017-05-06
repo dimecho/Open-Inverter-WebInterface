@@ -78,7 +78,7 @@
                                 </td>
                                 <td>
                                     <center>
-                                        <img src="bom/img/TCST2103.jpg" class="img-thumbnail img-rounded" />
+                                        <img src="img/bom/TCST2103.jpg" class="img-thumbnail img-rounded" />
                                     </center>
                                 </td>
                             </tr>

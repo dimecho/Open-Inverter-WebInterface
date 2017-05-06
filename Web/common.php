@@ -118,7 +118,7 @@
             ),
             'path' => array (
                 'mac' => "/Applications/Inkscape.app/Contents/MacOS/Inkscape",
-                'windows' => "C:\\Program Files\\Inkscape\\inkscape.exe",
+                'windows' => "C:\\Program Files (x86)\\Inkscape\\inkscape.exe",
                 'linux' => "/usr/share/applications/inkscape.desktop"
             )
         ),

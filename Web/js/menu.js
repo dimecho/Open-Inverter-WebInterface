@@ -73,7 +73,7 @@ $(document).ready(function () {
                 onshow: function() {
                     //console.log(this);
                     this.elements.dialog.style.maxWidth = 'none';
-                    this.elements.dialog.style.width = '600px';
+                    this.elements.dialog.style.width = '620px';
                 }
             }
         };
@@ -366,6 +366,9 @@ function setDefaults() {
 
 function buildHeader() {
 
+    if(headerRefreshTimer)
+	   headerRefreshTimer.clearTimeout();
+	
     var version = getCookie("version");
     //========================
     if (version === undefined || version === "NaN") {
@@ -427,7 +430,7 @@ function buildHeader() {
                 //========================
                 span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + data[1] + "V</h6>" });
                 img = $("<img>", { class: "svg-inject", src: "img/battery.svg" });
-                if (parseFloat(data[1]) > parseFloat(data[2]) ||  parseFloat(data[15]) !== 0) {
+                if (parseFloat(data[1]) > parseFloat(data[2])) { // && parseFloat(data[15]) !== 0) {
                     img.addClass("svg-green");
                 } else {
                     img.addClass("svg-red");
