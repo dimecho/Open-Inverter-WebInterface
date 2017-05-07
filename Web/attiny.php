@@ -7,9 +7,9 @@
 
         if(isset($_GET["fuse"]))
         {
-            $command = runCommand("fuse " .$_GET["isp"]. " " .$_GET["serial"]);
+            $command = runCommand("fuse", $_GET["isp"]. " " .$_GET["serial"]);
         }else{
-            $command = runCommand("attiny " .$_GET["file"]. " " .$_GET["isp"]. " " .$_GET["serial"]);
+            $command = runCommand("attiny", $_GET["file"]. " " .$_GET["isp"]. " " .$_GET["serial"]);
         }
         exec($command, $output, $return);
         

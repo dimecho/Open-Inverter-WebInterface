@@ -1,4 +1,8 @@
 #!/bin/bash
 
-sudo apt-get update
-sudo apt-get install arduino arduino-core
+if [ $# -eq 0 ]; then
+    sudo apt-get update
+    sudo apt-get install arduino arduino-core
+else
+    sudo apt-get remove --purge arduino arduino-core
+fi

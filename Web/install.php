@@ -1,14 +1,14 @@
 <?php
 
     include_once("common.php");
-
+    
     detectOS();
+
+    set_time_limit(10000);
 
     if(!isset($_GET["url"]) && isset($_GET["app"]))
     {
-        set_time_limit(10000);
-        
-        exec(runCommand($_GET["app"]), $output, $return);
+        exec(runCommand($_GET["app"],""), $output, $return);
         
         //echo "$command\n";
         
@@ -18,13 +18,10 @@
     }
     else if(isset($_GET["remove"]))
     {
-        $id = $GLOBALS["Software"]["arm"];
-        $path = $id['path'][$GLOBALS['OS']];
-
-        checkARMCompiler($path,true);
-        //checkAVRCompiler($path,true);
-
-        echo "done";
+        exec(runCommand($_GET["remove"],"uninstall"));
+        
+        //echo runCommand($_GET["remove"],"uninstall");
+        echo $_GET["remove"];
     }
     else if(isset($_GET["check"]))
     {
@@ -95,14 +92,5 @@
         }else{
             echo "confirmDownload('arm')";
         }
-    }
-
-    function removeDirectory($path) {
-        $files = glob($path . '/*');
-        foreach ($files as $file) {
-            is_dir($file) ? removeDirectory($file) : unlink($file);
-        }
-        rmdir($path);
-        return;
     }
 ?>

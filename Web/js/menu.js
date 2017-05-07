@@ -365,9 +365,6 @@ function setDefaults() {
 };
 
 function buildHeader() {
-
-    if(headerRefreshTimer)
-	   headerRefreshTimer.clearTimeout();
 	
     var version = getCookie("version");
     //========================
@@ -379,8 +376,7 @@ function buildHeader() {
 		$("#firmwareVersion").empty().append("Firmware v" + version);
 	}
     //========================
-    var opStatus = $("<span>");
-
+    
     $.ajax("serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
         //async: false,
         success: function success(data) {
@@ -390,6 +386,8 @@ function buildHeader() {
             
             //console.log(data);
             
+            var opStatus = $("<span>");
+
             if(data.length > 8) {
 
                 var span = $("<span>", { class: "tooltip1" });
@@ -494,12 +492,13 @@ function buildHeader() {
 
             var SVGInject = document.querySelectorAll('img.svg-inject');
             SVGInjector(SVGInject);
+
+            $("#opStatus").empty().append(opStatus);
         }
     });
-
-    $("#opStatus").empty().append(opStatus);
-
+    
     headerRefreshTimer = setTimeout(function () {
+        headerRefreshTimer.clearTimeout();
         buildHeader();
         buildTips();
     }, 12000);

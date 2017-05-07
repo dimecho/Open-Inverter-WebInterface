@@ -1,14 +1,16 @@
 #!/bin/sh
-
-hdiutil attach ~/Downloads/OpenSCAD-2015.03-3.dmg
-open /Volumes/OpenSCAD
-
-x=1
-while [ $x -le 20 ]
-do
-    if [ -d /Applications/OpenSCAD.app ]; then
-        exit
-    fi
-    x=$(( $x + 1 ))
-    sleep 2
-done
+if [ "$1" = "uninstall" ] ; then
+    osascript -e "do shell script \"rm -rf /Applications/OpenSCAD.app\" with administrator privileges"
+else
+    hdiutil attach ~/Downloads/OpenSCAD-2015.03-3.dmg
+    open /Volumes/OpenSCAD
+    x=1
+    while [ $x -le 20 ]
+    do
+        if [ -d /Applications/OpenSCAD.app ]; then
+            exit
+        fi
+        x=$(( $x + 1 ))
+        sleep 2
+    done
+fi

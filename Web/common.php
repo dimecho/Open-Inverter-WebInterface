@@ -3,7 +3,7 @@
     $GLOBALS["X11"] = "/Applications/Utilities/XQuartz.app/Contents/MacOS/X11";
     $GLOBALS["Software"] = array (
         'xquartz' => array (
-            'title' => "X Window System that runs on OSX",
+            'title' => "XQuartz - Window X System",
             'download' => array (
                 'mac' => "https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.11.dmg",
                 'windows' => "",
@@ -18,7 +18,7 @@
             )
         ),
         'gcc' => array (
-            'title' => "C/C++ Compiler",
+            'title' => "GCC Compiler",
             'download' => array (
                 'mac' => "",
                 'windows' => "http://sysprogs.com/files/gnutoolchains/mingw32/mingw32-gcc4.8.1.exe",
@@ -33,7 +33,7 @@
             )
         ),
         'arm' => array (
-            'title' => "GCC/ARM Compiler",
+            'title' => "GCC-ARM Compiler",
             'download' => array (
                 'mac' => "https://launchpadlibrarian.net/287101378/gcc-arm-none-eabi-5_4-2016q3-20160926-mac.tar.bz2",
                 'windows' => "https://launchpadlibrarian.net/gcc-arm-none-eabi-5_4-2016q3-20160926-win32.exe",
@@ -93,7 +93,7 @@
             )
         ),
         'openscad' => array (
-            'title' => "OpenSCAD is for creating 3D CAD objects",
+            'title' => "OpenSCAD - 3D CAD",
             'download' => array (
                 'mac' => "http://files.openscad.org/OpenSCAD-2015.03-3.dmg",
                 'windows' => "http://files.openscad.org/OpenSCAD-2015.03-x86-64-Installer.exe",
@@ -108,7 +108,7 @@
             )
         ),
         'inkscape' => array (
-            'title' => "Inkscape is a Vector Graphics Software",
+            'title' => "Inkscape - Vector Graphics Software",
             'download' => array (
                 'mac' => "https://inkscape.org/en/gallery/item/3896/Inkscape-0.91-1-x11-10.7-x86_64.dmg",
                 'windows' => "https://inkscape.org/gallery/item/10688/Inkscape-0.92.1.msi",
@@ -138,7 +138,7 @@
             )
         ),
         'eagle' => array (
-            'title' => "AutoCAD EAGLE PCB Design Software",
+            'title' => "AutoCAD Eagle - PCB Design Software",
             'download' => array (
                 'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.1.1_English_Mac_64bit.pkg",
                 'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.1.1_English_Win_64bit.exe",
@@ -153,7 +153,7 @@
             )
         ),
         'designsparkpcb' => array (
-            'title' => "DesignSpark PCB",
+            'title' => "DesignSpark - PCB Design Software",
             'download' => array (
                 'mac' => "http://pcb.designspark.info/DesignSparkPCB_v8.0.exe",
                 'windows' => "http://pcb.designspark.info/DesignSparkPCB_v8.0.exe",
@@ -179,6 +179,21 @@
                 'windows' => getenv("HOMEPATH"). "\\Documents\\tumanako-inverter-fw-motorControl-master",
                 'linux' => getenv("HOME"). "/Documents/tumanako-inverter-fw-motorControl-master"
             )
+        ),
+        'php' => array (
+            'title' => "PHP Compiler",
+            'download' => array (
+                'mac' => "",
+                'windows' => "",
+                'linux' => "",
+                'size' => 1,
+                'version' => "5.6"
+            ),
+            'path' => array (
+                'mac' => "/usr/bin/php",
+                'windows' => "C:\\Program Files\\PHP\\php.exe",
+                'linux' => ""
+            )
         )
     );
     
@@ -191,41 +206,38 @@
         }
     }
 
-    function commandOSCorrection($command)
+    function commandOSCorrection($command,$args)
     {
-        $split = explode(" ",$command);
+        if ($GLOBALS["OS"] === "windows") {
+            $command = $command. ".ps1";
+            //if(!empty($args))
+            //   $command .= "\" -Arguments";
+        }else if ($GLOBALS["OS"] === "linux") {
+            $command = $command.".sh";
+        }
 
-        if(!empty($split)){
+        if(!empty($args)){
 
-            if ($GLOBALS["OS"] === "mac") {
-                $command = $split[0]. "\"";
-            }else if ($GLOBALS["OS"] === "windows") {
-                $command = $split[0]. ".ps1\" -Arguments";
-            }else if ($GLOBALS["OS"] === "linux") {
-                $command = $split[0].".sh";
-            }
-            
-            unset($split[0]);
-
-            foreach ($split as $key){
-                if ($GLOBALS["OS"] === "mac" || $GLOBALS["OS"] === "windows") {
+            if ($GLOBALS["OS"] === "mac" || $GLOBALS["OS"] === "windows") {
+                
+                $command = $command. "\"";
+                $split = explode(" ",$args);
+                foreach ($split as $key){
                     $command .= " \"" .$key. "\""; //wrap individual arguments
-                }else {
-                    $command .= " " .$key; //no wrap
                 }
+            }else{
+                $command .= " " .$args. "\""; //no wrap
             }
-            if ($GLOBALS["OS"] === "linux")
-                $command .= "\""; //close quote
         }else{
-            $command .= "\"";
+            $command .= "\""; //close quote
         }
 
         return $command;
     }
 
-    function runCommand($command)
+    function runCommand($command,$args)
     {
-        $command = commandOSCorrection($command);
+        $command = commandOSCorrection($command,$args);
 
         if ($GLOBALS["OS"] === "mac") {
             return "\"" .$_SERVER["DOCUMENT_ROOT"]. "/../" .$command. " 2>&1 &";

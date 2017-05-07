@@ -1,5 +1,8 @@
 #!/bin/sh
-
-hdiutil attach ~/Downloads/XQuartz-2.7.11.dmg
-osascript -e "do shell script \"installer -pkg /Volumes/XQuartz-2.7.11/XQuartz.pkg -target /\" with administrator privileges"
-hdiutil detach /Volumes/XQuartz-2.7.11
+if [ "$1" = "uninstall" ] ; then
+    osascript -e "do shell script \"rm -rf /Utilities/XQuartz.app\" with administrator privileges"
+else
+    hdiutil attach ~/Downloads/XQuartz-2.7.11.dmg
+    osascript -e "do shell script \"installer -pkg /Volumes/XQuartz-2.7.11/XQuartz.pkg -target /\" with administrator privileges"
+    hdiutil detach /Volumes/XQuartz-2.7.11
+fi

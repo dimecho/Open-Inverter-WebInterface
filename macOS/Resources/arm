@@ -1,6 +1,9 @@
 #!/bin/sh
-
-if [ ! -d "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3" ]; then
-    mkdir /usr/local/etc/gcc_arm
-    tar xzfv ~/Downloads/gcc-arm-none-eabi-5_4-2016q3-20160926-mac.tar.bz2 -C /usr/local/etc/gcc_arm/
+if [ "$1" = "uninstall" ] ; then
+    rm -rf "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3"
+else
+    if [ ! -d "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3" ]; then
+        mkdir /usr/local/etc/gcc_arm
+        tar xzfv ~/Downloads/gcc-arm-none-eabi-5_4-2016q3-20160926-mac.tar.bz2 -C /usr/local/etc/gcc_arm/
+    fi
 fi

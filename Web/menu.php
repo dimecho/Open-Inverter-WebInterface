@@ -60,12 +60,7 @@
                 </ul>
 				<ul class="nav navbar-nav">
                     <li class="dropdown">
-                        <a class="dropdown-toggle" role="button" data-toggle="dropdown"><b>Uninstall</b><b class="caret"></b></a>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                            <li><a tabindex="-1" href="uninstall.php">All Huebner Programs</a></li>
-                            <li><a tabindex="-1" href="#" onClick="confirmGCCRemove()">GCC Compiler</a></li>
-                            <li><a tabindex="-1" href="uninstall.php?app=avr">ARM Compiler</a></li>
-                        </ul>
+                        <a href="uninstall.php"><b>Uninstall</b></a>
                     </li>
                 </ul>
                 <ul class="nav navbar-nav">

@@ -5,7 +5,7 @@
     
     if(isset($_GET["ajax"])){
         
-        $command = runCommand("openocd " .$_GET["file"]. " " .$_GET["interface"]);
+        $command = runCommand("openocd", $_GET["file"]. " " .$_GET["interface"]);
         exec($command, $output, $return);
         
         echo "$command\n";

@@ -1,21 +1,24 @@
 #!/bin/sh
-
-if [ ! -f "/usr/local/etc/gcc_arm/openocd/bin/openocd" ]; then
-    mkdir /usr/local/etc/gcc_arm
-    pkgutil --expand ~/Downloads/gnuarmeclipse-openocd-osx-0.10.0-201601101000-dev.pkg /usr/local/etc/gcc_arm/openocd/
-    cd /usr/local/etc/gcc_arm/openocd/
-    cat Payload | gzip -d | cpio -id
-    rm Bom
-    rm PackageInfo
-    rm Payload
+if [ "$1" = "uninstall" ] ; then
+    rm -rf "/usr/local/etc/gcc_arm/openocd"
 else
-    export PATH="$PATH:/usr/local/etc/gcc_arm/openocd/bin/"
-    cd /usr/local/etc/gcc_arm/openocd/scripts/
-    
-    #halt
-    #flash erase_sector 0 0 last
-    #dump_image dump.bin 0x0 0x00020000
-    #[128k x 1024 = 131072 = 0x00020000]
-    #openocd -f ./interface/ftdi/olimex-arm-usb-ocd-h.cfg -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset init" -c "halt" -c "flash write_image erase $HOME/Documents/firmware/stm32_loader.bin 0x08000000" -c "reset" -c "shutdown" 
-    openocd -f ./interface/ftdi/$2.cfg -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset init" -c "halt" -c "flash write_image erase $1 0x08000000" -c "reset" -c "shutdown" 
+    if [ ! -f "/usr/local/etc/gcc_arm/openocd/bin/openocd" ]; then
+        mkdir /usr/local/etc/gcc_arm
+        pkgutil --expand ~/Downloads/gnuarmeclipse-openocd-osx-0.10.0-201601101000-dev.pkg /usr/local/etc/gcc_arm/openocd/
+        cd /usr/local/etc/gcc_arm/openocd/
+        cat Payload | gzip -d | cpio -id
+        rm Bom
+        rm PackageInfo
+        rm Payload
+    else
+        export PATH="$PATH:/usr/local/etc/gcc_arm/openocd/bin/"
+        cd /usr/local/etc/gcc_arm/openocd/scripts/
+        
+        #halt
+        #flash erase_sector 0 0 last
+        #dump_image dump.bin 0x0 0x00020000
+        #[128k x 1024 = 131072 = 0x00020000]
+        #openocd -f ./interface/ftdi/olimex-arm-usb-ocd-h.cfg -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset init" -c "halt" -c "flash write_image erase $HOME/Documents/firmware/stm32_loader.bin 0x08000000" -c "reset" -c "shutdown" 
+        openocd -f ./interface/ftdi/$2.cfg -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset init" -c "halt" -c "flash write_image erase $1 0x08000000" -c "reset" -c "shutdown" 
+    fi
 fi

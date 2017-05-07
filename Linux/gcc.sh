@@ -1,4 +1,8 @@
 #!/bin/bash
 
-sudo apt-get update
-sudo apt-get -y install gcc
+if [ $# -eq 0 ]; then
+    sudo apt-get update
+    sudo apt-get -y install gcc
+else
+    sudo apt-get remove --purge gcc
+fi

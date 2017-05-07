@@ -6,8 +6,8 @@
     if(isset($_GET["ajax"])){
         
         set_time_limit(10000);
-
-        exec(runCommand("source") . " 2>&1", $output, $return);
+        
+        exec(runCommand("source",""), $output, $return);
         
         foreach ($output as $line) {
             echo "$line\n";

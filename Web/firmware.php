@@ -6,7 +6,7 @@
 
     if(isset($_GET["ajax"])){
         
-        $command = runCommand("updater" . " " .$_GET["file"]. " " .$_GET["serial"]);
+        $command = runCommand("updater", $_GET["file"]. " " .$_GET["serial"]);
         exec($command, $output, $return);
 		
         echo "$command\n";

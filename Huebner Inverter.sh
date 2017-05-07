@@ -38,8 +38,6 @@ if [[ $(type -p php) ]]; then
     checkUSB
 else
 
-    echo "PHP not Installed ...Install? [Y/n]"
-    read
-    sudo apt-get update
-    sudo apt-get install php php-curl
+    echo "PHP not Installed ...Install? [Y/n]"; read
+    ./Linux/php.sh
 fi
