@@ -1,5 +1,3 @@
-var dev = 0;
-
 $(document).ready(function()
 {
     var safety = getCookie("safety");
@@ -21,12 +19,10 @@ $(document).ready(function()
         },
         validate: function(value) {
 
-			for (var i = 0; i < 2; i++) {
-				if(dev === 0 && getJSONFloatValue("opmode") != "0" && this.id != 'fslipspnt'){
-					stopInverter();
-					if(i>0)
-						return 'Inverter must not be in operating mode.';
-				}
+			if(getJSONFloatValue("opmode") != "0" && this.id != 'fslipspnt'){
+				stopInverter();
+				if(i == 0)
+					return 'Inverter must not be in operating mode.';
 			}
 
             if(this.id == 'fmin'){
@@ -56,6 +52,10 @@ $(document).ready(function()
                 if(parseInt($.trim(value)) > parseInt($("#udcmax").text())){
                     return 'Should be below maximum voltage (udcmax)';
                 }
+			}else if(this.id == 'udcsw'){
+                if(parseInt($.trim(value)) > parseInt($("#udcmin").text())){
+                    return 'Should be below minimum voltage (udcmin)';
+                }
 			}else if(this.id == 'fslipmin'){
 				if(parseFloat($.trim(value)) <= parseFloat($("#fmin").text())){
 					return 'Should be above starting frequency (fmin)';
@@ -72,12 +72,10 @@ $(document).ready(function()
                 }*/
             }
 
-            var notify = $.notify({
-                    message: this.id + " = " + $.trim(value),
-                },{
-                    //allow_dismiss: false,
-                    //showProgressbar: true,
-                    type: 'warning'
+            var notify = $.notify({ message: this.id + " = " + $.trim(value) },{
+                //allow_dismiss: false,
+                //showProgressbar: true,
+                type: 'warning'
             });
         },
         success: function(response, newValue)
@@ -96,29 +94,10 @@ $(document).ready(function()
 
                         if(data.indexOf("Parameters stored") != -1)
                         {
-                            $.notify({
-                                message: data,
-                            },{
-                                type: 'success'
-                            });
-                            
-                            //setTimeout(function() {
-                            //    notify.update({'type': 'success', 'message': data, 'progress': 25});
-                            //}, 2000);
-
+                            crc32("set " + newValue);
+                            $.notify({ message: data },{ type: 'success' });
                         }else{
-                            
-                            $.notify({
-                                icon: 'glyphicon glyphicon-warning-sign',
-                                title: 'Error',
-                                message: data,
-                            },{
-                                type: 'danger'
-                            });
-                            
-                            //setTimeout(function() {
-                            //    notify.update({'type': 'error', 'message': data, 'progress': 25});
-                            //}, 2000);
+                            $.notify({ icon: 'glyphicon glyphicon-warning-sign', title: 'Error', message: data },{ type: 'danger' });
                         }
                     }
                 });
@@ -127,9 +106,52 @@ $(document).ready(function()
     });
 
     buildParameters();
-    
-    $("[rel=tooltip]").tooltip();
+
+    crc32("test");
 });
+
+function basicChecks(json,name)
+{
+    var i = 0;
+    $.each(json, function()
+    {
+        if(name[i] === "fweak")
+        {
+            var udc = getJSONValue(json,name,"udc");
+            var udcsw = getJSONValue(json,name,"udcsw");
+            if(udc > udcsw) //Get real operating voltage
+            {
+                if((udc < 30 && this.value > 20) ||
+                   (udc < 55 && this.value > 30) ||
+                   (udc < 200 && this.value > 100 ) ||
+                   (udc < 300 && this.value > 120 ) ||
+                   (udc < 400 && this.value > 140 ))
+                {
+                    $.notify({ message: 'Your "fweak" might be a little too high' }, { type: 'danger' });
+                }
+            }
+        }else if (name[i] === "deadtime" && this.value < 28)
+        {
+            $.notify({ message: 'IGBT "deadtime" is dangerously fast' }, { type: 'danger' });
+        }
+        i++;
+    });
+};
+
+function getJSONValue(json,name,n)
+{
+    //TODO: make this more efficient
+
+    var i = 0;
+    $.each(json, function()
+    {
+        if(name[i] == n) {
+            //console.log(name[i] + ">" + this.value);
+            return this.value;
+        }
+        i++;
+    });
+};
 
 function buildParameters()
 {
@@ -205,10 +227,65 @@ function buildParameters()
                 var td3 = $("<td>").append(this.unit.replace("","°"));
        
                 tbody.append(tr.append(td1).append(td2).append(td3));
-                
+
                 i++;
             });
             menu.append(tbody);
+			
+			$(".tooltipstered").tooltipster("destroy");
+            $(".tooltip1").tooltipster();
+
+            basicChecks(json,name);
         }
     }
-}
+};
+
+function ab2str(buf) {
+
+  return String.fromCharCode.apply(null, new Uint32Array(buf));
+};
+
+function str2ab(str) {
+
+  var buf = new ArrayBuffer(str.length*4); // 4 bytes for each char
+  var bufView = new Uint32Array(buf);
+  for (var i=0, strLen=str.length; i<strLen; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return buf;
+};
+
+function crc32(data) {
+
+    var data = str2ab(data);
+
+    console.log(data);
+    console.log(ab2str(data));
+    console.log(data.byteLength);
+
+    var crc = 0xffffffff;
+    for (var i = 0; i < data.byteLength; i++)
+    {
+        crc = crc32_word(crc, data[i]);
+    }
+
+    console.log(crc); //Integer value
+    console.log(Math.abs(crc).toString(16).toUpperCase()); //HEX value
+
+    return crc;
+};
+
+function crc32_word(crc, data) {
+
+    crc = crc ^ data;
+    for(var i = 0; i < 32; i++)
+    {
+        if (crc & 0x80000000)
+        {
+            crc = ((crc << 1) ^ 0x04C11DB7) & 0xffffffff; //Polynomial used in STM32
+        }else{
+            crc = (crc << 1) & 0xffffffff;
+        }
+    }
+    return crc;
+};

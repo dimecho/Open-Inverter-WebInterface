@@ -141,7 +141,7 @@ function checkSoftware(app){
     });
 };
 
-function sendCommand(cmd, value, save, notify){
+function sendCommand(cmd, value, save, notify) {
 
     $.ajax("serial.php?pk=1&name=" + cmd + "&value=" + value, { async: false });
     if(save)
@@ -173,21 +173,6 @@ function openExternalApp(app) {
     } else {
         $.ajax("open.php?app=" + app);
     }
-};
-
-function confirmGCCRemove(e) {
-
-    alertify.confirm("Remove Compiler?", "This will clean up over 500MB of space!\n" + e, function () {
-
-        var notify = $.notify({ message: "Removing Compiler ..." }, { type: "danger" });
-
-        $.ajax("install.php?remove=arm", {
-            success: function success(data) {
-                notify.update({ message: "Compiler Removed", type: "success" });
-            }
-        });
-        $.ajax("install.php?remove=avr");
-    }, function () {});
 };
 
 function loadJSON(i) {
@@ -365,7 +350,7 @@ function setDefaults() {
 };
 
 function buildHeader() {
-	
+
     var version = getCookie("version");
     //========================
     if (version === undefined || version === "NaN") {
@@ -478,7 +463,7 @@ function buildHeader() {
                 //========================
                 var errors = getErrors();
                 if (errors != "" && errors.indexOf("No Errors") === -1) {
-                    span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + errors + "</h6>" });
+                    span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6><pre>" + errors + "</pre></h6>" });
                     span.append($("<img>", { class: "svg-inject", src: "img/alert.svg" }));
                     opStatus.append(span);
                 }
@@ -487,18 +472,19 @@ function buildHeader() {
                 span.append($("<img>", { class: "svg-inject", src: "img/alert.svg" }));
                 opStatus.append(span);
             }
-            $(".tooltipstered").tooltipster("destroy");
-            $(".tooltip1").tooltipster();
-
+			
+			$("#opStatus").empty().append(opStatus);
+           
             var SVGInject = document.querySelectorAll('img.svg-inject');
             SVGInjector(SVGInject);
 
-            $("#opStatus").empty().append(opStatus);
+			$(".tooltipstered").tooltipster("destroy");
+            $(".tooltip1").tooltipster();
         }
     });
     
     headerRefreshTimer = setTimeout(function () {
-        headerRefreshTimer.clearTimeout();
+		clearTimeout(headerRefreshTimer);
         buildHeader();
         buildTips();
     }, 12000);

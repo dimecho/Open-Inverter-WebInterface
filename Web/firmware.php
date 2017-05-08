@@ -23,6 +23,13 @@
             include "header.php";
         ?>
         <script>
+            $(document).ready(function () {
+                if(os === "Windows")
+                {
+                    $.notify({ message: 'Firmware flashing not supported in Windows - Someone needs to rewrite updater in PowerShell' }, { type: 'danger' });
+                }
+            });
+
             $(document).on('click', '.browse', function(){
                 var file = $('.file');
                 file.trigger('click');

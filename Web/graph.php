@@ -2,7 +2,9 @@
     
     //session_save_path(sys_get_temp_dir()); //For accessing same session with different port
     session_start();
-
+	
+	set_time_limit(0);
+	
     //Allow for Cross Origin Resource Sharing
     //header("Access-Control-Allow-Origin: *");
     //header("Access-Control-Allow-Methods: GET, POST");
