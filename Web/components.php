@@ -11,7 +11,7 @@
             ?>
                 $("#components").empty();
                 buildTable("Main Board v4", "pcb/Hardware v1.0/bom/base_board4.csv");
-                buildTable("Gate Driver v2", "pcb/Hardware v1.0/bom/gate_driver2.csv", "Note: DC-DC has changed. PCB \"gate_driver2b.brd\" contains different size (old) component RH0515D or IH0515S");
+                buildTable("Gate Driver v2", "pcb/Hardware v1.0/bom/gate_driver2.csv", "Note: DC-DC has changed. PCB \"gate_driver.brd\" contains different size (old) component RH0515D or IH0515S");
                 buildTable("Sensor Board v3", "pcb/Hardware v1.0/bom/sensor_board3.csv", "Add C4 & C5 100nF when using LEM HTFS current sensors");
             <?php
                 }else if($_GET["hardware"] == "damien"){

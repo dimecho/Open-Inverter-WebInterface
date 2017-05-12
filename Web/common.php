@@ -199,9 +199,10 @@
     
     function detectOS()
     {
-        if (strpos($_SERVER["HTTP_USER_AGENT"], "Macintosh") !== false) {
+        $uname = strtolower(php_uname('s'));
+        if (strpos($uname, "darwin") !== false) {
             $GLOBALS["OS"] = "mac";
-        }elseif (strpos($_SERVER["HTTP_USER_AGENT"], "Windows") !== false) {
+        }else if (strpos($uname, "win") !== false) {
             $GLOBALS["OS"] = "windows";
         }
     }

@@ -80,7 +80,7 @@ $(document).ready(function()
         },
         success: function(response, newValue)
         {
-            console.log("'" + response + "'");
+            //console.log("'" + response + "'");
 
             //if(response === "Set OK\n"){
                 //var id = this.id;
@@ -94,7 +94,8 @@ $(document).ready(function()
 
                         if(data.indexOf("Parameters stored") != -1)
                         {
-                            crc32("set " + newValue);
+                            //TODO: CRC32 check on entire params list
+
                             $.notify({ message: data },{ type: 'success' });
                         }else{
                             $.notify({ icon: 'glyphicon glyphicon-warning-sign', title: 'Error', message: data },{ type: 'danger' });
@@ -106,8 +107,6 @@ $(document).ready(function()
     });
 
     buildParameters();
-
-    crc32("test");
 });
 
 function basicChecks(json,name)
@@ -158,7 +157,7 @@ function buildParameters()
     //var length = 0;
     //for(var k in json) if(json.hasOwnProperty(k))    length++;
     
-    var json = loadJSON(0);
+    var json = loadJSON();
     
     if(json) //if(Object.keys(json).length > 0)
     {
@@ -238,54 +237,4 @@ function buildParameters()
             basicChecks(json,name);
         }
     }
-};
-
-function ab2str(buf) {
-
-  return String.fromCharCode.apply(null, new Uint32Array(buf));
-};
-
-function str2ab(str) {
-
-  var buf = new ArrayBuffer(str.length*4); // 4 bytes for each char
-  var bufView = new Uint32Array(buf);
-  for (var i=0, strLen=str.length; i<strLen; i++) {
-    bufView[i] = str.charCodeAt(i);
-  }
-  return buf;
-};
-
-function crc32(data) {
-
-    var data = str2ab(data);
-
-    console.log(data);
-    console.log(ab2str(data));
-    console.log(data.byteLength);
-
-    var crc = 0xffffffff;
-    for (var i = 0; i < data.byteLength; i++)
-    {
-        crc = crc32_word(crc, data[i]);
-    }
-
-    console.log(crc); //Integer value
-    console.log(Math.abs(crc).toString(16).toUpperCase()); //HEX value
-
-    return crc;
-};
-
-function crc32_word(crc, data) {
-
-    crc = crc ^ data;
-    for(var i = 0; i < 32; i++)
-    {
-        if (crc & 0x80000000)
-        {
-            crc = ((crc << 1) ^ 0x04C11DB7) & 0xffffffff; //Polynomial used in STM32
-        }else{
-            crc = (crc << 1) & 0xffffffff;
-        }
-    }
-    return crc;
 };

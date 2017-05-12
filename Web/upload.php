@@ -1,34 +1,39 @@
 <?php
-require('config.inc.php');
 
-if(isset($_GET["db"])){
-    
-    setParameters(getcwd() ."/db/" .$_GET["db"]. ".txt",$serial);
-    echo "ok";
-    
-}else if (count($_FILES)){
+	require('config.inc.php');
 
-    setParameters($_FILES['file']['tmp_name'],$serial);
-    header("Location:/index.php");
-}
+	$uart = fopen(serialDevice(), "r+"); //Read & Write
 
-function setParameters($file,$serial)
-{
-    $string = file_get_contents($file);
-    $params = (array)json_decode($string);
+	if(isset($_GET["db"])){
+		
+		setParameters(getcwd() ."/db/" .$_GET["db"]. ".txt",$serial);
+		echo "ok";
+		
+	}else if (count($_FILES)){
+		
+		setParameters($_FILES['file']['tmp_name'],$serial);
+		
+		header("Location:/index.php");
+	}
 
-    $serial->sendMessage("stop\n");
-    $read = $serial->readPort();
+	function setParameters($file,$serial)
+	{
+		$string = file_get_contents($file);
+		$params = (array)json_decode($string);
+		
+		fwrite($uart, "stop\r");
+		fread($uart,1);
+		
+		foreach ($params as $name => $attributes)
+		{
+			//echo $name. ">" .$params[$name];
+			fwrite($uart, "set " .$name. " " .$params[$name]. "\r");
+			fread($uart,1);
+		}
+		
+		fwrite($uart, "save\r");
+		fread($uart,1);
+	}
 
-    foreach ($params as $name => $attributes)
-    {
-        //echo $name. ">" .$params[$name];
-        $serial->sendMessage("set " .$name. " " .$params[$name]. "\n");
-        $read = $serial->readPort();
-    }
-    
-	$serial->sendMessage("save\n");
-    $read = $serial->readPort();
-}
-
+	fclose($uart);
 ?>

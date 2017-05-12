@@ -41,21 +41,8 @@ else
     browser="Safari"
 fi
 
-if [ -f /usr/bin/php ]; then
-    if grep -q "extension_dir=$(dirname "$0")/dio" "/usr/local/etc/php.ini"; then
-        echo "php.ini OK"
-    else
-        cp -R /etc/php.ini /usr/local/etc/php.ini
-        #cp -R ./dio/php.ini /usr/local/etc/php.ini
-        chmod 644 /usr/local/etc/php.ini
-        echo "extension_dir=$(dirname "$0")/dio/" >> /usr/local/etc/php.ini
-        echo "extension=dio.so" >> /usr/local/etc/php.ini
-        #echo "memory_limit=512M" >> /usr/local/etc/php.ini
-    fi
-fi
-
 pkill -9 php
-/usr/bin/php -S 127.0.0.1:8080 -t "$(dirname "$0")/Web/" -c /usr/local/etc/php.ini &
+/usr/bin/php -S 127.0.0.1:8080 -t "$(dirname "$0")/Web/" &
 sleep 2
 
 for dir in `ls ./kext`; do
@@ -65,7 +52,3 @@ for dir in `ls ./kext`; do
 done
 
 checkUSB
-
-#stty -f $serial 115200 parodd cs8 cstopb -crtscts -echo & cat $serial &
-#stty -f $serial 115200 & screen $serial 115200 &
-#open -a $browser http://localhost:8080

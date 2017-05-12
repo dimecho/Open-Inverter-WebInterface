@@ -1,19 +1,105 @@
 <?php
 
-    include_once("common.php");
+    require('config.inc.php');
 
-    detectOS();
-
-    if(isset($_GET["ajax"])){
+    error_reporting(E_ERROR | E_PARSE);
+	
+    if(isset($_GET["ajax"]))
+    {
+		//TODO: dynamic - $_GET["serial"]
+		//NOTE: No need to use dio for Windows because we know fread is 1
+		
+		$uart = fopen(serialDevice(), "rb+"); //Read & Write
+		
+        $PAGE_SIZE_BYTES = 1024;
+		$file = urldecode($_GET["file"]);
+        $len = filesize($file);
+		
+        if ($len < 1) {
+			print "File is empty\n";
+            exit;
+		}
         
-        $command = runCommand("updater", $_GET["file"]. " " .$_GET["serial"]);
-        exec($command, $output, $return);
+        $handle = fopen($file, "rb");
+		$read = fread($handle, $len);
+		$data = bytearray($read);
+		fclose($handle);
 		
-        echo "$command\n";
+		$pages = round(($len + $PAGE_SIZE_BYTES - 1) / $PAGE_SIZE_BYTES);
 		
-        foreach ($output as $line) {
-            echo "$line\n";
+		while((count($data) % $PAGE_SIZE_BYTES) > 0) //Fill ramaining bytes with zeros, prevents corrupted endings
+			array_push($data, 0);
+
+        print "File length is " .$len. " bytes/" .$pages. " pages\n";
+		
+        print "Resetting device...\n";
+		
+		fwrite($uart, "reset\r");
+		
+		wait_for_char($uart,'S'); //Wait for size request
+		
+        print "Sending number of pages.." .$pages. "\n";
+		
+		fwrite($uart, chr($pages)); //Use 'chr', sending 'int' will cause Transmission Error
+		//fputs($uart,$pages);
+		
+		wait_for_char($uart,'P'); //Wait for page request
+		
+		ob_flush();
+	    
+		$page = 0;
+        $done = false;
+		$idx = 0;
+		
+        while($done != true)
+        {
+			print "Sending page " .$page. " ...\n";
+			
+			$crc = calcStmCrc($data, $idx, $PAGE_SIZE_BYTES);
+			$c = "";
+			
+			while ($c != "C")
+            {
+				$idx = $page * $PAGE_SIZE_BYTES;
+                $cnt = 0;
+				
+                while ($cnt < $PAGE_SIZE_BYTES)
+                {
+					fwrite($uart, chr($data[$idx]));
+					//print chr($data[$idx]);
+				    $idx++;
+                    $cnt++;
+                }
+				
+				$c = fread($uart,1);
+
+                if ($c == "T")
+                    print "Transmission Error\n";
+			}
+		  
+			print "Sending CRC...\n";
+			
+			fwrite($uart, chr($crc & 0xFF));
+			fwrite($uart, chr(($crc >> 8) & 0xFF));
+			fwrite($uart, chr(($crc >> 16) & 0xFF));
+			fwrite($uart, chr(($crc >> 24) & 0xFF));
+			
+			$c = fread($uart,1);
+			
+			if ('D' == $c) {
+				print "CRC correct!\n";
+				print "Update done!\n";
+				$done = true;
+			}else if ('E' == $c) {
+				print "CRC error!\n";
+			}else if ('P' == $c) {
+				print "CRC correct!\n";
+				$page = $page + 1;
+			}
         }
+
+		fclose($uart);
+		
     }else{
 ?>
 <!DOCTYPE html>
@@ -23,13 +109,6 @@
             include "header.php";
         ?>
         <script>
-            $(document).ready(function () {
-                if(os === "Windows")
-                {
-                    $.notify({ message: 'Firmware flashing not supported in Windows - Someone needs to rewrite updater in PowerShell' }, { type: 'danger' });
-                }
-            });
-
             $(document).on('click', '.browse', function(){
                 var file = $('.file');
                 file.trigger('click');
@@ -50,6 +129,9 @@
                                 <td>
                                     <script>
                                         $(document).ready(function() {
+											
+											clearTimeout(headerRefreshTimer);
+											
                                             var progressBar = $("#progressBar");
                                             for (var i = 0; i < 100; i++) {
                                                 setTimeout(function(){ progressBar.css("width", i + "%"); }, i*2000);
@@ -58,17 +140,15 @@
                                                 type: "GET",
                                                 url:
                                                 <?php
-                                                    echo "'";
-                                                    echo "firmware.php?ajax=1";
-                                                    if ($GLOBALS["OS"] === "mac") {
+                                                    echo "'firmware.php?ajax=1";
+                                                    if (strpos(strtolower(php_uname('s')), "darwin") !== false) {
                                                         $tmp_name = "/tmp/" .basename($_FILES['firmware']['tmp_name']). ".bin";
                                                     }else{
                                                         $tmp_name = sys_get_temp_dir(). "/" .basename($_FILES['firmware']['tmp_name']). ".bin";
                                                     }
                                                     move_uploaded_file($_FILES['firmware']['tmp_name'], $tmp_name);
                                                     echo "&file=" .urlencode($tmp_name);
-                                                    echo "&serial=" .urlencode($_POST["serial"]);
-                                                    echo "'";
+                                                    echo "&serial=" .urlencode($_POST["serial"]). "'";
                                                 ?>,
                                                 success: function(data){
                                                     deleteCookie("version");
@@ -97,7 +177,7 @@
                                         type: "GET",
                                         url: "serial.php?com=list",
                                         success: function(data){
-                                            console.log(data);
+                                            //console.log(data);
                                             var s = data.split(',');
                                             for (var i = 0; i < s.length; i++) {
                                                 $("#serialList").append($("<option>",{value:s[i],selected:'selected'}).append(s[i]));
@@ -137,4 +217,47 @@
         </form>
     </body>
 </html>
-<?php } ?>
+<?php
+    }
+
+    function calcStmCrc($data, $idx, $len)
+	{
+        $cnt = 0;
+        $crc = 0xffffffff;
+		
+        while ($cnt < $len)
+        {
+			$word = $data[$idx] | ($data[$idx+1] << 8) | ($data[$idx+2] << 16) | ($data[$idx+3] << 24);
+            $cnt = $cnt + 4;
+            $idx = $idx + 4;
+
+            $crc = $crc ^ $word;
+            for($i = 0; $i < 32; $i++)
+            {
+                if ($crc & 0x80000000)
+                {
+                    $crc = (($crc << 1) ^ 0x04C11DB7) & 0xffffffff; //Polynomial used in STM32
+                }else{
+                    $crc = ($crc << 1) & 0xffffffff;
+                }
+            }
+        }
+		
+        return $crc;
+    }
+	
+	function bytearray($s)
+	{
+		return array_slice(unpack("C*", "\0".$s), 1);
+	}
+	
+	function wait_for_char($uart,$c)
+	{
+		while($recv_char = fread($uart,1))
+		{
+			//print $recv_char. "\n";
+			if($recv_char == $c)
+				break;
+		}
+	}
+?>

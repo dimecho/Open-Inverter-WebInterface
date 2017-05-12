@@ -175,32 +175,26 @@ function openExternalApp(app) {
     }
 };
 
-function loadJSON(i) {
+function loadJSON() {
 
-    var json;
     $.ajax("serial.php?command=json", {
         async: false,
         //contentType: "application/text",
         success: function success(data) {
             //console.log(data);
-            if (i < 4) {
-                try {
-                    json = JSON.parse(data);
-                } catch (e) {
-                    i++;
-                    json = loadJSON(i);
-                }
-            } else {
+            if(data === "") {
                 var title = $("#title h3").empty();
                 title.append("Check Serial Connection");
                 var connection = $("#connection").show();
+            }else{
+                return JSON.parse(data);
             }
         },
         error: function error(xhr, textStatus, errorThrown) {},
         timeout: 8000 // sets timeout to 8 seconds
     });
 
-    return json;
+    return  "";
 };
 
 function checkUpdates() {

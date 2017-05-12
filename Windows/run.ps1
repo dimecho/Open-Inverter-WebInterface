@@ -38,25 +38,13 @@ function startPHP($page) {
 		if ($comPort)
 		{
 			Copy-Item "$config_inc" "$config_inc.php" -force
-			(Get-Content $config_inc).replace("deviceSet(""/dev/cu.usbserial"")", "deviceSet(""$comPort"")") | Set-Content "$config_inc.php"
+			(Get-Content $config_inc).replace("/dev/cu.usbserial", "$comPort") | Set-Content "$config_inc.php"
 			Write-Host "===================================="  -ForegroundColor Green
 			Write-Host "COM port '$comPort' set in config.inc.php"  -ForegroundColor Green
 			Write-Host "===================================="  -ForegroundColor Green
-			
-			#================================================
-			#Quick Fix [give it a kick] - Prolific Driver Bug or Windows?
-			#================================================
-			$process = Start-Process -FilePath "$PSScriptRoot\..\Windows\putty.exe" -ArgumentList "-serial $comPort" -PassThru -WindowStyle Hidden
-			try{
-				$process | Wait-Process -Timeout 4 -ErrorAction Stop
-			}catch{
-				$process | Stop-Process -Force
-			}
-			#Somehow Putty fix sets maximum buffer size
-			#================================================
 		}
-        #Start-Process -FilePath "cmd.exe" -ArgumentList "/c mode ${comPort}: BAUD=115200 PARITY=n DATA=8 STOP=2 to=off dtr=off rts=off" -Wait
 		
+		# Open Web Browser
 		openBrowser "http://127.0.0.1:8080/$page"
 		
 		# Start PHP Webserver
