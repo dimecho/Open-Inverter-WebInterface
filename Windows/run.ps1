@@ -42,6 +42,20 @@ function startPHP($page) {
 			Write-Host "===================================="  -ForegroundColor Green
 			Write-Host "COM port '$comPort' set in config.inc.php"  -ForegroundColor Green
 			Write-Host "===================================="  -ForegroundColor Green
+			
+			#================================================
+			#Quick Fix [give it a kick] - Prolific Driver Bug or Windows?
+			#================================================
+			
+			$process = Start-Process -FilePath "$PSScriptRoot\..\Windows\puttytel.exe" -ArgumentList "-serial $comPort" -PassThru -WindowStyle Hidden
+			try{
+				$process | Wait-Process -Timeout 5 -ErrorAction Stop
+			}catch{
+				$process | Stop-Process -Force
+			}
+			
+			#Somehow Putty fix sets maximum buffer size
+			#================================================
 		}
 		
 		# Open Web Browser

@@ -32,20 +32,7 @@
                 if (trim($split[$i]) != "")
                 {
                     //echo $split[$i];
-                    $cmd = "get " .$split[$i]. "\r";
-					if (PHP_OS === 'WINNT') {
-						$uart = dio_open(serialDevice(), O_RDONLY); //Read
-						dio_write($uart, $cmd);
-						$read = dio_read($uart, 65536);
-						dio_close($uart);
-					}else{
-						$uart = fopen(serialDevice(), "r"); //Read
-						fwrite($uart, $cmd);
-						$read = fread($uart,65536);
-						fclose($uart);
-					}
-                    $read = str_replace($cmd,"",$read); //Remove serial echo
-                    $values[$i] = $read;
+                    $values[$i] = readSerial($split[$i]);
                 }
             }
 

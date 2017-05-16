@@ -8,7 +8,7 @@
     header ("Content-Type: text/json");
     header ("Content-Disposition: attachment; filename=\"snapshot " .date("F-j-Y g-ia"). ".txt\"");
 
-    $read = sendToSerial("all",$serial);
+    $read = readSerial("all");
     $split = explode("\n", $read);
     $values = array();
 

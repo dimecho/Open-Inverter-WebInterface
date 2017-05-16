@@ -12,7 +12,7 @@ checkUSB()
                     cp -R "$(dirname "$0")/Web/config.inc" "$(dirname "$0")/Web/config.inc.php"
                     sed -i -e "s~/dev/cu.usbserial~$serial~g" "$(dirname "$0")/Web/config.inc.php"
                 fi
-                open -a $browser http://localhost:8080 &
+                #open -a $browser http://localhost:8080 &
                 return
             fi
         done

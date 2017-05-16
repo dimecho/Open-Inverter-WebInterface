@@ -4,32 +4,45 @@
         <?php include "header.php" ?>
         <script type="text/javascript" src="js/jspdf.js"></script>
         <script>
-            $(document).ready(function()
-            {
-                $.ajax("wiring.csv",{
-                    async: false,
-                    success: function(data)
-                    {
-                        var tbody = $("#jp5pin tbody").empty();
+        $(document).ready(function () {
+            <?php
 
-                        var row = data.split("\n");
+            $pinout = "";
+            $wiring = "";
 
-                        for (var i = 0; i < row.length; i++) {
-                            
-                            var split = row[i].split(",");
-
-                            var tr = $("<tr>");
-                            tr.append($("<td>").append(split[0]));
-                            tr.append($("<td>").append(split[1]));
-                            tr.append($("<td>").append(split[2]));
-                            tbody.append(tr);
-                        }
-                    },
-                    error: function(xhr, textStatus, errorThrown){
+            if(isset($_GET["hardware"])){
+                if($_GET["hardware"] == "1"){
+                    $pinout = rawurlencode("pcb/Hardware v1.0/wiring.csv");
+                    $wiring = rawurlencode("pcb/Hardware v1.0/wiring.png");
+                    echo '$("#johannes").show();';
+                }else if($_GET["hardware"] == "damien"){
+                    $pinout = rawurlencode("pcb/Hardware (Damien Mod)/wiring.csv");
+                    $wiring = rawurlencode("pcb/Hardware (Damien Mod)/wiring.png");
+                }
+                echo '$("#wiring").show();';
+            ?>
+            $.ajax("<?php echo $pinout; ?>",{
+                async: false,
+                success: function(data)
+                {
+                    //console.log(data);
+                    var tbody = $("#pinout tbody").empty();
+                    var row = data.split("\n");
+                    for (var i = 0; i < row.length; i++) {
+                        var split = row[i].split(",");
+                        var tr = $("<tr>");
+                        tr.append($("<td>").append(split[0]));
+                        tr.append($("<td>").append(split[1]));
+                        tr.append($("<td>").append(split[2]));
+                        tbody.append(tr);
                     }
-                });
+                    $("#pinout").show();
+                },
+                error: function(xhr, textStatus, errorThrown){
+                }
             });
-            
+            <?php }else{ echo '$("#hardware").show();'; } ?>
+
             function printWiring()
             {
                 var doc = new jsPDF('l', 'mm', [279, 215]);
@@ -41,8 +54,9 @@
                     doc.addImage(this, 'PNG' , 25, 40, 225, 150, "wiring", "none");
                     doc.save("wiring.pdf");
                 };
-                img.src = "img/wiring.png";
+                img.src = "<?php echo $wiring; ?>";
             }
+        });
         </script>
     </head>
     <body>
@@ -51,7 +65,25 @@
              <div class="row">
                 <div class="col-md-1"></div>
                 <div class="col-md-10">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" id="hardware" style="display:none">
+                        <tbody>
+                            <tr align="center">
+                                <td>
+                                    <a href="wiring.php?hardware=1">
+                                        <img src="img/hardware_v1.jpg" class="img-thumbnail img-rounded" />
+                                    </a><br/><br/>
+                                    Hardware v1.0 (Johannes Huebner)
+                                </td>
+                                <td>
+                                    <a href="wiring.php?hardware=damien">
+                                        <img src="img/hardware_damien.jpg" class="img-thumbnail img-rounded" />
+                                    </a><br/><br/>
+                                    Hardware v1.0 (Damien Maguire)
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-bordered" id="johannes" style="display:none">
                         <tbody>
                             <tr>
                                 <td>
@@ -70,25 +102,31 @@
                                 </center>
                                 </td>
                             </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-bordered" id="wiring" style="display:none">
+                        <tbody>
                             <tr>
                                 <td colspan="3">
-                                    <a data-fancybox href="img/wiring.png">
-                                        <img src="img/wiring.png" class="img-thumbnail img-rounded" />
+                                    <a data-fancybox href="<?php echo $wiring; ?>">
+                                        <img src="<?php echo $wiring; ?>" class="img-thumbnail img-rounded" />
                                     </a>
                                 </td>
                             </tr>
-                             <tr>
+                            <tr>
                                 <td colspan="3">
                                     <button type="button" class="btn btn-info" onClick="printWiring();">Print</button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <p>Main Connector (JP5) Pin Summary</p>
-                    <table  class="table table-bordered table-striped" id="jp5pin">
-                        <thead></thead>
-                        <tbody></tbody>
-                    </table>
+                    <div id="pinout" style="display:none">
+                        <p>Main Connector Pin Summary</p>
+                        <table  class="table table-bordered table-striped" >
+                            <thead></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="col-md-1"></div>
             </div>

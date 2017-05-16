@@ -140,16 +140,16 @@
         'eagle' => array (
             'title' => "AutoCAD Eagle - PCB Design Software",
             'download' => array (
-                'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.1.1_English_Mac_64bit.pkg",
-                'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.1.1_English_Win_64bit.exe",
-                'linux' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.1.1_English_Linux_64bit.tar.gz",
+                'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.2.0_English_Mac_64bit.pkg",
+                'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.2.0_English_Win_64bit.exe",
+                'linux' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.2.0_English_Linux_64bit.tar.gz",
                 'size' => 100,
-                'version' => "8.1.1"
+                'version' => "8.2.0"
             ),
             'path' => array (
-                'mac' => "/Applications/EAGLE-8.1.1/Eagle.app/Contents/MacOS/Eagle",
-                'windows' => "C:\\EAGLE-8.1.1\\bin\eagle.exe",
-                'linux' => "/opt/eagle-8.1.1/bin/eagle"
+                'mac' => "/Applications/EAGLE-8.2.0/Eagle.app/Contents/MacOS/Eagle",
+                'windows' => "C:\\EAGLE-8.2.0\\bin\eagle.exe",
+                'linux' => "/opt/eagle-8.2.0/bin/eagle"
             )
         ),
         'designsparkpcb' => array (

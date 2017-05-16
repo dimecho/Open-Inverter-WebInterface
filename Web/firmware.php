@@ -7,9 +7,8 @@
     if(isset($_GET["ajax"]))
     {
 		//TODO: dynamic - $_GET["serial"]
-		//NOTE: No need to use dio for Windows because we know fread is 1
 		
-		$uart = fopen(serialDevice(), "rb+"); //Read & Write
+		$uart = fopen(serialDevice(), "r+"); //Read & Write
 		
         $PAGE_SIZE_BYTES = 1024;
 		$file = urldecode($_GET["file"]);
@@ -34,7 +33,7 @@
 		
         print "Resetting device...\n";
 		
-		fwrite($uart, "reset\r");
+		fwrite($uart, "reset\n");
 		
 		wait_for_char($uart,'S'); //Wait for size request
 		

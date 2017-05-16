@@ -2,6 +2,8 @@
 
     require('config.inc.php');
 
+    set_time_limit(30);
+
     error_reporting(E_ERROR | E_PARSE);
     
     if(isset($_GET["com"]))
@@ -39,68 +41,92 @@
         }
         else if(isset($_GET["average"]))
         {
-			readAverage("get " + $_GET["average"]);
+			echo readAverage($_GET["average"]);
         }
     }
 	
 	function readAverage($cmd)
     {
-		$cmd = "get " .urldecode($cmd). "\r";
+		$cmd = "get " .urldecode($cmd). "\n";
+		$read = "";
 		$sum = 0;
-
-		if (PHP_OS === 'WINNT')
-		{
-			$uart = dio_open(serialDevice(), O_RDONLY); //Read
-			dio_write($uart, $cmd);
-			dio_read($uart, 1);
-			for ($x = 0; $x <= 10; $x++) {
-				dio_write($uart, "!");
-				$sum += (float)str_replace('!', '', dio_read($uart, 1024));
-			}
-		    dio_close($uart);
-
-		}else{
-			
-			$uart = fopen(serialDevice(), "r"); //Read
-			fwrite($uart, $cmd);
-			fread($uart,1);
-			for ($x = 0; $x <= 10; $x++) {
-				fwrite($uart, "!");
-				$sum += (float)str_replace('!', '', fread($uart, 1024));
-			}
-		    fclose($uart);
-		}
 		
-		return $sum / 10;
+		$uart = fopen(serialDevice(), "r+");
+		fwrite($uart, $cmd);
+		
+		while($read .= fread($uart, 1))
+		{
+			if(strpos($read,$cmd) !== false) //Reached end of echo
+			{
+				for ($x = 0; $x <= 10; $x++)
+				{
+					fwrite($uart, "!");
+					fread($uart, 1); //Remove echo
+					$read = "";
+					while($read .= fread($uart, 1))
+						if(strpos($read,"\n") !== false)
+							break;
+					$sum += (float)$read;
+				}
+				break;
+			}
+		}
+		fclose($uart);
+
+		return $sum/10;
     }
 	
     function readSerial($cmd)
     {
-		$cmd = urldecode($cmd). "\r";
+		$cmd = urldecode($cmd). "\n";
+        $read = "";
 
-		if (PHP_OS === 'WINNT')
-		{
-			$uart = dio_open(serialDevice(), O_RDWR); //Read & Write
-			dio_write($uart, $cmd);
-			$read = dio_read($uart, 65536);
-			dio_close($uart);
-
-		}else{
-			
-			$uart = fopen(serialDevice(), "r+"); //Read & Write
-			//stream_set_timeout($uart, 0, 100);
-			//stream_set_blocking($uart,0);
-			
-			fwrite($uart, $cmd);
-			$read = fread($uart, 65536);
-			//while(!feof($uart)){
-				//$read .= stream_get_contents($fd, 128);
-				//$read .= fgets($uart);
-			//}
-		    fclose($uart);
-		}
+		$uart = fopen(serialDevice(), "r+");
+		fwrite($uart, $cmd);
 		
-        $read = str_replace($cmd,"",$read); //Remove serial echo
+		while($read .= fread($uart, 1))
+		{
+			if(strpos($read,$cmd) !== false) //Reached end of echo
+			{
+				//Continue reading
+				if($cmd === "json\n"){
+					$read = str_replace($cmd,"",$read); //Remove echo
+					while(json_decode($read) != true)
+						$read .= fread($uart, 1);
+				}else if($cmd === "all\n"){
+					$read = "";
+					while($read.= fread($uart, 1))
+						if(strpos($read,"tm_meas") !== false)
+								break;
+					$read .= "\t59652322";
+				}else if(strpos($cmd,",") !== false){ //Multi-value support
+					$read = "";
+					$split = explode(",",$cmd);
+					for ($x = 0; $x < count($split); $x++) {
+						$r = "";
+						while($r .= fread($uart, 1))
+							if(strpos($r,"\n") !== false)
+								break;
+						$read .= $r;
+					}
+				}else{
+					fwrite($uart, "!");
+					fread($uart, 1); //Remove echo
+                    $read = "";
+					while($read .= fread($uart, 1))
+						if(strpos($read,"\n") !== false)
+							break;
+					$read = rtrim($read ,"!");
+				}
+				break;
+			}
+		}
+		//$read = fgets($uart);
+		//while(!feof($uart)){
+			//$read .= stream_get_contents($fd, 1);
+			//$read .= fgets($uart);
+		//}
+		fclose($uart);
 
         return $read;
     }

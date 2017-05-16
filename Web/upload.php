@@ -2,8 +2,6 @@
 
 	require('config.inc.php');
 
-	$uart = fopen(serialDevice(), "r+"); //Read & Write
-
 	if(isset($_GET["db"])){
 		
 		setParameters(getcwd() ."/db/" .$_GET["db"]. ".txt",$serial);
@@ -21,19 +19,22 @@
 		$string = file_get_contents($file);
 		$params = (array)json_decode($string);
 		
-		fwrite($uart, "stop\r");
+		$uart = fopen(serialDevice(), "r+"); //Read & Write
+		fwrite($uart, "stop\n");
+		
 		fread($uart,1);
 		
 		foreach ($params as $name => $attributes)
 		{
 			//echo $name. ">" .$params[$name];
-			fwrite($uart, "set " .$name. " " .$params[$name]. "\r");
+			fwrite($uart, "set " .$name. " " .$params[$name]. "\n");
 			fread($uart,1);
 		}
 		
-		fwrite($uart, "save\r");
+		fwrite($uart, "save\n");
 		fread($uart,1);
+		
+		fclose($uart);
 	}
-
-	fclose($uart);
+	
 ?>

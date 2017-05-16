@@ -177,24 +177,29 @@ function openExternalApp(app) {
 
 function loadJSON() {
 
+    console.log("json");
+
+    var json;
     $.ajax("serial.php?command=json", {
         async: false,
+        cache: false,
+        timeout: 8000, // timeout 8 seconds
+        type: 'GET',
         //contentType: "application/text",
         success: function success(data) {
-            //console.log(data);
+            console.log(data);
             if(data === "") {
                 var title = $("#title h3").empty();
                 title.append("Check Serial Connection");
                 var connection = $("#connection").show();
             }else{
-                return JSON.parse(data);
+                json = JSON.parse(data);
             }
         },
-        error: function error(xhr, textStatus, errorThrown) {},
-        timeout: 8000 // sets timeout to 8 seconds
+        error: function error(xhr, textStatus, errorThrown) {}
     });
 
-    return  "";
+    return json;
 };
 
 function checkUpdates() {

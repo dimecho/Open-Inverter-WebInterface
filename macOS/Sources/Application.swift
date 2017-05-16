@@ -29,6 +29,7 @@ class Application: NSViewController, NSApplicationDelegate
     
     func applicationWillTerminate(_ notification: Notification)
     {
+		closeSerial()
         let task = Process()
         task.launchPath = "pkill"
         task.arguments =  ["-9" , "php"]
@@ -68,29 +69,31 @@ class Application: NSViewController, NSApplicationDelegate
         
         var raw = Darwin.termios()
         let path = String(serialPath)
-        let fd = open(path!, (O_RDWR | O_NOCTTY | O_NDELAY))
+		let fd = open(path!, (O_RDWR | O_NOCTTY | O_NDELAY))
         
         if (fd > 0)
         {
-            let CRTSCTS = 020000000000 /* flow control */
-            
+			let CRTSCTS = 020000000000 // flow control
+			let CMSPAR = 0o10000000000 // "stick" (mark/space) parity
+			
             //fcntl(fd, F_SETFL, 0);
             tcgetattr( fd, &raw)          // merge flags into termios attributes
             //------------------
             //cfsetspeed(&raw, 115200)    // set speed
             cfsetispeed(&raw, 115200)     // set input speed
-            cfsetospeed(&raw, 115200)     // set output
+            cfsetospeed(&raw, 115200)     // set output speed
             //------------------
             var cflag:tcflag_t = 0
             cflag |= UInt(CS8)            // 8-bit
-            //cflag |= UInt(PARODD)       // parity
             cflag |= UInt(CSTOPB)         // stop 2
-            
-            raw.c_cflag &= ~( UInt(CSIZE) | UInt(PARENB) | UInt(PARODD) | UInt(CSTOPB))	// clear all bits and merge in our selection
-            raw.c_cflag &= ~(UInt(IXON) | UInt(IXOFF) | UInt(IXANY)) // shut off xon/xoff ctrl
-            raw.c_cflag &= ~(UInt(PARENB) | UInt(PARODD));      // shut off parity
-            raw.c_cflag &= ~UInt(CRTSCTS);  // no flow control
-            raw.c_cflag |= cflag            // set flags
+			cflag |= (UInt(CLOCAL) | UInt(CREAD)) //set up raw mode / no echo / binary
+			
+			raw.c_cflag &= ~(UInt(CRTSCTS))		// clear rtscts
+            raw.c_cflag &= ~(UInt(CSIZE))		// clear all bits
+            raw.c_cflag &= ~(UInt(IXON) | UInt(IXOFF) | UInt(IXANY))		// shut off xon/xoff ctrl
+            raw.c_cflag &= ~(UInt(PARENB) | UInt(PARODD) | UInt(CMSPAR));	// shut off parity
+            raw.c_cflag |= cflag				// set flags
+			
             //------------------
             if (tcsetattr (fd, TCSANOW, &raw) != 0) // set termios
             {
