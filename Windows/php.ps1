@@ -27,11 +27,6 @@ if($args[0] -eq "uninstall") {
         Write-Host ""
     	Invoke-WebRequest -Uri http://windows.php.net/downloads/releases/$phpFile -OutFile "$env:TEMP\$phpFile"
     }
-    # Download Dio Extension
-    #$phpDIO = "php_dio-0.0.7-5.6-ts-vc11-x64.zip"
-    #if (-Not (Test-Path "$env:TEMP\$phpDIO")) {
-    #	Invoke-WebRequest -Uri http://windows.php.net/downloads/pecl/releases/dio/0.0.7/$phpDIO -OutFile "$env:TEMP\$phpDIO"
-    #}
 
     # Visual C++ Redistributable for Visual Studio 2012
     if (-Not (Test-Path 'HKLM:\SOFTWARE\Classes\Installer\Dependencies\{ca67548a-5ebe-413a-b50c-4b9ceb6d66c6}')) {
@@ -49,12 +44,6 @@ if($args[0] -eq "uninstall") {
     {
     	$shell.Namespace("$env:programfiles\PHP\").copyhere($item)
     }
-    #$zip = $shell.NameSpace("$env:TEMP\$phpDIO")
-    #foreach($item in $zip.items())
-    #{
-    #	$shell.Namespace("$env:programfiles\PHP\ext").copyhere($item)
-    #}
-    Copy-Item "$PSScriptRoot\..\Windows\dio\php_dio.dll" "$env:programfiles\PHP\ext"
 
     Rename-Item "$env:programfiles\PHP\php.ini-development" php.ini -ErrorAction SilentlyContinue
     Add-Content "$env:programfiles\PHP\php.ini" "
@@ -69,7 +58,6 @@ fastcgi.impersonate=1
 fastcgi.logging=0
 date.timezone=America/Los_Angeles
 extension_dir = `'ext`'
-extension=php_dio.dll
 extension=php_curl.dll
 extension=php_openssl.dll"
 

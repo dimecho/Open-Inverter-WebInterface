@@ -47,13 +47,12 @@
 	
 	function readAverage($cmd)
     {
-		$cmd = "get " .urldecode($cmd). "\n";
+		$cmd = "get " .urldecode($cmd). "\r";
 		$read = "";
 		$sum = 0;
 		
 		$uart = fopen(serialDevice(), "r+");
 		fwrite($uart, $cmd);
-		
 		while($read .= fread($uart, 1))
 		{
 			if(strpos($read,$cmd) !== false) //Reached end of echo
@@ -64,7 +63,7 @@
 					fread($uart, 1); //Remove echo
 					$read = "";
 					while($read .= fread($uart, 1))
-						if(strpos($read,"\n") !== false)
+						if(strpos($read,"\r") !== false)
 							break;
 					$sum += (float)$read;
 				}
@@ -78,46 +77,45 @@
 	
     function readSerial($cmd)
     {
-		$cmd = urldecode($cmd). "\n";
+		$cmd = urldecode($cmd). "\r";
         $read = "";
 
 		$uart = fopen(serialDevice(), "r+");
 		fwrite($uart, $cmd);
-		
 		while($read .= fread($uart, 1))
 		{
 			if(strpos($read,$cmd) !== false) //Reached end of echo
 			{
 				//Continue reading
-				if($cmd === "json\n"){
-					$read = str_replace($cmd,"",$read); //Remove echo
-					while(json_decode($read) != true)
-						$read .= fread($uart, 1);
-				}else if($cmd === "all\n"){
-					$read = "";
+                $read = "";
+				if($cmd === "json\r"){
+                    do {
+                        $read .= fread($uart, 1);
+                        json_decode($read);
+                    } while (json_last_error() != JSON_ERROR_NONE);
+				}else if($cmd === "all\r"){
 					while($read.= fread($uart, 1))
 						if(strpos($read,"tm_meas") !== false)
-								break;
-					$read .= "\t59652322";
+							break;
+					$read .= "\t\t59652322";
 				}else if(strpos($cmd,",") !== false){ //Multi-value support
-					$read = "";
 					$split = explode(",",$cmd);
 					for ($x = 0; $x < count($split); $x++) {
 						$r = "";
 						while($r .= fread($uart, 1))
-							if(strpos($r,"\n") !== false)
+							if(strpos($r,"\r") !== false)
 								break;
 						$read .= $r;
 					}
 				}else{
-					fwrite($uart, "!");
-					fread($uart, 1); //Remove echo
-                    $read = "";
+					//fwrite($uart, "!");
+					//fread($uart, 1); //Remove echo
 					while($read .= fread($uart, 1))
-						if(strpos($read,"\n") !== false)
+						if(strpos($read,"\r") !== false)
 							break;
-					$read = rtrim($read ,"!");
 				}
+                $read = rtrim($read ,"\r");
+                $read = rtrim($read ,"\n");
 				break;
 			}
 		}

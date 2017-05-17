@@ -33,7 +33,7 @@
 		
         print "Resetting device...\n";
 		
-		fwrite($uart, "reset\n");
+		fwrite($uart, "reset\r");
 		
 		wait_for_char($uart,'S'); //Wait for size request
 		

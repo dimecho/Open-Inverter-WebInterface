@@ -4,6 +4,8 @@ var headerRefreshTimer;
 
 $(document).ready(function () {
 
+    getJSONFloatValue("version");
+
     alertify.dialog('startInverterMode', function () {
         return {
             setup: function setup() {
@@ -123,9 +125,11 @@ $(document).ready(function () {
     });
     
     $(".knob").val(0).trigger('change');
-
-    buildHeader();
-
+    
+    $("#firmwareVersion").empty().append("Firmware v" + getJSONFloatValue("version"));
+    
+    //buildHeader();
+    
     buildTips();
 
     checkUpdates();
@@ -177,9 +181,8 @@ function openExternalApp(app) {
 
 function loadJSON() {
 
-    console.log("json");
-
     var json;
+
     $.ajax("serial.php?command=json", {
         async: false,
         cache: false,
@@ -208,7 +211,8 @@ function checkUpdates() {
     if (check === true) {
         $.ajax("update.php", {
             success: function success(data) {
-                //console.log(data);
+                console.log(data);
+                
                 if(data !== "") {
                     var url = "https://github.com/poofik/Huebner-Inverter/releases/download/1.0/";
                     if(os === "Mac"){
@@ -350,25 +354,14 @@ function setDefaults() {
 
 function buildHeader() {
 
-    var version = getCookie("version");
-    //========================
-    if (version === undefined || version === "NaN") {
-        version = getJSONFloatValue("version");
-        if(version > 0)
-            setCookie("version", version, 1);
-    }else{
-		$("#firmwareVersion").empty().append("Firmware v" + version);
-	}
-    //========================
-    
     $.ajax("serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
-        //async: false,
+        async: false,
         success: function success(data) {
 
             data = data.replace("\n\n", "\n");
             data = data.split("\n");
             
-            //console.log(data);
+            console.log(data);
             
             var opStatus = $("<span>");
 

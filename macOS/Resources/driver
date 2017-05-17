@@ -1,9 +1,17 @@
 #!/bin/sh
+#sw_vers -buildVersion
 
 cd "$(dirname "$0")"
 
-cp -R ./kext/ProlificUsbSerial.kext /Library/Extensions/
-cp -R ./kext/usbserial.kext /Library/Extensions/
-cp -R ./kext/SiLabsUSBDriver.kext /Library/Extensions/
-cp -R ./kext/FTDIUSBSerialDriver.kext /Library/Extensions/
-#sudo kextload -b com.FTDI.driver.FTDIUSBSerialDriver
+for dir in ./kext/*/
+do
+    kext=${dir%*/}
+    kext=${kext##*/}
+    echo $kext
+
+    sudo kextunload /Library/Extensions/$kext
+    sudo cp -R ./kext/$kext /Library/Extensions/
+    sudo chmod -R 755 /Library/Extensions/$kext
+    sudo chown -R root:wheel /Library/Extensions/$kext
+    sudo kextload /Library/Extensions/$kext
+done

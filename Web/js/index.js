@@ -159,7 +159,7 @@ function buildParameters()
     
     var json = loadJSON();
     
-    if(json) //if(Object.keys(json).length > 0)
+    if(Object.keys(json).length > 0)
     {
         var i = 0;
         var name = [];

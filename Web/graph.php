@@ -32,7 +32,7 @@
                 if (trim($split[$i]) != "")
                 {
                     //echo $split[$i];
-                    $values[$i] = readSerial($split[$i]);
+                    $values[$i] = readSerial("get " .$split[$i]);
                 }
             }
 

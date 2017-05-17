@@ -7,7 +7,7 @@ import Darwin.POSIX.termios
 @NSApplicationMain
 class Application: NSViewController, NSApplicationDelegate
 {
-    var serial:CInt = -1
+    var serial = -1
     var serialPath = String()
     var serialPathArray = [String]()
     
@@ -30,6 +30,7 @@ class Application: NSViewController, NSApplicationDelegate
     func applicationWillTerminate(_ notification: Notification)
     {
 		closeSerial()
+		
         let task = Process()
         task.launchPath = "pkill"
         task.arguments =  ["-9" , "php"]
@@ -69,7 +70,7 @@ class Application: NSViewController, NSApplicationDelegate
         
         var raw = Darwin.termios()
         let path = String(serialPath)
-		let fd = open(path!, (O_RDWR | O_NOCTTY | O_NDELAY))
+		let fd = open(path!, O_RDWR)
         
         if (fd > 0)
         {
@@ -99,7 +100,7 @@ class Application: NSViewController, NSApplicationDelegate
             {
                 print("error from tcsetattr");
             }else{
-                serial = fd
+                serial = Int(fd)
             }
         }
     }
@@ -107,7 +108,7 @@ class Application: NSViewController, NSApplicationDelegate
     func closeSerial()
     {
         if(serial != -1){
-            close(serial) ;
+            close(Int32(serial)) ;
             serial = -1 ;
         }
     }
