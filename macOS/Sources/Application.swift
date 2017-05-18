@@ -7,10 +7,10 @@ import Darwin.POSIX.termios
 @NSApplicationMain
 class Application: NSViewController, NSApplicationDelegate
 {
-    var serial = -1
+	var serial:CInt = -1
     var serialPath = String()
     var serialPathArray = [String]()
-    
+	
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
         self.performSelector(inBackground: #selector(checkConnect), with:nil)
@@ -64,18 +64,30 @@ class Application: NSViewController, NSApplicationDelegate
     
     func openSerial()
     {
-        if(serial != -1){
-            return
-        }
-        
+		//Close old connection (if app was closed not properly)
+		//let defaults:UserDefaults = UserDefaults.standard
+		//serial = defaults.value(forKey: "serial") as? CInt ?? -1
+		
+		if(serial != -1){
+			return
+		}
+		
+		closeSerial()
+		
         var raw = Darwin.termios()
         let path = String(serialPath)
-		let fd = open(path!, O_RDWR)
-        
+		let fd = open(path!, O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK)
+		/*
+		- The O_NOCTTY flag tells UNIX that this program doesn't want to be the "controlling terminal" for that port. If you don't specify this then any input (such as keyboard abort signals and so forth) will affect your process. Programs like getty(1M/8) use this feature when starting the login process, but normally a user program does not want this behavior.
+		
+		- The O_NDELAY flag tells UNIX that this program doesn't care what state the DCD signal line is in - whether the other end of the port is up and running. If you do not specify this flag, your process will be put to sleep until the DCD signal line is the space voltage.
+		
+		- In non-blocking mode, VMIN/VTIME have no effect (FNDELAY / O_NDELAY seem to be linux variants of O_NONBLOCK, the portable, POSIX flag).
+		*/
         if (fd > 0)
         {
 			let CRTSCTS = 020000000000 // flow control
-			let CMSPAR = 0o10000000000 // "stick" (mark/space) parity
+			//let CMSPAR = 0o10000000000 // "stick" (mark/space) parity
 			
             //fcntl(fd, F_SETFL, 0);
             tcgetattr( fd, &raw)          // merge flags into termios attributes
@@ -87,12 +99,13 @@ class Application: NSViewController, NSApplicationDelegate
             var cflag:tcflag_t = 0
             cflag |= UInt(CS8)            // 8-bit
             cflag |= UInt(CSTOPB)         // stop 2
-			cflag |= (UInt(CLOCAL) | UInt(CREAD)) //set up raw mode / no echo / binary
+			//cflag |= (UInt(CLOCAL) | UInt(CREAD)) //set up raw mode / no echo / binary
 			
+			raw.c_cflag &= ~(UInt(FNDELAY))		// clear fcntl, otherwise VMIN/VTIME are ignored
 			raw.c_cflag &= ~(UInt(CRTSCTS))		// clear rtscts
             raw.c_cflag &= ~(UInt(CSIZE))		// clear all bits
             raw.c_cflag &= ~(UInt(IXON) | UInt(IXOFF) | UInt(IXANY))		// shut off xon/xoff ctrl
-            raw.c_cflag &= ~(UInt(PARENB) | UInt(PARODD) | UInt(CMSPAR));	// shut off parity
+			raw.c_cflag &= ~(UInt(PARENB) | UInt(PARODD)); // | UInt(CMSPAR));	// shut off parity
             raw.c_cflag |= cflag				// set flags
 			
             //------------------
@@ -100,7 +113,9 @@ class Application: NSViewController, NSApplicationDelegate
             {
                 print("error from tcsetattr");
             }else{
-                serial = Int(fd)
+                serial = fd
+				//defaults.set(serial, forKey: "serial")
+				//defaults.synchronize()
             }
         }
     }
@@ -108,7 +123,7 @@ class Application: NSViewController, NSApplicationDelegate
     func closeSerial()
     {
         if(serial != -1){
-            close(Int32(serial)) ;
+            close(serial) ;
             serial = -1 ;
         }
     }

@@ -125,10 +125,13 @@ $(document).ready(function () {
     });
     
     $(".knob").val(0).trigger('change');
-    
+	
+    //Unknown command sequence
+    getJSONFloatValue("hello");
+	
     $("#firmwareVersion").empty().append("Firmware v" + getJSONFloatValue("version"));
     
-    //buildHeader();
+    buildHeader();
     
     buildTips();
 
