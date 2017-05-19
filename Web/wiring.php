@@ -22,7 +22,7 @@
                 echo '$("#wiring").show();';
             ?>
             $.ajax("<?php echo $pinout; ?>",{
-                async: false,
+                //async: false,
                 success: function(data)
                 {
                     //console.log(data);

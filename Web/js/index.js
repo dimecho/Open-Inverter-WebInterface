@@ -161,80 +161,79 @@ function buildParameters()
     
     if(Object.keys(json).length > 0)
     {
-        var i = 0;
-        var name = [];
-        for(var k in json)
-            name.push(k);
+        $.ajax("description.csv",{
+            //async: false,
+            //dataType: 'text',
+            //contentType: "application/text",
+            beforeSend: function (req) {
+              req.overrideMimeType('text/plain; charset=x-user-defined');
+            },
 
-        var menu = $("#parameters").empty().show();
-        if(menu)
-        {
-            //======================
-            var parameters = [];
-            var description = [];
-         
-            $.ajax("description.csv",{
-                async: false,
-                //contentType: "application/text",
-                beforeSend: function (req) {
-                  req.overrideMimeType('text/plain; charset=x-user-defined');
-                },
-                //dataType: 'text',
-                success: function(data)
-                {
-                    var row = data.split("\n");
-
-                    for (var i = 0; i < row.length; i++) {
-                        
-                        var split = row[i].split(",");
-                        var d = "";
-
-                        if(split.length > 6) { //contains , in decription
-                            for (var c = 5; c < split.length; ++c) {
-                                d += split[c];
-                            }
-                        }else{
-                            d = split[5];
-                        }
-
-                        parameters.push(split[0]);
-                        description.push(d.replace(/"/g, ''));
-                    }
-                },
-                error: function(xhr, textStatus, errorThrown){
-                }
-            });
-            //=================
-
-            var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("Type")));
-            var tbody = $("<tbody>");
-
-            menu.append(thead);
-            $.each(json, function()
+            success: function(data)
             {
-                //console.log(this)
+                var name = [];
+                for(var k in json)
+                    name.push(k);
 
-                var tooltip = "";
-                var x = parameters.indexOf(name[i]);
-                if(x !=-1)
-                    tooltip = description[x];
+                var parameters = [];
+                var description = [];
+
+                var row = data.split("\n");
+
+                for (var i = 0; i < row.length; i++) {
+                    
+                    var split = row[i].split(",");
+                    var d = "";
+
+                    if(split.length > 6) { //contains , in decription
+                        for (var c = 5; c < split.length; ++c) {
+                            d += split[c];
+                        }
+                    }else{
+                        d = split[5];
+                    }
+
+                    parameters.push(split[0]);
+                    description.push(d.replace(/"/g, ''));
+                }
+
+                var menu = $("#parameters");
+                var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("Type")));
+                var tbody = $("<tbody>");
+                menu.append(thead);
+
+                var i = 0;
+                $.each(json, function()
+                {
+                    //console.log(this)
+
+                    var tooltip = "";
+                    var x = parameters.indexOf(name[i]);
+                    if(x !=-1)
+                        tooltip = description[x];
+                    
+                    var a = $("<a>", {href:"#", id:name[i], "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":this.unit + " ("+ this.default + ")"}).append(this.value);
+                    var tr = $("<tr>");
+                    var td1 = $("<td>", {class:"tooltip1", "data-tooltip-content":"<h5>" + tooltip + "</h5>"}).append(name[i]);
+                    var td2 = $("<td>").append(a);
+                    var td3 = $("<td>").append(this.unit.replace("","°"));
+           
+                    tbody.append(tr.append(td1).append(td2).append(td3));
+
+                    i++;
+                });
+                menu.empty();
+                menu.append(tbody);
                 
-                var a = $("<a>", {href:"#", id:name[i], "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":this.unit + " ("+ this.default + ")"}).append(this.value);
-                var tr = $("<tr>");
-                var td1 = $("<td>", {class:"tooltip1", "data-tooltip-content":"<h5>" + tooltip + "</h5>"}).append(name[i]);
-                var td2 = $("<td>").append(a);
-                var td3 = $("<td>").append(this.unit.replace("","°"));
-       
-                tbody.append(tr.append(td1).append(td2).append(td3));
+                $(".tooltipstered").tooltipster("destroy");
+                $(".tooltip1").tooltipster();
 
-                i++;
-            });
-            menu.append(tbody);
-			
-			$(".tooltipstered").tooltipster("destroy");
-            $(".tooltip1").tooltipster();
+                menu.show();
 
-            basicChecks(json,name);
-        }
+                basicChecks(json,name);
+            },
+            error: function(xhr, textStatus, errorThrown){
+            }
+        });
     }
 };

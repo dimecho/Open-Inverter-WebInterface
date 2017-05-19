@@ -81,7 +81,7 @@
             <input type="file" name="file" class="fileSVG" hidden onChange="javascript:this.form.submit();" accept=".svg"/>
             <input type="submit" hidden/>
         </form>
-        <form enctype="multipart/form-data" action="upload.php" method="POST">
+        <form enctype="multipart/form-data" action="snapshot.php" method="POST">
             <input type="file" name="file" class="fileUpload" hidden onChange="javascript:this.form.submit();" accept=".txt"/>
             <input type="submit" hidden/>
         </form>

@@ -29,12 +29,12 @@ class Application: NSViewController, NSApplicationDelegate
     
     func applicationWillTerminate(_ notification: Notification)
     {
-		closeSerial()
-		
         let task = Process()
         task.launchPath = "pkill"
         task.arguments =  ["-9" , "php"]
         task.launch()
+		
+		closeSerial()
     }
     
     func checkConnect()
@@ -76,7 +76,7 @@ class Application: NSViewController, NSApplicationDelegate
 		
         var raw = Darwin.termios()
         let path = String(serialPath)
-		let fd = open(path!, O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK)
+		let fd = open(path!, O_RDWR | O_NOCTTY | O_NDELAY ) //| O_NONBLOCK
 		/*
 		- The O_NOCTTY flag tells UNIX that this program doesn't want to be the "controlling terminal" for that port. If you don't specify this then any input (such as keyboard abort signals and so forth) will affect your process. Programs like getty(1M/8) use this feature when starting the login process, but normally a user program does not want this behavior.
 		
@@ -86,23 +86,28 @@ class Application: NSViewController, NSApplicationDelegate
 		*/
         if (fd > 0)
         {
-			let CRTSCTS = 020000000000 // flow control
+			//fcntl(fd, F_SETFL, 0);	// passing F_SETFL to clear the O_NONBLOCK flag so subsequent I/O will block.
+			tcgetattr(fd, &raw)         // merge flags into termios attributes
+			//------------------
+			//cfmakeraw(&raw);
+			//raw.c_cc.16 = 1 //raw.c_cc[VMIN] = 1
+			//raw.c_cc[VTIME] = 10
+			//------------------
+			//cfsetspeed(&raw, 115200)    // set speed
+			cfsetispeed(&raw, speed_t(B115200))     // set input speed
+			cfsetospeed(&raw, speed_t(B115200))     // set output speed
+			//------------------
+			
+			//let CRTSCTS = 020000000000 // flow control
 			//let CMSPAR = 0o10000000000 // "stick" (mark/space) parity
 			
-            //fcntl(fd, F_SETFL, 0);
-            tcgetattr( fd, &raw)          // merge flags into termios attributes
-            //------------------
-            //cfsetspeed(&raw, 115200)    // set speed
-            cfsetispeed(&raw, 115200)     // set input speed
-            cfsetospeed(&raw, 115200)     // set output speed
-            //------------------
-            var cflag:tcflag_t = 0
+			var cflag:tcflag_t = 0
             cflag |= UInt(CS8)            // 8-bit
             cflag |= UInt(CSTOPB)         // stop 2
 			//cflag |= (UInt(CLOCAL) | UInt(CREAD)) //set up raw mode / no echo / binary
 			
 			raw.c_cflag &= ~(UInt(FNDELAY))		// clear fcntl, otherwise VMIN/VTIME are ignored
-			raw.c_cflag &= ~(UInt(CRTSCTS))		// clear rtscts
+			//raw.c_cflag &= ~(UInt(CRTSCTS))	// clear rtscts
             raw.c_cflag &= ~(UInt(CSIZE))		// clear all bits
             raw.c_cflag &= ~(UInt(IXON) | UInt(IXOFF) | UInt(IXANY))		// shut off xon/xoff ctrl
 			raw.c_cflag &= ~(UInt(PARENB) | UInt(PARODD)); // | UInt(CMSPAR));	// shut off parity

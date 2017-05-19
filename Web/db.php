@@ -7,7 +7,7 @@
         <script>
             $(document).on('click', '.browse', function(){
                 $(this).attr("disabled", true);
-                $.ajax("upload.php?db=" + $("#motor").val(),{
+                $.ajax("snapshot.php?db=" + $("#motor").val(),{
                     async: false,
                     success: function(data){
                         console.log(data);

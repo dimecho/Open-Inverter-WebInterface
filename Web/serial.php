@@ -58,10 +58,10 @@
 		$read = "";
 		$sum = 0;
 		
-		$uart = fopen(serialDevice(), "r+"); //Read & Write
-        stream_set_blocking($uart, false); //O_NONBLOCK
+		$uart = fopen(serialDevice(), "rb+"); //Read & Write
+        stream_set_blocking($uart, 1); //O_NONBLOCK
         stream_set_timeout($uart, 8);
-
+        
 		fwrite($uart, $cmd);
 		while($read .= fread($uart, 1))
 		{
@@ -90,13 +90,13 @@
 		$cmd = urldecode($cmd). "\r";
         $read = "";
 
-		$uart = fopen(serialDevice(), "r+"); //Read & Write
-        stream_set_blocking($uart, false); //O_NONBLOCK
+		$uart = fopen(serialDevice(), "rb+"); //Read & Write
+        stream_set_blocking($uart, 1); //O_NONBLOCK
         stream_set_timeout($uart, 8);
         
 		fwrite($uart, $cmd);
         
-        while($read .= fread($uart, 1))
+        while($read .= fread($uart, 1)) //stream_get_contents($uart)
         {
             if(strpos($read,$cmd) !== false) //Reached end of echo
             {
@@ -124,7 +124,7 @@
                         $read .= $r;
                     }
                 */
-                //TODO: commnad=errors
+                //TODO: command=errors
                 }else{
                     while($read .= fread($uart, 1))
                         if(strpos($read,"\n") !== false)

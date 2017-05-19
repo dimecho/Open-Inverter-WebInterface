@@ -8,8 +8,8 @@
     {
 		//TODO: dynamic - $_GET["serial"]
 		
-		$uart = fopen(serialDevice(), "r+"); //Read & Write
-		stream_set_blocking($uart,false); //O_NONBLOCK
+		$uart = fopen(serialDevice(), "rb+"); //Read & Write
+		stream_set_blocking($uart, 1); //O_NONBLOCK
         stream_set_timeout($uart, 30);
 
         $PAGE_SIZE_BYTES = 1024;

@@ -131,7 +131,7 @@ $(document).ready(function () {
 	
     $("#firmwareVersion").empty().append("Firmware v" + getJSONFloatValue("version"));
     
-    buildHeader();
+    buildHeader(false);
     
     buildTips();
 
@@ -355,16 +355,16 @@ function setDefaults() {
     }, function () {});
 };
 
-function buildHeader() {
+function buildHeader(sync) {
 
     $.ajax("serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
-        async: false,
+        async: sync,
         success: function success(data) {
 
             data = data.replace("\n\n", "\n");
             data = data.split("\n");
             
-            console.log(data);
+            //console.log(data);
             
             var opStatus = $("<span>");
 
@@ -480,7 +480,7 @@ function buildHeader() {
     
     headerRefreshTimer = setTimeout(function () {
 		clearTimeout(headerRefreshTimer);
-        buildHeader();
+        buildHeader(true);
         buildTips();
     }, 12000);
 };
