@@ -11,7 +11,7 @@ else
 
         # NOTE: You should also add this line to ~/.bashrc or ~/.bash_profile (in your home directory)
         # so you don't have to remember to do this every time you want to compile firmware.
-        GCC_ARM="/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3"
+        GCC_ARM="/usr/local/etc/gcc_arm/gcc-arm-none-eabi-6-2017-q1-update"
         export PATH="$PATH:$GCC_ARM/bin/"
         
         #--------- SOURCECODE ------------
@@ -65,8 +65,8 @@ else
         #arm-none-eabi-objcopy -O ihex stm32_loader ../firmware/stm32_loader.hex
         make clean
         make
-        mv stm32_sine.bin ../../
-        mv stm32_sine.hex ../../
+        mv stm32_sineHWCONFIG_REV1.bin ../../
+        mv stm32_sineHWCONFIG_REV1.hex ../../
 
         #--------- ATtiny13 --------------
         export PATH="$PATH:/usr/local/etc/gcc_arm/avr/bin/"

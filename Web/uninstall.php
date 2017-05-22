@@ -26,8 +26,7 @@
                             include_once("common.php");
                             detectOS();
 
-                            echo "<tr><td><input type='checkbox' onclick='UninstallEverything();' class='everything' /> <span><b>Everything</b></span></td></tr>";
-
+                            $found = false;
                             foreach($GLOBALS["Software"] as $id => $item)
                             {
                                 if(is_file($item["path"][$GLOBALS["OS"]])) //Filter only installed software
@@ -39,6 +38,12 @@
                                     {
                                         $disabled = "disabled='disabled'";
                                         $builtin = "<span style='color:red;'> (built-in)</span>";
+                                    }
+
+                                    if($found == false)
+                                    {
+                                        $found = true;
+                                        echo "<tr><td><input type='checkbox' onclick='UninstallEverything();' class='everything' /> <span><b>Everything</b></span></td></tr>";
                                     }
 
                                     echo "<tr><td><input id='" .$id. "' type='checkbox' " . $disabled. " /> <span>" .$item["title"]. " " .$item["download"]["version"]. "</span>" .$builtin." <img src='img/loading.gif' id='" .$id. "_progress' style='display:none;'></td></tr>";

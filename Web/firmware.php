@@ -11,7 +11,7 @@
 		$uart = fopen(serialDevice(), "rb+"); //Read & Write
 		stream_set_blocking($uart, 1); //O_NONBLOCK
         stream_set_timeout($uart, 30);
-
+        
         $PAGE_SIZE_BYTES = 1024;
 		$file = urldecode($_GET["file"]);
         $len = filesize($file);
@@ -131,8 +131,6 @@
                                     <script>
                                         $(document).ready(function() {
 											
-											clearTimeout(headerRefreshTimer);
-											
                                             var progressBar = $("#progressBar");
                                             for (var i = 0; i < 100; i++) {
                                                 setTimeout(function(){ progressBar.css("width", i + "%"); }, i*2000);
@@ -175,6 +173,7 @@
                             <script>
                                 $(document).ready(function() {
                                     $.ajax({
+                                        async: false,
                                         type: "GET",
                                         url: "serial.php?com=list",
                                         success: function(data){

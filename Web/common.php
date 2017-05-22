@@ -35,15 +35,15 @@
         'arm' => array (
             'title' => "GCC-ARM Compiler",
             'download' => array (
-                'mac' => "https://launchpadlibrarian.net/287101378/gcc-arm-none-eabi-5_4-2016q3-20160926-mac.tar.bz2",
-                'windows' => "https://launchpadlibrarian.net/gcc-arm-none-eabi-5_4-2016q3-20160926-win32.exe",
+                'mac' => "https://developer.arm.com/-/media/Files/downloads/gnu-rm/6_1-2017q1/gcc-arm-none-eabi-6-2017-q1-update-mac.tar.bz2",
+                'windows' => "https://developer.arm.com/-/media/Files/downloads/gnu-rm/6_1-2017q1/gcc-arm-none-eabi-6-2017-q1-update-win32.exe",
                 'linux' => "",
                 'size' => 100,
-                'version' => "5.4"
+                'version' => "6.1"
             ),
             'path' => array (
-                'mac' => "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-5_4-2016q3/bin/gcc-arm-none-eabi",
-                'windows' => "C:\\Program Files (x86)\\GNU Tools ARM Embedded\\5.4 2016q3\\gcc-arm-none-eabi.exe",
+                'mac' => "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-6-2017-q1-update/bin/arm-none-eabi-gcc",
+                'windows' => "C:\\Program Files (x86)\\GNU Tools ARM Embedded\\6.1 2017q1\\arm-none-eabi-gcc.exe",
                 'linux' => "/usr/share/gcc-arm-embedded/bin/gcc-arm-none-eabi"
             )
         ),
@@ -175,9 +175,9 @@
                 'version' => "3.25"
             ),
             'path' => array (
-                'mac' => getenv("HOME"). "/Documents/tumanako-inverter-fw-motorControl-master",
-                'windows' => getenv("HOMEPATH"). "\\Documents\\tumanako-inverter-fw-motorControl-master",
-                'linux' => getenv("HOME"). "/Documents/tumanako-inverter-fw-motorControl-master"
+                'mac' => getenv("HOME"). "/Documents/tumanako-inverter-fw-motorControl-master/src/sine/sine_core.h",
+                'windows' => getenv("HOMEPATH"). "\\Documents\\tumanako-inverter-fw-motorControl-master\\src\\sine\\sine_core.h",
+                'linux' => getenv("HOME"). "/Documents/tumanako-inverter-fw-motorControl-master/src/sine/sine_core.h"
             )
         ),
         'php' => array (

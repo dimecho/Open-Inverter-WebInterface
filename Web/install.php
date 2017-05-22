@@ -52,7 +52,7 @@
                 }
             }
         }
-		
+
 		if(is_file($path)) {
             if(!$quite)
                 echo "openExternalApp('" .$app. "')";

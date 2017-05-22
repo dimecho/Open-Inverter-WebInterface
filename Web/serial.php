@@ -33,6 +33,7 @@
         }
         else if(isset($_GET["get"]))
         {
+            
             if(strpos($_GET["get"],",") !== false) //Multi-value support
             {
                 $split = explode(",",$_GET["get"]);
@@ -48,15 +49,19 @@
         }
         else if(isset($_GET["average"]))
         {
-			echo readAverage($_GET["average"]);
+			echo calculateAverage(readArray($_GET["average"],6));
+        }
+        else if(isset($_GET["median"]))
+        {
+            echo calculateMedian(readArray($_GET["median"],3));
         }
     }
 	
-	function readAverage($cmd)
+	function readArray($cmd,$n)
     {
 		$cmd = "get " .urldecode($cmd). "\r";
 		$read = "";
-		$sum = 0;
+        $arr = array();
 		
 		$uart = fopen(serialDevice(), "rb+"); //Read & Write
         stream_set_blocking($uart, 1); //O_NONBLOCK
@@ -67,22 +72,25 @@
 		{
 			if(strpos($read,$cmd) !== false) //Reached end of echo
 			{
-				for ($x = 0; $x < 10; $x++)
+				for ($x = 0; $x <= $n; $x++)
 				{
+                    $read = "";
+
 					fwrite($uart, "!");
 					fread($uart, 1); //Remove echo
-					$read = "";
+					
 					while($read .= fread($uart, 1))
 						if(strpos($read,"\n") !== false)
 							break;
-					$sum += (float)$read;
+
+                    array_push($arr, (float)$read);
 				}
 				break;
 			}
 		}
 		fclose($uart);
 
-		return $sum/10;
+		return $arr;
     }
 	
     function readSerial($cmd)
@@ -144,5 +152,30 @@
 		fclose($uart);
 
         return $read;
+    }
+
+    function calculateMedian($arr)
+    {
+        $count = count($arr); // total numbers in array
+        $middleval = floor(($count-1)/2); // find the middle value, or the lowest middle value
+
+        if($count % 2) { // odd number, middle is the median
+            $median = $arr[$middleval];
+        } else { // even number, calculate avg of 2 medians
+            $low = $arr[$middleval];
+            $high = $arr[$middleval+1];
+            $median = (($low+$high)/2);
+        }
+        return round($median,2);
+    }
+
+    function calculateAverage($arr)
+    {
+        $count = count($arr); // total numbers in array
+        foreach ($arr as $value) {
+            $total = $total + $value; // total value of array numbers
+        }
+        $average = ($total/$count); // get average value
+        return round($average,2);
     }
 ?>

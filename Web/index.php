@@ -4,6 +4,7 @@
         <?php include "header.php" ?>
         <link rel="stylesheet" type="text/css" href="css/bootstrap-editable.css" />
         <script type="text/javascript" src="js/bootstrap-editable.js"></script>
+        <script type="text/javascript" src="js/status.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script>
             $(document).ready(function() {
