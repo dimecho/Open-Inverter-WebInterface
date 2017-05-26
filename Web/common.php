@@ -43,7 +43,7 @@
             ),
             'path' => array (
                 'mac' => "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-6-2017-q1-update/bin/arm-none-eabi-gcc",
-                'windows' => "C:\\Program Files (x86)\\GNU Tools ARM Embedded\\6.1 2017q1\\arm-none-eabi-gcc.exe",
+                'windows' => "C:\\Program Files (x86)\\GNU Tools ARM Embedded\\6 2017-q1-update\\bin\\arm-none-eabi-gcc.exe",
                 'linux' => "/usr/share/gcc-arm-embedded/bin/gcc-arm-none-eabi"
             )
         ),

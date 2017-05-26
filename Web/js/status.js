@@ -2,8 +2,10 @@ var statusRefreshTimer;
 
 $(document).ready(function () {
 
-    $("#firmwareVersion").empty().append("Firmware v" + getJSONFloatValue("version"));
-
+    var version = getJSONFloatValue("version");
+    if(version > 0)
+        $("#firmwareVersion").empty().append("Firmware v" + version);
+    
     buildStatus(false);
 });
 
@@ -18,12 +20,11 @@ function buildStatus(sync) {
 
             data = data.replace("\n\n", "\n");
             data = data.split("\n");
-            
             //console.log(data);
             
             var opStatus = $("<span>");
 
-            if(data.length > 8) {
+            if(data[0] != "") {
 
                 var span = $("<span>", { class: "tooltip1" });
                 var img = $("<img>", { class: "svg-inject", src: "img/key.svg" });
@@ -135,7 +136,7 @@ function buildStatus(sync) {
     
     statusRefreshTimer = setTimeout(function () {
 		clearTimeout(statusRefreshTimer);
-        buildStatus(false);
+        buildStatus(true); //ajax syncro mode
         buildTips();
     }, 12000);
 };

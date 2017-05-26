@@ -17,7 +17,7 @@ if($args[0] -eq "uninstall") {
         {
     		$env:Path += ";C:\msys\1.0\bin"
             $env:Path += ";C:\SysGCC\MinGW32\bin"
-            $GCC_ARM = "C:\Program Files (x86)\GNU Tools ARM Embedded\5.4 2016q3"
+            $GCC_ARM = "C:\Program Files (x86)\GNU Tools ARM Embedded\6 2017-q1-update"
             $env:Path += ";" + $GCC_ARM + "\bin"
     		
     		#--------- MSYS Fix --------------
@@ -76,8 +76,8 @@ if($args[0] -eq "uninstall") {
             Set-Location src\sine
             make.exe clean
             make.exe
-            Move-Item stm32_sine.bin (Split-Path (Split-Path (Get-Location) -Parent) -Parent)
-            Move-Item stm32_sine.hex (Split-Path (Split-Path (Get-Location) -Parent) -Parent)
+            Move-Item stm32_sineHWCONFIG_REV1.bin (Split-Path (Split-Path (Get-Location) -Parent) -Parent)
+            Move-Item stm32_sineHWCONFIG_REV1.hex (Split-Path (Split-Path (Get-Location) -Parent) -Parent)
 
             #--------- ATtiny13 --------------
             Set-Location "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master"

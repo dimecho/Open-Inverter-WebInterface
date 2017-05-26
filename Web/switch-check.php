@@ -102,6 +102,10 @@
                             </tr>
                         </tbody>
                     </table>
+                    <center>
+                        Potentiometer Test<br/><br/>
+                        <input class="pot" data-displayInput=true data-min="0" data-max="4095" data-angleOffset="90" data-fgColor="#66CC66" data-readOnly=true data-bgColor="#FFFFFF" value="0" />
+                    </center> 
                 </div>
                 <div class="col-md-1"></div>
             </div>

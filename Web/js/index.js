@@ -114,8 +114,8 @@ function basicChecks(json,name)
     var i = 0;
     $.each(json, function()
     {
-        if(name[i] === "fweak")
-        {
+        if(name[i] === "fweak") {
+
             var udc = getJSONValue(json,name,"udc");
             var udcsw = getJSONValue(json,name,"udcsw");
             if(udc > udcsw) //Get real operating voltage
@@ -126,11 +126,18 @@ function basicChecks(json,name)
                    (udc < 300 && this.value > 120 ) ||
                    (udc < 400 && this.value > 140 ))
                 {
-                    $.notify({ message: 'Your "fweak" might be a little too high' }, { type: 'danger' });
+                    $.notify({ message: 'Field weakening "fweak" might be a little too high' }, { type: 'warning' });
                 }
             }
-        }else if (name[i] === "deadtime" && this.value < 28)
-        {
+            if(this.value === 0) {
+                $.notify({ message: 'Field weakening "fweak" is dangerously low. Motor may jump on startup' }, { type: 'danger' });
+            }
+        }else if (name[i] === "fslipmax" && this.value > 10) {
+
+            $.notify({ message: 'Slip "fslipmax" is high, might be running open loop. Check your encoder connections' }, { type: 'warning' });
+
+        }else if (name[i] === "deadtime" && this.value < 28) {
+
             $.notify({ message: 'IGBT "deadtime" is dangerously fast' }, { type: 'danger' });
         }
         i++;
@@ -159,7 +166,7 @@ function buildParameters()
     
     var json = loadJSON();
     
-    if(Object.keys(json).length > 0)
+    if(json)
     {
         $.ajax("description.csv",{
             //async: false,
@@ -168,7 +175,6 @@ function buildParameters()
             beforeSend: function (req) {
               req.overrideMimeType('text/plain; charset=x-user-defined');
             },
-
             success: function(data)
             {
                 var name = [];

@@ -1,6 +1,10 @@
-var din = ["din_mprot","din_emcystop","din_brake","din_start","din_forward","din_reverse","din_cruise"]; 
+var din = ["din_mprot","din_emcystop","din_brake","din_start","din_forward","din_reverse","din_cruise","pot"]; 
 
 $(document).ready(function () {
+	$(".pot").knob({
+		//"displayPrevious": true,
+		"value": 0
+	});
     dashboardCheck();
 });
 
@@ -14,7 +18,8 @@ function dashboardCheck(){
 			
 			if(data.length > din.length) {
 
-				for (var i = 0, l = data.length; i < l; i++) {
+				for (var i = 0; i < data.length-1; i++) {
+
 					if (parseFloat(data[i]) === 1) {
 						$("#" + din[i]).addClass("circle-green");
 						$("#" + din[i]).removeClass("circle-red");
@@ -23,8 +28,11 @@ function dashboardCheck(){
 						$("#" + din[i]).removeClass("circle-green");
 					}
 				}
+				$(".pot").val(data[data.length-1]);
 			}
-			dashboardCheck();
+			setTimeout(function () {
+		        dashboardCheck();
+		    }, 500);
 		}
 	});
-}
+};

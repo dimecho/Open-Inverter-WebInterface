@@ -40,8 +40,8 @@ else
     cd ./src/sine
     make clean
     make
-    mv stm32_sine.bin ../../
-    mv stm32_sine.hex ../../
+    mv stm32_sineHWCONFIG_REV1.bin ../../
+    mv stm32_sineHWCONFIG_REV1.hex ../../
 
     #--------- ATtiny13 --------------
     export PATH="$PATH:/usr/local/etc/gcc_arm/avr/bin/"

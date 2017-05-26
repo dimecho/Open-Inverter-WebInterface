@@ -187,8 +187,7 @@ function startChart() {
 
     //console.log(activeTab);
 
-    clearTimeout(headerRefreshTimer);
-
+    clearTimeout(statusRefreshTimer);
     stopChart();
 
     //$.ajax("graph.php?stream=start");

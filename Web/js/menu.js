@@ -81,33 +81,8 @@ $(document).ready(function () {
         };
     }, false, 'confirm');
 
-    alertify.dialog('buildEncoder', function () {
-        return {
-            setup: function setup() {
-                return {
-                    buttons: [{
-                        text: '2D SVG Blueprint',
-                        className: alertify.defaults.theme.ok
-                    }, {
-                        text: '3D Print from SVG',
-                        className: alertify.defaults.theme.cancel
-                    }],
-                    focus: {
-                        //element: 0,
-                        select: false
-                    },
-                    options: {
-                        title: '',
-                        maximizable: false,
-                        resizable: false
-                    }
-                };
-            }
-        };
-    }, false, 'confirm');
-
     $(".knob").knob({
-        //"displayPrevious":true,
+        "displayPrevious":true,
         "value": 0,
         change: function change(value) {
             if (value <= knobValue + 5) { //Avoid hard jumps
@@ -188,7 +163,7 @@ function loadJSON() {
         type: 'GET',
         //contentType: "application/text",
         success: function success(data) {
-            console.log(data);
+            //console.log(data);
             if(data === "") {
                 var title = $("#title h3").empty();
                 title.append("Check Serial Connection");
@@ -209,8 +184,7 @@ function checkUpdates() {
     if (check === true) {
         $.ajax("update.php", {
             success: function success(data) {
-                console.log(data);
-                
+                //console.log(data);
                 if(data !== "") {
                     var url = "https://github.com/poofik/Huebner-Inverter/releases/download/1.0/";
                     if(os === "Mac"){
@@ -239,6 +213,8 @@ function getJSONFloatValue(value) {
         async: false,
         success: function success(data) {
             f = parseFloat(data);
+            if(isNaN(f))
+                f = 0;
         }
     });
     //console.log(f);
