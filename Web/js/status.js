@@ -64,7 +64,7 @@ function buildStatus(sync) {
                 //========================
                 span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + data[1] + "V</h6>" });
                 img = $("<img>", { class: "svg-inject", src: "img/battery.svg" });
-                if (parseFloat(data[1]) > parseFloat(data[2])) { // && parseFloat(data[15]) !== 0) {
+                if (parseFloat(data[1]) > parseFloat(data[2]) && parseFloat(data[1]) > 10 && parseFloat(data[1]) < 520) { // && parseFloat(data[15]) !== 0) {
                     img.addClass("svg-green");
                 } else {
                     img.addClass("svg-red");
@@ -78,7 +78,7 @@ function buildStatus(sync) {
                     img.addClass("svg-red");
                     span.append(img);
                     opStatus.append(span);
-                } else if (parseFloat(data[3]) > 100 || parseFloat(data[4]) > 100) {
+                } else if (parseFloat(data[3]) < 0 || parseFloat(data[4]) < 0 || parseFloat(data[3]) > 100 || parseFloat(data[4]) > 100) {
                     img.addClass("svg-yellow");
                     span.append(img);
                     opStatus.append(span);
@@ -128,17 +128,18 @@ function buildStatus(sync) {
            
             var SVGInject = document.querySelectorAll('img.svg-inject');
             SVGInjector(SVGInject);
-
+			
 			$(".tooltipstered").tooltipster("destroy");
             $(".tooltip1").tooltipster();
+			
+			buildTips();
         }
     });
     
     statusRefreshTimer = setTimeout(function () {
 		clearTimeout(statusRefreshTimer);
         buildStatus(true); //ajax syncro mode
-        buildTips();
-    }, 12000);
+    }, 8000);
 };
 
 function getErrors() {

@@ -2,6 +2,7 @@
 <html>
     <head>
         <?php include "header.php" ?>
+        <script type="text/javascript" src="dashboard/raspberryPi/js/segment-display.js"></script>
         <script type="text/javascript" src="js/switch-check.js"></script>
         <style>
             table { table-layout: fixed; }
@@ -103,8 +104,17 @@
                         </tbody>
                     </table>
                     <center>
-                        Potentiometer Test<br/><br/>
-                        <input class="pot" data-displayInput=true data-min="0" data-max="4095" data-angleOffset="90" data-fgColor="#66CC66" data-readOnly=true data-bgColor="#FFFFFF" value="0" />
+                        Potentiometer
+                        <br/><br/>
+                        <input class="pot" value=0 />
+                        <br/><br/>
+                        Voltage
+                        <br/><br/>
+                        <div id="displayView" style="background-color: rgb(36, 30, 30); border: 3px solid rgb(153, 153, 153); width: 110px; height: 55px;">
+                            <div style="padding:5px">
+                                <canvas id="display" width="80" height="40"></canvas>
+                            </div>
+                        </div>
                     </center> 
                 </div>
                 <div class="col-md-1"></div>

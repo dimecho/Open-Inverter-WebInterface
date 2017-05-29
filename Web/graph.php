@@ -17,7 +17,7 @@
     }
     if(isset($_GET["stream"])){
 
-        require("config.inc.php");
+        require("serial.php");
 
         //header('Content-type: application/octet-stream');
         header('Content-type: text/html; charset=utf-8');

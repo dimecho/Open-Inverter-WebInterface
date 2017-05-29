@@ -74,7 +74,9 @@ $(document).ready(function () {
         stopChart();
         initChart();
     });
-
+	
+	//clearTimeout(StatusRefreshTimer);
+	buildTips();
     initChart();
 });
 

@@ -43,9 +43,6 @@ $(document).ready(function () {
     });
     */
 
-
- 
-
     //var delay =  speed.slider('getValue');
 
     $.notify({ message: 'Experimental Area' }, { type: 'danger' });
@@ -59,7 +56,7 @@ function calculateCurve(value) {
 
 function buildSimpleParameters(json) {
 
-    if (json === "") return;
+    if (!json) return;
 
     var motor = $("#parameters_Motor").empty().show();
     var battery = $("#parameters_Battery").empty().show();

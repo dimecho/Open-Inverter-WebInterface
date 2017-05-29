@@ -1,5 +1,6 @@
 var knobValue = 0;
 var knobTimer;
+//var TipRefreshTimer;
 
 $(document).ready(function () {
 
@@ -101,9 +102,12 @@ $(document).ready(function () {
     
     $(".knob").val(0).trigger('change');
 	
-    setTimeout(function () {
+	/*
+    TipRefreshTimer=setTimeout(function () {
+		clearTimeout(TipRefreshTimer);
         buildTips();
     }, 1000);
+	*/
     
     checkUpdates();
 });
@@ -344,8 +348,6 @@ function buildTips() {
             },
             error: function error(xhr, textStatus, errorThrown) {}
         });
-
-        opStatus.append(span);
     }
 };
 

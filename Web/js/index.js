@@ -4,7 +4,7 @@ $(document).ready(function()
     if (safety === undefined) {
         $(".safety").trigger('click');
     }
-
+    
     $('#parameters').editable({
         selector: 'a',
         url: 'serial.php',
@@ -18,55 +18,56 @@ $(document).ready(function()
             //dataType: 'json'
         },
         validate: function(value) {
-
-			if(getJSONFloatValue("opmode") != "0" && this.id != 'fslipspnt'){
+            
+			if(getJSONFloatValue("opmode") > 0 && this.id != 'fslipspnt'){
 				stopInverter();
-				if(i == 0)
-					return 'Inverter must not be in operating mode.';
-			}
+				return 'Inverter must not be in operating mode.';
+			}else if (!isNaN(value)){
+                return 'Value must be a number';
+            }
 
             if(this.id == 'fmin'){
-                if(parseFloat($.trim(value)) > parseFloat($("#fslipmin").text()))
+                if(parseFloat(value) > parseFloat($("#fslipmin").text()))
                 {
                     return 'Should be set below fslipmin';
                 }
             }else  if(this.id == 'polepairs'){
-                if ($.inArray($.trim(value), [ '1', '2', '3,', '4', '6']) == -1)
+                if ($.inArray(parseInt(value), [ 1, 2, 3, 4, 5]) == -1)
                 {
                     return 'Pole pairs = half # of motor poles';
                 }
             }else  if(this.id == 'udcmin'){
-                if(parseInt($.trim(value)) > parseInt($("#udcmax").text()))
+                if(parseInt(value) > parseInt($("#udcmax").text()))
                 {
                     return 'Should be below maximum voltage (udcmax)';
                 }
             }else  if(this.id == 'udcmax'){
-                if(parseInt($.trim(value)) > parseInt($("#udclim").text())){
+                if(parseInt(value) > parseInt($("#udclim").text())){
                     return 'Should be lower than cut-off voltage (udclim)';
                 }
             }else  if(this.id == 'udclim'){
-                if(parseInt($.trim(value)) <= parseInt($("#udcmax").text())){
+                if(parseInt(value) <= parseInt($("#udcmax").text())){
                     return 'Should be above maximum voltage (udcmax)';
                 }
             }else if(this.id == 'udcsw'){
-                if(parseInt($.trim(value)) > parseInt($("#udcmax").text())){
+                if(parseInt(value) > parseInt($("#udcmax").text())){
                     return 'Should be below maximum voltage (udcmax)';
                 }
 			}else if(this.id == 'udcsw'){
-                if(parseInt($.trim(value)) > parseInt($("#udcmin").text())){
+                if(parseInt(value) > parseInt($("#udcmin").text())){
                     return 'Should be below minimum voltage (udcmin)';
                 }
 			}else if(this.id == 'fslipmin'){
-				if(parseFloat($.trim(value)) <= parseFloat($("#fmin").text())){
+				if(parseFloat(value) <= parseFloat($("#fmin").text())){
 					return 'Should be above starting frequency (fmin)';
 				}
             /*}else  if(this.id == 'fslipmax'){
-                if($.trim(value) / 5 > $("#fslipmin").text())
+                if(value / 5 > $("#fslipmin").text())
                 {
                     return 'If too high from fslipmin the motor will start to rock violently on startup.';
                 }
             }else  if(this.id == 'ocurlim'){
-                if($.trim(value) > 0)
+                if(value > 0)
                 {
                     return 'Current limit should be set as negative';
                 }*/
@@ -109,137 +110,106 @@ $(document).ready(function()
     buildParameters();
 });
 
-function basicChecks(json,name)
+function basicChecks(json)
 {
-    var i = 0;
-    $.each(json, function()
-    {
-        if(name[i] === "fweak") {
+	var fweak = json["fweak"].value;
+	var fslipmax = json["fslipmax"].value;
+	var deadtime = json["deadtime"].value;
+	var udc = json["udc"].value;
+	var udcsw = json["udcsw"].value;
+	
+	if(udc > udcsw) //Get real operating voltage
+	{
+		if((udc < 32 && fweak > 20) ||
+		   (udc < 58 && fweak > 30) ||
+		   (udc < 200 && fweak > 100 ) ||
+		   (udc < 300 && fweak > 120 ) ||
+		   (udc < 400 && fweak > 140 ))
+		{
+			$.notify({ message: 'Field weakening "fweak" might be too high' }, { type: 'warning' });
+		}
+	}
+	if(fweak === 0) {
+		$.notify({ message: 'Field weakening "fweak" is dangerously low. Motor may jump on startup' }, { type: 'danger' });
+	}
+	if (fslipmax > 10) {
+		$.notify({ message: 'Slip "fslipmax" is high, might be running open loop. Check your encoder connections' }, { type: 'warning' });
+	}
+	if (deadtime < 28) {
 
-            var udc = getJSONValue(json,name,"udc");
-            var udcsw = getJSONValue(json,name,"udcsw");
-            if(udc > udcsw) //Get real operating voltage
-            {
-                if((udc < 30 && this.value > 20) ||
-                   (udc < 55 && this.value > 30) ||
-                   (udc < 200 && this.value > 100 ) ||
-                   (udc < 300 && this.value > 120 ) ||
-                   (udc < 400 && this.value > 140 ))
-                {
-                    $.notify({ message: 'Field weakening "fweak" might be a little too high' }, { type: 'warning' });
-                }
-            }
-            if(this.value === 0) {
-                $.notify({ message: 'Field weakening "fweak" is dangerously low. Motor may jump on startup' }, { type: 'danger' });
-            }
-        }else if (name[i] === "fslipmax" && this.value > 10) {
-
-            $.notify({ message: 'Slip "fslipmax" is high, might be running open loop. Check your encoder connections' }, { type: 'warning' });
-
-        }else if (name[i] === "deadtime" && this.value < 28) {
-
-            $.notify({ message: 'IGBT "deadtime" is dangerously fast' }, { type: 'danger' });
-        }
-        i++;
-    });
-};
-
-function getJSONValue(json,name,n)
-{
-    //TODO: make this more efficient
-
-    var i = 0;
-    $.each(json, function()
-    {
-        if(name[i] == n) {
-            //console.log(name[i] + ">" + this.value);
-            return this.value;
-        }
-        i++;
-    });
+		$.notify({ message: 'IGBT "deadtime" is dangerously fast' }, { type: 'danger' });
+	}
 };
 
 function buildParameters()
 {
-    //var length = 0;
-    //for(var k in json) if(json.hasOwnProperty(k))    length++;
-    
+	var parameters = [];
+	var description = [];
+	
+	$.ajax("description.csv",{
+		async: false,
+		//dataType: 'text',
+		//contentType: "application/text",
+		beforeSend: function (req) {
+		  req.overrideMimeType('text/plain; charset=x-user-defined');
+		},
+		success: function(data)
+		{
+			var row = data.split("\n");
+
+			for (var i = 0; i < row.length; i++) {
+				
+				var split = row[i].split(",");
+				var d = "";
+
+				if(split.length > 6) { //contains , in decription
+					for (var c = 5; c < split.length; ++c) {
+						d += split[c];
+					}
+				}else{
+					d = split[5];
+				}
+
+				parameters.push(split[0]);
+				description.push(d.replace(/"/g, ''));
+			}
+		},
+		error: function(xhr, textStatus, errorThrown){
+		}
+	});
+
     var json = loadJSON();
     
     if(json)
     {
-        $.ajax("description.csv",{
-            //async: false,
-            //dataType: 'text',
-            //contentType: "application/text",
-            beforeSend: function (req) {
-              req.overrideMimeType('text/plain; charset=x-user-defined');
-            },
-            success: function(data)
-            {
-                var name = [];
-                for(var k in json)
-                    name.push(k);
+		var menu = $("#parameters").empty();
+		var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("Type")));
+		var tbody = $("<tbody>");
+		menu.append(thead);
+		menu.append(tbody);
 
-                var parameters = [];
-                var description = [];
+		for(var key in json)
+		{
+			//console.log(key);
 
-                var row = data.split("\n");
+			var tooltip = "";
+			var x = parameters.indexOf(key);
+			if(x !=-1)
+				tooltip = description[x];
+			
+			var a = $("<a>", {href:"#", id:key, "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":json[key].unit + " ("+ json[key].default + ")"}).append(json[key].value);
+			var tr = $("<tr>");
+			var td1 = $("<td>", {class:"tooltip1", "data-tooltip-content":"<h5>" + tooltip + "</h5>"}).append(key);
+			var td2 = $("<td>").append(a);
+			var td3 = $("<td>").append(json[key].unit.replace("","°"));
+   
+			tbody.append(tr.append(td1).append(td2).append(td3));
+		};
+		menu.show();
+		
+		$(".tooltipstered").tooltipster("destroy");
+		$(".tooltip1").tooltipster();
 
-                for (var i = 0; i < row.length; i++) {
-                    
-                    var split = row[i].split(",");
-                    var d = "";
-
-                    if(split.length > 6) { //contains , in decription
-                        for (var c = 5; c < split.length; ++c) {
-                            d += split[c];
-                        }
-                    }else{
-                        d = split[5];
-                    }
-
-                    parameters.push(split[0]);
-                    description.push(d.replace(/"/g, ''));
-                }
-
-                var menu = $("#parameters");
-                var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("Type")));
-                var tbody = $("<tbody>");
-                menu.append(thead);
-
-                var i = 0;
-                $.each(json, function()
-                {
-                    //console.log(this)
-
-                    var tooltip = "";
-                    var x = parameters.indexOf(name[i]);
-                    if(x !=-1)
-                        tooltip = description[x];
-                    
-                    var a = $("<a>", {href:"#", id:name[i], "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":this.unit + " ("+ this.default + ")"}).append(this.value);
-                    var tr = $("<tr>");
-                    var td1 = $("<td>", {class:"tooltip1", "data-tooltip-content":"<h5>" + tooltip + "</h5>"}).append(name[i]);
-                    var td2 = $("<td>").append(a);
-                    var td3 = $("<td>").append(this.unit.replace("","°"));
-           
-                    tbody.append(tr.append(td1).append(td2).append(td3));
-
-                    i++;
-                });
-                menu.empty();
-                menu.append(tbody);
-                
-                $(".tooltipstered").tooltipster("destroy");
-                $(".tooltip1").tooltipster();
-
-                menu.show();
-
-                basicChecks(json,name);
-            },
-            error: function(xhr, textStatus, errorThrown){
-            }
-        });
+		basicChecks(json);
     }
 };
