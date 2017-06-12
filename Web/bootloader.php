@@ -24,6 +24,7 @@
             var jtag_interface = [
                 "olimex-arm-usb-ocd-h",
                 "olimex-arm-usb-tiny-h",
+				"olimex-arm-jtag-swd",
                 "jtag-lock-pick_tiny_2",
                 "stlink-v2",
                 "black-magic",
@@ -33,6 +34,7 @@
             var jtag_name = [
                 "Olimex OCD-H",
                 "Olimex Tiny-H",
+				"Olimex CooCox",
                 "Lock-Pick Tiny v2.0",
                 "STlink v2.0",
                 "Black Magic Probe v2.1",

@@ -88,7 +88,7 @@
             ),
             'path' => array (
                 'mac' => "/usr/bin/python",
-                'windows' => getenv("HOMEPATH"). "\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe",
+                'windows' => getenv('USERPROFILE'). "\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe",
                 'linux' => "/usr/bin/python"
             )
         ),
@@ -176,7 +176,7 @@
             ),
             'path' => array (
                 'mac' => getenv("HOME"). "/Documents/tumanako-inverter-fw-motorControl-master/src/sine/sine_core.h",
-                'windows' => getenv("HOMEPATH"). "\\Documents\\tumanako-inverter-fw-motorControl-master\\src\\sine\\sine_core.h",
+                'windows' => getenv('USERPROFILE'). "\\Documents\\tumanako-inverter-fw-motorControl-master\\src\\sine\\sine_core.h",
                 'linux' => getenv("HOME"). "/Documents/tumanako-inverter-fw-motorControl-master/src/sine/sine_core.h"
             )
         ),
