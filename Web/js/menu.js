@@ -21,10 +21,10 @@ $(document).ready(function () {
                         text: '(5) Sine Wave',
                         className: alertify.defaults.theme.ok
                     }, {
-                        text: '(3) Charger',
+                        text: '(3) Boost',
                         className: alertify.defaults.theme.cancel
                     }, {
-                        text: '(4) Stepdown',
+                        text: '(4) Buck',
                         className: alertify.defaults.theme.cancel
                     }],
                     focus: {

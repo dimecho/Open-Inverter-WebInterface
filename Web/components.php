@@ -17,7 +17,7 @@
                 }else if($_GET["hardware"] == "damien"){
             ?>
                 $("#components").empty();
-                buildTable("Combined Board v6", "pcb/Hardware (Damien Mod)/bom/combi_v6.csv");
+                buildTable("Combined Board v8", "pcb/Hardware (Damien Mod)/bom/combi_v8.csv");
                 buildTable("Main Board v2", "pcb/Hardware (Damien Mod)/bom/main_board_v2.csv");
                 buildTable("Gate Driver v2", "pcb/Hardware (Damien Mod)/bom/igbt_v2.csv", "U1, U1 and link out ZD1, ZD2 components are optional for Desat detection tuning");
                 buildTable("Sensor Board v1", "pcb/Hardware (Damien Mod)/bom/sensor_board_v1.csv");
