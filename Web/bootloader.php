@@ -27,6 +27,7 @@
 				"olimex-arm-jtag-swd",
                 "jtag-lock-pick_tiny_2",
                 "stlink-v2",
+                "jlink",
                 "black-magic",
                 "cmsis-dap"
             ];
@@ -37,6 +38,7 @@
 				"Olimex CooCox",
                 "Lock-Pick Tiny v2.0",
                 "STlink v2.0",
+                "J-Link",
                 "Black Magic Probe v2.1",
                 "CoLinkEx v1.2"
             ];

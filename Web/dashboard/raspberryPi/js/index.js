@@ -288,23 +288,29 @@ document.addEventListener("DOMContentLoaded", function(event) {
         status.appendChild(div.appendChild(img));
     }
 
-    var odometer = CANRead("distance");
+    //var odometer = CANRead("distance");
 
-    if(odometer)
-    {
-        var n = 320618.7;
-        var ctx = document.getElementById("odoCanvas").getContext("2d");
-        odo = new odometer(ctx, {
-            height: 40,
-            digits: 6,
-            decimals: 1,
-            value: n,
-            wobbleFactor: 0.07
-        });
-        updateOdometer(n);
-    }else{
-        document.getElementById("odoCanvas").style.display = "none";
-    }
+    //if(odometer) {
+        var n = "220618.0";
+        display = new SegmentDisplay("odoCanvas");
+        display.pattern         = "######.#";
+        display.displayAngle    = 0;
+        display.digitHeight     = 4;
+        display.digitWidth      = 3;
+        display.digitDistance   = 2.5;
+        display.segmentWidth    = 0.7;
+        display.segmentDistance = 0.3;
+        display.segmentCount    = 7;
+        display.cornerType      = 3;
+        display.colorOn         = "#24dd22";
+        display.colorOff        = "#1b4105";
+        display.draw();
+        display.setValue(n);
+
+        //updateOdometer(n);
+    //}else{
+        //document.getElementById("odoCanvas").style.display = "none";
+    //}
     //document.getElementById('distance').innerHTML = calculateDistance(startPos.coords.latitude, startPos.coords.longitude, position.coords.latitude, position.coords.longitude);
 });
 
