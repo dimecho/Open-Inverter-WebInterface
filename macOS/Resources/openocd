@@ -19,6 +19,6 @@ else
         #dump_image dump.bin 0x0 0x00020000
         #[128k x 1024 = 131072 = 0x00020000]
         #openocd -f ./interface/ftdi/olimex-arm-usb-ocd-h.cfg -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset init" -c "halt" -c "flash write_image erase $HOME/Documents/firmware/stm32_loader.bin 0x08000000" -c "reset" -c "shutdown" 
-        openocd -f ./interface/ftdi/$2.cfg -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset init" -c "halt" -c "flash write_image erase $1 0x08000000" -c "reset" -c "shutdown" 
+        openocd -f ./$2 -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset init" -c "halt" -c "flash write_image erase $1 0x08000000" -c "reset" -c "shutdown" 
     fi
 fi

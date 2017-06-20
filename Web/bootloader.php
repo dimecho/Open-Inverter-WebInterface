@@ -5,7 +5,7 @@
     
     if(isset($_GET["ajax"])){
         
-        $command = runCommand("openocd", $_GET["file"]. " " .$_GET["interface"]);
+        $command = runCommand("openocd", urldecode($_GET["file"]). " " .urldecode($_GET["interface"]));
         exec($command, $output, $return);
         
         echo "$command\n";
@@ -22,14 +22,13 @@
         ?>
         <script>
             var jtag_interface = [
-                "olimex-arm-usb-ocd-h",
-                "olimex-arm-usb-tiny-h",
-				"olimex-arm-jtag-swd",
-                "jtag-lock-pick_tiny_2",
-                "stlink-v2",
-                "jlink",
-                "black-magic",
-                "cmsis-dap"
+                "interface/ftdi/olimex-arm-usb-ocd-h.cfg",
+                "interface/ftdi/olimex-arm-usb-tiny-h.cfg",
+				"interface/ftdi/olimex-arm-jtag-swd.cfg",
+                "interface/ftdi/jtag-lock-pick_tiny_2.cfg",
+                "interface/stlink-v2.cfg",
+                "interface/jlink.cfg",
+                "interface/cmsis-dap.cfg"
             ];
 
             var jtag_name = [
@@ -44,7 +43,8 @@
             ];
 
             function setJTAGImage() {
-                $("#jtag-image").attr("src", "firmware/img/" + $("#jtag-interface").val() + ".jpg");
+                var img = $("#jtag-interface").val().split("/").pop().slice(0, -4);
+                $("#jtag-image").attr("src", "firmware/img/" + img + ".jpg");
                 $("#jtag-name").html(jtag_name[$("#jtag-interface option:selected").index()]);
             }
 
@@ -84,8 +84,8 @@
                                                         $tmp_name = sys_get_temp_dir(). "/" .basename($_FILES['firmware']['tmp_name']). ".bin";
                                                     }
                                                     move_uploaded_file($_FILES['firmware']['tmp_name'], $tmp_name);
-                                                    echo "&file=" .$tmp_name;
-                                                    echo "&interface=" .$_POST["interface"];
+                                                    echo "&file=" .urlencode($tmp_name);
+                                                    echo "&interface=" .urlencode($_POST["interface"]);
                                                     echo "'";
                                                 ?>,
                                                 success: function(data){
