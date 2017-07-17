@@ -65,11 +65,11 @@
         'arduino' => array (
             'title' => "Arduino IDE",
             'download' => array (
-                'mac' => "https://downloads.arduino.cc/arduino-1.8.2-macosx.zip",
-                'windows' => "https://downloads.arduino.cc/arduino-1.8.2-windows.exe",
+                'mac' => "https://downloads.arduino.cc/arduino-1.8.3-macosx.zip",
+                'windows' => "https://downloads.arduino.cc/arduino-1.8.3-windows.exe",
                 'linux' => "",
                 'size' => 150,
-                'version' => "1.8.2"
+                'version' => "1.8.3"
             ),
             'path' => array (
                 'mac' => "/Applications/Arduino.app/Contents/MacOS/Arduino",
@@ -140,16 +140,16 @@
         'eagle' => array (
             'title' => "AutoCAD Eagle - PCB Design Software",
             'download' => array (
-                'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.2.0_English_Mac_64bit.pkg",
-                'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.2.0_English_Win_64bit.exe",
-                'linux' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.2.0_English_Linux_64bit.tar.gz",
+                'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.2.2_English_Mac_64bit.pkg",
+                'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.2.2_English_Win_64bit.exe",
+                'linux' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.2.2_English_Linux_64bit.tar.gz",
                 'size' => 100,
-                'version' => "8.2.0"
+                'version' => "8.2.2"
             ),
             'path' => array (
-                'mac' => "/Applications/EAGLE-8.2.0/Eagle.app/Contents/MacOS/Eagle",
-                'windows' => "C:\\EAGLE-8.2.0\\bin\eagle.exe",
-                'linux' => "/opt/eagle-8.2.0/bin/eagle"
+                'mac' => "/Applications/EAGLE-8.2.2/Eagle.app/Contents/MacOS/Eagle",
+                'windows' => "C:\\EAGLE-8.2.2\\bin\eagle.exe",
+                'linux' => "/opt/eagle-8.2.2/bin/eagle"
             )
         ),
         'designsparkpcb' => array (

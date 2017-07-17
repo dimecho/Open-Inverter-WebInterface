@@ -38,7 +38,6 @@
                 "Lock-Pick Tiny v2.0",
                 "STlink v2.0",
                 "J-Link",
-                "Black Magic Probe v2.1",
                 "CoLinkEx v1.2"
             ];
 

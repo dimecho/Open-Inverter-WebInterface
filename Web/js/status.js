@@ -139,7 +139,7 @@ function buildStatus(sync) {
     statusRefreshTimer = setTimeout(function () {
 		clearTimeout(statusRefreshTimer);
         buildStatus(true); //ajax syncro mode
-    }, 8000);
+    }, 12000);
 };
 
 function getErrors() {
