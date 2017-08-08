@@ -18,7 +18,7 @@ function Uninstall() {
         if($(this).attr('id') && $(this).is(':checked')) {
             //console.log(this);
             $("#" + $(this).attr('id') + "_progress").show();
-            $.ajax("install.php?remove=" + $(this).attr('id'), {
+            $.ajax("/install.php?remove=" + $(this).attr('id'), {
                 async: false,
                 success: function success(data) {
                     console.log(data);

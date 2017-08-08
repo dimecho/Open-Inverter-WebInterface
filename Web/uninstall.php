@@ -2,7 +2,7 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script type="text/javascript" src="js/uninstall.js"></script>
+        <script type="text/javascript" src="/js/uninstall.js"></script>
     </head>
     <body>
         <div class="container">
@@ -46,7 +46,7 @@
                                         echo "<tr><td><input type='checkbox' onclick='UninstallEverything();' class='everything' /> <span><b>Everything</b></span></td></tr>";
                                     }
 
-                                    echo "<tr><td><input id='" .$id. "' type='checkbox' " . $disabled. " /> <span>" .$item["title"]. " " .$item["download"]["version"]. "</span>" .$builtin." <img src='img/loading.gif' id='" .$id. "_progress' style='display:none;'></td></tr>";
+                                    echo "<tr><td><input id='" .$id. "' type='checkbox' " . $disabled. " /> <span>" .$item["title"]. " " .$item["download"]["version"]. "</span>" .$builtin." <img src='/img/loading.gif' id='" .$id. "_progress' style='display:none;'></td></tr>";
                                 }
                             }
                         ?>

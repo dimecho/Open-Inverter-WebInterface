@@ -2,7 +2,7 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script type="text/javascript" src="js/jspdf.js"></script>
+        <script type="text/javascript" src="/js/jspdf.js"></script>
         <script>
         $(document).ready(function () {
             <?php
@@ -12,12 +12,12 @@
 
             if(isset($_GET["hardware"])){
                 if($_GET["hardware"] == "1"){
-                    $pinout = rawurlencode("pcb/Hardware v1.0/wiring.csv");
-                    $wiring = rawurlencode("pcb/Hardware v1.0/wiring.png");
+                    $pinout = rawurlencode("/pcb/Hardware v1.0/wiring.csv");
+                    $wiring = rawurlencode("/pcb/Hardware v1.0/wiring.png");
                     echo '$("#johannes").show();';
                 }else if($_GET["hardware"] == "damien"){
-                    $pinout = rawurlencode("pcb/Hardware (Damien Mod)/wiring.csv");
-                    $wiring = rawurlencode("pcb/Hardware (Damien Mod)/wiring.png");
+                    $pinout = rawurlencode("/pcb/Hardware (Damien Mod)/wiring.csv");
+                    $wiring = rawurlencode("/pcb/Hardware (Damien Mod)/wiring.png");
                 }
                 echo '$("#wiring").show();';
             ?>
@@ -69,14 +69,14 @@
                         <tbody>
                             <tr align="center">
                                 <td>
-                                    <a href="wiring.php?hardware=1">
-                                        <img src="img/hardware_v1.jpg" class="img-thumbnail img-rounded" />
+                                    <a href="/wiring.php?hardware=1">
+                                        <img src="/img/hardware_v1.jpg" class="img-thumbnail img-rounded" />
                                     </a><br/><br/>
                                     Hardware v1.0 (Johannes Huebner)
                                 </td>
                                 <td>
-                                    <a href="wiring.php?hardware=damien">
-                                        <img src="img/hardware_damien.jpg" class="img-thumbnail img-rounded" />
+                                    <a href="/wiring.php?hardware=damien">
+                                        <img src="/img/hardware_damien.jpg" class="img-thumbnail img-rounded" />
                                     </a><br/><br/>
                                     Hardware v1.0 (Damien Maguire)
                                 </td>

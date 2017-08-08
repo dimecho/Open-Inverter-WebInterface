@@ -51,7 +51,7 @@ function buildTable(title, csv, notes) {
                             }
                             if (split[0].indexOf("RN") != -1) img = "RN_" + img;
 
-                            td2.attr("data-tooltip-content", "<img src='img/bom/" + img + ".jpg' />");
+                            td2.attr("data-tooltip-content", "<img src='/img/bom/" + img + ".jpg' />");
                             td2.append(value);
                             tbody.append(tr.append(td1.append(split[0])).append(td2).append(td3.append(a)));
                         }

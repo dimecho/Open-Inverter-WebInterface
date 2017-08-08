@@ -114,7 +114,7 @@ $(document).ready(function () {
 
 function checkSoftware(app){
 
-    $.ajax("install.php?check=" + app, {
+    $.ajax("/install.php?check=" + app, {
         success: function success(data) {
             console.log(data);
             eval(data);
@@ -124,9 +124,9 @@ function checkSoftware(app){
 
 function sendCommand(cmd, value, save, notify) {
 
-    $.ajax("serial.php?pk=1&name=" + cmd + "&value=" + value, { async: false });
+    $.ajax("/serial.php?pk=1&name=" + cmd + "&value=" + value, { async: false });
     if(save)
-        $.ajax("serial.php?command=save"); //don't forget to save
+        $.ajax("/serial.php?command=save"); //don't forget to save
     if(notify)
         $.notify({ message: cmd + "=" + value}, { type: "success" });
 };
@@ -160,7 +160,7 @@ function loadJSON() {
 
     var json;
 
-    $.ajax("serial.php?command=json", {
+    $.ajax("/serial.php?command=json", {
         async: false,
         cache: false,
         timeout: 8000, // timeout 8 seconds
@@ -186,7 +186,7 @@ function checkUpdates() {
 
     var check = Math.random() >= 0.5;
     if (check === true) {
-        $.ajax("update.php", {
+        $.ajax("/update.php", {
             success: function success(data) {
                 //console.log(data);
                 if(data !== "") {
@@ -213,7 +213,7 @@ function checkUpdates() {
 
 function getJSONFloatValue(value) {
     var f = 0;
-    $.ajax("serial.php?get=" + value, {
+    $.ajax("/serial.php?get=" + value, {
         async: false,
         success: function success(data) {
             f = parseFloat(data);
@@ -229,7 +229,7 @@ function getJSONAverageFloatValue(value,c) {
     if(!c)
         c = "average"; //median
     var f = 0;
-    $.ajax("serial.php?" + c + "=" + value, {
+    $.ajax("/serial.php?" + c + "=" + value, {
         async: false,
         success: function success(data) {
             f = parseFloat(data);
@@ -241,7 +241,7 @@ function getJSONAverageFloatValue(value,c) {
 
 function startInverter(mode) {
 
-    $.ajax("serial.php?command=start " + mode, {
+    $.ajax("/serial.php?command=start " + mode, {
         async: false,
         success: function success(data) {
             //console.log(data);
@@ -266,7 +266,7 @@ function startInverter(mode) {
 
 function stopInverter() {
 
-    $.ajax("serial.php?command=stop", {
+    $.ajax("/serial.php?command=stop", {
         async: false,
         success: function success(data) {
             //console.log(data);
@@ -295,7 +295,7 @@ function stopInverter() {
 function setDefaults() {
 
     alertify.confirm('', 'This reset all settings back to default.', function () {
-        $.ajax("serial.php?command=defaults", {
+        $.ajax("/serial.php?command=defaults", {
             async: false,
             success: function success(data) {
                 console.log(data);

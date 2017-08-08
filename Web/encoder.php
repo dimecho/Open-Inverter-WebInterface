@@ -39,13 +39,13 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <a data-fancybox="gallery" href="encoder/img/encoder_2d.png">
-                                        <img src="encoder/img/encoder_2d.png" class="img-thumbnail img-rounded" />
+                                    <a data-fancybox="gallery" href="/encoder/img/encoder_2d.png">
+                                        <img src="/encoder/img/encoder_2d.png" class="img-thumbnail img-rounded" />
                                     </a>
                                 </td>
                                 <td>
-                                    <a data-fancybox="gallery" href="encoder/img/encoder_3d.png">
-                                        <img src="encoder/img/encoder_3d.png" class="img-thumbnail img-rounded" />
+                                    <a data-fancybox="gallery" href="/encoder/img/encoder_3d.png">
+                                        <img src="/encoder/img/encoder_3d.png" class="img-thumbnail img-rounded" />
                                     </a>
                                 </td>
                             </tr>
@@ -73,12 +73,12 @@
                             <tr>
                                 <td>
                                     <center>
-                                        <img src="encoder/img/TCST2103.png" class="img-thumbnail img-rounded" />
+                                        <img src="/encoder/img/TCST2103.png" class="img-thumbnail img-rounded" />
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        <img src="img/bom/TCST2103.jpg" class="img-thumbnail img-rounded" />
+                                        <img src="/img/bom/TCST2103.jpg" class="img-thumbnail img-rounded" />
                                     </center>
                                 </td>
                             </tr>

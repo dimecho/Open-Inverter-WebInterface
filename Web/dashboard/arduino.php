@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <?php include "header.php" ?>
-        <link rel="stylesheet" href="css/androidstudio.css">
-        <script src="js/highlight.js"></script>
+        <?php include "../header.php" ?>
+        <link rel="stylesheet" href="../css/androidstudio.css">
+        <script src="../js/highlight.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
         <div class="container">
-            <?php include "menu.php" ?>
+            <?php include "../menu.php" ?>
             <div class="row">
                 <div class="col-md-1"></div>
                 <div class="col-md-10">
@@ -76,13 +76,13 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <a data-fancybox="gallery" href="dashboard/arduino/img/DSC03848.jpg">
-                                        <img src="dashboard/arduino/img/DSC03848.jpg" class="img-thumbnail img-rounded" />
+                                    <a data-fancybox="gallery" href="arduino/img/DSC03848.jpg">
+                                        <img src="arduino/img/DSC03848.jpg" class="img-thumbnail img-rounded" />
                                     </a>
                                 </td>
                                 <td>
-                                    <a data-fancybox="gallery" href="dashboard/arduino/img/DSC03852.jpg">
-                                        <img src="dashboard/arduino/img/DSC03852.jpg" class="img-thumbnail img-rounded" />
+                                    <a data-fancybox="gallery" href="arduino/img/DSC03852.jpg">
+                                        <img src="arduino/img/DSC03852.jpg" class="img-thumbnail img-rounded" />
                                     </a>
                                 </td>
                             </tr>
@@ -95,7 +95,7 @@
                                 <td>
                                     <pre>
                                         <code><?php
-                                        $code = file_get_contents('./dashboard/arduino/lcd_display/lcd_display.ino');
+                                        $code = file_get_contents('./arduino/lcd_display/lcd_display.ino');
                                         $code = str_replace("<", "&lt;", $code);
                                         $code = str_replace("<", "&gt;", $code);
                                         echo $code;

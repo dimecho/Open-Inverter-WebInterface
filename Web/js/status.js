@@ -11,7 +11,7 @@ $(document).ready(function () {
 
 function buildStatus(sync) {
 
-    $.ajax("serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
+    $.ajax("/serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
         async: sync,
         cache: false,
         timeout: 4000, // timeout 4 seconds
@@ -144,7 +144,7 @@ function buildStatus(sync) {
 
 function getErrors() {
     var e = ""
-    $.ajax("serial.php?command=errors", {
+    $.ajax("/serial.php?command=errors", {
         async: false,
         success: function success(data) {
             e = data;

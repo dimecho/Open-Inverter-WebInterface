@@ -30,7 +30,7 @@
             });
 
             $(document).on('click', '.fuses', function(){
-                window.location.href = "attiny.php?fuses=1&isp=" + $("#ispList option:selected").text() + "&serial=" + $("#serialList option:selected").text();
+                window.location.href = "/attiny.php?fuses=1&isp=" + $("#ispList option:selected").text() + "&serial=" + $("#serialList option:selected").text();
             });
         </script>
     </head>
@@ -54,7 +54,7 @@
                                             }
                                             $.ajax({
                                                 type: "GET",
-                                                url: "attiny.php?ajax=1&fuse=1",
+                                                url: "/attiny.php?ajax=1&fuse=1",
                                                 success: function(data){
                                                     console.log(data);
                                                     progressBar.css("width","100%");
@@ -90,7 +90,7 @@
                                                 url:
                                                 <?php
                                                     echo "'";
-                                                    echo "attiny.php?ajax=1";
+                                                    echo "/attiny.php?ajax=1";
                                                     if ($GLOBALS["OS"] === "mac") {
                                                         $tmp_name = "/tmp/" .basename($_FILES['firmware']['tmp_name']). ".bin";
                                                     }else{
@@ -121,7 +121,7 @@
                                 $(document).ready(function() {
                                     $.ajax({
                                         type: "GET",
-                                        url: "serial.php?com=list",
+                                        url: "/serial.php?com=list",
                                         success: function(data){
                                             //console.log(data);
                                             var s = data.split(',');
@@ -158,9 +158,9 @@
                                     <span class="label label-lg label-danger">Prolific chipset USB to Serial adapters will not work, use a "legacy" serial port.</span>
                                     <br/><br/>
                                     <div style="background-color:#ffffff;">
-                                        <img src="firmware/img/avr_programmer_serial.png" /><br/>
-                                        <img src="firmware/img/attiny13.png" />
-                                        <img src="firmware/img/avr_programmer.jpg" /><br/>
+                                        <img src="/firmware/img/avr_programmer_serial.png" /><br/>
+                                        <img src="/firmware/img/attiny13.png" />
+                                        <img src="/firmware/img/avr_programmer.jpg" /><br/>
                                     </div>
                                 </center>
                                 </td>
@@ -172,7 +172,7 @@
                 <div class="col-md-1"></div>
             </div>
         </div>
-        <form enctype="multipart/form-data" action="attiny.php" method="POST" id="Aform">
+        <form enctype="multipart/form-data" action="/attiny.php" method="POST" id="Aform">
             <input type="file" name="firmware" class="file" hidden onchange="javascript:this.form.submit();" />
             <input type="submit" hidden />
         </form>

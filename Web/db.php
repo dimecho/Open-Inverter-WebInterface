@@ -7,7 +7,7 @@
         <script>
             $(document).on('click', '.browse', function(){
                 $(this).attr("disabled", true);
-                $.ajax("snapshot.php?db=" + $("#motor").val(),{
+                $.ajax("/snapshot.php?db=" + $("#motor").val(),{
                     async: false,
                     success: function(data){
                         console.log(data);
@@ -19,7 +19,7 @@
 
             function setMotorImage(){
                 var s = $("#motor").val().split("@");
-                $("#motorimage").attr("src", "db/img/" + s[0] + ".jpg");
+                $("#motorimage").attr("src", "/db/img/" + s[0] + ".jpg");
             }
         </script>
     </head>
@@ -59,7 +59,7 @@
                                                 $files = glob(getcwd() ."/db/*.txt");
                                                 foreach($files as $file) {
                                                     $s = explode("@", basename($file, ".txt"));
-                                                    echo "<img src=\"db/img/" .$s[0].".jpg\" id=\"motorimage\" class=\"img-rounded\" >";
+                                                    echo "<img src=\"/db/img/" .$s[0].".jpg\" id=\"motorimage\" class=\"img-rounded\" >";
                                                     break;
                                                 }
                                             ?>

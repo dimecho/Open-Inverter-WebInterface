@@ -2,10 +2,10 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-editable.css" />
-        <script type="text/javascript" src="js/bootstrap-editable.js"></script>
-        <script type="text/javascript" src="js/status.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap-editable.css" />
+        <script type="text/javascript" src="/js/bootstrap-editable.js"></script>
+        <script type="text/javascript" src="/js/status.js"></script>
+        <script type="text/javascript" src="/js/index.js"></script>
         <script>
             $(document).ready(function() {
                 $(".safety").fancybox({
@@ -30,7 +30,7 @@
                 <div class="col-md-10">
                     <div id="connection" style="display: none;">
                         <center>
-                            <img src="img/connection.jpg" class="thumbnail" width="80%" height="80%"/>
+                            <img src="/img/connection.jpg" class="thumbnail" width="80%" height="80%"/>
                             <br/><br/>
                             <div class="btn-group">
                                 <button class="btn btn-warning">Warning</button>
@@ -47,7 +47,7 @@
         <a class="safety" data-fancybox data-src="#warning" href="javascript:;" style="display: none;"></a>
         <div id="warning" style="display:none;width:640px;">
             <center>
-                <img src="img/safety.png" />
+                <img src="/img/safety.png" />
             </center>
             <p>
             This project is for educational purpose. High power electronics can cause damage, death or injury. You have decided to build your own inverter so you are responsible for what you do.

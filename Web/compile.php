@@ -43,7 +43,7 @@
                     */
                     //async: false,
                     type: "GET",
-                    url: "compile.php?ajax=1",
+                    url: "/compile.php?ajax=1",
                     data: {},
                     success: function(data){
                         //console.log(data);

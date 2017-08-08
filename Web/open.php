@@ -89,6 +89,6 @@
         exec($command);
 		
     }else{
-        echo "open.php?app=";
+        echo "/open.php?app=";
     }
 ?>

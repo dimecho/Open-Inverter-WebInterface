@@ -4,21 +4,6 @@ var din = ["din_mprot","din_emcystop","din_brake","din_start","din_forward","din
 
 $(document).ready(function () {
 
-    display = new SegmentDisplay("display");
-    display.pattern         = "###.##";
-    display.displayAngle    = 0;
-    display.digitHeight     = 10;
-    display.digitWidth      = 6;
-    display.digitDistance   = 2;
-    display.segmentWidth    = 1.5;
-    display.segmentDistance = 0.5;
-    display.segmentCount    = 7;
-    display.cornerType      = 3;
-    display.colorOn         = "#24dd22";
-    display.colorOff        = "#1b4105";
-    display.draw();
-    display.setValue("  0.00");
-
 	$(".pot").knob({
 		"min":0,
         "max":4095,
@@ -41,7 +26,7 @@ $(document).ready(function () {
 
 function dashboardCheck() {
 
-	$.ajax("serial.php?get=" + din.join(','), {
+	$.ajax("/serial.php?get=" + din.join(','), {
 		//async: false,
 		success: function success(data) {
 
@@ -52,8 +37,8 @@ function dashboardCheck() {
 
 				$(".pot").val(parseInt(data[7])).trigger('change');
                 
-                var v = "   " + data[8];
-                display.setValue(v.substr(-6));
+                //var v = "   " + data[8];
+                //display.setValue(v.substr(-6));
 				
 				for (var i = 0; i < data.length-2; i++) {
 					

@@ -139,7 +139,7 @@
                                                 type: "GET",
                                                 url:
                                                 <?php
-                                                    echo "'firmware.php?ajax=1";
+                                                    echo "'/firmware.php?ajax=1";
                                                     if (strpos(strtolower(php_uname('s')), "darwin") !== false) {
                                                         $tmp_name = "/tmp/" .basename($_FILES['firmware']['tmp_name']). ".bin";
                                                     }else{
@@ -175,7 +175,7 @@
                                     $.ajax({
                                         async: false,
                                         type: "GET",
-                                        url: "serial.php?com=list",
+                                        url: "/serial.php?com=list",
                                         success: function(data){
                                             //console.log(data);
                                             var s = data.split(',');
@@ -200,7 +200,7 @@
                                         <br/><br/>
                                         <span class="label label-lg label-warning">Caution: Main board for Olimex powered with 3.3V - Double check your USB-TTL adapter.</span>
                                         <br/><br/>
-                                        <img src="firmware/img/usb_ttl.jpg" />
+                                        <img src="/firmware/img/usb_ttl.jpg" />
                                     </center>
                                 </td>
                             </tr>
@@ -211,7 +211,7 @@
                 <div class="col-md-1"></div>
             </div>
         </div>
-        <form enctype="multipart/form-data" action="firmware.php" method="POST" id="Aform">
+        <form enctype="multipart/form-data" action="/firmware.php" method="POST" id="Aform">
             <input name="firmware" type="file" class="file" hidden onchange="javascript:this.form.submit();"/>
             <input type="submit" hidden/>
         </form>

@@ -36,13 +36,13 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <a data-fancybox="gallery" href="img/igbt-test-c1.png">
-                                        <img src="img/igbt-test-c1.png" class="img-thumbnail img-rounded" />
+                                    <a data-fancybox="gallery" href="/img/igbt-test-c1.png">
+                                        <img src="/img/igbt-test-c1.png" class="img-thumbnail img-rounded" />
                                     </a>
                                 </td>
                                 <td>
-                                    <a data-fancybox="gallery" href="img/igbt-test-e2.png">
-                                        <img src="img/igbt-test-e2.png" class="img-thumbnail img-rounded" />
+                                    <a data-fancybox="gallery" href="/img/igbt-test-e2.png">
+                                        <img src="/img/igbt-test-e2.png" class="img-thumbnail img-rounded" />
                                     </a>
                                 </td>
                             </tr>

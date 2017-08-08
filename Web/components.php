@@ -2,7 +2,7 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script type="text/javascript" src="js/components.js"></script>
+        <script type="text/javascript" src="/js/components.js"></script>
         <script>
         $(document).ready(function () {
             <?php
@@ -10,17 +10,17 @@
                 if($_GET["hardware"] == "1"){
             ?>
                 $("#components").empty();
-                buildTable("Main Board v4", "pcb/Hardware v1.0/bom/base_board4.csv");
-                buildTable("Gate Driver v2", "pcb/Hardware v1.0/bom/gate_driver2.csv", "Note: DC-DC has changed. PCB \"gate_driver.brd\" contains different size (old) component RH0515D or IH0515S");
-                buildTable("Sensor Board v3", "pcb/Hardware v1.0/bom/sensor_board3.csv", "Add C4 & C5 100nF when using LEM HTFS current sensors");
+                buildTable("Main Board v4", "/pcb/Hardware v1.0/bom/base_board4.csv");
+                buildTable("Gate Driver v2", "/pcb/Hardware v1.0/bom/gate_driver2.csv", "Note: DC-DC has changed. PCB \"gate_driver.brd\" contains different size (old) component RH0515D or IH0515S");
+                buildTable("Sensor Board v3", "/pcb/Hardware v1.0/bom/sensor_board3.csv", "Add C4 & C5 100nF when using LEM HTFS current sensors");
             <?php
                 }else if($_GET["hardware"] == "damien"){
             ?>
                 $("#components").empty();
-                buildTable("Combined Board v8", "pcb/Hardware (Damien Mod)/bom/combi_v8.csv");
-                buildTable("Main Board v2", "pcb/Hardware (Damien Mod)/bom/main_board_v2.csv");
-                buildTable("Gate Driver v2", "pcb/Hardware (Damien Mod)/bom/igbt_v2.csv", "U1, U1 and link out ZD1, ZD2 components are optional for Desat detection tuning");
-                buildTable("Sensor Board v1", "pcb/Hardware (Damien Mod)/bom/sensor_board_v1.csv");
+                buildTable("Combined Board v8", "/pcb/Hardware (Damien Mod)/bom/combi_v8.csv");
+                buildTable("Main Board v2", "/pcb/Hardware (Damien Mod)/bom/main_board_v2.csv");
+                buildTable("Gate Driver v2", "/pcb/Hardware (Damien Mod)/bom/igbt_v2.csv", "U1, U1 and link out ZD1, ZD2 components are optional for Desat detection tuning");
+                buildTable("Sensor Board v1", "/pcb/Hardware (Damien Mod)/bom/sensor_board_v1.csv");
             <?php } }else{ ?>
                 
             <?php } ?>
@@ -39,14 +39,14 @@
                         <tbody>
                             <tr align="center">
                                 <td>
-                                    <a href="components.php?hardware=1">
-                                        <img src="img/hardware_v1.jpg" class="img-thumbnail img-rounded" />
+                                    <a href="/components.php?hardware=1">
+                                        <img src="/img/hardware_v1.jpg" class="img-thumbnail img-rounded" />
                                     </a><br/><br/>
                                     Hardware v1.0 (Johannes Huebner)
                                 </td>
                                 <td>
-                                    <a href="components.php?hardware=damien">
-                                        <img src="img/hardware_damien.jpg" class="img-thumbnail img-rounded" />
+                                    <a href="/components.php?hardware=damien">
+                                        <img src="/img/hardware_damien.jpg" class="img-thumbnail img-rounded" />
                                     </a><br/><br/>
                                     Hardware v1.0 (Damien Maguire)
                                 </td>

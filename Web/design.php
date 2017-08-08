@@ -2,12 +2,12 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-slider.css" />
-        <script type="text/javascript" src="js/bootstrap-slider.js"></script>
-        <script type="text/javascript" src="js/three.js"></script>
-        <script type="text/javascript" src="js/OrbitControls.js"></script>
-        <script type="text/javascript" src="js/Projector.js"></script>
-        <script type="text/javascript" src="js/design.js"></script>
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap-slider.css" />
+        <script type="text/javascript" src="/js/bootstrap-slider.js"></script>
+        <script type="text/javascript" src="/js/three.js"></script>
+        <script type="text/javascript" src="/js/OrbitControls.js"></script>
+        <script type="text/javascript" src="/js/Projector.js"></script>
+        <script type="text/javascript" src="/js/design.js"></script>
     </head>
     <body>
         <div class="container">

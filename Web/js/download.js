@@ -1,7 +1,7 @@
 var pause = false;
 
 $(document).on('click', '.pause', function(){
-    $.ajax("download.php?pause=" + this.textContent.toLowerCase(),{
+    $.ajax("/download.php?pause=" + this.textContent.toLowerCase(),{
         //async: false,
         success: function(data)
         {
@@ -20,7 +20,7 @@ $(document).on('click', '.pause', function(){
 
 function confirmDownload(app)
 {
-    $.ajax("download.php?software=" + app,{
+    $.ajax("/download.php?software=" + app,{
         //async: false,
         success: function(data)
         {
@@ -31,7 +31,7 @@ function confirmDownload(app)
             alertify.confirm("Software Install", "Install " + json.title + " - " + json.size + "MB", function()
             {
                 //window.open(url, '_blank');
-                window.location.href = "download.php?start=" + app;
+                window.location.href = "/download.php?start=" + app;
 
             }, function(){});
         },
@@ -75,13 +75,13 @@ function download(app)
         },
         //async: false,
         type: "GET",
-        url: "download.php?download=" + app,
+        url: "/download.php?download=" + app,
         data: {},
         success: function(data){
             
             notify.update({'type': 'success', 'allow_dismiss': false, 'message':'Installing ...'});
             
-            $.ajax("install.php?app=" + app,{
+            $.ajax("/install.php?app=" + app,{
                 //async: false,
                 success: function(data)
                 {

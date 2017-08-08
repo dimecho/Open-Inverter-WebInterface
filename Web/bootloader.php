@@ -43,7 +43,7 @@
 
             function setJTAGImage() {
                 var img = $("#jtag-interface").val().split("/").pop().slice(0, -4);
-                $("#jtag-image").attr("src", "firmware/img/" + img + ".jpg");
+                $("#jtag-image").attr("src", "/firmware/img/" + img + ".jpg");
                 $("#jtag-name").html(jtag_name[$("#jtag-interface option:selected").index()]);
             }
 
@@ -76,7 +76,7 @@
                                                 url:
                                                 <?php
                                                     echo "'";
-                                                    echo "bootloader.php?ajax=1";
+                                                    echo "/bootloader.php?ajax=1";
                                                     if ($GLOBALS["OS"] === "mac") {
                                                         $tmp_name = "/tmp/" .basename($_FILES['firmware']['tmp_name']). ".bin";
                                                     }else{
@@ -135,7 +135,7 @@
                 <div class="col-md-1"></div>
             </div>
         </div>
-        <form enctype="multipart/form-data" action="bootloader.php" method="POST" id="Aform">
+        <form enctype="multipart/form-data" action="/bootloader.php" method="POST" id="Aform">
             <input name="firmware" type="file" class="file" hidden onchange="javascript:this.form.submit();"/>
             <input type="submit" hidden/>
         </form>

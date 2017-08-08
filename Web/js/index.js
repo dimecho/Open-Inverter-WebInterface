@@ -7,7 +7,7 @@ $(document).ready(function()
     
     $('#parameters').editable({
         selector: 'a',
-        url: 'serial.php',
+        url: '/serial.php',
         mode: 'popup',
         pk: '1',
         showbuttons: true,
@@ -87,7 +87,7 @@ $(document).ready(function()
                 //var id = this.id;
                 //console.log(this.id);
                 
-                $.ajax("serial.php?command=save",{
+                $.ajax("/serial.php?command=save",{
                     //async: false,
                     success: function(data)
                     {
@@ -146,7 +146,7 @@ function buildParameters()
 	var parameters = [];
 	var description = [];
 	
-	$.ajax("description.csv",{
+	$.ajax("/description.csv",{
 		async: false,
 		//dataType: 'text',
 		//contentType: "application/text",
