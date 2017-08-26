@@ -21,7 +21,7 @@ if($args[0] -eq "uninstall") {
     Write-Host "...Installing PHP"
     
     # Download PHP
-    $phpFile = "php-5.6.30-Win32-VC11-x64.zip"
+    $phpFile = "php-5.6.31-Win32-VC11-x64.zip"
     if (-Not (Test-Path "$env:TEMP\$phpFile")) {
     	Write-Host "Downloading PHP 5.6"  -ForegroundColor Green
         Write-Host ""

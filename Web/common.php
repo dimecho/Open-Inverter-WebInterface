@@ -110,15 +110,15 @@
         'inkscape' => array (
             'title' => "Inkscape - Vector Graphics Software",
             'download' => array (
-                'mac' => "https://inkscape.org/en/gallery/item/3896/Inkscape-0.91-1-x11-10.7-x86_64.dmg",
-                'windows' => "https://inkscape.org/gallery/item/10688/Inkscape-0.92.1.msi",
+                'mac' => "https://inkscape.org/en/gallery/item/11269/Inkscape-0.92.2-1-x11-10.7-x86_64.dmg",
+                'windows' => "https://inkscape.org/en/gallery/item/11263/inkscape-0.92.2-x64.msi",
                 'linux' => "",
                 'size' => 70,
-                'version' => "0.92.1"
+                'version' => "0.92.2"
             ),
             'path' => array (
                 'mac' => "/Applications/Inkscape.app/Contents/MacOS/Inkscape",
-                'windows' => "C:\\Program Files (x86)\\Inkscape\\inkscape.exe",
+                'windows' => "C:\\Program Files\\Inkscape\\inkscape.exe",
                 'linux' => "/usr/share/applications/inkscape.desktop"
             )
         ),
@@ -140,16 +140,16 @@
         'eagle' => array (
             'title' => "AutoCAD Eagle - PCB Design Software",
             'download' => array (
-                'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.2.2_English_Mac_64bit.pkg",
-                'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.2.2_English_Win_64bit.exe",
-                'linux' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.2.2_English_Linux_64bit.tar.gz",
+                'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.3.0_English_Mac_64bit.pkg",
+                'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.3.0_English_Win_64bit.exe",
+                'linux' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.3.0_English_Linux_64bit.tar.gz",
                 'size' => 100,
-                'version' => "8.2.2"
+                'version' => "8.3.0"
             ),
             'path' => array (
-                'mac' => "/Applications/EAGLE-8.2.2/Eagle.app/Contents/MacOS/Eagle",
-                'windows' => "C:\\EAGLE-8.2.2\\bin\eagle.exe",
-                'linux' => "/opt/eagle-8.2.2/bin/eagle"
+                'mac' => "/Applications/EAGLE-8.3.0/Eagle.app/Contents/MacOS/Eagle",
+                'windows' => "C:\\EAGLE-8.3.0\\bin\eagle.exe",
+                'linux' => "/opt/eagle-8.3.0/bin/eagle"
             )
         ),
         'designsparkpcb' => array (

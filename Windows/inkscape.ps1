@@ -1,8 +1,8 @@
 if($args[0] -eq "uninstall") {
     #HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall
-    Start-Process "msiexec.exe" -ArgumentList "/x $env:USERPROFILE\Downloads\Inkscape-0.92.1.msi" -Wait
+    Start-Process "msiexec.exe" -ArgumentList "/x $env:USERPROFILE\Downloads\inkscape-0.92.2-x64.msi" -Wait
 }else{
-    Start-Process "msiexec.exe" -ArgumentList "/i $env:USERPROFILE\Downloads\Inkscape-0.92.1.msi" -Wait
+    Start-Process "msiexec.exe" -ArgumentList "/i $env:USERPROFILE\Downloads\inkscape-0.92.2-x64.msi" -Wait
     If (-not (Test-Path "$env:APPDATA\inkscape\extensions")) {
         New-Item -ItemType Directory -Path "$env:APPDATA\inkscape\extensions" -Force
     } 

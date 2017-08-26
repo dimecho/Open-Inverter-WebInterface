@@ -4,7 +4,7 @@ if [ "$1" = "uninstall" ] ; then
 else
     cd "$(dirname "$0")"
 
-    hdiutil attach ~/Downloads/Inkscape-0.91-1-x11-10.7-x86_64.dmg
+    hdiutil attach ~/Downloads/Inkscape-0.92.2-1-x11-10.7-x86_64.dmg
 
     x=1
     while [ $x -le 20 ]
