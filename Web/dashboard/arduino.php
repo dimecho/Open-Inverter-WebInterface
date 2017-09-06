@@ -12,7 +12,7 @@
             <div class="row">
                 <div class="col-md-1"></div>
                 <div class="col-md-10">
-                    <table class="table table-bordered">
+                    <table class="table table-active table-bordered">
                         <tbody>
                             <tr>
                                 <td>
@@ -22,7 +22,7 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-bordered">
+                    <table class="table table-active table-bordered">
                         <tbody>
                             <tr>
                                 <td>
@@ -72,7 +72,7 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-bordered">
+                    <table class="table table-active table-bordered">
                         <tbody>
                             <tr>
                                 <td>
@@ -89,7 +89,7 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-bordered">
+                    <table class="table table-active table-bordered">
                         <tbody>
                             <tr>
                                 <td>

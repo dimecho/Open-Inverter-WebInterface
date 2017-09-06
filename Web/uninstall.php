@@ -8,9 +8,9 @@
         <div class="container">
             <?php include "menu.php" ?>
              <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
-                    <table class="table table-bordered">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10">
+                    <table class="table table-active table-bordered">
                         <tbody>
                             <tr>
                                 <td>
@@ -20,7 +20,7 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-bordered" width="100%">
+                    <table class="table table-active table-bordered" width="100%">
                         <tbody>
                         <?php
                             include_once("common.php");
@@ -54,8 +54,9 @@
                     </table>
                     <button class="browse btn btn-primary" type="button" onclick="Uninstall();"><i class="glyphicon glyphicon-trash"></i> Uninstall</button>
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col-lg-1"></div>
             </div>
         </div>
+        <br/>
     </body>
 </html>

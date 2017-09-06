@@ -62,10 +62,11 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
+            <br/>
              <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
-                    <table class="table table-bordered" id="hardware" style="display:none">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10">
+                    <table class="table table-active table-bordered" id="hardware" style="display:none">
                         <tbody>
                             <tr align="center">
                                 <td>
@@ -83,7 +84,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <table class="table table-bordered" id="johannes" style="display:none">
+                    <table class="table table-active table-bordered" id="johannes" style="display:none">
                         <tbody>
                             <tr>
                                 <td>
@@ -104,7 +105,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <table class="table table-bordered" id="wiring" style="display:none">
+                    <table class="table table-active table-bordered" id="wiring" style="display:none">
                         <tbody>
                             <tr>
                                 <td colspan="3">
@@ -128,7 +129,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col-lg-1"></div>
             </div>
         </div>
     </body>

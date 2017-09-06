@@ -13,10 +13,7 @@ body {
 form {
   display: none;
 }
-.table-bordered{
-  background: rgba(230, 230, 230, 0.8); 
-}
-.label-lg {
+.badge-lg {
   font-size:13px !important;
   font-weight:normal !important;
 }

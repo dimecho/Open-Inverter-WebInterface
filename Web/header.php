@@ -2,6 +2,7 @@
 <title>Huebner Inverter</title>
 
 <script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/popper.js"></script>
 <script type="text/javascript" src="/js/bootstrap.js"></script>
 <script type="text/javascript" src="/js/svg-injector.js"></script>
 <script type="text/javascript" src="/js/tooltipster.js"></script>
@@ -16,7 +17,7 @@
 <link rel="stylesheet" type="text/css" href="/css/alertify.css">
 <link rel="stylesheet" type="text/css" href="/css/animate.css" />
 <link rel="stylesheet" type="text/css" href="/css/bootstrap.css" />
-<link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.css" />
+<link rel="stylesheet" type="text/css" href="/css/glyphicons.css">
 <link rel="stylesheet" type="text/css" href="/css/tooltipster.css" />
 <link rel="stylesheet" type="text/css" href="/css/fancybox.css" media="screen"/>
 

@@ -25,7 +25,7 @@
                             });
                         </script>
                         <input id="explode" type="hidden" data-slider-orientation="horizontal" data-slider-tooltip="hide" />
-                        <table class="table table-bordered">
+                        <table class="table table-active table-bordered">
                             <tbody>
                                 <tr>
                                     <td>
@@ -41,7 +41,7 @@
                                 fill3DTable()
                             });
                         </script>
-                        <table class="table table-bordered" id="ideaTable"></table>
+                        <table class="table table-active table-bordered" id="ideaTable"></table>
                     <?php } ?>
                     </center>
                 </div>

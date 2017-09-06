@@ -69,19 +69,19 @@
             <?php include "menu.php" ?>
             <br/>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
-                    <table class="table table-bordered" id="render">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10">
+                    <table class="table table-active table-bordered" id="render">
                         <tbody>
                             <td>
                                 <ul class="nav nav-tabs">
-                                    <li class="active"><a data-toggle="tab" href="#graphA">Motor</a></li>
-                                    <li><a data-toggle="tab" href="#graphB">Temperature</a></li>
-                                    <li><a data-toggle="tab" href="#graphC">Battery</a></li>
-                                    <li><a data-toggle="tab" href="#graphD">Sensors</a></li>
-                                    <li><a data-toggle="tab" href="#graphE">Frequencies</a></li>
-                                    <li><a data-toggle="tab" href="#graphF">Pulse Amplitude</a></li>
-                                    <li><a data-toggle="tab" href="#graphG">Pulse Width</a></li>
+                                    <li class="nav-item"><a class="nav-link active" href="#graphA">Motor</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#graphB">Temperature</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#graphC">Battery</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#graphD">Sensors</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#graphE">Frequencies</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#graphF">Pulse Amplitude</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#graphG">Pulse Width</a></li>
                                 </ul>
                                 <div class="tab-content">
                                     <div id="graphA" class="tab-pane fade in active"></div>
@@ -97,11 +97,11 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col-lg-1"></div>
             </div>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10">
                     <center>
                         <div class="btn-group">
                             <button class="btn btn-success" onClick="startChart();">Start Graph</button>
@@ -126,7 +126,7 @@
                         </div>
                     </center>
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col-lg-1"></div>
             </div>
         </div>
         <br/>

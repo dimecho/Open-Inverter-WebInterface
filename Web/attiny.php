@@ -37,11 +37,11 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/><br/>
+            <br/>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
-                    <table class="table table-bordered">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10">
+                    <table class="table table-active table-bordered">
                         <tbody>
                         <?php if(isset($_GET["fuses"])){ ?>
                             <tr>
@@ -137,7 +137,7 @@
                                 <center>
                                     <div class="input-group" style="width:80%">
                                         <span class = "input-group-addon" style="width:30%">
-                                            <select name="isp" class="form-control" form="Aform" id="ispList">
+                                            <select name="isp" class="form-control" form="Aform" id="ispList" style="width:100%">
                                                 <option value="ponyser" selected="selected">ponyser</option>
                                                 <option value="usbtiny">usbtiny</option>
                                                 <option value="usbasp">usbasp</option>
@@ -146,7 +146,7 @@
                                             </select>
                                         </span>
                                         <span class = "input-group-addon" style="width:70%">
-                                            <select name="serial" class="form-control" form="Aform" id="serialList">
+                                            <select name="serial" class="form-control" form="Aform" id="serialList" style="width:100%">
                                             </select>
                                         </span>
                                         <span class = "input-group-addon">
@@ -155,7 +155,7 @@
                                         </span>
                                     </div>
                                     <br/><br/>
-                                    <span class="label label-lg label-danger">Prolific chipset USB to Serial adapters will not work, use a "legacy" serial port.</span>
+                                    <span class="badge badge-lg badge-danger">Prolific chipset USB to Serial adapters will not work, use a "legacy" serial port.</span>
                                     <br/><br/>
                                     <div style="background-color:#ffffff;">
                                         <img src="/firmware/img/avr_programmer_serial.png" /><br/>
@@ -169,7 +169,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col-lg-1"></div>
             </div>
         </div>
         <form enctype="multipart/form-data" action="/attiny.php" method="POST" id="Aform">

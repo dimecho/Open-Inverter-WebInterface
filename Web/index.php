@@ -2,11 +2,10 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <link rel="stylesheet" type="text/css" href="/css/bootstrap-editable.css" />
-        <script type="text/javascript" src="/js/bootstrap-editable.js"></script>
-        <script type="text/javascript" src="/js/status.js"></script>
-        <script type="text/javascript" src="/js/index.js"></script>
         <script>
+            //X-Editable Bootstrap 4 Fix
+            $.fn.popover.defaults={},$.fn.popover.defaults.template;
+
             $(document).ready(function() {
                 $(".safety").fancybox({
                     maxWidth    : 800,
@@ -21,13 +20,18 @@
                 });
             });
         </script>
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap-editable.css" />
+        <script type="text/javascript" src="/js/bootstrap-editable.js"></script>
+        <script type="text/javascript" src="/js/status.js"></script>
+        <script type="text/javascript" src="/js/index.js"></script>
     </head>
     <body>
         <div class="container">
             <?php include "menu.php" ?>
+            <br/>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10">
                     <div id="connection" style="display: none;">
                         <center>
                             <img src="/img/connection.jpg" class="thumbnail" width="80%" height="80%"/>
@@ -41,11 +45,11 @@
                     <table class="table table-bordered table-striped table-hover" style="display:none;" id="parameters">
                     </table>
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col-lg-1"></div>
             </div>
         </div>
         <a class="safety" data-fancybox data-src="#warning" href="javascript:;" style="display: none;"></a>
-        <div id="warning" style="display:none;width:640px;">
+        <div id="warning" style="display:none;width:640px;border-radius:5px">
             <center>
                 <img src="/img/safety.png" />
             </center>

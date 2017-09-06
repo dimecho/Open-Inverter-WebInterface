@@ -125,9 +125,8 @@ function buildStatus(sync) {
             }
 			
 			$("#opStatus").empty().append(opStatus);
-           
-            var SVGInject = document.querySelectorAll('img.svg-inject');
-            SVGInjector(SVGInject);
+            
+            new SVGInjector().inject(document.querySelectorAll('svg-inject'));
 			
 			$(".tooltipstered").tooltipster("destroy");
             $(".tooltip1").tooltipster();

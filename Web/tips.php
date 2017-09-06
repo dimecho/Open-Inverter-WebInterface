@@ -20,10 +20,11 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
+            <br/>
              <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
-                    <table class="table table-bordered" width="100%">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10">
+                    <table class="table table-active table-bordered" width="100%">
                         <tbody>
                             <tr>
                                 <td><ul id="tips"></ul></td>
@@ -31,7 +32,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col-lg-1"></div>
             </div>
         </div>
     </body>
