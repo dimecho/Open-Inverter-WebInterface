@@ -22,7 +22,7 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-active table-bordered">
+                    <table class="table table-active bg-light table-bordered">
                         <tbody>
                             <tr>
                                 <td>
@@ -52,7 +52,7 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-active table-bordered">
+                    <table class="table table-active bg-light table-bordered">
                         <tbody>
                             <tr>
                                 <td>

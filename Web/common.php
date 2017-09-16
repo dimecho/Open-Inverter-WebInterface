@@ -51,7 +51,7 @@
             'title' => "AVR Compiler",
             'download' => array (
                 'mac' => "https://www.obdev.at/downloads/crosspack/CrossPack-AVR-20131216.dmg",
-                'windows' => "http://heanet.dl.sourceforge.net/project/winavr/WinAVR/20100110/WinAVR-20100110-install.exe",
+                'windows' => "http://sysprogs.com/files/gnutoolchains/avr/avr-gcc5.3.0.exe",
                 'linux' => "",
                 'size' => 40,
                 'version' => "20131216"
@@ -65,11 +65,11 @@
         'arduino' => array (
             'title' => "Arduino IDE",
             'download' => array (
-                'mac' => "https://downloads.arduino.cc/arduino-1.8.3-macosx.zip",
-                'windows' => "https://downloads.arduino.cc/arduino-1.8.3-windows.exe",
+                'mac' => "https://downloads.arduino.cc/arduino-1.8.4-macosx.zip",
+                'windows' => "https://downloads.arduino.cc/arduino-1.8.4-windows.exe",
                 'linux' => "",
                 'size' => 150,
-                'version' => "1.8.3"
+                'version' => "1.8.4"
             ),
             'path' => array (
                 'mac' => "/Applications/Arduino.app/Contents/MacOS/Arduino",
@@ -140,16 +140,16 @@
         'eagle' => array (
             'title' => "AutoCAD Eagle - PCB Design Software",
             'download' => array (
-                'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.3.0_English_Mac_64bit.pkg",
-                'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.3.0_English_Win_64bit.exe",
-                'linux' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.3.0_English_Linux_64bit.tar.gz",
+                'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.3.2_English_Mac_64bit.pkg",
+                'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.3.2_English_Win_64bit.exe",
+                'linux' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.3.2_English_Linux_64bit.tar.gz",
                 'size' => 100,
-                'version' => "8.3.0"
+                'version' => "8.3.2"
             ),
             'path' => array (
-                'mac' => "/Applications/EAGLE-8.3.0/Eagle.app/Contents/MacOS/Eagle",
-                'windows' => "C:\\EAGLE-8.3.0\\bin\eagle.exe",
-                'linux' => "/opt/eagle-8.3.0/bin/eagle"
+                'mac' => "/Applications/EAGLE-8.3.2/Eagle.app/Contents/MacOS/Eagle",
+                'windows' => "C:\\EAGLE-8.3.2\\bin\eagle.exe",
+                'linux' => "/opt/eagle-8.3.2/bin/eagle"
             )
         ),
         'designsparkpcb' => array (

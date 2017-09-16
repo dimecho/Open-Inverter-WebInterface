@@ -123,7 +123,7 @@
             <div class="row">
                 <div class="col-lg-1"></div>
                 <div class="col-lg-10">
-                    <table class="table table-active table-bordered">
+                    <table class="table table-active bg-light table-bordered">
                         <tbody>
                         <?php if(isset($_FILES["firmware"])){ ?>
                             <tr>

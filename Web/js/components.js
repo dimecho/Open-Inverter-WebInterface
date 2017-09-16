@@ -7,9 +7,9 @@ function buildTable(title, csv, notes) {
         },
         success: function success(data) {
             var div = $("#components");
-            var header = $("<table>", { class: "table table-bordered", style: "padding-left:10px;" }).append($("<h4>").append(title));
-            var label = $("<span>", { class: "label label-lg label-warning" }).append(notes);
-            var table = $("<table>", { class: "table table-bordered table-striped table-hover" });
+            var header = $("<table>", { class: "table table-active bg-light table-bordered", style: "padding-left:10px;" }).append($("<h4>").append(title));
+            var label = $("<span>", { class: "badge badge-lg badge-warning" }).append(notes);
+            var table = $("<table>", { class: "table table-active table-bordered table-striped table-hover" });
             var thead = $("<thead>", { class: "thead-inverse" }).append($("<tr>").append($("<th>").append("Part")).append($("<th>").append("Value")).append($("<th>").append("Manual")));
             var tbody = $("<tbody>");
             $(".tooltip1").tooltipster();

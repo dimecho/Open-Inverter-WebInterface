@@ -60,10 +60,10 @@
             <?php include "menu.php" ?>
             <br/><br/>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10">
                     <center>
-                        <table class="table table-bordered">
+                        <table class="table table-active bg-light table-bordered">
                             <tbody>
                                 <tr>
                                     <td>
@@ -77,7 +77,7 @@
                         </table>
                     </center>
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col-lg-1"></div>
             </div>
         </div>
     </body>

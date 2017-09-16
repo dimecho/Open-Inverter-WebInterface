@@ -2,7 +2,6 @@
 <title>Huebner Inverter</title>
 
 <script type="text/javascript" src="/js/jquery.js"></script>
-<script type="text/javascript" src="/js/popper.js"></script>
 <script type="text/javascript" src="/js/bootstrap.js"></script>
 <script type="text/javascript" src="/js/svg-injector.js"></script>
 <script type="text/javascript" src="/js/tooltipster.js"></script>

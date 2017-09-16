@@ -18,8 +18,9 @@ else
         #flash erase_sector 0 0 last
         #dump_image dump.bin 0x0 0x00020000
         
-        #rom (rx) : ORIGIN = 0x08001000, LENGTH = 120K
-        #ram (rwx) : ORIGIN = 0x20000000, LENGTH = 20K
-        openocd -f ./$2 -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset halt" -c "flash write_image erase $1 0x08001000" -c "reset" -c "shutdown" 
+        #The main firmware must be linked to start at address 0x08001000
+        #The bootloader starts at address 0x08000000 and can be 4k in size
+
+        openocd -f ./$2 -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset halt" -c "flash write_image erase $1 0x08000000" -c "reset" -c "shutdown" 
     fi
 fi
