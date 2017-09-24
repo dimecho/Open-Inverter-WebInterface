@@ -201,10 +201,15 @@ function buildParameters()
 			if(x !=-1)
 				tooltip = description[x];
 			
-			//var a = $("<a>", { href:"#", "id":key, "data-toggle":"tooltip", "data-html":"true", "title":"<h6>" + tooltip + "</h6>", "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":json[key].unit + " ("+ json[key].default + ")"}).append(json[key].value);
 			var a = $("<a>", { href:"#", "id":key, "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":json[key].unit + " ("+ json[key].default + ")"}).append(json[key].value);
-            
             var tr = $("<tr>");
+
+            if(tooltip != "")
+            {
+                tr.attr("data-toggle", "tooltip");
+                tr.attr("data-html", true);
+                tr.attr("title", "<h6>" + tooltip + "</h6>");
+            }
 			var td1 = $("<td>").append(key);
 			var td2 = $("<td>").append(a);
 			var td3 = $("<td>").append(json[key].unit.replace("","°"));

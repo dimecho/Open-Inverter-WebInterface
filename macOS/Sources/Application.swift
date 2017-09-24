@@ -13,19 +13,16 @@ class Application: NSViewController, NSApplicationDelegate
 	
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
-		DispatchQueue.global(qos: .userInitiated).async
+		DispatchQueue.main.async
 		{
 			self.checkConnection();
-			
-			DispatchQueue.main.async
-			{
-				let task = Process()
-				task.launchPath = Bundle.main.path(forResource: "run", ofType:nil)
-				task.launch()
-				//task.waitUntilExit()
-				//system("open -a Terminal \"" + NSBundle.mainBundle().pathForResource("run", ofType:nil)! + "\"")
-			}
 		}
+
+		let task = Process()
+		task.launchPath = Bundle.main.path(forResource: "run", ofType:nil)
+		task.launch()
+		//task.waitUntilExit()
+		//system("open -a Terminal \"" + NSBundle.mainBundle().pathForResource("run", ofType:nil)! + "\"")
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool

@@ -64,6 +64,7 @@ potnom,%,,,,"Scaled pot value, 0 accel"
 dir,,,,,"Rotation direction. -1=REV, 0=Neutral, 1=FWD"
 tmphs,ÁC,,,,Heatsink temperature
 tmpm,ÁC,,,,Motor temperature
+uaux,V,,,,Chargemode voltage accuracy
 din_cruise,,,,,Cruise Control. This pin activates the cruise control with the current speed. Pressing again updates the speed set point.
 din_start,,,,,"State of digital input ""start"". This pin starts inverter operation"
 din_brake,,,,,"State of digital input ""brake"". This pin sets maximum regen torque (brknompedal). Cruise control is disabled."

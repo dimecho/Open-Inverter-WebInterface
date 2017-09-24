@@ -116,7 +116,7 @@ function buildStatus(sync) {
 			
 			buildTips();
 
-            //$('[data-toggle="tooltip"]').tooltip('dispose');
+            $('.tooltip').remove();
             $('[data-toggle="tooltip"]').tooltip();
         }
     });
