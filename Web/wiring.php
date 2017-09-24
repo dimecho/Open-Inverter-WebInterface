@@ -7,7 +7,7 @@
         $(document).ready(function () {
             <?php
 
-            $pinout = "";
+            $pinout = "#";
             $wiring = "";
 
             if(isset($_GET["hardware"])){
@@ -16,8 +16,11 @@
                     $wiring = rawurlencode("/pcb/Hardware v1.0/wiring.png");
                     echo '$("#johannes").show();';
                 }else if($_GET["hardware"] == "damien"){
-                    $pinout = rawurlencode("/pcb/Hardware (Damien Mod)/wiring.csv");
-                    $wiring = rawurlencode("/pcb/Hardware (Damien Mod)/wiring.png");
+                    $pinout = rawurlencode("/pcb/Hardware v1.0 (Damien Mod)/wiring.csv");
+                    $wiring = rawurlencode("/pcb/Hardware v1.0 (Damien Mod)/wiring.png");
+                }else if($_GET["hardware"] == "tesla"){
+                    $pinout = rawurlencode("/pcb/Hardware v2.0 (Tesla Mod)/wiring.csv");
+                    $wiring = rawurlencode("/pcb/Hardware v2.0 (Tesla Mod)/wiring.png");
                 }
                 echo '$("#wiring").show();';
             ?>
@@ -66,7 +69,7 @@
              <div class="row">
                 <div class="col-lg-1"></div>
                 <div class="col-lg-10">
-                    <table class="table table-active table-bordered" id="hardware" style="display:none">
+                    <table class="table table-active bg-light table-bordered" id="hardware" style="display:none">
                         <tbody>
                             <tr align="center">
                                 <td>
@@ -77,9 +80,17 @@
                                 </td>
                                 <td>
                                     <a href="/wiring.php?hardware=damien">
-                                        <img src="/img/hardware_damien.jpg" class="img-thumbnail img-rounded" />
+                                        <img src="/img/hardware_v1_damien.jpg" class="img-thumbnail img-rounded" />
                                     </a><br/><br/>
                                     Hardware v1.0 (Damien Maguire)
+                                </td>
+                            </tr>
+                            <tr align="center">
+                                <td>
+                                    <a href="/wiring.php?hardware=tesla">
+                                        <img src="/img/hardware_v2_tesla.jpg" class="img-thumbnail img-rounded" />
+                                    </a><br/><br/>
+                                    Hardware v2.0 (Tesla Mod)
                                 </td>
                             </tr>
                         </tbody>

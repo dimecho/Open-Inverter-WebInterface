@@ -21,7 +21,7 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-active bg-light table-bordered" width="100%">
+                    <table class="table table-active bg-light table-bordered table-striped table-hover" width="100%">
                         <tbody>
                         <?php
                             include_once("common.php");

@@ -18,16 +18,20 @@ $(document).ready(function()
             //dataType: 'json'
         },
         validate: function(value) {
-            
-			if(getJSONFloatValue("opmode") > 0 && this.id != 'fslipspnt'){
+
+			if(getJSONFloatValue('opmode') > 0 && this.id != 'fslipspnt'){
 				stopInverter();
 				return 'Inverter must not be in operating mode.';
-			}else if (!isNaN(value)){
+			}
+
+            var isNumber = /^\d+$/.test(value);
+
+            if (isNumber == false){
                 return 'Value must be a number';
             }
 
             if(this.id == 'fmin'){
-                if(parseFloat(value) > parseFloat($("#fslipmin").text()))
+                if(parseFloat(value) > parseFloat($('#fslipmin').text()))
                 {
                     return 'Should be set below fslipmin';
                 }
@@ -58,7 +62,7 @@ $(document).ready(function()
                     return 'Should be below minimum voltage (udcmin)';
                 }
 			}else if(this.id == 'fslipmin'){
-				if(parseFloat(value) <= parseFloat($("#fmin").text())){
+				if(parseFloat(value) <= parseFloat($('#fmin').text())){
 					return 'Should be above starting frequency (fmin)';
 				}
             /*}else  if(this.id == 'fslipmax'){
@@ -197,9 +201,11 @@ function buildParameters()
 			if(x !=-1)
 				tooltip = description[x];
 			
-			var a = $("<a>", {href:"#", id:key, "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":json[key].unit + " ("+ json[key].default + ")"}).append(json[key].value);
-			var tr = $("<tr>");
-			var td1 = $("<td>", {class:"tooltip1", "data-tooltip-content":"<h5>" + tooltip + "</h5>"}).append(key);
+			//var a = $("<a>", { href:"#", "id":key, "data-toggle":"tooltip", "data-html":"true", "title":"<h6>" + tooltip + "</h6>", "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":json[key].unit + " ("+ json[key].default + ")"}).append(json[key].value);
+			var a = $("<a>", { href:"#", "id":key, "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":json[key].unit + " ("+ json[key].default + ")"}).append(json[key].value);
+            
+            var tr = $("<tr>");
+			var td1 = $("<td>").append(key);
 			var td2 = $("<td>").append(a);
 			var td3 = $("<td>").append(json[key].unit.replace("","°"));
    
@@ -207,8 +213,7 @@ function buildParameters()
 		};
 		menu.show();
 		
-		$(".tooltipstered").tooltipster("destroy");
-		$(".tooltip1").tooltipster();
+        $('[data-toggle="tooltip"]').tooltip();
 
 		basicChecks(json);
     }

@@ -9,10 +9,9 @@ function buildTable(title, csv, notes) {
             var div = $("#components");
             var header = $("<table>", { class: "table table-active bg-light table-bordered", style: "padding-left:10px;" }).append($("<h4>").append(title));
             var label = $("<span>", { class: "badge badge-lg badge-warning" }).append(notes);
-            var table = $("<table>", { class: "table table-active table-bordered table-striped table-hover" });
+            var table = $("<table>", { class: "table table-active bg-light table-bordered table-striped table-hover" });
             var thead = $("<thead>", { class: "thead-inverse" }).append($("<tr>").append($("<th>").append("Part")).append($("<th>").append("Value")).append($("<th>").append("Manual")));
             var tbody = $("<tbody>");
-            $(".tooltip1").tooltipster();
 
             var row = data.split("\n");
 
@@ -37,7 +36,7 @@ function buildTable(title, csv, notes) {
 
                             var tr = $("<tr>");
                             var td1 = $("<td>");
-                            var td2 = $("<td>", { class: "tooltip1" });
+                            var td2 = $("<td>");
                             var td3 = $("<td>");
 
                             if (value.length < 1) {
@@ -51,8 +50,9 @@ function buildTable(title, csv, notes) {
                             }
                             if (split[0].indexOf("RN") != -1) img = "RN_" + img;
 
-                            td2.attr("data-tooltip-content", "<img src='/img/bom/" + img + ".jpg' />");
-                            td2.append(value);
+                            var span = $("<span>", { "data-toggle": "tooltip", "data-html": "true", "title": "<img src='/img/bom/" + img + ".jpg' />"});
+                            span.append(value);
+                            td2.append(span);
                             tbody.append(tr.append(td1.append(split[0])).append(td2).append(td3.append(a)));
                         }
                     }
@@ -63,6 +63,8 @@ function buildTable(title, csv, notes) {
             div.append(header);
             if (notes) div.append(label);
             div.append(table);
+
+            $('[data-toggle="tooltip"]').tooltip();
         },
         error: function error(xhr, textStatus, errorThrown) {}
     });

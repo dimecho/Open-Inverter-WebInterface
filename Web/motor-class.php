@@ -6,6 +6,7 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
+            <br/>
              <div class="row">
                 <div class="col-lg-1"></div>
                 <div class="col-lg-10">

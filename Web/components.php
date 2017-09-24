@@ -17,10 +17,15 @@
                 }else if($_GET["hardware"] == "damien"){
             ?>
                 $("#components").empty();
-                buildTable("Combined Board v8", "/pcb/Hardware (Damien Mod)/bom/combi_v8.csv");
-                buildTable("Main Board v2", "/pcb/Hardware (Damien Mod)/bom/main_board_v2.csv");
-                buildTable("Gate Driver v2", "/pcb/Hardware (Damien Mod)/bom/igbt_v2.csv", "U1, U1 and link out ZD1, ZD2 components are optional for Desat detection tuning");
-                buildTable("Sensor Board v1", "/pcb/Hardware (Damien Mod)/bom/sensor_board_v1.csv");
+                buildTable("Combined Board v8", "/pcb/Hardware v1.0 (Damien Mod)/bom/combi_v8.csv");
+                buildTable("Main Board v2", "/pcb/Hardware v1.0 (Damien Mod)/bom/main_board_v2.csv");
+                buildTable("Gate Driver v2", "/pcb/Hardware v1.0 (Damien Mod)/bom/igbt_v2.csv", "U1, U1 and link out ZD1, ZD2 components are optional for Desat detection tuning");
+                buildTable("Sensor Board v1", "/pcb/Hardware v1.0 (Damien Mod)/bom/sensor_board_v1.csv");
+            <?php
+                }else if($_GET["hardware"] == "tesla"){
+            ?>
+                $("#components").empty();
+                buildTable("Tesla Large Drive Unit Logic Board v2", "/pcb/Hardware v2.0 (Tesla Mod)/bom/tesla_board_v2.csv");
             <?php } }else{ ?>
                 
             <?php } ?>
@@ -35,7 +40,7 @@
             <div class="row">
                 <div class="col-lg-1"></div>
                 <div class="col-lg-10" id="components" style="display:none">
-                     <table class="table table-active table-bordered">
+                     <table class="table table-active bg-light table-bordered">
                         <tbody>
                             <tr align="center">
                                 <td>
@@ -46,9 +51,17 @@
                                 </td>
                                 <td>
                                     <a href="/components.php?hardware=damien">
-                                        <img src="/img/hardware_damien.jpg" class="img-thumbnail img-rounded" />
+                                        <img src="/img/hardware_v1_damien.jpg" class="img-thumbnail img-rounded" />
                                     </a><br/><br/>
                                     Hardware v1.0 (Damien Maguire)
+                                </td>
+                            </tr>
+                            <tr align="center">
+                                <td>
+                                    <a href="/components.php?hardware=tesla">
+                                        <img src="/img/hardware_v2_tesla.jpg" class="img-thumbnail img-rounded" />
+                                    </a><br/><br/>
+                                    Hardware v2.0 (Tesla Mod)
                                 </td>
                             </tr>
                         </tbody>

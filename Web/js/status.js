@@ -26,34 +26,32 @@ function buildStatus(sync) {
 
             if(data[0] != "") {
 
-                var span = $("<span>", { class: "tooltip1" });
-                var img = $("<img>", { class: "svg-inject", src: "img/key.svg" });
+                var img = $("<img>", { class: "svg-inject", src: "img/key.svg", "data-toggle": "tooltip", "data-html": "true" });
                 //$("#potentiometer").hide();
 
                 if (parseFloat(data[15]) === 3) {
-                    span.attr("data-tooltip-content", "<h6>Boost Mode</h6>");
+                    img.attr("title", "<h6>Boost Mode</h6>");
                     img.addClass("svg-yellow");
                 } else if (parseFloat(data[15]) === 4) {
-                    span.attr("data-tooltip-content", "<h6>Buck Mode</h6>");
+                    img.attr("title", "<h6>Buck Mode</h6>");
                     img.addClass("svg-yellow");
                 }else if (parseFloat(data[0]) === 0) {
-                    span.attr("data-tooltip-content", "<h6>Off</h6>");
+                    img.attr("title", "<h6>Off</h6>");
                     img.addClass("svg-red");
                 } else if (parseFloat(data[0]) === 1) {
                     if (parseFloat(data[6]) === 1) {
+                        img.attr("title", "<h6>Pulse Only - Do not leave ON</h6>");
                         img.addClass("svg-yellow");
-                        span.attr("data-tooltip-content", "<h6>Pulse Only - Do not leave ON</h6>");
                     } else {
-                        span.attr("data-tooltip-content", "<h6>Running</h6>");
+                        img.attr("title", "<h6>Running</h6>");
                         img.addClass("svg-green");
                     }
                 } else if (parseFloat(data[0]) === 2) {
-                    span.attr("data-tooltip-content", "<h6>Manual Mode</h6>");
+                    img.attr("title", "<h6>Manual Mode</h6>");
                     img.addClass("svg-green");
                     $("#potentiometer").show();
                 }
-                span.append(img);
-                opStatus.append(span);
+                opStatus.append(img);
                 //========================
                 /*
                 if(json.ocurlim.value > 0){
@@ -62,76 +60,64 @@ function buildStatus(sync) {
                 opStatus.append(div);
                 */
                 //========================
-                span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + data[1] + "V</h6>" });
-                img = $("<img>", { class: "svg-inject", src: "img/battery.svg" });
+                img = $("<img>", { class: "svg-inject", src: "img/battery.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[1] + "V</h6>" });
                 if (parseFloat(data[1]) > parseFloat(data[2]) && parseFloat(data[1]) > 10 && parseFloat(data[1]) < 520) { // && parseFloat(data[15]) !== 0) {
                     img.addClass("svg-green");
                 } else {
                     img.addClass("svg-red");
                 }
-                span.append(img);
-                opStatus.append(span);
+                opStatus.append(img);
                 //========================
-                span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + data[3] + "°C</h6>" });
-                img = $("<img>", { class: "svg-inject", src: "img/temperature.svg" });
+                img = $("<img>", { class: "svg-inject", src: "img/temperature.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[3] + "°C</h6>"});
                 if (parseFloat(data[3]) > 150 || parseFloat(data[4]) > 150) {
                     img.addClass("svg-red");
-                    span.append(img);
-                    opStatus.append(span);
+                    opStatus.append(img);
                 } else if (parseFloat(data[3]) < 0 || parseFloat(data[4]) < 0 || parseFloat(data[3]) > 100 || parseFloat(data[4]) > 100) {
                     img.addClass("svg-yellow");
-                    span.append(img);
-                    opStatus.append(span);
+                    opStatus.append(img);
                 }
                 //========================
-                span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + data[5] + "ms</h6>" });
-                img = $("<img>", { class: "svg-inject", src: "img/magnet.svg" });
+                img = $("<img>", { class: "svg-inject", src: "img/magnet.svg","data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[5] + "ms</h6>" });
                 if(parseFloat(data[5]) < 22){
                     img.addClass("svg-red");
-                    span.append(img);
-                    opStatus.append(span);
+                    opStatus.append(img);
                 }
                 //========================
                 /*
-                span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>" + speed + "RPM</h6>" });
-                img = $("<img>", { class: "svg-inject", src: "img/speedometer.svg" });
+                img = $("<img>", { class: "svg-inject", src: "img/speedometer.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + speed + "RPM</h6>" });
                 if (speed > 6000) {
                     img.addClass("svg-red");
-                    span.append(img);
-                    opStatus.append(span);
+                    opStatus.append(img);
                 } else if (speed > 3000) {
                     img.addClass("svg-yellow");
-                    span.append(img);
-                    opStatus.append(span);
+                    opStatus.append(img);
                 }
                 */
                 //========================
                 if (parseFloat(data[7]) != 1 && parseFloat(data[15]) === 0) {
-                    span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>Probably forgot PIN 11 to 12V</h6>" });
-                    span.append($("<img>", { class: "svg-inject", src: "img/alert.svg" }));
-                    opStatus.append(span);
+                    img = $("<img>", { class: "svg-inject", src: "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Probably forgot PIN 11 to 12V</h6>" });
+                    opStatus.append(img);
                 }
                 //========================
                 var errors = getErrors();
                 if (errors.length > 1 && errors.indexOf("No Errors") === -1) {
-                    span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6><pre>" + errors + "</pre></h6>" });
-                    span.append($("<img>", { class: "svg-inject", src: "img/alert.svg" }));
-                    opStatus.append(span);
+
+                    img = $("<img>", { class: "svg-inject", src: "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + errors + "</h6>" });
+                    opStatus.append(img);
                 }
             }else{
-                span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>Inverter Disconnected</h6>" });
-                span.append($("<img>", { class: "svg-inject", src: "img/alert.svg" }));
-                opStatus.append(span);
+                img = $("<img>", { class: "svg-inject", src: "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Inverter Disconnected</h6>" });
+                opStatus.append(img);
             }
 			
 			$("#opStatus").empty().append(opStatus);
             
             new SVGInjector().inject(document.querySelectorAll('svg-inject'));
 			
-			$(".tooltipstered").tooltipster("destroy");
-            $(".tooltip1").tooltipster();
-			
 			buildTips();
+
+            //$('[data-toggle="tooltip"]').tooltip('dispose');
+            $('[data-toggle="tooltip"]').tooltip();
         }
     });
     

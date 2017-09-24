@@ -3,9 +3,6 @@
     <head>
         <?php include "header.php" ?>
         <script>
-            //X-Editable Bootstrap 4 Fix
-            $.fn.popover.defaults={},$.fn.popover.defaults.template;
-
             $(document).ready(function() {
                 $(".safety").fancybox({
                     maxWidth    : 800,
@@ -42,8 +39,7 @@
                             </div>
                         </center>
                     </div>
-                    <table class="table table-bordered table-striped table-hover" style="display:none;" id="parameters">
-                    </table>
+                    <table class="table table-active bg-light table-bordered table-striped table-hover" style="display:none;" id="parameters"></table>
                 </div>
                 <div class="col-lg-1"></div>
             </div>

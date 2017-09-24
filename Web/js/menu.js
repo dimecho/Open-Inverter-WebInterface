@@ -76,7 +76,7 @@ $(document).ready(function () {
                 onshow: function() {
                     //console.log(this);
                     this.elements.dialog.style.maxWidth = 'none';
-                    this.elements.dialog.style.width = '620px';
+                    this.elements.dialog.style.width = '640px';
                 }
             }
         };
@@ -173,7 +173,15 @@ function loadJSON() {
                 title.append("Check Serial Connection");
                 var connection = $("#connection").show();
             }else{
-                json = JSON.parse(data);
+                try {
+                    json = JSON.parse(data);
+                } catch(e) {
+                    $.notify({
+                        message: e + ":" + data
+                    }, {
+                        type: 'danger'
+                    });
+                }
             }
         },
         error: function error(xhr, textStatus, errorThrown) {}
@@ -327,7 +335,6 @@ function buildTips() {
     if (show === true) {
 
         var opStatus = $("#opStatus");
-        var span = $("<span>");
 
         $.ajax("tips.csv", {
             //async: false,
@@ -337,14 +344,13 @@ function buildTips() {
 
                 for (var i = 0; i < row.length; i++) {
                     if (i === n) {
-                        span = $("<span>", { class: "tooltip1", "data-tooltip-content": "<h6>Tip: " + row[i] + "</h6>" });
-                        span.append($("<img>", { class: "svg-inject", src: "img/idea.svg" }));
-                        opStatus.append(span);
+                        img = $("<img>", { class: "svg-inject", src: "img/idea.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h8>Tip: " + row[i] + "</h8>" });
+                        opStatus.append(img);
                         break;
                     }
                 }
-                $(".tooltipstered").tooltipster("destroy");
-                $(".tooltip1").tooltipster();
+
+                $('[data-toggle="tooltip"]').tooltip();
             },
             error: function error(xhr, textStatus, errorThrown) {}
         });

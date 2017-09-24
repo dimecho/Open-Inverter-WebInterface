@@ -4,7 +4,6 @@
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/js/bootstrap.js"></script>
 <script type="text/javascript" src="/js/svg-injector.js"></script>
-<script type="text/javascript" src="/js/tooltipster.js"></script>
 <script type="text/javascript" src="/js/alertify.js"></script>
 <script type="text/javascript" src="/js/download.js"></script>
 <script type="text/javascript" src="/js/menu.js"></script>
@@ -17,7 +16,6 @@
 <link rel="stylesheet" type="text/css" href="/css/animate.css" />
 <link rel="stylesheet" type="text/css" href="/css/bootstrap.css" />
 <link rel="stylesheet" type="text/css" href="/css/glyphicons.css">
-<link rel="stylesheet" type="text/css" href="/css/tooltipster.css" />
 <link rel="stylesheet" type="text/css" href="/css/fancybox.css" media="screen"/>
 
 <script type="text/javascript">

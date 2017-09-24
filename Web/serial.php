@@ -2,7 +2,9 @@
 
     require('config.inc.php');
 
-    set_time_limit(30);
+    ini_set('memory_limit', '4096M');
+    
+    set_time_limit(60);
 
     error_reporting(E_ERROR | E_PARSE);
     
