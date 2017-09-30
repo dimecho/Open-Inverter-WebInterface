@@ -5,7 +5,7 @@ if($args[0] -eq "uninstall") {
     $shell = new-object -com Shell.Application
     
     Set-Location "$env:USERPROFILE\Documents\"
-    if (-Not (Test-Path tumanako-inverter-fw-motorControl-master)){
+    if (-Not (Test-Path tumanako-inverter-fw-motorControl-master)) {
         Write-Host "UnZipping Source Code" -ForegroundColor Yellow
     	$zip = $shell.NameSpace("$env:USERPROFILE\Downloads\tumanako-inverter-fw-motorControl-master.zip")
     	foreach($item in $zip.items())
@@ -15,19 +15,23 @@ if($args[0] -eq "uninstall") {
     }else{
         if ($console -eq 1)
         {
-    		$env:Path += ";C:\msys\1.0\bin"
-            $env:Path += ";C:\SysGCC\MinGW32\bin"
-            $GCC_ARM = "C:\Program Files (x86)\GNU Tools ARM Embedded\6 2017-q1-update"
+			$GCC_WIN = "C:\SysGCC\MinGW64"
+			$GCC_ARM = "C:\SysGCC\arm-eabi"
+
+            $env:Path += ";" + $GCC_WIN + "\bin"
             $env:Path += ";" + $GCC_ARM + "\bin"
-    		
+			
     		#--------- MSYS Fix --------------
-    		Rename-Item C:\msys\1.0\bin\make.exe makeOLD.exe
-    		Rename-Item C:\SysGCC\MinGW32\bin\mingw32-make.exe make.exe
-    		Copy-Item C:\msys\1.0\bin\sh.exe shell.exe
+			Rename-Item C:\SysGCC\MinGW64\bin\mingw32-make.exe make.exe
+    		Rename-Item C:\msys64\usr\bin\make.exe makeOLD.exe
+    		Copy-Item C:\msys64\usr\bin\sh.exe shell.exe
+			#---------------------------------
+			
+			$env:Path += ";C:\msys64\usr\bin"
     		
             #--------- LIBOPENCM3 ------------
             Set-Location "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master"
-            if (-Not (Test-Path libopencm3)) {
+            if (-Not (Test-Path "libopencm3")) {
                 if (-Not (Test-Path "$env:USERPROFILE\Downloads\libopencm3-master.zip")) {
                     Write-Host "Downloading Libopencm3" -ForegroundColor Green
                     Invoke-WebRequest -Uri "https://github.com/libopencm3/libopencm3/archive/master.zip" -OutFile "$env:USERPROFILE\Downloads\libopencm3-master.zip"
@@ -80,6 +84,10 @@ if($args[0] -eq "uninstall") {
             Move-Item stm32_sineHWCONFIG_REV1.hex (Split-Path (Split-Path (Get-Location) -Parent) -Parent)
 
             #--------- ATtiny13 --------------
+			
+			$GCC_AVR = "C:\SysGCC\avr"
+			$env:Path += ";" + $GCC_AVR + "\bin"
+				
             Set-Location "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master"
             if (-Not (Test-Path src\attiny13)) {
                 $zip = $shell.NameSpace((Split-Path $PSScriptRoot -Parent) + "\Web\firmware\attiny13.zip")

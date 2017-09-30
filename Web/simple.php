@@ -34,8 +34,8 @@
             <div class="row">
                 <div class="col-lg-1"></div>
                 <div class="col-lg-10">
-                    <table class="table table-active table-bordered"><tbody><tr><td><h4>Auto Tuning</h4></td></tr></tbody></table>
-                    <table class="table table-active table-bordered">
+                    <table class="table table-active bg-light table-bordered"><tbody><tr><td><h4>Auto Tuning</h4></td></tr></tbody></table>
+                    <table class="table table-active bg-light table-bordered">
                         <tr>
                             <td>
                                 <button class="browse btn btn-primary" type="button" onclick="boostTuning();"><i class="glyphicon glyphicon-flash"></i> Boost Tuning</button>
@@ -51,10 +51,10 @@
                             </td>
                         </tr>
                     </table>
-                    <table class="table table-active table-bordered"><thead><tr><td><h4>Motor</h4></td></tr></thead></table>
-                    <table class="table table-active table-bordered" id="parameters_Motor"></table>
-                    <table class="table table-active table-bordered"><tbody><tr><td><h4>Battery</h4></td></tr></tbody></table>
-                    <table class="table table-active table-bordered" id="parameters_Battery"></table>
+                    <table class="table table-active bg-light table-bordered"><thead><tr><td><h4>Motor</h4></td></tr></thead></table>
+                    <table class="table table-active bg-light table-bordered" id="parameters_Motor"></table>
+                    <table class="table table-active bg-light table-bordered"><tbody><tr><td><h4>Battery</h4></td></tr></tbody></table>
+                    <table class="table table-active bg-light table-bordered" id="parameters_Battery"></table>
                 </div>
                 <div class="col-lg-1"></div>
             </div>

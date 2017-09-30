@@ -21,29 +21,29 @@
             'title' => "GCC Compiler",
             'download' => array (
                 'mac' => "",
-                'windows' => "http://sysprogs.com/files/gnutoolchains/mingw32/mingw32-gcc4.8.1.exe",
+                'windows' => "http://sysprogs.com/files/gnutoolchains/mingw64/mingw64-gcc4.7.1.exe",
                 'linux' => "",
                 'size' => 25,
-                'version' => "4.8"
+                'version' => (PHP_OS === 'WINNT' ? "4.7.1" : shell_exec("gcc -dumpversion"))
             ),
             'path' => array (
                 'mac' => "/usr/bin/gcc",
-                'windows' => "C:\\SysGCC\\MinGW32\\bin\\gcc.exe",
+                'windows' => "C:\\SysGCC\\MinGW64\\bin\\gcc.exe",
                 'linux' => "/usr/bin/gcc"
             )
         ),
         'arm' => array (
-            'title' => "GCC-ARM Compiler",
+            'title' => "ARM Embedded Compiler",
             'download' => array (
                 'mac' => "https://developer.arm.com/-/media/Files/downloads/gnu-rm/6_1-2017q1/gcc-arm-none-eabi-6-2017-q1-update-mac.tar.bz2",
-                'windows' => "https://developer.arm.com/-/media/Files/downloads/gnu-rm/6_1-2017q1/gcc-arm-none-eabi-6-2017-q1-update-win32.exe",
+                'windows' => "http://sysprogs.com/files/gnutoolchains/arm-eabi/arm-eabi-gcc6.2.0-r4.exe",
                 'linux' => "",
                 'size' => 100,
                 'version' => "6.1"
             ),
             'path' => array (
                 'mac' => "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-6-2017-q1-update/bin/arm-none-eabi-gcc",
-                'windows' => "C:\\Program Files (x86)\\GNU Tools ARM Embedded\\6 2017-q1-update\\bin\\arm-none-eabi-gcc.exe",
+                'windows' => "C:\\SysGCC\\arm-eabi\\bin\\arm-eabi-gcc.exe",
                 'linux' => "/usr/share/gcc-arm-embedded/bin/gcc-arm-none-eabi"
             )
         ),
@@ -58,7 +58,7 @@
             ),
             'path' => array (
                 'mac' => "/usr/local/etc/gcc_arm/avr/bin/avrdude",
-                'windows' => "C:\\Program Files\\Win-AVR\\avrdude.exe",
+                'windows' => "C:\\SysGCC\\avr\\bin\\avrdude.exe",
                 'linux' => "/usr/bin/avrdude"
             )
         ),
@@ -81,10 +81,10 @@
             'title' => "Python",
             'download' => array (
                 'mac' => "",
-                'windows' => "https://www.python.org/ftp/python/3.6.0/python-3.6.0b3.exe",
+                'windows' => "https://www.python.org/ftp/python/3.6.2/python-3.6.2.exe",
                 'linux' => "",
                 'size' => 15,
-                'version' => "3.6.0"
+                'version' => (PHP_OS === 'WINNT' ? "3.6.2" : shell_exec("python -c 'import sys; print(\".\".join(map(str, sys.version_info[:3])))'"))
             ),
             'path' => array (
                 'mac' => "/usr/bin/python",
@@ -187,7 +187,7 @@
                 'windows' => "",
                 'linux' => "",
                 'size' => 1,
-                'version' => "5.6"
+                'version' => (PHP_OS === 'WINNT' ? "5.6" : phpversion())
             ),
             'path' => array (
                 'mac' => "/usr/bin/php",

@@ -28,7 +28,7 @@ function startPHP($page) {
 
 	if (-Not (Test-Path "$env:programfiles\PHP\php.exe")) {
 
-		Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -File ""$PSScriptRoot\..\Windows\php.ps1""" -Wait
+		Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -File ""$PSScriptRoot\php.ps1""" -Wait
 		startPHP
 		
 	}else{
@@ -47,7 +47,7 @@ function startPHP($page) {
 			#Quick Fix [give it a kick] - Prolific Driver Bug or Windows?
 			#================================================
 			
-			$process = Start-Process -FilePath "$PSScriptRoot\..\Windows\puttytel.exe" -ArgumentList "-serial $comPort" -PassThru -WindowStyle Hidden
+			$process = Start-Process -FilePath "$PSScriptRoot\puttytel.exe" -ArgumentList "-serial $comPort" -PassThru -WindowStyle Hidden
 			try{
 				$process | Wait-Process -Timeout 5 -ErrorAction Stop
 			}catch{
@@ -62,8 +62,8 @@ function startPHP($page) {
 		openBrowser "http://127.0.0.1:8080/$page"
 		
 		# Start PHP Webserver
-		$scriptPath = Split-Path -Parent $PSCommandPath
-		Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 127.0.0.1:8080 -t ""$scriptPath\..\Web\"""
+		$scriptPath = Split-Path $PSScriptRoot -Parent
+		Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8080 -t $scriptPath\Web\"
 	}
 }
 

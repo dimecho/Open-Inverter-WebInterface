@@ -69,29 +69,29 @@
         stream_set_blocking($uart, 1); //O_NONBLOCK
         stream_set_timeout($uart, 8);
         
-		fwrite($uart, $cmd);
-		while($read .= fread($uart, 1))
-		{
-			if(strpos($read,$cmd) !== false) //Reached end of echo
-			{
-				for ($x = 0; $x <= $n; $x++)
-				{
+        fwrite($uart, $cmd);
+        while($read .= fread($uart, 1))
+        {
+            if(strpos($read,$cmd) !== false) //Reached end of echo
+            {
+                for ($x = 0; $x <= $n; $x++)
+                {
                     $read = "";
 
-					fwrite($uart, "!");
-					fread($uart, 1); //Remove echo
-					
-					while($read .= fread($uart, 1))
-						if(strpos($read,"\n") !== false)
-							break;
+                    fwrite($uart, "!");
+                    fread($uart, 1); //Remove echo
+                    
+                    while($read .= fread($uart, 1))
+                        if(strpos($read,"\n") !== false)
+                            break;
 
                     array_push($arr, (float)$read);
-				}
-				break;
-			}
-		}
-		fclose($uart);
-
+                }
+                break;
+            }
+        }
+        fclose($uart);
+        
 		return $arr;
     }
 	
@@ -104,8 +104,7 @@
         stream_set_blocking($uart, 1); //O_NONBLOCK
         stream_set_timeout($uart, 8);
         
-		fwrite($uart, $cmd);
-        
+        fwrite($uart, $cmd);
         while($read .= fread($uart, 1)) //stream_get_contents($uart)
         {
             if(strpos($read,$cmd) !== false) //Reached end of echo
@@ -146,13 +145,13 @@
             }
         }
         
-		//$read = fgets($uart);
-		//while(!feof($uart)){
-			//$read .= stream_get_contents($fd, 1);
-			//$read .= fgets($uart);
-		//}
-		fclose($uart);
-
+        //$read = fgets($uart);
+        //while(!feof($uart)){
+            //$read .= stream_get_contents($fd, 1);
+            //$read .= fgets($uart);
+        //}
+        fclose($uart);
+        
         return $read;
     }
 

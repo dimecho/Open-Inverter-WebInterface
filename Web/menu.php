@@ -65,7 +65,7 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item"><h8><span class="badge badge-info" id="firmwareVersion"></span></h8>
+                    <li class="nav-item"><h8><span class="badge badge-lg badge-info" id="firmwareVersion"></span></h8>
                     </li>
                 </ul>
             </div>

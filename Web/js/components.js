@@ -21,8 +21,20 @@ function buildTable(title, csv, notes) {
                 if (split.length > 4) {
                     if (split[0].length > 1) {
                         if (split[3].indexOf("PINHD") == -1 || split[0].indexOf("JP1") != -1 || split[0].indexOf("JP2") != -1) {
+
                             var a = $("<button>", { class: "btn" }).append("PDF");
-                            if (split[4].length > 4) {
+                            var pdf = "";
+
+                            //Find pdf value
+                            for (p = 4; p < 8; p++) {
+                                if(split[p] != undefined)
+                                    if (split[p].indexOf("http") != -1 || split[p].indexOf("pdf") != -1) {
+                                        pdf = split[p];
+                                        break;
+                                    }
+                            }
+                            
+                            if (pdf != "") {
                                 //a = $("<button>", { id:split[4], class:"btn btn-primary", "data-toggle":"modal", "data-target":"#myModal" }).append("PDF");
                                 a = $("<button>", { id: split[4], class: "btn btn-primary" }).append("PDF");
                                 a.on('click', function (event) {

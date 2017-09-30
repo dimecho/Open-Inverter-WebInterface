@@ -11,20 +11,23 @@ function Elevate() {
 }
 
 if($args[0] -eq "uninstall") {
-    Write-Host "...Removing GCC"
-    Remove-Item -Recurse -Force "C:\mingw"
-    Remove-Item -Recurse -Force "C:\msys-1.0.10"
+	Elevate
+    Remove-Item -Recurse -Force "C:\SysGCC"
+    Remove-Item -Recurse -Force "C:\msys64"
 }else{
     $console=$args[0]
     if ($console -eq 1){
-        Write-Host "Installing GNU toolchain for MinGW" -ForegroundColor Green
-        Start-Process "$env:USERPROFILE\Downloads\mingw32-gcc4.8.1.exe" -Wait
-        if (-Not (Test-Path "$env:USERPROFILE\Downloads\MSYS-1.0.11.exe")) {
+		Set-Location "$env:USERPROFILE\Downloads\"
+		
+        Start-Process "mingw64-gcc4.7.1.exe" -Wait
+		
+        if (-Not (Test-Path "msys2-x86_64-20170918.exe")) {
             Write-Host "Downloading MinGW - GNU for Windows"  -ForegroundColor Yellow
-            Invoke-WebRequest -Uri "http://sourceforge.mirrorservice.org/m/mi/mingw/MSYS/Base/msys-core/msys-1.0.11/MSYS-1.0.11.exe" -OutFile "$env:USERPROFILE\Downloads\MSYS-1.0.11.exe"
+            Invoke-WebRequest -Uri "https://sourceforge.mirrorservice.org/m/ms/msys2/Base/x86_64/msys2-x86_64-20170918.exe" -OutFile "msys2-x86_64-20170918.exe"
         }
         Write-Host "Installing MinGW - GNU for Windows" -ForegroundColor Green
-        Start-Process "$env:USERPROFILE\Downloads\MSYS-1.0.11.exe" -Wait
+        Start-Process "msys2-x86_64-20170918.exe" -Wait
+		
         Stop-Process -ProcessName cmd
     }else{
         Start-Process -FilePath "cmd.exe" -ArgumentList "/k ""powershell.exe -ExecutionPolicy Bypass -File ""$PSCommandPath"" 1"" 2>&1"
