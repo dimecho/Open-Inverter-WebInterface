@@ -123,7 +123,7 @@
             )
         ),
         'openocd' => array (
-            'title' => "OpenoCD Debugger",
+            'title' => "OpenOCD Debugger",
             'download' => array (
                 'mac' => "https://github.com/gnuarmeclipse/openocd/releases/download/gae-0.10.0-20160110/gnuarmeclipse-openocd-osx-0.10.0-201601101000-dev.pkg",
                 'windows' => "https://github.com/gnuarmeclipse/openocd/releases/download/gae-0.10.0-20160110/gnuarmeclipse-openocd-win64-0.10.0-201601101000-dev-setup.exe",

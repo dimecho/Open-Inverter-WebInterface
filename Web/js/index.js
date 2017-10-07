@@ -222,4 +222,36 @@ function buildParameters()
 
 		basicChecks(json);
     }
+    
+    checkUpdates();
+};
+
+function checkUpdates() {
+
+    var check = Math.random() >= 0.5;
+    if (check === true) {
+        $.ajax("/update.php", {
+            async: true,
+            success: function success(data) {
+                //console.log(data);
+                if(data !== "") {
+                    var url = "https://github.com/poofik/Huebner-Inverter/releases/download/1.0/";
+                    if(os === "Mac"){
+                        url += "Huebner.Inverter.dmg";
+                    }else if(os === "Windows"){
+                        url += "Huebner.Inverter.Windows.zip";
+                    }else if(os === "Linux"){
+                        url += "Huebner.Inverter.Linux.tgz";
+                    }
+                    $.notify({
+                        icon: "glyphicon glyphicon-download-alt",
+                        title: "New Version",
+                        message: "Update available <a href='" + url + "'>Download</a> " + data
+                    }, {
+                        type: 'success'
+                    });
+                }
+            }
+        });
+    }
 };

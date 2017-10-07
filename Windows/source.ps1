@@ -17,18 +17,22 @@ if($args[0] -eq "uninstall") {
         {
 			$GCC_WIN = "C:\SysGCC\MinGW64"
 			$GCC_ARM = "C:\SysGCC\arm-eabi"
+			$MSYS = "C:\msys64\usr"
 
-            $env:Path += ";" + $GCC_WIN + "\bin"
-            $env:Path += ";" + $GCC_ARM + "\bin"
+            $env:Path += ";$GCC_WIN\bin"
+            $env:Path += ";$GCC_ARM\bin"
+			$env:Path += ";$MSYS\bin"
 			
     		#--------- MSYS Fix --------------
-			Rename-Item C:\SysGCC\MinGW64\bin\mingw32-make.exe make.exe
-    		Rename-Item C:\msys64\usr\bin\make.exe makeOLD.exe
-    		Copy-Item C:\msys64\usr\bin\sh.exe shell.exe
-			#---------------------------------
+			Rename-Item "$GCC_WIN\bin\mingw32-make.exe" "$GCC_WIN\bin\make.exe" -ErrorAction SilentlyContinue
+    		Rename-Item "$MSYS\bin\find.exe" "$MSYS\bin\sfind.exe" -ErrorAction SilentlyContinue
+    		Copy-Item "$MSYS\bin\sh.exe" "$MSYS\bin\shell.exe" -ErrorAction SilentlyContinue
 			
-			$env:Path += ";C:\msys64\usr\bin"
-    		
+			#----------- ARM-EABI Fix ----------
+			Copy-Item "$GCC_ARM\bin\arm-eabi-gcc.exe" "$GCC_ARM\bin\arm-none-eabi-gcc.exe" -ErrorAction SilentlyContinue
+			Copy-Item "$GCC_ARM\bin\arm-eabi-g++.exe" "$GCC_ARM\bin\arm-none-eabi-g++.exe" -ErrorAction SilentlyContinue
+			Remove-Item "$GCC_ARM\bin\make.exe" -ErrorAction SilentlyContinue
+			
             #--------- LIBOPENCM3 ------------
             Set-Location "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master"
             if (-Not (Test-Path "libopencm3")) {
@@ -72,21 +76,21 @@ if($args[0] -eq "uninstall") {
             Set-Location src\bootloader
             make.exe clean
             make.exe
-            Move-Item stm32_loader.bin (Split-Path (Split-Path (Get-Location) -Parent) -Parent)
-            Move-Item stm32_loader.hex (Split-Path (Split-Path (Get-Location) -Parent) -Parent)
+            Move-Item stm32_loader.bin (Split-Path (Split-Path (Get-Location) -Parent) -Parent) -ErrorAction SilentlyContinue
+            Move-Item stm32_loader.hex (Split-Path (Split-Path (Get-Location) -Parent) -Parent) -ErrorAction SilentlyContinue
 
             #--------- FIRMWARE --------------
             Set-Location "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master"
             Set-Location src\sine
             make.exe clean
             make.exe
-            Move-Item stm32_sineHWCONFIG_REV1.bin (Split-Path (Split-Path (Get-Location) -Parent) -Parent)
-            Move-Item stm32_sineHWCONFIG_REV1.hex (Split-Path (Split-Path (Get-Location) -Parent) -Parent)
+            Move-Item stm32_sineHWCONFIG_REV1.bin (Split-Path (Split-Path (Get-Location) -Parent) -Parent) -ErrorAction SilentlyContinue
+            Move-Item stm32_sineHWCONFIG_REV1.hex (Split-Path (Split-Path (Get-Location) -Parent) -Parent) -ErrorAction SilentlyContinue
 
             #--------- ATtiny13 --------------
 			
 			$GCC_AVR = "C:\SysGCC\avr"
-			$env:Path += ";" + $GCC_AVR + "\bin"
+			$env:Path += ";$GCC_AVR\bin"
 				
             Set-Location "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master"
             if (-Not (Test-Path src\attiny13)) {
@@ -100,8 +104,8 @@ if($args[0] -eq "uninstall") {
             avr-gcc.exe -g -mmcu=attiny13 -Os -Os -o volt-pwm-attiny13.o volt-pwm-attiny13.c -DF_CPU=96000000
             avr-objcopy.exe -R .eeprom -O binary volt-pwm-attiny13.o volt-pwm-attiny13.bin
             avr-objcopy.exe -R .eeprom -O ihex volt-pwm-attiny13.o volt-pwm-attiny13.hex
-            Move-Item volt-pwm-attiny13.bin (Split-Path (Split-Path (Get-Location) -Parent) -Parent)
-            Move-Item volt-pwm-attiny13.hex (Split-Path (Split-Path (Get-Location) -Parent) -Parent)
+            Move-Item volt-pwm-attiny13.bin (Split-Path (Split-Path (Get-Location) -Parent) -Parent) -ErrorAction SilentlyContinue
+            Move-Item volt-pwm-attiny13.hex (Split-Path (Split-Path (Get-Location) -Parent) -Parent) -ErrorAction SilentlyContinue
             #---------------------------------
 
             Start-Process "explorer.exe" -ArgumentList "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master\"

@@ -18,9 +18,9 @@
                 }else if($_GET["hardware"] == "damien"){
                     $pinout = rawurlencode("/pcb/Hardware v1.0 (Damien Mod)/wiring.csv");
                     $wiring = rawurlencode("/pcb/Hardware v1.0 (Damien Mod)/wiring.png");
-                }else if($_GET["hardware"] == "tesla"){
-                    $pinout = rawurlencode("/pcb/Hardware v2.0 (Tesla Mod)/wiring.csv");
-                    $wiring = rawurlencode("/pcb/Hardware v2.0 (Tesla Mod)/wiring.png");
+                }else if($_GET["hardware"] == "tesla_rdu"){
+                    $pinout = rawurlencode("/pcb/Hardware v2.0 (Tesla Rear Drive)/wiring.csv");
+                    $wiring = rawurlencode("/pcb/Hardware v2.0 (Tesla Rear Drive)/wiring.png");
                 }
                 echo '$("#wiring").show();';
             ?>
@@ -87,15 +87,21 @@
                             </tr>
                             <tr align="center">
                                 <td>
-                                    <a href="/wiring.php?hardware=tesla">
-                                        <img src="/img/hardware_v2_tesla.jpg" class="img-thumbnail img-rounded" />
+                                    <a href="/wiring.php?hardware=tesla_rdu">
+                                        <img src="/img/hardware_v2_tesla_rdu.jpg" class="img-thumbnail img-rounded" />
                                     </a><br/><br/>
-                                    Hardware v2.0 (Tesla Mod)
+                                    Hardware v2.0 (Tesla Rear Drive Unit)
+                                </td>
+								<td>
+                                    <a href="/wiring.php?hardware=tesla_fdu">
+                                        <img src="/img/hardware_v2_tesla_fdu.jpg" class="img-thumbnail img-rounded" />
+                                    </a><br/><br/>
+                                    Hardware v2.0 (Tesla Front Drive Unit)
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <table class="table table-active table-bordered" id="johannes" style="display:none">
+                    <table class="table table-active bg-light table-bordered" id="johannes" style="display:none">
                         <tbody>
                             <tr>
                                 <td>
@@ -116,7 +122,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <table class="table table-active table-bordered" id="wiring" style="display:none">
+                    <table class="table table-active bg-light table-bordered" id="wiring" style="display:none">
                         <tbody>
                             <tr>
                                 <td colspan="3">
@@ -134,7 +140,7 @@
                     </table>
                     <div id="pinout" style="display:none">
                         <p>Main Connector Pin Summary</p>
-                        <table  class="table table-bordered table-striped" >
+                        <table  class="table table-active bg-light table-bordered table-striped" >
                             <thead></thead>
                             <tbody></tbody>
                         </table>

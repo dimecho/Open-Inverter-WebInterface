@@ -1,0 +1,25 @@
+Pin Number,Function,Observations,Guessed Function
+1,dc bus voltage monitoring,20v on the dc bus gives 130mV output
+2,Temp sensor,11.8k to gnd at approx 15c
+3,Temp sensor,55k to gnd at approx 15c
+4,Temp sensor,55k to gnd at approx 15c
+5,Temp sensor,55k to gnd at approx 15c
+6,+12v Vcc
+7,+5v supply required,Supply for dc bus discharge
+8,DC bus discharge pin,Float to discharge dc bus. Ground to remove discharge
+9,+5V Vcc
+10,+12V Vcc
+11,GND
+12,+5V Vcc
+13,UVLO,Measured +5v with power stage on own. Derived from +5V Vcc. Drops to 0.6v when loaded with a 1k resistor to gnd. This pin goes low if 12V Vcc drops to approx 8v,UVLO???
+14,IGBT Driver Reset,"Active low. When low , shutsdown all drivers. 1K pullup to +5v Vcc"
+15,Unknown,Measured +5v with power stage on own. Derived from +5V Vcc. Drops to 4.8v when loaded with a 1k resistor to gnd.,IGBT Fault line. Possibly a multiplex of Hi and Lo side and buffered??
+16,Phase A High,"IGBT Drive Signal. 0V low , 5v high"
+17,Phase A Low,"IGBT Drive Signal. 0V low , 5v high"
+18,Unknown,Measured +5v with power stage on own. Derived from +5V Vcc. Drops to 4.8v when loaded with a 1k resistor to gnd.,IGBT Fault line. Possibly a multiplex of Hi and Lo side and buffered??
+19,Phase B High,"IGBT Drive Signal. 0V low , 5v high"
+20,Phase B Low,"IGBT Drive Signal. 0V low , 5v high"
+21,Unknown,Measured +5v with power stage on own. Derived from +5V Vcc. Drops to 4.8v when loaded with a 1k resistor to gnd.,IGBT Fault line. Possibly a multiplex of Hi and Lo side and buffered??
+22,Phase C High,"IGBT Drive Signal. 0V low , 5v high"
+23,Phase C Low,"IGBT Drive Signal. 0V low , 5v high"
+24,GND

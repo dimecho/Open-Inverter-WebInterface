@@ -14,14 +14,15 @@
             <?php include "menu.php" ?>
             <br/>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10">
                     <center>
                     <?php if(isset($_GET["id"])){ ?>
                         <script>
                             $(document).ready(function() {
                                 //$.notify({ message: 'Layout design by' },{ type: 'success' });
-                                initialize3D('<?php echo $_GET["id"]; ?>');
+                                initialize3D("<?php echo $_GET['id'] ?>");
+                                giveCredit("/3d/<?php echo $_GET['id'] ?>.txt");
                             });
                         </script>
                         <input id="explode" type="hidden" data-slider-orientation="horizontal" data-slider-tooltip="hide" />
@@ -45,7 +46,7 @@
                     <?php } ?>
                     </center>
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col-lg-1"></div>
             </div>
         </div>
     </body>

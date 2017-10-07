@@ -4,9 +4,6 @@ var knobTimer;
 
 $(document).ready(function () {
 
-    //Unknown command sequence
-    getJSONFloatValue("hello");
-
     alertify.dialog('startInverterMode', function () {
         return {
             setup: function setup() {
@@ -108,8 +105,6 @@ $(document).ready(function () {
         buildTips();
     }, 1000);
 	*/
-    
-    checkUpdates();
 });
 
 function checkSoftware(app){
@@ -188,35 +183,6 @@ function loadJSON() {
     });
 
     return json;
-};
-
-function checkUpdates() {
-
-    var check = Math.random() >= 0.5;
-    if (check === true) {
-        $.ajax("/update.php", {
-            success: function success(data) {
-                //console.log(data);
-                if(data !== "") {
-                    var url = "https://github.com/poofik/Huebner-Inverter/releases/download/1.0/";
-                    if(os === "Mac"){
-                        url += "Huebner.Inverter.dmg";
-                    }else if(os === "Windows"){
-                        url += "Huebner.Inverter.Windows.zip";
-                    }else if(os === "Linux"){
-                        url += "Huebner.Inverter.Linux.tgz";
-                    }
-                    $.notify({
-                        icon: "glyphicon glyphicon-download-alt",
-                        title: "New Version",
-                        message: "Update available <a href='" + url + "'>Download</a> " + data
-                    }, {
-                        type: 'success'
-                    });
-                }
-            }
-        });
-    }
 };
 
 function getJSONFloatValue(value) {
@@ -326,6 +292,25 @@ function setDefaults() {
             }
         });
     }, function () {});
+};
+
+function giveCredit(csv) {
+    $.ajax(csv, {
+        success: function success(data) {
+
+            var name = "";
+            var url = "";
+
+            if (data.indexOf(",") != -1) {
+                var s = data.split(",");
+                name = s[0];
+                url = "<br/><a href='" + s[1] + "' target=_blank>Project Website</a>";
+            }else{
+                name = data;
+            }
+            $.notify({ message: "Designed By: " + name + url },{ type: 'success' });
+        }
+    });
 };
 
 function buildTips() {

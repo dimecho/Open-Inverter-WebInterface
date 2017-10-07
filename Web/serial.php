@@ -61,11 +61,14 @@
 	
 	function readArray($cmd,$n)
     {
+        $com = serialDevice();
+        if($com == "")
+            return;
+
 		$cmd = "get " .urldecode($cmd). "\r";
 		$read = "";
         $arr = array();
-		
-		$uart = fopen(serialDevice(), "rb+"); //Read & Write
+		$uart = fopen($com, "rb+"); //Read & Write
         stream_set_blocking($uart, 1); //O_NONBLOCK
         stream_set_timeout($uart, 8);
         
@@ -97,10 +100,13 @@
 	
     function readSerial($cmd)
     {
+        $com = serialDevice();
+        if($com == "")
+            return;
+
 		$cmd = urldecode($cmd). "\r";
         $read = "";
-
-		$uart = fopen(serialDevice(), "rb+"); //Read & Write
+		$uart = fopen($com, "rb+"); //Read & Write
         stream_set_blocking($uart, 1); //O_NONBLOCK
         stream_set_timeout($uart, 8);
         

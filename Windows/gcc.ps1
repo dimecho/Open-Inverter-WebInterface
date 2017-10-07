@@ -18,7 +18,7 @@ if($args[0] -eq "uninstall") {
     $console=$args[0]
     if ($console -eq 1){
 		Set-Location "$env:USERPROFILE\Downloads\"
-		
+        
         Start-Process "mingw64-gcc4.7.1.exe" -Wait
 		
         if (-Not (Test-Path "msys2-x86_64-20170918.exe")) {
@@ -27,7 +27,7 @@ if($args[0] -eq "uninstall") {
         }
         Write-Host "Installing MinGW - GNU for Windows" -ForegroundColor Green
         Start-Process "msys2-x86_64-20170918.exe" -Wait
-		
+        
         Stop-Process -ProcessName cmd
     }else{
         Start-Process -FilePath "cmd.exe" -ArgumentList "/k ""powershell.exe -ExecutionPolicy Bypass -File ""$PSCommandPath"" 1"" 2>&1"
