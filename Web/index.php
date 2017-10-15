@@ -56,7 +56,7 @@
                 <tbody>
                     <tr>
                         <td>
-                            <center><button type="button" class="btn btn-danger" onClick="$.fancybox.close();setCookie('safety', 1, 360);"><i class="glyphicon glyphicon-cog"></i> I Agree</button></center>
+                            <center><button type="button" class="btn btn-danger" onClick="$.fancybox.close();setCookie('safety', 1, 360);buildParameters();"><i class="glyphicon glyphicon-cog"></i> I Agree</button></center>
                         </td>
                     </tr>
                 </tbody>

@@ -1,10 +1,5 @@
 $(document).ready(function()
 {
-    var safety = getCookie("safety");
-    if (safety === undefined) {
-        $(".safety").trigger('click');
-    }
-    
     $('#parameters').editable({
         selector: 'a',
         url: '/serial.php',
@@ -24,9 +19,7 @@ $(document).ready(function()
 				return 'Inverter must not be in operating mode.';
 			}
 
-            var isNumber = /^\d+$/.test(value);
-
-            if (isNumber == false){
+            if (isInt(parseInt(value)) == false && isFloat(parseFloat(value)) == false){
                 return 'Value must be a number';
             }
 
@@ -111,8 +104,22 @@ $(document).ready(function()
         }
     });
 
-    buildParameters();
+    var safety = getCookie("safety");
+    
+    if (safety === undefined) {
+        $(".safety").trigger('click');
+    }else{
+        buildParameters();
+    }
 });
+
+function isInt(n){
+    return Number(n) === n && n % 1 === 0;
+};
+
+function isFloat(n){
+    return Number(n) === n && n % 1 !== 0;
+};
 
 function basicChecks(json)
 {
