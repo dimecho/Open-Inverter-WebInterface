@@ -13,6 +13,7 @@ function buildTable(title, csv, notes) {
             var thead = $("<thead>", { class: "thead-inverse" }).append($("<tr>").append($("<th>").append("Part")).append($("<th>").append("Value")).append($("<th>").append("Manual")));
             var tbody = $("<tbody>");
 
+            var bom = csv.substring(0, csv.lastIndexOf("/"));
             var row = data.split("\n");
 
             for (var i = 1; i < row.length; ++i) {
@@ -46,14 +47,14 @@ function buildTable(title, csv, notes) {
 
                             var value = split[2].replace("", "u").replace("**", "").replace("*", "").replace("\"", "");
 
+                            if (value.length < 1) {
+                                value = split[3].replace("u", "&#181;");
+                            }
+
                             var tr = $("<tr>");
                             var td1 = $("<td>");
                             var td2 = $("<td>");
                             var td3 = $("<td>");
-
-                            if (value.length < 1) {
-                                value = split[3].replace("u", "&#181;");
-                            }
 
                             var img = value.replace(" ", "").replace("1%", "");
                             if (img.indexOf("/") != -1) {
@@ -62,7 +63,7 @@ function buildTable(title, csv, notes) {
                             }
                             if (split[0].indexOf("RN") != -1) img = "RN_" + img;
 
-                            var span = $("<span>", { "data-toggle": "tooltip", "data-html": "true", "title": "<img src='/img/bom/" + img + ".jpg' />"});
+                            var span = $("<span>", { "data-toggle": "tooltip", "data-html": "true", "title": "<img src='" + bom + "/img/" + img + ".jpg' />"});
                             span.append(value);
                             td2.append(span);
                             tbody.append(tr.append(td1.append(split[0])).append(td2).append(td3.append(a)));

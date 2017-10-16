@@ -2,8 +2,8 @@
 
 if [ ! -d "/Applications/Wine Devel.app" ]; then
     cd ~/Downloads
-    curl -k -L -O -C - https://dl.winehq.org/wine-builds/macosx/pool/winehq-devel-2.6.pkg
-    osascript -e "do shell script \"installer -pkg ~/Downloads/winehq-devel-2.6.pkg -target /\" with administrator privileges"
+    curl -k -L -O -C - https://dl.winehq.org/wine-builds/macosx/pool/winehq-devel-2.19.pkg
+    osascript -e "do shell script \"installer -pkg ~/Downloads/winehq-devel-2.19.pkg -target /\" with administrator privileges"
 fi
 export DISPLAY=:0.0
 export PATH=$PATH:/Applications/Wine\ Devel.app/Contents/Resources/wine/bin/

@@ -1,0 +1,152 @@
+Ref Name,Qty,Value,Component,Package,Manufacturer,MPN,RS Part Number,Other Part Number,Description
+CONN9,1,,2SIL,DSC,,,,,
+CONN8,1,,3WAY_SIL,DIL,,,,,
+CONN7,1,,6DSIL,DSC,,,,,
+IC11,1,,74HCT4052D,SOIC127P600X175-16N,NXP,74HCT4052D,4836730,,"74HCT4052D, Multiplexer/Demultiplexer Dual 4:1, 5 V, 16-Pin, SOIC, 2"
+CONN2,1,,75757-5101,HDRV20W120P600X350_2X10_3500X9,Molex,75757-5101,,,Headers & Wire Housings MX150 2X10 VERT HEAD HEADER ASSY 2.5 TIN
+L1,1,,7447709470,WE-PD_1260/1245/1280/121054,Würth Elektronik,7447709470,,,SMD-Shielded Power Inductors WE-PD
+IC10,1,,ADM3101EARQZ,SOP64P600X175-16N,Analog Devices,ADM3101EARQZ,7097966,,"ADM3101EARQZ, Line Transceiver, EIA-232-E, RS-232, V.28, 3.3 V, 16-Pin QSOP"
+C41,1,0.1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C23,1,0.1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C24,1,0.1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C106,1,0.1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C44,1,0.1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C42,1,0.1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C43,1,0.1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C45,1,0.1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C18,1,1nF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C19,1,1nF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C20,1,1nF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C33,1,1nF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C34,1,1nF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C21,1,1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C22,1,1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C25,1,1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C26,1,1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C28,1,1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C29,1,1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C30,1,1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C31,1,1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C32,1,1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C57,1,1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C58,1,1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C59,1,1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C60,1,1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C61,1,1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C62,1,1uF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C46,1,10nF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C47,1,10nF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C48,1,10nF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C49,1,10nF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C50,1,10nF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C1,1,27pF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C2,1,27pF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C105,1,47nF,C-USC0805,C0805,,,,,"CAPACITOR, American symbol"
+C3,1,100uF,Cap_el,DSC,,,,,
+IC5,1,,CD74HC30M,SOIC127P600X175-14N,Texas Instruments,CD74HC30M,526824,,"CD74HC30M, Logic Gate 8 Input NAND, HC, 5.2mA 2 to 6V 14-Pin SOIC"
+X2,1,32.768kHz,CRYSTALTC26HM,TC26H-M,,,,,CrystalsVarious standard crystals. Proven footprints. Spark Fun Electronics SKU : COM-00534
+C36,1,0.1uF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C4,1,0.1uF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C8,1,0.1uF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C10,1,0.1uF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C11,1,0.1uF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C16,1,0.1uF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C6,1,1uF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C7,1,1uF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C14,1,1uF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C15,1,1uF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C37,1,1uF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C12,1,10pF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C13,1,10pF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C5,1,10uF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C9,1,10uF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C17,1,10uF,C_0805,C0805,,,,,NON-POLARIZED CAP
+C38,1,220uF,EEEFK1A221XP,FKSV(D8),Panasonic,EEEFK1A221XP,7083342,,"Ecap 220uF 10V D8 Case FK SMD Panasonic 220F 10 V dc Aluminium Electrolytic Capacitor, FK SMD Series 2000h 6.3 Dia. x 7.7mm"
+C35,1,680uF,EEVEB2C680SM,EBV(K16),Panasonic,EEVEB2C680SM,,,"PANASONIC ELECTRONIC COMPONENTS - EEVEB2C680SM - CAP, ALU ELEC, 68UF, 160V, SMD"
+CONN1,1,,FDU_IGBT_CONN,DSC,,,,,
+IC2,1,,FDU_ISense,DSC,,,,,
+IC3,1,,FDU_ISense,DSC,,,,,
+LD1,1,LD1117-3.3,LD1117SOT223,SOT223,,,,,
+LED2,1,,LED0805,CHIPLED_0805,,,,,"LED0603 - 0603 Surface Mount Package2mA:Green LED - Low Power (3.9mcd, 2ma, 1.7Vf) - Digikey: 475-2709-2-NDOrange LED - Low Power (9.8mcd, 2ma, 1.8Vf) - Digikey: 475-1194-2-NDRed LED - Low Power (5mcd, 2ma, 1.8Vf) - Digikey: 475-1195-2-NDYellow LED - Low Power (7mcd, 2ma, 1.8Vf) - Digikey: 475-1196-2-ND5mA:Blue LED - Low Power (17mcd, 5ma, 2.9Vf) - Digikey: LNJ937W8CRACT-ND0805 - 0805 Surface Mount Package2mA:Red LED (8.8mcd, 2mA, 1.8Vf, Clear) - Low Power [Digikey: 475-2510-1-ND]Green LED (5mcd, 2mA, 1.8Vf, Clear) - Low Power [Digikey: 475-2730-1-ND]Yellow LED (11.3mcd, 2mA, 1.8Vf, Clear) - Low Power [Digikey: 475-2555-1-ND]20mA:Red LED (104mcd, 20mA, Diffused) - LS R976 [Digikey: 475-1278-6-ND]Red LED (12mcd, 20mA, 2.0Vf, Clear) - APT2012EC [Digikey: 754-1128-1-ND]Green LED (15mcd, 20mA, 2.2Vf, Clear) - APT2012GC [Digikey: 754-1131-1-ND]Orange LED (160mcd, 20mA, 2.1Vf, Clear) - APT2012SECK [Digikey: 754-1130-1-ND]1206 - 1206 Surface Mount PackageGreen LED (26mcd, 20mA, Diffused) - LG N971  [Digikey: 475-1407-6-ND]Red LED (15mcd, 20mA, Diffused) - LH N974 [Digikey: 475-1416-6-ND]"
+LED1,1,,LED0805,CHIPLED_0805,,,,,"LED0603 - 0603 Surface Mount Package2mA:Green LED - Low Power (3.9mcd, 2ma, 1.7Vf) - Digikey: 475-2709-2-NDOrange LED - Low Power (9.8mcd, 2ma, 1.8Vf) - Digikey: 475-1194-2-NDRed LED - Low Power (5mcd, 2ma, 1.8Vf) - Digikey: 475-1195-2-NDYellow LED - Low Power (7mcd, 2ma, 1.8Vf) - Digikey: 475-1196-2-ND5mA:Blue LED - Low Power (17mcd, 5ma, 2.9Vf) - Digikey: LNJ937W8CRACT-ND0805 - 0805 Surface Mount Package2mA:Red LED (8.8mcd, 2mA, 1.8Vf, Clear) - Low Power [Digikey: 475-2510-1-ND]Green LED (5mcd, 2mA, 1.8Vf, Clear) - Low Power [Digikey: 475-2730-1-ND]Yellow LED (11.3mcd, 2mA, 1.8Vf, Clear) - Low Power [Digikey: 475-2555-1-ND]20mA:Red LED (104mcd, 20mA, Diffused) - LS R976 [Digikey: 475-1278-6-ND]Red LED (12mcd, 20mA, 2.0Vf, Clear) - APT2012EC [Digikey: 754-1128-1-ND]Green LED (15mcd, 20mA, 2.2Vf, Clear) - APT2012GC [Digikey: 754-1131-1-ND]Orange LED (160mcd, 20mA, 2.1Vf, Clear) - APT2012SECK [Digikey: 754-1130-1-ND]1206 - 1206 Surface Mount PackageGreen LED (26mcd, 20mA, Diffused) - LG N971  [Digikey: 475-1407-6-ND]Red LED (15mcd, 20mA, Diffused) - LH N974 [Digikey: 475-1416-6-ND]"
+X1,1,8.00MHz,LFXTAL011301,LFXTAL011301,IQD,LFXTAL011301,4789656,,"Crystal SMD 8.000MHz HC49S-SMD Crystal 8MHz, 30ppm, 2-Pin HC-49-4H-SMX"
+IC8,1,,LM2596S-5.0_NOPB,TO170P1435X465-6N,Texas Instruments,LM2596S-5.0/NOPB,5333692,,"SIMPLE SWITCHER 4.5V to 40V, 3A Low Component Count Step-Down Regulator"
+IC4,1,,LM2901DT,SOIC127P600X175-14N,STMicroelectronics,LM2901DT,7140745,,"LM2901DT, Quad Comparator Open Collector 1.3s 12 V, 15 V, 18 V, 24 V, 28 V, 3 V, 5 V, 9 V 14-Pin SO"
+L2,1,10uH,L_PM0603,PM0603,,,,,INDUCTOR
+SWPROG,1,M032.54MM,M031X03_NO_SILK,1X03_NO_SILK,,,,,"Header 3Standard 3-pin 0.1"" header. Use with straight break away headers (SKU : PRT-00116), right angle break away headers (PRT-00553), swiss pins (PRT-00743), machine pins (PRT-00117), and female headers (PRT-00115). Molex polarized connector foot print use with SKU : PRT-08232 with associated crimp pins and housings."
+D1,1,,MBRS540T3G,DIOM7958X256N,ON Semiconductor,MBRS540T3G,1250012,,"Diode Schottky 40V 5A SMC ON Semiconductor MBRS540T3G Schottky Diode, 5A, 40V, 2-Pin SMC"
+D2,1,,MBRS540T3G,DIOM7958X256N,ON Semiconductor,MBRS540T3G,1250012,,"Diode Schottky 40V 5A SMC ON Semiconductor MBRS540T3G Schottky Diode, 5A, 40V, 2-Pin SMC"
+IC12,1,,MC74HCT573ADWR2G,SOIC127P1030X265-20N,ON Semiconductor,MC74HCT573ADWR2G,8061687,,
+IC7,1,,MCP602-I_SN,SOIC127P600X175-8N,Microchip,MCP602-I/SN,3792588,,"Dual lowpower op-amp,MCP602-I/SN SO8"
+Q1,1,,MMBT3904,SOT95P240X93-3N,Fairchild Semiconductor,MMBT3904,7390303,,"Transistor GP BJT NPN 40V 0.2A SOT23 Fairchild MMBT3904 NPN Bipolar Transistor, 0.2 A, 40 V, 3-Pin SOT-23"
+R8,1,1k,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R6,1,1K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R38,1,1k,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R39,1,1k,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R40,1,1k,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R41,1,1k,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R43,1,1K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R35,1,1K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R24,1,1K5,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R26,1,1K5,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R28,1,1K5,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R32,1,1K5,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R33,1,1K5,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R3,1,3K3,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R7,1,3K3,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R48,1,3K3,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R17,1,3K3,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R47,1,4K7,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R23,1,4K7,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R25,1,4K7,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R27,1,4K7,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R31,1,4K7,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R34,1,4K7,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R11,1,4.7K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R2,1,10k,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R4,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R9,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R10,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R12,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R14,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R15,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R46,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R51,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R1,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R18,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R19,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R20,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R21,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R29,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R30,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R36,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R37,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R13,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R22,1,10K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R64,1,15k,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R65,1,15k,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R66,1,15k,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R16,1,47K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R55,1,47k,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R62,1,47k,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R63,1,47k,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R69,1,60R4,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R70,1,60R4,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R44,1,100K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R45,1,100K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R49,1,100K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R50,1,100K,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R42,1,100R,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R5,1,470,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R56,1,560R,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R57,1,560R,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R58,1,560R,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R59,1,560R,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+R60,1,560R,R-US_R0805,R0805,,,,,"RESISTOR, American symbol"
+CONN3,1,,S02BA-AIT2-1AK,S02BA-AIT2-1AK,JST Automotive,S02BA-AIT2-1AK,,,Automotive Connectors 2P BLK Side Entry Brs tin plated pin
+CONN4,1,,S02BA-AIT2-1AK,S02BA-AIT2-1AK,JST Automotive,S02BA-AIT2-1AK,,,Automotive Connectors 2P BLK Side Entry Brs tin plated pin
+CONN5,1,,S06B-AIT2-1AK,S06B-AIT2-1AK,JST Automotive,S06B-AIT2-1AK,,,Automotive Connectors 6CIR BLK SNGL ROW SIDE ENTRY
+IC9,1,SN65HVD234,SN65HVD234,SOIC8,,,,,
+IC1,1,STM32F103RBT6,STM32F103,TQFP-10X10-64,,,,,
+CONN6,1,,T821120A1S100CEU,SHDR20W64P254X254_2X10_3302X89,AMPHENOL,T821120A1S100CEU,8323499,,"HEADER, VERTICAL, 2.54MM, 20WAY Amphenol T821 Series, 2.54mm Pitch 20 Way 2 Row Shrouded Straight PCB Header, Through Hole, Solder Termination"
+IC6,1,,ULN2003ADR,SOIC127P600X175-16N,Texas Instruments,ULN2003ADR,6658699P,,"Trans Darlington NPN 50V 0.5A SOIC16 Texas Instruments ULN2003ADR, 7-element NPN Darlington Transistor Array, 0.5 A 50 V, 16-Pin SOIC"

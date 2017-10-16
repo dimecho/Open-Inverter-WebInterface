@@ -32,8 +32,11 @@ function startPHP($page) {
 		startPHP
 		
 	}else{
+
+        $scriptPath = Split-Path $PSScriptRoot -Parent
+
 		# COM Port Configure
-		$config_inc = "$PSScriptRoot\..\Web\config.inc"
+		$config_inc = "$scriptPath\Web\config.inc"
 		$comPort = findPort
 		if ($comPort)
 		{
@@ -57,13 +60,12 @@ function startPHP($page) {
 			#Somehow Putty fix sets maximum buffer size
 			#================================================
 		}
+
+        # Start PHP Webserver
+        Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8080 -t ""$($scriptPath)\Web\"""
 		
 		# Open Web Browser
 		openBrowser "http://127.0.0.1:8080/$page"
-		
-		# Start PHP Webserver
-		$scriptPath = Split-Path $PSScriptRoot -Parent
-		Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8080 -t $scriptPath\Web\"
 	}
 }
 

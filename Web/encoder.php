@@ -7,8 +7,8 @@
         <div class="container">
             <?php include "menu.php" ?>
              <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10">
                     <table class="table table-active table-bordered">
                         <tbody>
                             <tr>
@@ -67,25 +67,24 @@
                             </tr>
                         </tbody>
                     </table>
-
                     <table class="table table-active table-bordered">
                         <tbody>
                             <tr>
                                 <td>
                                     <center>
-                                        <img src="/encoder/img/TCST2103.png" class="img-thumbnail img-rounded" />
+                                        <img src="/encoder/img/TCST2103x1.png" class="img-thumbnail img-rounded" />
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        <img src="/img/bom/TCST2103.jpg" class="img-thumbnail img-rounded" />
+                                        <img src="/encoder/img/TCST2103.jpg" class="img-thumbnail img-rounded" />
                                     </center>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col-lg-1"></div>
             </div>
         </div>
     </body>
