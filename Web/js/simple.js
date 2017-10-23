@@ -141,7 +141,7 @@ function buildSimpleParameters(json) {
         max: 10,
         value: json.polepairs.value * 2
     }).on('slideStop', function (e) {
-        sendCommand("polepairs",e.value/2,true,true);
+        setParameter("polepairs",e.value/2,true,true);
     });
     //=======================
     //TODO: account for battery voltage
@@ -153,7 +153,7 @@ function buildSimpleParameters(json) {
         precision: 1,
         tooltip_position: 'left'
     }).on('slideStop', function (e) {
-        sendCommand("boost",e.value*1000,true,true);
+        setParameter("boost",e.value*1000,true,true);
     });
     //=======================
     $("#fweak").slider({
@@ -171,7 +171,7 @@ function buildSimpleParameters(json) {
         step: 1,
         value: json.ampmin.value
     }).on('slideStop', function (e) {
-        sendCommand("ampmin",e.value,true,true);
+        setParameter("ampmin",e.value,true,true);
     });
     //=======================
     $("#fmax").slider({
@@ -182,7 +182,7 @@ function buildSimpleParameters(json) {
     }).on('slideStop', function (e) {
         //console.log(e.value);
         //calculateCurve(e.value);   //calculate fweak
-        sendCommand("fmax",e.value,true,true);
+        setParameter("fmax",e.value,true,true);
     });
     //=======================
     $("#pwm").slider({
@@ -195,7 +195,7 @@ function buildSimpleParameters(json) {
     }).on('slideStop', function (e) {
         //console.log(e.value);
         //calculateCurve(e.value);   //calculate fweak
-        sendCommand("pwmfrq",e.value,true,true);
+        setParameter("pwmfrq",e.value,true,true);
     });
     //=======================
     $("#udc").slider({
@@ -214,8 +214,8 @@ function buildSimpleParameters(json) {
 
         clearTimeout(saveTimer);
         saveTimer = setTimeout(function(){
-            sendCommand("udcmin",e.value[0],true,true);
-            sendCommand("udcmax",e.value[1],true,true);
+            setParameter("udcmin",e.value[0],true,true);
+            setParameter("udcmax",e.value[1],true,true);
         }, 2000);
     });
     slider_adjustment("udc",[400,220,120,54]);
@@ -231,7 +231,7 @@ function buildSimpleParameters(json) {
 
         clearTimeout(saveTimer);
         saveTimer = setTimeout(function(){
-            sendCommand("ocurlim",(0-e.value),true,true);
+            setParameter("ocurlim",(0-e.value),true,true);
         }, 1000);
     });
     slider_adjustment("ocurlim",[800,400,200,100]);
@@ -242,7 +242,7 @@ function buildSimpleParameters(json) {
         value: json.brknom.value,
         focus: false
     }).on('slideStop', function (e) {
-        sendCommand("brknom",e.value,true,true);
+        setParameter("brknom",e.value,true,true);
     });
 };
 
@@ -333,14 +333,14 @@ function boostTuning_start() {
 
     alertify.confirm("Safety Check", "Please be aware that the current you entered will actually be run through motor and power stage\nDo you understand the consequences of that [y/N]?\n", function () {
         
-        sendCommand("fweak",400);
-        sendCommand("boost",0);
+        setParameter("fweak",400);
+        setParameter("boost",0);
 
         alertify.confirm("Safety Check", "Now put the car into the highest gear and pull the handbrake, torque will be put on the motor!!\n", function () {
             var notify = $.notify({ message: "Current: " + current }, { type: "danger" });
 
-            sendCommand("fslipspnt",1.5);
-            sendCommand("ampnom",100);
+            setParameter("fslipspnt",1.5);
+            setParameter("ampnom",100);
 
             var current = 0;
             var boost = 900;
@@ -348,14 +348,14 @@ function boostTuning_start() {
             
             while (current < ampMax && i < 1000) {
                 boost = boost + max((ampMax - current) * 10, 50);
-                sendCommand("boost",boost);
+                setParameter("boost",boost);
                 sleep(500);
                 current = getJSONAverageFloatValue("il1rms");
                 notify.update({ message: "Current: " + current, type: "success" });
                 sleep(100);
                 i++;
             }
-            sendCommand("ampnom","0");
+            setParameter("ampnom","0");
             $.notify({ message: "A boost value of " + boost + " results in your required current" }, { type: "success" });
 
         }, function () {});
@@ -403,9 +403,9 @@ function fweakTuning(wait) {
             var fmax = getJSONFloatValue("fmax");
             var ampnom = getJSONFloatValue("ampnom");
 
-            sendCommand("fslipspnt",0);
-            sendCommand("fmax",1000);
-            sendCommand("ampnom",10);
+            setParameter("fslipspnt",0);
+            setParameter("fmax",1000);
+            setParameter("ampnom",10);
 
             var fweak = 200;
             var notify = $.notify({ message: "Starting fweak " + fweak }, { type: "success" });
@@ -415,16 +415,16 @@ function fweakTuning(wait) {
                 var i2 = fweak;
                 var i1 = i2 / 2;
 
-                sendCommand("fweak",fweak);
+                setParameter("fweak",fweak);
                 notify.update({ message: "Trying fweak " + fweak, type: "warning"});
-                sendCommand("fslipspnt",i1);
+                setParameter("fslipspnt",i1);
                 sleep(1000);
                 var currentStart = getJSONAverageFloatValue("il2rms");
                 sleep(1000);
-                sendCommand("fslipspnt",i2);
+                setParameter("fslipspnt",i2);
                 sleep(1000);
                 var currentEnd = getJSONAverageFloatValue("il2rms");
-                sendCommand("fslipspnt","0");
+                setParameter("fslipspnt","0");
 
                 var ratio = currentEnd / currentStart;
                 notify.update({ message: ratio + " " + currentStart + " " + currentEnd, type: "success" });
@@ -444,8 +444,8 @@ function fweakTuning(wait) {
                 i++;
             }
             //set values to original
-            sendCommand("fmax",fmax);
-            sendCommand("ampnom",ampnom);
+            setParameter("fmax",fmax);
+            setParameter("ampnom",ampnom);
         }
     }
 };
@@ -459,16 +459,16 @@ function polePairTest(wait) {
         }else{
             alertify.confirm("Safety Check", "Mark your motor shaft with something to observe when it finishes a rotation\nWill now slowly spin the shaft", function () {
 
-                sendCommand("ampnom",50);
-                sendCommand("fslipspnt",2);
+                setParameter("ampnom",50);
+                setParameter("fslipspnt",2);
 
                 setTimeout(function() {
 
-                    sendCommand("fslipspnt",0);
+                    setParameter("fslipspnt",0);
                     alertify.prompt("Input", "How many turns did the shaft complete in 10s? (Round up)", "", function (event, turns) {
                         var polepairs = Math.floor(20 / turns);
                         $.notify({ message: "The motor has " + polepairs + " pole pairs" }, { type: "success" });
-                        sendCommand("polepairs",polepairs);
+                        setParameter("polepairs",polepairs);
                         return polepairs;
                     }, function () {});
                 }, 10000);
@@ -487,8 +487,8 @@ function numimpTest(wait) {
         }else{
             alertify.confirm("Safety Check", "We will now spin the motor shaft @60Hz and try to determine how many pulses per rotation we get\n", function () {
  
-                sendCommand("numimp",8);
-                sendCommand("ampnom",70);
+                setParameter("numimp",8);
+                setParameter("ampnom",70);
 
                 var polepairs = getJSONFloatValue("polepairs");
                 var expectedSpeed = 59.9 * 60 / polepairs;
@@ -496,10 +496,10 @@ function numimpTest(wait) {
 
                 setTimeout(function() {
                     var speed = getJSONAverageFloatValue("speed");
-                    sendCommand("ampnom",0);
+                    setParameter("ampnom",0);
                     var numimp = round(speed / expectedSpeed * 8);
                     $.notify({ message: 'Your encoder seems to have ' + numimp + ' pulses per rotation' }, { type: 'success' });
-                    sendCommand("numimp",numimp);
+                    setParameter("numimp",numimp);
                 }, 2000);
             }, function () {});
         }
@@ -509,7 +509,7 @@ function numimpTest(wait) {
 function rampFrequency(_from, to) {
     
     for (var framp = _from; framp < to; framp++) {
-        sendCommand("fslipspnt",framp);
+        setParameter("fslipspnt",framp);
     }
 };
 

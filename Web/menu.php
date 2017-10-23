@@ -22,6 +22,7 @@
                             <a class="dropdown-item" href="#" onclick="downloadSnapshot();"><i class="glyphicon glyphicon-download"></i>  Download</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="/simple.php"><i class="glyphicon glyphicon-random"></i> Auto Tuning</a>
+                            <a class="dropdown-item" href="/can.php"><i class="glyphicon glyphicon-list-alt"></i> CAN Mapping</a>
                         </div>
                     </li>
                 </ul>

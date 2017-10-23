@@ -99,7 +99,7 @@ function buildStatus(sync) {
                     opStatus.append(img);
                 }
                 //========================
-                var errors = getErrors();
+                var errors = sendCommand("errors");
                 if (errors.length > 1 && errors.indexOf("No Errors") === -1) {
 
                     img = $("<img>", { class: "svg-inject", src: "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + errors + "</h6>" });
@@ -125,16 +125,4 @@ function buildStatus(sync) {
 		clearTimeout(statusRefreshTimer);
         buildStatus(true); //ajax syncro mode
     }, 12000);
-};
-
-function getErrors() {
-    var e = ""
-    $.ajax("/serial.php?command=errors", {
-        async: false,
-        success: function success(data) {
-            e = data;
-        }
-    });
-    //console.log(e);
-    return e;
 };

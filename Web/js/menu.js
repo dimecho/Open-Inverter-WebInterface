@@ -53,17 +53,17 @@ $(document).ready(function () {
                     }else if(closeEvent.index === 3) {
                         $.notify({ message: "Experimental Area" }, { type: 'danger' });
                         startInverter(3);
-                        sendCommand("chargemode", 3, false, true);
+                        setParameter("chargemode", 3, false, true);
                     }else if(closeEvent.index === 4) {
                         $.notify({ message: "Experimental Area" }, { type: 'danger' });
                         startInverter(4);
-                        sendCommand("chargemode", 4, false, true);
+                        setParameter("chargemode", 4, false, true);
                     }
 
                     if(closeEvent.index === 2 || closeEvent.index === 3) {
                         if(getJSONFloatValue("chargecur") === 0) {
                             alertify.prompt("Current Limit", "Enter Charge Current Limit (A)", "", function (event, input) {
-                                sendCommand("chargecur", input, true, true);
+                                setParameter("chargecur", input, true, true);
                             }, function () {});
                         }
                     }
@@ -87,7 +87,7 @@ $(document).ready(function () {
                 //console.log(value);
                 clearTimeout(knobTimer);
                 knobTimer = setTimeout(function () {
-                    sendCommand("fslipspnt", value);
+                    setParameter("fslipspnt", value);
                 }, 80);
                 knobValue = value;
             } else {
@@ -117,13 +117,36 @@ function checkSoftware(app){
     });
 };
 
-function sendCommand(cmd, value, save, notify) {
+function setParameter(cmd, value, save, notify) {
 
-    $.ajax("/serial.php?pk=1&name=" + cmd + "&value=" + value, { async: false });
+    var e = "";
+
+    $.ajax("/serial.php?pk=1&name=" + cmd + "&value=" + value, {
+        async: false,
+        success: function success(data) {
+            e = data;
+        }
+    });
+
     if(save)
         $.ajax("/serial.php?command=save"); //don't forget to save
     if(notify)
         $.notify({ message: cmd + "=" + value}, { type: "success" });
+
+    //console.log(e);
+    return e;
+};
+
+function sendCommand(cmd) {
+    var e = ""
+    $.ajax("/serial.php?command=" + cmd, {
+        async: false,
+        success: function success(data) {
+            e = data;
+        }
+    });
+    //console.log(e);
+    return e;
 };
 
 function downloadSnapshot() {
@@ -215,82 +238,75 @@ function getJSONAverageFloatValue(value,c) {
 
 function startInverter(mode) {
 
-    $.ajax("/serial.php?command=start " + mode, {
-        async: false,
-        success: function success(data) {
-            //console.log(data);
-            if (data.indexOf("started") != -1) {
-                $.notify({ message: "Inverter started" }, { type: "success" });
-                if (mode === 2 || mode === 5) {
-                    $("#potentiometer").show();
-                    $(".collapse").collapse('show');
-                }
-            } else {
-                $.notify({
-                    icon: "glyphicon glyphicon-warning-sign",
-                    title: "Error",
-                    message: data
-                }, {
-                    type: "danger"
-                });
-            }
+    var data = sendCommand("start " + mode);
+    //console.log(data);
+
+    if (data.indexOf("started") != -1) {
+        $.notify({ message: "Inverter started" }, { type: "success" });
+        if (mode === 2 || mode === 5) {
+            $("#potentiometer").show();
+            $(".collapse").collapse('show');
         }
-    });
+    } else {
+        $.notify({
+            icon: "glyphicon glyphicon-warning-sign",
+            title: "Error",
+            message: data
+        }, {
+            type: "danger"
+        });
+    }
 };
 
 function stopInverter() {
 
-    $.ajax("/serial.php?command=stop", {
-        async: false,
-        success: function success(data) {
-            //console.log(data);
-            if (data.indexOf("halted") != -1) {
-                $.notify({ message: "Inverter Stopped"}, { type: "danger" });
-                sendCommand("chargemode", "0", false, false);
-            } else {
-                $.notify({
-                    icon: "glyphicon glyphicon-warning-sign",
-                    title: "Error",
-                    message: data
-                }, {
-                    type: "danger"
-                });
-            }
-            $(".collapse").collapse();
+    var data = sendCommand("stop");
+    //console.log(data);
 
-            setTimeout(function () {
-                $("#potentiometer").hide();
-                //location.reload();
-            }, 1000);
-        }
-    });
+    if (data.indexOf("halted") != -1) {
+        $.notify({ message: "Inverter Stopped"}, { type: "danger" });
+        setParameter("chargemode", "0", false, false);
+    } else {
+        $.notify({
+            icon: "glyphicon glyphicon-warning-sign",
+            title: "Error",
+            message: data
+        }, {
+            type: "danger"
+        });
+    }
+    $(".collapse").collapse();
+
+    setTimeout(function () {
+        $("#potentiometer").hide();
+        //location.reload();
+    }, 1000);
 };
 
 function setDefaults() {
 
-    alertify.confirm('', 'This reset all settings back to default.', function () {
-        $.ajax("/serial.php?command=defaults", {
-            async: false,
-            success: function success(data) {
-                console.log(data);
+    alertify.confirm('', 'Reset all settings back to default.', function () {
 
-                if (data.indexOf("Defaults loaded") != -1) {
-                    $.notify({ message: "Inverter reset to Default" }, { type: "success" });
-                } else {
-                    $.notify({
-                        icon: "glyphicon glyphicon-warning-sign",
-                        title: "Error",
-                        message: data
-                    }, {
-                        type: "danger"
-                    });
-                }
+        var data = sendCommand("defaults");
+        //console.log(data);
 
-                setTimeout(function () {
-                    window.location.href = "/index.php";
-                }, 2000);
-            }
-        });
+        if (data.indexOf("Defaults loaded") != -1) {
+            sendCommand("can clear");
+            $.notify({ message: "Inverter reset to Default" }, { type: "success" });
+        } else {
+            $.notify({
+                icon: "glyphicon glyphicon-warning-sign",
+                title: "Error",
+                message: data
+            }, {
+                type: "danger"
+            });
+        }
+
+        setTimeout(function () {
+            window.location.href = "/index.php";
+        }, 2000);
+
     }, function () {});
 };
 
