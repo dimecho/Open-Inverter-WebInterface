@@ -14,13 +14,13 @@ $(document).ready(function () {
                     },{
                         text: '(2) Manual Run',
                         className: alertify.defaults.theme.ok
-                    }, {
+                    },{
                         text: '(5) Sine Wave',
                         className: alertify.defaults.theme.ok
-                    }, {
+                    },{
                         text: '(3) Boost',
                         className: alertify.defaults.theme.cancel
-                    }, {
+                    },{
                         text: '(4) Buck',
                         className: alertify.defaults.theme.cancel
                     }],
@@ -166,7 +166,7 @@ function openExternalApp(app) {
     } else if (app === "openocd") {
         window.location.href = "/bootloader.php";
     } else if (app === "source") {
-        window.location.href = "/compile.php";
+        window.location.href = "/sourcecode.php";
     } else if (app === "attiny") {
         window.location.href = "/attiny.php";
     } else {
@@ -194,11 +194,7 @@ function loadJSON() {
                 try {
                     json = JSON.parse(data);
                 } catch(e) {
-                    $.notify({
-                        message: e + ":" + data
-                    }, {
-                        type: 'danger'
-                    });
+                    $.notify({ message: e + ":" + data }, { type: 'danger' });
                 }
             }
         },

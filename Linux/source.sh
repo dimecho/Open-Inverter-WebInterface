@@ -39,9 +39,9 @@ else
     cd "$HOME/Documents/tumanako-inverter-fw-motorControl-master"
     cd ./src/sine
     make clean
-    make
-    mv stm32_sineHWCONFIG_REV1.bin ../../
-    mv stm32_sineHWCONFIG_REV1.hex ../../
+    make "$1"
+    mv *.bin ../../
+    mv *.hex ../../
 
     #--------- ATtiny13 --------------
     export PATH="$PATH:/usr/local/etc/gcc_arm/avr/bin/"

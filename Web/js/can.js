@@ -3,13 +3,42 @@ var saveTimer;
 $(document).ready(function () {
 
     buildCANParameters();
-
-    $.notify({ message: 'Experimental Area' }, { type: 'danger' });
 });
 
 function buildCANParameters() {
-    //TODO
     
+    var json = loadJSON();
+    
+    if(json)
+    {
+        var menu = $("#parameters").empty();
+        var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("CAN ID")));
+        var tbody = $("<tbody>");
+        menu.append(thead);
+        menu.append(tbody);
+
+        for(var key in json)
+        {
+            //console.log(key);
+
+            var a = $("<span>").append(json[key].value);
+            var canid = $("<input>", { type:"text", value:"" });
+            var tr = $("<tr>");
+
+            tr.attr("data-toggle", "tooltip");
+            tr.attr("data-html", true);
+            tr.attr("title", "<h6>" + json[key].unit.replace("","°") + "</h6>");
+
+            var td1 = $("<td>").append(key);
+            var td2 = $("<td>").append(a);
+            var td3 = $("<td>").append(canid);
+   
+            tbody.append(tr.append(td1).append(td2).append(td3));
+        };
+        menu.show();
+
+        $('[data-toggle="tooltip"]').tooltip();
+    }
 };
 
 function setCANDefaults() {

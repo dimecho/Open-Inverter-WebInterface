@@ -24,7 +24,7 @@
 
         }else if($_GET["app"] == "gcc")
         {
-            header("Location:/compile.php");
+            header("Location:/sourcecode.php");
         }else if($_GET["app"] == "arm")
         {
             $command  = "arm";
@@ -35,7 +35,7 @@
         }else if($_GET["app"] == "source")
         {
             $command = runCommand("source","");
-            header("Location:/compile.php");
+            header("Location:/sourcecode.php");
         }else if($_GET["app"] == "arduino")
         {
             $args = $_SERVER["DOCUMENT_ROOT"]. "/dashboard/arduino/lcd_display/lcd_display.ino";

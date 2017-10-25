@@ -19,6 +19,7 @@
 <link rel="stylesheet" type="text/css" href="/css/fancybox.css" media="screen"/>
 
 <script type="text/javascript">
+
     alertify.defaults.transition = "slide";
     alertify.defaults.theme.ok = "btn btn-primary";
     alertify.defaults.theme.cancel = "btn btn-danger";

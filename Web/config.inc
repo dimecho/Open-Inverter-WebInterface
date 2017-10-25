@@ -24,18 +24,18 @@
                 exec("stty -f " .$com. " clocal -crtscts -ixon -ixoff");
             }
 
-            $uart = fopen($com, "r+");
+            $uart = fopen($com, "rb+");
 
             if($uart) {
 
                 //Unknown command sequence
                 //--------------------
-                /*
-                fwrite($uart, "hello");
+                fwrite($uart, "hello\r");
+                
                 while($read .= fread($uart, 1))
-                    if(strpos($read,"\n") !== false)
+                    if(strpos($read,"\r") !== false)
                         break;
-                */
+                
                 fclose($uart);
                 //--------------------
 

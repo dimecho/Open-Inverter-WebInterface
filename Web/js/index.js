@@ -6,6 +6,7 @@ $(document).ready(function()
         mode: 'popup',
         pk: '1',
         showbuttons: true,
+        savenochange: false,
         ajaxOptions: {
             type: 'get',
             async: false,
@@ -16,47 +17,57 @@ $(document).ready(function()
 
 			if(getJSONFloatValue('opmode') > 0 && this.id != 'fslipspnt'){
 				stopInverter();
-				return 'Inverter must not be in operating mode.';
+                $.notify({ message: 'Inverter must not be in operating mode.' }, { type: 'danger' });
+				return '-';
 			}
 
             if (isInt(parseInt(value)) == false && isFloat(parseFloat(value)) == false){
-                return 'Value must be a number';
+                $.notify({ message: 'Value must be a number' }, { type: 'danger' });
+                return '-';
             }
 
             if(this.id == 'fmin'){
                 if(parseFloat(value) > parseFloat($('#fslipmin').text()))
                 {
-                    return 'Should be set below fslipmin';
+                    $.notify({ message: 'Should be set below fslipmin' }, { type: 'danger' });
+                    return '-';
                 }
             }else  if(this.id == 'polepairs'){
                 if ($.inArray(parseInt(value), [ 1, 2, 3, 4, 5]) == -1)
                 {
-                    return 'Pole pairs = half # of motor poles';
+                    $.notify({ message: 'Pole pairs = half # of motor poles' }, { type: 'danger' });
+                    return '-';
                 }
             }else  if(this.id == 'udcmin'){
                 if(parseInt(value) > parseInt($("#udcmax").text()))
                 {
-                    return 'Should be below maximum voltage (udcmax)';
+                    $.notify({ message: 'Should be below maximum voltage (udcmax)' }, { type: 'danger' });
+                    return '-';
                 }
             }else  if(this.id == 'udcmax'){
                 if(parseInt(value) > parseInt($("#udclim").text())){
-                    return 'Should be lower than cut-off voltage (udclim)';
+                    $.notify({ message: 'Should be lower than cut-off voltage (udclim)' }, { type: 'danger' });
+                    return '-';
                 }
             }else  if(this.id == 'udclim'){
                 if(parseInt(value) <= parseInt($("#udcmax").text())){
-                    return 'Should be above maximum voltage (udcmax)';
+                    $.notify({ message: 'Should be above maximum voltage (udcmax)' }, { type: 'danger' });
+                    return '-';
                 }
             }else if(this.id == 'udcsw'){
                 if(parseInt(value) > parseInt($("#udcmax").text())){
-                    return 'Should be below maximum voltage (udcmax)';
+                    $.notify({ message: 'Should be below maximum voltage (udcmax)' }, { type: 'danger' });
+                    return '-';
                 }
 			}else if(this.id == 'udcsw'){
                 if(parseInt(value) > parseInt($("#udcmin").text())){
-                    return 'Should be below minimum voltage (udcmin)';
+                    $.notify({ message: 'Should be below minimum voltage (udcmin)' }, { type: 'danger' });
+                    return '-';
                 }
 			}else if(this.id == 'fslipmin'){
 				if(parseFloat(value) <= parseFloat($('#fmin').text())){
-					return 'Should be above starting frequency (fmin)';
+                    $.notify({ message: 'Should be above starting frequency (fmin)' }, { type: 'danger' });
+					return '-';
 				}
             /*}else  if(this.id == 'fslipmax'){
                 if(value / 5 > $("#fslipmin").text())
@@ -193,15 +204,16 @@ function buildParameters()
     
     if(json)
     {
+        var legend = $("#legend").empty();
 		var menu = $("#parameters").empty();
-		var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("Type")));
+		var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>")).append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("Type")));
 		var tbody = $("<tbody>");
 		menu.append(thead);
 		menu.append(tbody);
 
 		for(var key in json)
 		{
-			//console.log(key);
+			console.log(key);
 
 			var tooltip = "";
 			var x = parameters.indexOf(key);
@@ -211,17 +223,74 @@ function buildParameters()
 			var a = $("<a>", { href:"#", "id":key, "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":json[key].unit + " ("+ json[key].default + ")"}).append(json[key].value);
             var tr = $("<tr>");
 
+            var category_icon = $("<i>", { class:"text-muted glyphicon" });
+
+            if(json[key].category)
+            {
+                var category = json[key].category;
+                
+                category_icon.attr("data-toggle", "tooltip");
+                category_icon.attr("data-html", true);
+                category_icon.attr("title", "<h6>" + category + "</h6>");
+
+                if(category == "Motor")
+                {
+                    category_icon.addClass("glyphicon-cd");
+                }
+                else if(category == "Inverter")
+                {
+                    category_icon.addClass("glyphicon-compressed");
+                }
+                else if(category == "Charger")
+                {
+                    category_icon.addClass("glyphicon-flash");
+                }
+                else if(category == "Throttle")
+                {
+                    category_icon.addClass("glyphicon-off");
+                }
+                else if(category == "Regen")
+                {
+                    category_icon.addClass("glyphicon-retweet");
+                }
+                else if(category == "Automation")
+                {
+                    category_icon.addClass("glyphicon-cog");
+                }
+                else if(category == "Derating")
+                {
+                    category_icon.addClass("glyphicon-magnet");
+                }
+                else if(category == "Contactor Control")
+                {
+                    category_icon.addClass("glyphicon-download-alt");
+                }
+                else if(category == "Aux PWM")
+                {
+                    category_icon.addClass("glyphicon-barcode");
+                }
+                else if(category == "Testing")
+                {
+                    category_icon.addClass("glyphicon-dashboard");
+                }else{
+                    category_icon.addClass("glyphicon-info-sign");
+                }
+            }
+            
+            var td1 = $("<td>").append(category_icon);
+			var td2 = $("<td>").append(key);
+			var td3 = $("<td>").append(a);
+			var td4 = $("<td>").append(json[key].unit.replace("","°"));
+
             if(tooltip != "")
             {
-                tr.attr("data-toggle", "tooltip");
-                tr.attr("data-html", true);
-                tr.attr("title", "<h6>" + tooltip + "</h6>");
+                td2.attr("data-toggle", "tooltip");
+                td2.attr("data-html", true);
+                td2.attr("title", "<h6>" + tooltip + "</h6>");
             }
-			var td1 = $("<td>").append(key);
-			var td2 = $("<td>").append(a);
-			var td3 = $("<td>").append(json[key].unit.replace("","°"));
-   
-			tbody.append(tr.append(td1).append(td2).append(td3));
+
+            tr.append(td1).append(td2).append(td3).append(td4)
+			tbody.append(tr);
 		};
 		menu.show();
 		
