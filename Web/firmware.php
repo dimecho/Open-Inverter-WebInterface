@@ -164,7 +164,7 @@
                                     <div class="progress progress-striped active">
                                         <div class="progress-bar" style="width:1%" id="progressBar"></div>
                                     </div>
-                                    <span class="label label-lg label-warning ">Tip: If Olimex is bricked, try pressing "reset" button while flashing</span>
+                                    <span class="badge badge-lg badge-warning ">Tip: If Olimex is bricked, try pressing "reset" button while flashing</span>
                                     <br/><br/>
                                     <div id="output"></div>
                                 </td>

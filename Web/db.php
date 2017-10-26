@@ -4,24 +4,7 @@
         <?php
             include "header.php";
         ?>
-        <script>
-            $(document).on('click', '.browse', function(){
-                $(this).attr("disabled", true);
-                $.ajax("/snapshot.php?db=" + $("#motor").val(),{
-                    async: false,
-                    success: function(data){
-                        console.log(data);
-                        window.location.href = "/index.php";
-                    }
-                });
-                $(this).removeAttr("disabled");
-            });
-
-            function setMotorImage(){
-                var s = $("#motor").val().split("@");
-                $("#motorimage").attr("src", "/db/img/" + s[0] + ".jpg");
-            }
-        </script>
+        <script type="text/javascript" src="/js/db.js"></script>
     </head>
     <body>
         <div class="container">
@@ -39,31 +22,27 @@
                                         <br/>
                                         <div class="input-group" style="width:60%">
                                             <span class = "input-group-addon" style="width:90%">
-                                                <select class="form-control" onchange="setMotorImage()" id="motor" style="width:100%;" size="1">
-                                                <?php
-                                                    $files = glob(getcwd() ."/db/*.txt");
-                                                    foreach($files as $file) {
-                                                        echo "<option value=\"" .basename($file, ".txt") ."\">" .basename($file, ".txt") ."</option>";
-                                                    }
-                                                ?>
-                                                </select>
+                                                <select class="form-control" onchange="setMotorImage()" id="motor" style="width:100%;" size="1"></select>
                                             </span>
                                             <span class = "input-group-addon">
-                                                <button class="browse btn btn-primary" type="button"><i class="icon-list-alt"></i> Set Motor</button>
+                                                <button class="browse btn btn-primary" type="button"><i class="icon-list-alt"></i> Select Motor</button>
                                             </span>
                                         </div>
                                         <br/><br/>
-                                        <div>
-                                            <br/>
-                                            <?php
-                                                $files = glob(getcwd() ."/db/*.txt");
-                                                foreach($files as $file) {
-                                                    $s = explode("@", basename($file, ".txt"));
-                                                    echo "<img src=\"/db/img/" .$s[0].".jpg\" id=\"motorimage\" class=\"img-rounded\" >";
-                                                    break;
-                                                }
-                                            ?>
-                                            <br/><br/>
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-lg-4">
+                                                    <img src="" id="motorimage" class="img-rounded" width="100%">
+                                                </div>
+                                                <div class="col-lg-8">
+                                                    <div class="input-group align-text-top">
+                                                        <span class="input-group-addon" style="width:100%">
+                                                            <ul class="text-left" id="motorinfo"></ul>
+                                                        </span>
+                                                        <span class="input-group-addon" style="width:100%" id="motortune"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </center>
                                 </td>

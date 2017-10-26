@@ -1,4 +1,4 @@
-var saveTimer;
+var canMap;
 
 $(document).ready(function () {
 
@@ -7,37 +7,79 @@ $(document).ready(function () {
 
 function buildCANParameters() {
     
-    var json = loadJSON();
+    canMap = loadJSON();
     
-    if(json)
+    if(canMap)
     {
         var menu = $("#parameters").empty();
-        var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("CAN ID")));
+        var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("CAN Start Bit")));
         var tbody = $("<tbody>");
         menu.append(thead);
         menu.append(tbody);
 
-        for(var key in json)
+        for(var key in canMap)
         {
             //console.log(key);
 
-            var a = $("<span>").append(json[key].value);
-            var canid = $("<input>", { type:"text", value:"" });
+            var a = $("<span>").append(canMap[key].value);
+            var canbit = $("<input>", { type:"text", value:"", id:key });
             var tr = $("<tr>");
 
             tr.attr("data-toggle", "tooltip");
             tr.attr("data-html", true);
-            tr.attr("title", "<h6>" + json[key].unit.replace("","°") + "</h6>");
+            tr.attr("title", "<h6>" + canMap[key].unit.replace("","°") + "</h6>");
 
             var td1 = $("<td>").append(key);
             var td2 = $("<td>").append(a);
-            var td3 = $("<td>").append(canid);
+            var td3 = $("<td>").append(canbit);
    
             tbody.append(tr.append(td1).append(td2).append(td3));
         };
         menu.show();
 
         $('[data-toggle="tooltip"]').tooltip();
+    }
+};
+
+function saveCANMapping() {
+
+    if(canMap)
+    {
+        var i = 0;
+        var n = 0;
+
+        for(var key in canMap)
+        {
+            if($("#"+key).val() != "")
+                n++;
+        }
+
+        if(n <= 8)
+        {
+            for(var key in canMap)
+            {
+                var canpos = $("#"+key).val();
+
+                if(canpos != "")
+                {
+                    canpos = parseInt(canpos);
+
+                    if (isInt(canpos) == false){
+                        $.notify({ message: "[" + key + "] CAN bit offset must be a number" }, { type: "danger" });
+                        return;
+                    }
+
+                    //TODO check for conflict offset
+
+                    var canbits = canMap[key].value.toString().length;
+                    var cangain = canMap[key].value.toString().length;
+                    $.notify({ message: "can txt " + key + " " + i + " " + canpos + " " + canbits + " " + cangain }, { type: "success" });
+                }
+                i++;
+            }
+        }else{
+            $.notify({ message: "A maximum of 8 messages can be defined" }, { type: "danger" });
+        }
     }
 };
 

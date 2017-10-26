@@ -124,14 +124,6 @@ $(document).ready(function()
     }
 });
 
-function isInt(n){
-    return Number(n) === n && n % 1 === 0;
-};
-
-function isFloat(n){
-    return Number(n) === n && n % 1 !== 0;
-};
-
 function basicChecks(json)
 {
 	var fweak = json["fweak"].value;
@@ -289,7 +281,7 @@ function buildParameters()
                 td2.attr("title", "<h6>" + tooltip + "</h6>");
             }
 
-            tr.append(td1).append(td2).append(td3).append(td4)
+            tr.append(td1).append(td2).append(td3).append(td4);
 			tbody.append(tr);
 		};
 		menu.show();

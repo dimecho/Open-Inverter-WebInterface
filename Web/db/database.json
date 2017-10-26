@@ -1,0 +1,61 @@
+{
+    "motors": [{
+        "model": "AC-35",
+        "manufacturer": "HPEVS",
+        "voltage": 72,
+        "amperage": 500,
+        "image": "img/AC-35.jpg",
+        "tune": [{
+            "file": "AC-35.txt"
+        }]
+    },{
+        "model": "P90",
+        "manufacturer": "Enova",
+        "voltage": 72,
+        "amperage": 500,
+        "image": "img/Enova_P90.jpg",
+        "tune": [{
+            "file": "Enova_P90.txt"
+        }]
+    },{
+        "model": "ZPM112M4",
+        "manufacturer": "Stoja",
+        "voltage": 190,
+        "amperage": 500,
+        "image": "img/Stoja_ZPM112M4.jpg",
+        "tune": [{
+            "file": "Stoja_ZPM112M4.txt"
+        }]
+    },{
+        "model": "1PV5135",
+        "manufacturer": "Siemens",
+        "voltage": 600,
+        "amperage": 400,
+        "image": "img/Siemens_1PV5135.jpg",
+        "tune": [{
+            "file": "Siemens_1PV5135.txt"
+        },{
+            "file": "Siemens_1PV5135-2.txt"
+        }]
+    },{
+        "model": "BY152FGF2A4",
+        "manufacturer": "Toshiba",
+        "voltage": 480,
+        "amperage": 3,
+        "image": "img/Toshiba_BY152FGF2A4.jpg",
+        "tune": [{
+            "file": "Toshiba_BY152FGF2A4.txt"
+        }]
+    },{
+        "model": "Model S (Front)",
+        "manufacturer": "Tesla",
+        "voltage": 400,
+        "amperage": 300,
+        "image": "img/Tesla_ModelS_Front.jpg",
+        "tune": [{
+            "file": "Tesla_ModelS_Front.txt"
+        },{
+            "file": "Tesla_ModelS_Front-2.txt"
+        }]
+    }]
+}
