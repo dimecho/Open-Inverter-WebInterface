@@ -13,3 +13,4 @@ Modifying encoder for high impedance low-pass filtered digital input.<br/>Remove
 Which phase connects + charging line for boost charger? Use outside phases and do not connect to the middle phase.
 encflt may cause delays in the control loop. Setting it to 0 disables filtering entirely.
 Some STM32 pins are 5V tolerant and all others can take 5V with a simple 10k series resistor.
+CAN gain of 10 (i.e. 100mV resolution)
