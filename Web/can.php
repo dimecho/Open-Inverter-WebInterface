@@ -21,7 +21,6 @@
                                         <ul class="text-left">
                                             <li>A maximum of 8 messages can be defined</li>
                                             <li>Per message a maximum of 8 values can be mapped</li>
-                                            <li>A value can not span across the 32-bit boundary, it must be fully contained in the first<br/> or second 32 bits of the message. E.g. "can tx udc 123 16 32 10" is not allowed</li>
                                             <li>A value can span maximum 32 bits</li>
                                             <li><a href="http://johanneshuebner.com/quickcms/index.html%3Fen_can-communication,31.html" target="_blank">More Info</a></li>
                                         </ul>

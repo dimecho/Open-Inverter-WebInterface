@@ -12,42 +12,64 @@ function buildCANParameters() {
     if(canMap)
     {
         var menu = $("#parameters").empty();
-        var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("CAN COM")).append($("<th>").append("CAN Offset Bit")).append($("<th>").append("CAN Gain (10mV)")));
+        var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>").append("Name")).append($("<th>").append("TX/RX")).append($("<th>").append("RX ID")).append($("<th>").append("TX ID")).append($("<th>").append("Offset Bit")).append($("<th>").append("Priority (Gain 10mV)")));
         var tbody = $("<tbody>");
         menu.append(thead);
         menu.append(tbody);
 
+        var i = 0;
+
         for(var key in canMap)
         {
             //console.log(key);
-
-            var a = $("<span>").append(canMap[key].value);
             var cantx = $("<button>", { class:"btn btn-secondary btn-sm mx-1", id:key + "-cantx" }).append("TX");
             var canrx = $("<button>", { class:"btn btn-secondary btn-sm mx-1", id:key + "-canrx" }).append("RX");
-            var canpos = $("<input>", { type:"text", value:"", id:key });
-            var cangain = $("<input>", { type:"text", value:"", id:key + "-cangain" });
+            var canid = $("<input>", { class:"text-center", type:"text", value:"", id:key + "-cantxid", disabled:"disabled" }).css({width:120});
+            var canpos = $("<input>", { class:"text-center", type:"text", value:"0", id:key }).css({width:120});
+
+            var div = $("<div>", { class:"input-group" }); //.css({width:"100%"});
+            var cangain_sub = $("<button>", { class:"input-group-addon btn btn-secondary btn-sm" }).append("-");
+            var cangain = $("<input>", { class:"form-control text-center", type:"text", value:"1", id:key + "-cangain" }).css({width:40});
+            var cangain_add = $("<button>", { class:"input-group-addon btn btn-secondary btn-sm" }).append("+");
+            div.append(cangain_sub).append(cangain).append(cangain_add);
+           
             var tr = $("<tr>");
-
-            a.attr("data-toggle", "tooltip");
-            a.attr("data-html", true);
-            a.attr("title", "<h6>" + canMap[key].unit.replace("","°") + "</h6>");
-
             var td1 = $("<td>").append(key);
-            var td2 = $("<td>").append(a);
-            var td3 = $("<td>").append(cantx).append(canrx);
-            var td4 = $("<td>").append(canpos);
-            var td5 = $("<td>").append(cangain);
-            
-            tbody.append(tr.append(td1).append(td2).append(td3).append(td4).append(td5));
+            var td2 = $("<td>").append(cantx).append(canrx);
+            var td3 = $("<td>").append(i);
+            var td4 = $("<td>").append(canid);
+            var td5 = $("<td>").append(canpos);
+            var td6 = $("<td>").append(div);
+            tbody.append(tr.append(td1).append(td2).append(td3).append(td4).append(td5).append(td6));
+
+            cangain_sub.click(function(){
+                //console.log($(this).parent().find("input").val());
+                var value = parseInt($(this).parent().find("input").val());
+                if(value > 1){
+                    value--;
+                    $(this).parent().find("input").val(value);
+                }
+            });
+
+            cangain_add.click(function(){
+                //console.log($(this).parent().find("input").val());
+                var value = parseInt($(this).parent().find("input").val());
+                if(value < 10){
+                    value++;
+                    $(this).parent().find("input").val(value);
+                }
+            });
 
             cantx.click(function(){
                 //console.log(this.id);
                 if ($(this).hasClass("btn-secondary")) {
                     $(this).removeClass("btn-secondary");
                     $(this).addClass("btn-primary");
+                    $("#" + this.id + "id").prop('disabled', false);
                 }else{
                     $(this).removeClass("btn-primary");
                     $(this).addClass("btn-secondary");
+                    $("#" + this.id + "id").prop('disabled', true);
                 }
             });
 
@@ -61,6 +83,8 @@ function buildCANParameters() {
                     $(this).addClass("btn-secondary");
                 }
             });
+
+            i++;
         };
         menu.show();
 
@@ -77,7 +101,10 @@ function saveCANMapping() {
 
         for(var key in canMap)
         {
-            if($("#"+key).val() != "")
+            if ($("#"+key+"-cantx").hasClass("btn-primary"))
+                n++;
+
+            if ($("#"+key+"-canrx").hasClass("btn-primary"))
                 n++;
         }
 
@@ -85,12 +112,11 @@ function saveCANMapping() {
         {
             for(var key in canMap)
             {
-                var canpos = $("#"+key).val();
-                var cangain = $("#"+key+"-cangain").val();
-
-                if(canpos != "")
+                if($("#"+key+"-cantx").hasClass("btn-primary") || $("#"+key+"-canrx").hasClass("btn-primary"))
                 {
-                    canpos = parseInt(canpos);
+                    var canpos = parseInt($("#"+key).val());
+                    var canid = $("#"+key+"-cantxid").val();
+                    var cangain = $("#"+key+"-cangain").val();
 
                     if (isInt(canpos) == false){
                         $.notify({ message: "[" + key + "] CAN bit offset must be a number" }, { type: "danger" });
@@ -118,7 +144,12 @@ function saveCANMapping() {
                     }
 
                     if ($("#"+key+"-cantx").hasClass("btn-primary")) {
-                        cancommand.push("can tx " + key + " " + i + " " + canpos + " " + canbits + " " + cangain); 
+
+                        if(canid == ""){
+                            $.notify({ message: "[" + key + "] CAN needs Transmit ID" }, { type: "danger" });
+                            return;
+                        }
+                        cancommand.push("can tx " + key + " " + canid + " " + canpos + " " + canbits + " " + cangain); 
                     }
 
                     if ($("#"+key+"-canrx").hasClass("btn-primary")) {
