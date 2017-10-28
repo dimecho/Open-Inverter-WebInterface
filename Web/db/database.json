@@ -11,8 +11,8 @@
     },{
         "model": "P90",
         "manufacturer": "Enova",
-        "voltage": 72,
-        "amperage": 500,
+        "voltage": 360,
+        "amperage": 250,
         "image": "img/Enova_P90.jpg",
         "tune": [{
             "file": "Enova_P90.txt"

@@ -56,3 +56,21 @@ form {
   border-color: #e62e00;
   background: #ff704d
 }
+
+.loader {
+  border: 5px solid #A9A9A9;
+  border-top-width: 5px;
+  border-top-style: solid;
+  border-top-color: rgb(243, 243, 243);
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+  border-top: 5px solid #404040;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

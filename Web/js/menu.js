@@ -184,7 +184,7 @@ function openExternalApp(app) {
 
 function loadJSON() {
 
-    var json;
+    var json = {};
 
     $.ajax("/serial.php?command=json", {
         async: false,

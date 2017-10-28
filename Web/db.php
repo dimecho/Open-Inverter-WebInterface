@@ -32,7 +32,7 @@
                                         <div class="container">
                                             <div class="row">
                                                 <div class="col-lg-4">
-                                                    <img src="" id="motorimage" class="img-rounded" width="100%">
+                                                    <img src="" id="motorimage" class="rounded float-left" width="100%">
                                                 </div>
                                                 <div class="col-lg-8">
                                                     <div class="input-group align-text-top">

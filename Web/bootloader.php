@@ -51,6 +51,17 @@
                 var file = $('.file');
                 file.trigger('click');
             });
+
+            function bootloaderUpload() {
+                
+                var file = $('.file').get(0).files[0].name;
+
+                if (file.toUpperCase().indexOf(".BIN") !=-1 || file.toUpperCase().indexOf(".HEX") !=-1) {
+                    $('#Aform').submit();
+                }else{
+                    $.notify({ message: "Bootloader file must be .bin or .hex format" }, { type: "danger" });
+                }
+            }
         </script>
     </head>
     <body>
@@ -75,15 +86,17 @@
                                                 type: "GET",
                                                 url:
                                                 <?php
+                                                    //$tmp_dir = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
                                                     echo "'";
                                                     echo "/bootloader.php?ajax=1";
                                                     if ($GLOBALS["OS"] === "mac") {
-                                                        $tmp_name = "/tmp/" .basename($_FILES['firmware']['tmp_name']). ".bin";
+                                                        $tmp_name = "/tmp/" .$_FILES['firmware']["name"];
                                                     }else{
-                                                        $tmp_name = sys_get_temp_dir(). "/" .basename($_FILES['firmware']['tmp_name']). ".bin";
+                                                        $tmp_name = sys_get_temp_dir(). "/" .$_FILES['firmware']["name"];
                                                     }
                                                     move_uploaded_file($_FILES['firmware']['tmp_name'], $tmp_name);
                                                     echo "&file=" .urlencode($tmp_name);
+                                                    echo "&format=" .$_GET['firmware'];
                                                     echo "&interface=" .urlencode($_POST["interface"]);
                                                     echo "'";
                                                 ?>,
@@ -119,12 +132,12 @@
                                                 <select name="interface" class="form-control" form="Aform" onchange="setJTAGImage()" id="jtag-interface" style="width:100%"></select>
                                             </span>
                                             <span class = "input-group-addon" style="width:40%">
-                                                <button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select BIN</button>
+                                                <button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select BIN/HEX</button>
                                             </span>
                                         </div>
                                         <br/><br/>
                                         <h2 id="jtag-name"></h2>
-                                        <img src="" id="jtag-image" class="img-rounded" />
+                                        <img src="" id="jtag-image" class="rounded" />
                                     </center>
                                 </td>
                             </tr>
@@ -136,8 +149,7 @@
             </div>
         </div>
         <form enctype="multipart/form-data" action="/bootloader.php" method="POST" id="Aform">
-            <input name="firmware" type="file" class="file" hidden onchange="javascript:this.form.submit();"/>
-            <input type="submit" hidden/>
+            <input name="firmware" type="file" class="file" hidden onchange="bootloaderUpload()"/>
         </form>
     </body>
 </html>

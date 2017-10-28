@@ -1,5 +1,5 @@
 #!/bin/sh
-if [ "$1" = "uninstall" ] ; then
+if [ "$1" = "uninstall" ]; then
     rm -rf "/usr/local/etc/gcc_arm/openocd"
 else
     if [ ! -f "/usr/local/etc/gcc_arm/openocd/bin/openocd" ]; then
@@ -21,6 +21,12 @@ else
         #The main firmware must be linked to start at address 0x08001000
         #The bootloader starts at address 0x08000000 and can be 4k in size
 
-        openocd -f ./$2 -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset halt" -c "flash write_image erase $1 0x08000000" -c "reset" -c "shutdown" 
+        case "$1" in
+          *".hex"*) ADDRESS="" ;;
+          *".HEX"*) ADDRESS="" ;;
+          *)        ADDRESS=" 0x08000000" ;;
+        esac
+
+        openocd -f ./$2 -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset halt" -c "flash write_image erase unlock $1$ADDRESS" -c "reset" -c "shutdown" 
     fi
 fi

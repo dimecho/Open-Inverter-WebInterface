@@ -77,12 +77,12 @@
                             <tr>
                                 <td>
                                     <a data-fancybox="gallery" href="arduino/img/DSC03848.jpg">
-                                        <img src="arduino/img/DSC03848.jpg" class="img-thumbnail img-rounded" />
+                                        <img src="arduino/img/DSC03848.jpg" class="img-thumbnail rounded" />
                                     </a>
                                 </td>
                                 <td>
                                     <a data-fancybox="gallery" href="arduino/img/DSC03852.jpg">
-                                        <img src="arduino/img/DSC03852.jpg" class="img-thumbnail img-rounded" />
+                                        <img src="arduino/img/DSC03852.jpg" class="img-thumbnail rounded" />
                                     </a>
                                 </td>
                             </tr>

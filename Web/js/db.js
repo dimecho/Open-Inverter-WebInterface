@@ -81,7 +81,7 @@ function buildMotorDB()
 
 function loadMotorDB() {
 
-    var json;
+    var json = {};
 
     $.ajax("/db/database.json", {
         async: false,

@@ -40,12 +40,12 @@
                             <tr>
                                 <td>
                                     <a data-fancybox="gallery" href="/encoder/img/encoder_2d.png">
-                                        <img src="/encoder/img/encoder_2d.png" class="img-thumbnail img-rounded" />
+                                        <img src="/encoder/img/encoder_2d.png" class="img-thumbnail rounded" />
                                     </a>
                                 </td>
                                 <td>
                                     <a data-fancybox="gallery" href="/encoder/img/encoder_3d.png">
-                                        <img src="/encoder/img/encoder_3d.png" class="img-thumbnail img-rounded" />
+                                        <img src="/encoder/img/encoder_3d.png" class="img-thumbnail rounded" />
                                     </a>
                                 </td>
                             </tr>
@@ -72,12 +72,12 @@
                             <tr>
                                 <td>
                                     <center>
-                                        <img src="/encoder/img/TCST2103x1.png" class="img-thumbnail img-rounded" />
+                                        <img src="/encoder/img/TCST2103x1.png" class="img-thumbnail rounded" />
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        <img src="/encoder/img/TCST2103.jpg" class="img-thumbnail img-rounded" />
+                                        <img src="/encoder/img/TCST2103.jpg" class="img-thumbnail rounded" />
                                     </center>
                                 </td>
                             </tr>

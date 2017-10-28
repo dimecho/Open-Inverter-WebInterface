@@ -201,7 +201,7 @@
                                         <span class="badge badge-lg badge-warning">Caution: Main board for Olimex powered with 3.3V - Double check your USB-TTL adapter.</span>
                                         <br>
                                         <br>
-                                        <img src="/firmware/img/usb_ttl.jpg">
+                                        <img src="/firmware/img/usb_ttl.jpg" class="rounded">
                                     </center>
                                 </td>
                             </tr>

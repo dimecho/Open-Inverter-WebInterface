@@ -74,13 +74,13 @@
                             <tr align="center">
                                 <td>
                                     <a href="/wiring.php?hardware=1">
-                                        <img src="/img/hardware_v1.jpg" class="img-thumbnail img-rounded" />
+                                        <img src="/img/hardware_v1.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
                                     Hardware v1.0 (Johannes Huebner)
                                 </td>
                                 <td>
                                     <a href="/wiring.php?hardware=damien">
-                                        <img src="/img/hardware_v1_damien.jpg" class="img-thumbnail img-rounded" />
+                                        <img src="/img/hardware_v1_damien.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
                                     Hardware v1.0 (Damien Maguire)
                                 </td>
@@ -88,13 +88,13 @@
                             <tr align="center">
                                 <td>
                                     <a href="/wiring.php?hardware=tesla_rdu">
-                                        <img src="/img/hardware_v2_tesla_rdu.jpg" class="img-thumbnail img-rounded" />
+                                        <img src="/img/hardware_v2_tesla_rdu.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
                                     Hardware v2.0 (Tesla Rear Drive Unit)
                                 </td>
 								<td>
                                     <a href="/wiring.php?hardware=tesla_fdu">
-                                        <img src="/img/hardware_v2_tesla_fdu.jpg" class="img-thumbnail img-rounded" />
+                                        <img src="/img/hardware_v2_tesla_fdu.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
                                     Hardware v2.0 (Tesla Front Drive Unit)
                                 </td>
@@ -127,7 +127,7 @@
                             <tr>
                                 <td colspan="3">
                                     <a data-fancybox href="<?php echo $wiring; ?>">
-                                        <img src="<?php echo $wiring; ?>" class="img-thumbnail img-rounded" />
+                                        <img src="<?php echo $wiring; ?>" class="img-thumbnail rounded" />
                                     </a>
                                 </td>
                             </tr>

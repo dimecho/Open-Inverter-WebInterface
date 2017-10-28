@@ -95,22 +95,16 @@ $(document).ready(function()
                 //var id = this.id;
                 //console.log(this.id);
                 
-                $.ajax("/serial.php?command=save",{
-                    //async: false,
-                    success: function(data)
-                    {
-                        //console.log(data);
+                var data = sendCommand("save");
 
-                        if(data.indexOf("Parameters stored") != -1)
-                        {
-                            //TODO: CRC32 check on entire params list
+                if(data.indexOf("Parameters stored") != -1)
+                {
+                    //TODO: CRC32 check on entire params list
 
-                            $.notify({ message: data },{ type: 'success' });
-                        }else{
-                            $.notify({ icon: 'glyphicon glyphicon-warning-sign', title: 'Error', message: data },{ type: 'danger' });
-                        }
-                    }
-                });
+                    $.notify({ message: data },{ type: 'success' });
+                }else{
+                    $.notify({ icon: 'glyphicon glyphicon-warning-sign', title: 'Error', message: data },{ type: 'danger' });
+                }
             //}
         }
     });
@@ -159,6 +153,8 @@ function buildParameters()
 {
 	var parameters = [];
 	var description = [];
+
+    $(".loader").show();
 	
 	$.ajax("/description.csv",{
 		async: false,
@@ -205,7 +201,7 @@ function buildParameters()
 
 		for(var key in json)
 		{
-			console.log(key);
+			//console.log(key);
 
 			var tooltip = "";
 			var x = parameters.indexOf(key);
@@ -292,6 +288,8 @@ function buildParameters()
     }
     
     checkUpdates();
+
+    $(".loader").hide();
 };
 
 function checkUpdates() {

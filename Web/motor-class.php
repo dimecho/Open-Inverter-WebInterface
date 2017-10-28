@@ -16,7 +16,7 @@
                                 <td>
                                     <center><h2>Electric motors classification</h2></center>
                                     <a data-fancybox href="/img/motor-class.png">
-                                        <img src="/img/motor-class.png" class="img-thumbnail img-rounded" />
+                                        <img src="/img/motor-class.png" class="img-thumbnail rounded" />
                                     </a>
                                     <br/><br/><a href="http://www.emcu.it/MotorControls/STMotorControl-Nov2012-MKT.pdf" target="_blank">http://www.emcu.it/MotorControls/STMotorControl-Nov2012-MKT.pdf</a>
                                 </td>
