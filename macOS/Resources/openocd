@@ -4,7 +4,7 @@ if [ "$1" = "uninstall" ]; then
 else
     if [ ! -f "/usr/local/etc/gcc_arm/openocd/bin/openocd" ]; then
         mkdir /usr/local/etc/gcc_arm
-        pkgutil --expand ~/Downloads/gnuarmeclipse-openocd-osx-0.10.0-201601101000-dev.pkg /usr/local/etc/gcc_arm/openocd/
+        pkgutil --expand ~/Downloads/gnu-mcu-eclipse-openocd-0.10.0-4-20171004-0812-dev-osx.pkg /usr/local/etc/gcc_arm/openocd/
         cd /usr/local/etc/gcc_arm/openocd/
         cat Payload | gzip -d | cpio -id
         rm Bom

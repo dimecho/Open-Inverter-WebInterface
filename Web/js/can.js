@@ -272,6 +272,7 @@ function setCANDefaults() {
         //console.log(data);
 
         if (data.indexOf("clear") != -1) {
+            $.ajax("/can.php?clear=1");
             $.notify({ message: "CAN reset to Default" }, { type: "success" });
         } else {
             $.notify({ icon: "glyphicon glyphicon-warning-sign", title: "Error", message: data }, { type: "danger" });

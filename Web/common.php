@@ -35,14 +35,14 @@
         'arm' => array (
             'title' => "ARM Embedded Compiler",
             'download' => array (
-                'mac' => "https://developer.arm.com/-/media/Files/downloads/gnu-rm/6_1-2017q1/gcc-arm-none-eabi-6-2017-q1-update-mac.tar.bz2",
+                'mac' => "https://developer.arm.com/-/media/Files/downloads/gnu-rm/6-2017q2/gcc-arm-none-eabi-6-2017-q2-update-mac.tar.bz2",
                 'windows' => "http://sysprogs.com/files/gnutoolchains/arm-eabi/arm-eabi-gcc6.2.0-r4.exe",
                 'linux' => "",
                 'size' => 100,
-                'version' => "6.1"
+                'version' => "6.2"
             ),
             'path' => array (
-                'mac' => "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-6-2017-q1-update/bin/arm-none-eabi-gcc",
+                'mac' => "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-6-2017-q2-update/bin/arm-none-eabi-gcc",
                 'windows' => "C:\\SysGCC\\arm-eabi\\bin\\arm-eabi-gcc.exe",
                 'linux' => "/usr/share/gcc-arm-embedded/bin/gcc-arm-none-eabi"
             )
@@ -65,11 +65,11 @@
         'arduino' => array (
             'title' => "Arduino IDE",
             'download' => array (
-                'mac' => "https://downloads.arduino.cc/arduino-1.8.4-macosx.zip",
-                'windows' => "https://downloads.arduino.cc/arduino-1.8.4-windows.exe",
+                'mac' => "https://downloads.arduino.cc/arduino-1.8.5-macosx.zip",
+                'windows' => "https://downloads.arduino.cc/arduino-1.8.5-windows.exe",
                 'linux' => "",
                 'size' => 150,
-                'version' => "1.8.4"
+                'version' => "1.8.5"
             ),
             'path' => array (
                 'mac' => "/Applications/Arduino.app/Contents/MacOS/Arduino",
@@ -125,11 +125,11 @@
         'openocd' => array (
             'title' => "OpenOCD Debugger",
             'download' => array (
-                'mac' => "https://github.com/gnuarmeclipse/openocd/releases/download/gae-0.10.0-20160110/gnuarmeclipse-openocd-osx-0.10.0-201601101000-dev.pkg",
-                'windows' => "https://github.com/gnuarmeclipse/openocd/releases/download/gae-0.10.0-20160110/gnuarmeclipse-openocd-win64-0.10.0-201601101000-dev-setup.exe",
+                'mac' => "https://github.com/gnu-mcu-eclipse/openocd/releases/download/v0.10.0-4-20171004-0812-dev/gnu-mcu-eclipse-openocd-0.10.0-4-20171004-0812-dev-osx.pkg",
+                'windows' => "https://github.com/gnu-mcu-eclipse/openocd/releases/download/v0.10.0-4-20171004-0812-dev/gnu-mcu-eclipse-openocd-0.10.0-4-20171004-0812-dev-win64-setup.exe",
                 'linux' => "",
                 'size' => 2.5,
-                'version' => "0.10.0-20160110"
+                'version' => "0.10.0-4-20171004"
             ),
             'path' => array (
                 'mac' => "/usr/local/etc/gcc_arm/openocd/bin/openocd",
@@ -140,16 +140,16 @@
         'eagle' => array (
             'title' => "AutoCAD Eagle - PCB Design Software",
             'download' => array (
-                'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.3.2_English_Mac_64bit.pkg",
-                'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.3.2_English_Win_64bit.exe",
-                'linux' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.3.2_English_Linux_64bit.tar.gz",
+                'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.4.1_English_Mac_64bit.pkg",
+                'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.4.1_English_Win_64bit.exe",
+                'linux' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.4.1_English_Linux_64bit.tar.gz",
                 'size' => 100,
-                'version' => "8.3.2"
+                'version' => "8.4.1"
             ),
             'path' => array (
-                'mac' => "/Applications/EAGLE-8.3.2/Eagle.app/Contents/MacOS/Eagle",
-                'windows' => "C:\\EAGLE-8.3.2\\bin\eagle.exe",
-                'linux' => "/opt/eagle-8.3.2/bin/eagle"
+                'mac' => "/Applications/EAGLE-8.4.1/Eagle.app/Contents/MacOS/Eagle",
+                'windows' => "C:\\EAGLE-8.4.1\\bin\eagle.exe",
+                'linux' => "/opt/eagle-8.4.1/bin/eagle"
             )
         ),
         'designsparkpcb' => array (

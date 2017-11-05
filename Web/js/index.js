@@ -69,11 +69,7 @@ $(document).ready(function()
                     $.notify({ message: 'Should be above starting frequency (fmin)' }, { type: 'danger' });
 					return '-';
 				}
-            /*}else  if(this.id == 'fslipmax'){
-                if(value / 5 > $("#fslipmin").text())
-                {
-                    return 'If too high from fslipmin the motor will start to rock violently on startup.';
-                }
+            /*
             }else  if(this.id == 'ocurlim'){
                 if(value > 0)
                 {
@@ -122,6 +118,7 @@ function basicChecks(json)
 {
 	var fweak = json["fweak"].value;
 	var fslipmax = json["fslipmax"].value;
+    var fslipmin = json["fslipmin"].value;
 	var deadtime = json["deadtime"].value;
 	var udc = json["udc"].value;
 	var udcsw = json["udcsw"].value;
@@ -143,8 +140,10 @@ function basicChecks(json)
 	if (fslipmax > 10) {
 		$.notify({ message: 'Slip "fslipmax" is high, might be running open loop. Check your encoder connections' }, { type: 'warning' });
 	}
+    if(fslipmax / 5 > fslipmin) {
+        $.notify({ message: 'Slip "fslipmax" too high from "fslipmin". Motor may start to rock violently on startup' }, { type: 'warning' });
+    }
 	if (deadtime < 28) {
-
 		$.notify({ message: 'IGBT "deadtime" is dangerously fast' }, { type: 'danger' });
 	}
 };

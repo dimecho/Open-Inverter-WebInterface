@@ -5,6 +5,10 @@
         $file = fopen(realpath(dirname(__FILE__)) . "/db/database.can", "w");
         fwrite($file, $data);
         fclose($file);
+
+    }else if(isset($_GET["clear"])){
+
+        unlink(realpath(dirname(__FILE__)) . "/db/database.can");
         
     }else{
 ?>

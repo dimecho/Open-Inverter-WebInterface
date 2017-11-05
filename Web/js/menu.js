@@ -296,6 +296,7 @@ function setDefaults() {
 
         if (data.indexOf("Defaults loaded") != -1) {
             sendCommand("can clear");
+            $.ajax("/can.php?clear=1");
             $.notify({ message: "Inverter reset to Default" }, { type: "success" });
         } else {
             $.notify({
