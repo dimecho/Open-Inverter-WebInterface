@@ -20,7 +20,7 @@ if($args[0] -eq "uninstall") {
     Write-Host "...Installing PHP"
     
     # Download PHP
-    $phpFile = "php-7.1.10-Win32-VC14-x64.zip"
+    $phpFile = "php-7.1.11-Win32-VC14-x64.zip"
     if (-Not (Test-Path "$env:TEMP\$phpFile")) {
     	Write-Host "Downloading PHP 7"  -ForegroundColor Green
         Write-Host ""

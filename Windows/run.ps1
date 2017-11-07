@@ -62,7 +62,7 @@ function startPHP($page) {
 		}
 
         # Start PHP Webserver
-        Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8080 -t ""$($scriptPath)\Web\"""
+        Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8080 -t ""$scriptPath\\Web"""
 		
 		# Open Web Browser
 		openBrowser "http://127.0.0.1:8080/$page"
