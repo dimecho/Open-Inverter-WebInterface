@@ -80,8 +80,8 @@
                                     <li class="nav-item"><a class="nav-link" href="#graphC">Battery</a></li>
                                     <li class="nav-item"><a class="nav-link" href="#graphD">Sensors</a></li>
                                     <li class="nav-item"><a class="nav-link" href="#graphE">Frequencies</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="#graphF">Pulse Amplitude</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="#graphG">Pulse Width</a></li>
+                                    <!--<li class="nav-item"><a class="nav-link" href="#graphF">Pulse Amplitude</a></li>-->
+                                    <li class="nav-item"><a class="nav-link" href="#graphG">PWM</a></li>
                                 </ul>
                                 <div class="tab-content">
                                     <div id="graphA" class="tab-pane fade in active"></div>

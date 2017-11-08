@@ -278,14 +278,33 @@ function sinePWM(array, phase, start, step) {
             if (s >= abs)
                 break;
         }
-
-        for (var i = 0; i < upper; i++) {
-            array.push(1);
-        }
-
-        for (var i = 0; i < lower; i++) {
-            array.push(-1);
-        }
+		
+		if(Math.sin(j).toFixed(1) == 0.0) //deadtime
+		{
+			console.log("polarity");
+			
+			for (var i = 0; i < upper; i++) {
+				array.push(0);
+			}
+		}
+		else if (Math.sin(j) < 0 ) //fall
+		{
+			for (var i = 0; i < upper; i++) {
+				array.push(0);
+			}
+			for (var i = 0; i < lower; i++) {
+				array.push(-1);
+			}
+		}
+		else if (Math.sin(j) > 0) //rise
+		{
+			for (var i = 0; i < upper; i++) {
+				array.push(1);
+			}
+			for (var i = 0; i < lower; i++) {
+				array.push(0);
+			}
+		}
     }
 }
 
