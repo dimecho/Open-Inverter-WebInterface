@@ -112,7 +112,9 @@ function buildStatus(sync) {
 			
 			$("#opStatus").empty().append(opStatus);
             
-            new SVGInjector().inject(document.querySelectorAll('svg-inject'));
+            //console.log(document.querySelectorAll('.svg-inject'));
+
+            new SVGInjector().inject(document.querySelectorAll('.svg-inject'));
 			
 			buildTips();
 

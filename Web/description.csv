@@ -79,4 +79,7 @@ idlethrotlim,,,,,Depends on you gearing and motor
 syncmode,,,,,Experimental: Running synchronous motors
 syncofs,,,,,"Experimental: Configure a pin as an input for the north marker. When the interrupt fires, reset the angle"
 chargemode,,,,,"Charging mode. 0=Off, 3=Boost, 4=Buck"
-chargecur,A,-500,500,0,Hardware over current limit
+chargecur,A,,,,Hardware over current limit
+udcnom,V,,,,Scales fweak and boost as DC voltage changes
+fweakcalc,Hz,,,,Calculated value from udcnom
+boostcalc,V,,,,Calculated value from udcnom

@@ -183,6 +183,7 @@ function initChart() {
         data: data,
         options: options
     });
+    //chart.update();
 };
 
 function startChart() {
@@ -208,10 +209,9 @@ function startChart() {
         updateChart(["il1rms", "idc"]);
     } else if (activeTab === "#graphE") {
         updateChart(["fweak", "fstat", "ampnom"]);
-    } else if (activeTab === "#graphF") {
-
+    //} else if (activeTab === "#graphF") {
     } else if (activeTab === "#graphG") {
-
+        updateChart(["pwmfrq", "deadtime"]);
     }
 };
 
@@ -237,12 +237,16 @@ function initTimeAxis(seconds) {
     return xaxis;
 };
 
-function sineWave(array, phase, amplitude, start, step) {
+function sineWave(phase, amplitude, start, step) {
+
+    var array = [];
 
     for (var j = start; j <= phase * Math.PI; j += step) {
         array.push(Math.sin(j) * amplitude); //[j, Math.sin(j)]
     }
-}
+
+    return array;
+};
 
 function sinePAM(array, phase, amplitude, start, step) {
 
@@ -250,44 +254,46 @@ function sinePAM(array, phase, amplitude, start, step) {
         //console.log(j);
         array.push(Math.sin(j) * amplitude); //[j, Math.sin(j)]
     }
-}
+};
 
-function sinePWM(array, phase, start, step) {
+function sinePWM(phase, start, waveGraphRatio) {
+
+    var step = waveGraphRatio / 0.07;
+    var array = [];
 
     for (var j = start; j <= phase * Math.PI; j += step) {
         
         var upper = 10;
         var lower = 10;
-        var abs = Math.abs(Math.sin(j))
+        var sine = Math.sin(j);
+        var abs = Math.abs(sine)
 
         for (var s = 0; s < 1.1; s+=0.1) { //sample the wave by 10
 
             //console.log(abs + ":" + s);
 
-            if (Math.sin(j) < 0) //fall
+            if (sine < 0) //fall
             {
                 lower = 10;
                 upper-=s+0.4;
             }
-            else if (Math.sin(j) > 0) //rise
+            else if (sine > 0) //rise
             {
                 upper = 10;
                 lower-=s+0.4;
             }
-
+			
             if (s >= abs)
                 break;
         }
 		
-		if(Math.sin(j).toFixed(1) == 0.0) //deadtime
+		if(sine.toFixed(1) == 0.0) //deadtime
 		{
-			console.log("polarity");
-			
-			for (var i = 0; i < upper; i++) {
+			for (var i = 0; i < (upper + lower); i++) {
 				array.push(0);
 			}
 		}
-		else if (Math.sin(j) < 0 ) //fall
+		else if (sine < 0 ) //fall
 		{
 			for (var i = 0; i < upper; i++) {
 				array.push(0);
@@ -296,7 +302,7 @@ function sinePWM(array, phase, start, step) {
 				array.push(-1);
 			}
 		}
-		else if (Math.sin(j) > 0) //rise
+		else if (sine > 0) //rise
 		{
 			for (var i = 0; i < upper; i++) {
 				array.push(1);
@@ -306,7 +312,9 @@ function sinePWM(array, phase, start, step) {
 			}
 		}
     }
-}
+
+    return array;
+};
 
 //Pulse Width Modulation
 function initPWMChart(duration) {
@@ -362,13 +370,15 @@ function initPWMChart(duration) {
         }]
     };
 
-    sinePWM(data.datasets[0].data,4,-2.25,0.1); //red
-    sinePWM(data.datasets[1].data,4,2.0,0.1); //green
-    sinePWM(data.datasets[2].data,4,0,0.1); //blue
+    var waveGraphRatio = 0.01;
 
-    sineWave(data.datasets[3].data,4,1,-2.25,0.007); //red
-    sineWave(data.datasets[4].data,4,1,2.0,0.007); //green
-    sineWave(data.datasets[5].data,4,1,0,0.007); //blue
+    data.datasets[0].data = sinePWM(4,-2.25,waveGraphRatio); //red
+    data.datasets[1].data = sinePWM(4,2.0,waveGraphRatio); //green
+    data.datasets[2].data = sinePWM(4,0,waveGraphRatio); //blue
+
+    data.datasets[3].data = sineWave(4,1,-2.25,waveGraphRatio); //red
+    data.datasets[4].data = sineWave(4,1,2.0,waveGraphRatio); //green
+    data.datasets[5].data = sineWave(4,1,0,waveGraphRatio); //blue
 
     options = {
         //scaleUse2Y: true,
@@ -426,6 +436,7 @@ function initPWMChart(duration) {
             enabled: true,
             mode: 'xy'
         },
+        /*
         zoom: {
             enabled: true,
             mode: 'xy',
@@ -434,11 +445,34 @@ function initPWMChart(duration) {
                 min: 0.5
             }
         },
+        */
         animation: {
             duration: duration
         }
+        /*
+        ,plugins: {
+            streaming: {
+                duration: 20000,
+                refresh: 1000,
+                delay: 2000,
+                onRefresh: refreshPWMChart
+            }
+        }
+        */
     };
-}
+};
+
+function refreshPWMChart() {
+    config.data.datasets.forEach(function(dataset) {
+        console.log(dataset);
+        /*
+        dataset.data.push({
+            x: moment(),
+            y: randomScalingFactor()
+        });
+        */
+    });
+};
 
 //Pulse Amplitude Modulation
 function initPAMChart(duration) {
@@ -544,7 +578,7 @@ function initPAMChart(duration) {
             duration: duration
         }
     };
-}
+};
 
 function initFrequenciesChart(duration) {
 
@@ -597,8 +631,8 @@ function initFrequenciesChart(duration) {
         data.datasets[0].data.push(fweak);
     }
 
-    sineWave(data.datasets[2].data,4,fmax,0,0.1);
-    //sineWave(data.datasets[3].data4,80,0,0.1);
+    data.datasets[2].data = sineWave(4,fmax,0,0.1);
+    //data.datasets[3].data = sineWave(4,80,0,0.1);
 
     options = {
         //scaleUse2Y: true,
@@ -1040,7 +1074,7 @@ function updateChart(value, autosize, accuracy) {
     //Ajax Streaming (Otherwise HTTP headers consume too much CPU)
     //============================================================
     var last_response_len = false;
-    xhr = $.ajax("graph.php?stream=" + value + "&delay=" + syncronizedDelay, {
+    xhr = $.ajax("graph.php?stream=" + value.toString() + "&delay=" + syncronizedDelay, {
         //xhr = $.ajax("http://127.0.0.1:8081/graph.php?stream=" + value+ "&delay=" + syncronizedDelay , {
         //crossDomain: true,
         xhrFields: {
@@ -1054,18 +1088,35 @@ function updateChart(value, autosize, accuracy) {
                     this_response = response.substring(last_response_len);
                     last_response_len = response.length;
                 }
+                
                 //console.log(this_response);
-
                 var split = this_response.split(",");
-                for (var i = 0; i < value.length; i++) {
-                    if (value[i] != "fweak") {
+
+                for (var i = 0; i < value.length; i++)
+                {
+                    //console.log(value[i]);
+                    if (value[i] == "pwmfrq") {
+
+                        var pwmfrq = parseFloat(split[i]);
+                        var deadtime = parseFloat(split[i+1]);
+                        var waveGraphRatio = 0.01;
+
+                        data.datasets[0].data = sinePWM(4,-2.25,waveGraphRatio); //red
+                        //data.datasets[1].data = sinePWM(4,2.0,waveGraphRatio); //green
+                        //data.datasets[2].data = sinePWM(4,0,waveGraphRatio); //blue
+
+                        data.datasets[3].data = sineWave(4,1,-2.25,waveGraphRatio); //red
+                        //data.datasets[4].data = sineWave(4,1,2.0,waveGraphRatio); //green
+                        //data.datasets[5].data = sineWave(4,1,0,waveGraphRatio); //blue
+                        
+                        break;
+                    }else if (value[i] != "fweak") {
                         var point = parseFloat(split[i]);
                         //console.log(point);
 
                         if (value[i] == "ampnom") {
                             var max = Math.max.apply(Math, data.datasets[i].data);
-                            data.datasets[i + 1].data = [];
-                            sineWave(data.datasets[i + 1].data,2,(max * point / 100),0,0.1);
+                            data.datasets[i + 1].data = sineWave(2,(max * point / 100),0,0.1);
                         } else {
 
                             l = data.datasets[i].data.length;
