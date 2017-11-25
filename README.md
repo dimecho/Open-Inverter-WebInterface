@@ -1,4 +1,4 @@
-<p align="center"><img src="blob/master/macOS/Assets.xcassets/AppIcon.appiconset/128x128.png?raw=true"></p>
+<p align="center"><img src="macOS/Assets.xcassets/AppIcon.appiconset/128x128.png?raw=true"></p>
 
 # Huebner Inverter - Console Management
 
@@ -17,19 +17,19 @@ Console Management for [Huebner Inverter Project](http://johanneshuebner.com/qui
 > * Encoder Builder
 > * IGBT Test
 
-![CC0](blob/master/Web/img/photo.jpg?raw=true)
+![CC0](Web/img/photo.jpg?raw=true)
 
 ## Screenshot
 
-![Screenshot](blob/master/Web/img/screenshot.jpg?raw=true)
+![Screenshot](Web/img/screenshot.jpg?raw=true)
 
 ## Download
 
-![Mac](blob/master/Web/img/mac.png?raw=true) [Download for Mac](releases/download/1.0/Huebner.Inverter.dmg)
+![Mac](Web/img/mac.png?raw=true) [Download for Mac](releases/download/1.0/Huebner.Inverter.dmg)
 
-![Windows](blob/master/Web/img/win.png?raw=true) [Download for Windows](releases/download/1.0/Huebner.Inverter.Windows.zip)
+![Windows](Web/img/win.png?raw=true) [Download for Windows](releases/download/1.0/Huebner.Inverter.Windows.zip)
 
-![Linux](blob/master/Web/img/linux.png?raw=true) [Download for Linux](releases/download/1.0/Huebner.Inverter.Linux.tgz)
+![Linux](Web/img/linux.png?raw=true) [Download for Linux](releases/download/1.0/Huebner.Inverter.Linux.tgz)
 
 ## Author
 
@@ -43,4 +43,4 @@ Dima Dykhman
 >
 > Inverter Design
 >
-> [![GPL](blob/master/Web/img/gpl.png?raw=true)](https://www.gnu.org/licenses/gpl-3.0.txt)
+> [![GPL](Web/img/gpl.png?raw=true)](https://www.gnu.org/licenses/gpl-3.0.txt)
