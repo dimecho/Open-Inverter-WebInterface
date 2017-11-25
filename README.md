@@ -25,11 +25,11 @@ Console Management for [Huebner Inverter Project](http://johanneshuebner.com/qui
 
 ## Download
 
-![Mac](Web/img/mac.png?raw=true) [Download for Mac](releases/download/1.0/Huebner.Inverter.dmg)
+![Mac](Web/img/mac.png?raw=true) [Download for Mac](../../releases/download/1.0/Huebner.Inverter.dmg)
 
-![Windows](Web/img/win.png?raw=true) [Download for Windows](releases/download/1.0/Huebner.Inverter.Windows.zip)
+![Windows](Web/img/win.png?raw=true) [Download for Windows](../../releases/download/1.0/Huebner.Inverter.Windows.zip)
 
-![Linux](Web/img/linux.png?raw=true) [Download for Linux](releases/download/1.0/Huebner.Inverter.Linux.tgz)
+![Linux](Web/img/linux.png?raw=true) [Download for Linux](../../releases/download/1.0/Huebner.Inverter.Linux.tgz)
 
 ## Author
 
