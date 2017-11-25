@@ -455,23 +455,17 @@ function initPWMChart(duration) {
                 duration: 20000,
                 refresh: 1000,
                 delay: 2000,
-                onRefresh: refreshPWMChart
+                onRefresh: function(chart) {
+                  chart.data.datasets.forEach(function(dataset) {
+                    dataset.data.push({
+                      x: Date.now(),
+                      y: Math.random()
+                    });
+                });
             }
         }
         */
     };
-};
-
-function refreshPWMChart() {
-    config.data.datasets.forEach(function(dataset) {
-        console.log(dataset);
-        /*
-        dataset.data.push({
-            x: moment(),
-            y: randomScalingFactor()
-        });
-        */
-    });
 };
 
 //Pulse Amplitude Modulation

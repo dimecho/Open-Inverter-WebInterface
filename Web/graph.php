@@ -52,6 +52,7 @@
         <link rel="stylesheet" type="text/css" href="/css/bootstrap-slider.css" />
         <script type="text/javascript" src="/js/bootstrap-slider.js"></script>
         <script type="text/javascript" src="/js/status.js"></script>
+        <script type="text/javascript" src="/js/moment.js"></script>
         <script type="text/javascript" src="/js/chart.js"></script>
         <script type="text/javascript" src="/js/chartjs-plugin-zoom.js"></script>
         <script type="text/javascript" src="/js/chartjs-plugin-streaming.js"></script>
