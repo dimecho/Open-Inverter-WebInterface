@@ -6,16 +6,17 @@ Console Management for [Huebner Inverter Project](http://johanneshuebner.com/qui
 
 > **All-in-One**
 > * RS232-USB Drivers
-> * Auto Tunning
-> * Live Graphs
-> * Simple and Advanced Parameters
-> * Firmware and Bootloader Flash
-> * ARM/AVR Compilers
+> * Inverter Parameters
+> * Sensor Graphs
+> * Firmware Flash
 > * Wiring Diagrams
 > * PCB Schematics
 > * Component List
 > * Encoder Builder
 > * IGBT Test
+> * CAN Setup
+> * Auto Tunning
+> * Source Code Compilers
 
 ![CC0](Web/img/photo.jpg?raw=true)
 

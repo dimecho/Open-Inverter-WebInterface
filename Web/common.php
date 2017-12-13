@@ -140,23 +140,23 @@
         'eagle' => array (
             'title' => "AutoCAD Eagle - PCB Design Software",
             'download' => array (
-                'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.4.1_English_Mac_64bit.pkg",
-                'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.4.1_English_Win_64bit.exe",
-                'linux' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.4.1_English_Linux_64bit.tar.gz",
+                'mac' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.4.3_English_Mac_64bit.pkg",
+                'windows' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.4.3_English_Win_64bit.exe",
+                'linux' => "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.4.3_English_Linux_64bit.tar.gz",
                 'size' => 100,
-                'version' => "8.4.1"
+                'version' => "8.4.3"
             ),
             'path' => array (
-                'mac' => "/Applications/EAGLE-8.4.1/Eagle.app/Contents/MacOS/Eagle",
-                'windows' => "C:\\EAGLE-8.4.1\\bin\eagle.exe",
-                'linux' => "/opt/eagle-8.4.1/bin/eagle"
+                'mac' => "/Applications/EAGLE-8.4.3/Eagle.app/Contents/MacOS/Eagle",
+                'windows' => "C:\\EAGLE-8.4.3\\bin\eagle.exe",
+                'linux' => "/opt/eagle-8.4.3/bin/eagle"
             )
         ),
         'designsparkpcb' => array (
             'title' => "DesignSpark - PCB Design Software",
             'download' => array (
                 'mac' => "http://pcb.designspark.info/DesignSparkPCB_v8.0.exe",
-                'windows' => "http://pcb.designspark.info/DesignSparkPCB_v8.0.exe",
+                'windows' => "http://pcb.designspark.info/DesignSparkPCB_v8.1_Beta.exe",
                 'linux' => "http://pcb.designspark.info/DesignSparkPCB_v8.0.exe",
                 'size' => 65,
                 'version' => "8.0"
