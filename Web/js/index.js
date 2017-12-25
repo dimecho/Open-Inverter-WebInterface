@@ -1,109 +1,65 @@
 $(document).ready(function()
 {
-    $('#parameters').editable({
-        selector: 'a',
-        url: '/serial.php',
-        mode: 'popup',
-        pk: '1',
-        showbuttons: true,
-        savenochange: false,
-        ajaxOptions: {
-            type: 'get',
-            async: false,
-            //type: 'put',
-            //dataType: 'json'
-        },
-        validate: function(value) {
-
-			if(getJSONFloatValue('opmode') > 0 && this.id != 'fslipspnt'){
-				stopInverter();
-                $.notify({ message: 'Inverter must not be in operating mode.' }, { type: 'danger' });
-				return '-';
-			}
-
-            if (isInt(parseInt(value)) == false && isFloat(parseFloat(value)) == false){
-                $.notify({ message: 'Value must be a number' }, { type: 'danger' });
-                return '-';
-            }
-
-            if(this.id == 'fmin'){
-                if(parseFloat(value) > parseFloat($('#fslipmin').text()))
-                {
-                    $.notify({ message: 'Should be set below fslipmin' }, { type: 'danger' });
-                    return '-';
-                }
-            }else  if(this.id == 'polepairs'){
-                if ($.inArray(parseInt(value), [ 1, 2, 3, 4, 5]) == -1)
-                {
-                    $.notify({ message: 'Pole pairs = half # of motor poles' }, { type: 'danger' });
-                    return '-';
-                }
-            }else  if(this.id == 'udcmin'){
-                if(parseInt(value) > parseInt($("#udcmax").text()))
-                {
-                    $.notify({ message: 'Should be below maximum voltage (udcmax)' }, { type: 'danger' });
-                    return '-';
-                }
-            }else  if(this.id == 'udcmax'){
-                if(parseInt(value) > parseInt($("#udclim").text())){
-                    $.notify({ message: 'Should be lower than cut-off voltage (udclim)' }, { type: 'danger' });
-                    return '-';
-                }
-            }else  if(this.id == 'udclim'){
-                if(parseInt(value) <= parseInt($("#udcmax").text())){
-                    $.notify({ message: 'Should be above maximum voltage (udcmax)' }, { type: 'danger' });
-                    return '-';
-                }
-            }else if(this.id == 'udcsw'){
-                if(parseInt(value) > parseInt($("#udcmax").text())){
-                    $.notify({ message: 'Should be below maximum voltage (udcmax)' }, { type: 'danger' });
-                    return '-';
-                }
-			}else if(this.id == 'udcsw'){
-                if(parseInt(value) > parseInt($("#udcmin").text())){
-                    $.notify({ message: 'Should be below minimum voltage (udcmin)' }, { type: 'danger' });
-                    return '-';
-                }
-			}else if(this.id == 'fslipmin'){
-				if(parseFloat(value) <= parseFloat($('#fmin').text())){
-                    $.notify({ message: 'Should be above starting frequency (fmin)' }, { type: 'danger' });
-					return '-';
-				}
-            /*
-            }else  if(this.id == 'ocurlim'){
-                if(value > 0)
-                {
-                    return 'Current limit should be set as negative';
-                }*/
-            }
-
-            var notify = $.notify({ message: this.id + " = " + $.trim(value) },{
-                //allow_dismiss: false,
-                //showProgressbar: true,
-                type: 'warning'
-            });
-        },
-        success: function(response, newValue)
-        {
-            //console.log("'" + response + "'");
-
-            //if(response === "Set OK\n"){
-                //var id = this.id;
-                //console.log(this.id);
-                
-                var data = sendCommand("save");
-
-                if(data.indexOf("Parameters stored") != -1)
-                {
-                    //TODO: CRC32 check on entire params list
-
-                    $.notify({ message: data },{ type: 'success' });
-                }else{
-                    $.notify({ icon: 'glyphicon glyphicon-warning-sign', title: 'Error', message: data },{ type: 'danger' });
-                }
-            //}
-        }
+    $(".safety").fancybox({
+        maxWidth    : 800,
+        maxHeight   : 640,
+        fitToView   : false,
+        width       : '80%',
+        height      : '80%',
+        autoSize    : false,
+        closeClick  : false,
+        openEffect  : 'none',
+        closeEffect : 'none'
     });
+
+    if(os !== "mobile") {
+        
+        $("head").append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/bootstrap-editable.css\" />"); 
+
+        $.getScript("/js/bootstrap-editable.js", function() {
+
+            $('#parameters').editable({
+                selector: 'a',
+                url: '/serial.php',
+                mode: 'popup',
+                pk: '1',
+                showbuttons: true,
+                savenochange: false,
+                ajaxOptions: {
+                    type: 'get',
+                    async: false,
+                    //type: 'put',
+                    //dataType: 'json'
+                },
+                validate: function(value) {
+
+                    if (!validateInput(this.id,value)) {
+                        return '-';
+                    }
+                },
+                success: function(response, newValue)
+                {
+                    //console.log("'" + response + "'");
+
+                    //if(response === "Set OK\n"){
+                        //var id = this.id;
+                        //console.log(this.id);
+                        
+                        var data = sendCommand("save");
+
+                        if(data.indexOf("Parameters stored") != -1)
+                        {
+                            //TODO: CRC32 check on entire params list
+
+                            $.notify({ message: data },{ type: 'success' });
+                        }else{
+                            $.notify({ icon: 'glyphicon glyphicon-warning-sign', title: 'Error', message: data },{ type: 'danger' });
+                        }
+                    //}
+                }
+            });
+        });
+    }
 
     var safety = getCookie("safety");
     
@@ -113,6 +69,93 @@ $(document).ready(function()
         buildParameters();
     }
 });
+
+function inputText(id)
+{
+    var getVariable = $(id).text();
+    if(getVariable === "")
+        getVariable = $(id).val();
+
+    return getVariable;
+}
+
+function validateInput(id,value)
+{
+    if(getJSONFloatValue('opmode') > 0 && id != 'fslipspnt'){
+        stopInverter();
+        $.notify({ message: 'Inverter must not be in operating mode.' }, { type: 'danger' });
+        return false;
+    }
+
+    if (isInt(parseInt(value)) == false && isFloat(parseFloat(value)) == false){
+        $.notify({ message: 'Value must be a number' }, { type: 'danger' });
+        return false;
+    }
+
+    if(id == 'fmin'){
+
+        if(parseFloat(value) > parseFloat(inputText('#fslipmin')))
+        {
+            $.notify({ message: 'Should be set below fslipmin' }, { type: 'danger' });
+            return false;
+        }
+    }else  if(id == 'polepairs'){
+        if ($.inArray(parseInt(value), [ 1, 2, 3, 4, 5]) == -1)
+        {
+            $.notify({ message: 'Pole pairs = half # of motor poles' }, { type: 'danger' });
+            return false;
+        }
+    }else  if(id == 'udcmin'){
+        if(parseInt(value) > parseInt(inputText("#udcmax")))
+        {
+            $.notify({ message: 'Should be below maximum voltage (udcmax)' }, { type: 'danger' });
+            return false;
+        }
+    }else  if(id == 'udcmax'){
+        if(parseInt(value) > parseInt(inputText("#udclim")))
+        {
+            $.notify({ message: 'Should be lower than cut-off voltage (udclim)' }, { type: 'danger' });
+            return false;
+        }
+    }else  if(id == 'udclim'){
+        if(parseInt(value) <= parseInt(inputText("#udcmax")))
+        {
+            $.notify({ message: 'Should be above maximum voltage (udcmax)' }, { type: 'danger' });
+            return false;
+        }
+    }else if(id == 'udcsw'){
+        if(parseInt(value) > parseInt(inputText("#udcmax")))
+        {
+            $.notify({ message: 'Should be below maximum voltage (udcmax)' }, { type: 'danger' });
+            return false;
+        }
+    }else if(id == 'udcsw'){
+        if(parseInt(value) > parseInt(inputText("#udcmin")))
+        {
+            $.notify({ message: 'Should be below minimum voltage (udcmin)' }, { type: 'danger' });
+            return false;
+        }
+    }else if(id == 'fslipmin'){
+        if(parseFloat(value) <= parseFloat(inputText('#fmin')))
+        {
+            $.notify({ message: 'Should be above starting frequency (fmin)' }, { type: 'danger' });
+            return false;
+        }
+    /*
+    }else  if(id == 'ocurlim'){
+        if(value > 0)
+        {
+            return 'Current limit should be set as negative';
+        }*/
+    }
+
+    var notify = $.notify({ message: id + " = " + $.trim(value) },{
+        //allow_dismiss: false,
+        //showProgressbar: true,
+        type: 'warning'
+    });
+    return true;
+};
 
 function basicChecks(json)
 {
@@ -206,9 +249,26 @@ function buildParameters()
 			var x = parameters.indexOf(key);
 			if(x !=-1)
 				tooltip = description[x];
-			
-			var a = $("<a>", { href:"#", "id":key, "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":json[key].unit + " ("+ json[key].default + ")"}).append(json[key].value);
-            var tr = $("<tr>");
+
+			var a = $("<a>");
+			var tr = $("<tr>");
+
+            if(os === "mobile") {
+                var a = $("<input>", { type:"number", "id":key, class:"form-control", value:json[key].value });
+                tr.attr("style","font-size: 140%;");
+                a.attr("style","font-size: 110%; width: 100%; height: 1.5em");
+                a.on('change paste', function() {
+                    var element = $(this);
+                    if(element.val() != "") {
+                        if(validateInput(element.attr("id"),element.val()))
+                            setParameter(element.attr("id"),element.val(),true,true);
+                    }
+                });
+
+            }else{
+                var a = $("<a>", { href:"#", "id":key, "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":json[key].unit + " ("+ json[key].default + ")"});
+                a.append(json[key].value);
+            }
 
             var category_icon = $("<i>", { class:"text-muted glyphicon" });
 

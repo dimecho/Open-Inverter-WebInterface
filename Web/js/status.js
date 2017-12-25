@@ -4,9 +4,7 @@ $(document).ready(function () {
 
     var version = getJSONFloatValue("version");
     if(version > 0) {
-        $("#firmwareVersion").empty().append("Firmware v" + version);
-        if (os === "mobile")
-            $("#firmwareVersion").attr("style","font-size: 150%;");
+        $("#firmwareVersion").empty().append("Firmware v" + version);   
     }
     
     buildStatus(false);

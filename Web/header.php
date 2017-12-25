@@ -9,6 +9,21 @@
 <link rel="stylesheet" type="text/css" href="/css/fancybox.css" media="screen"/>
 
 <script type="text/javascript" src="/js/jquery.js"></script>
+<script>
+    var os = "linux";
+    $(document).ready(function() {
+        if (navigator.userAgent.match(/Android|webOS|iPhone|iPod|Blackberry/i)) {
+            os = "mobile";
+            $.getScript("/js/mobile.js", function() {
+                optimizeMobile();
+            });
+        }else if (navigator.userAgent.match(/Mac/i)) {
+            os = "mac";
+        }else if (navigator.userAgent.match(/Win/i)) {
+            os = "windows";
+        }
+    });
+</script>
 <script type="text/javascript" src="/js/svg-injector.js"></script>
 <script type="text/javascript" src="/js/alertify.js"></script>
 <script type="text/javascript" src="/js/download.js"></script>
@@ -16,7 +31,6 @@
 <script type="text/javascript" src="/js/fancybox.js"></script>
 <script type="text/javascript" src="/js/bootstrap.js"></script>
 <script type="text/javascript" src="/js/bootstrap-notify.js"></script>
-<script type="text/javascript" src="/js/mobile.js"></script>
 <script type="text/javascript" src="/js/menu.js"></script>
 
 <?php

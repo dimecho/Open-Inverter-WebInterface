@@ -2,23 +2,6 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script>
-            $(document).ready(function() {
-                $(".safety").fancybox({
-                    maxWidth    : 800,
-                    maxHeight   : 640,
-                    fitToView   : false,
-                    width       : '80%',
-                    height      : '80%',
-                    autoSize    : false,
-                    closeClick  : false,
-                    openEffect  : 'none',
-                    closeEffect : 'none'
-                });
-            });
-        </script>
-        <link rel="stylesheet" type="text/css" href="/css/bootstrap-editable.css" />
-        <script type="text/javascript" src="/js/bootstrap-editable.js"></script>
         <script type="text/javascript" src="/js/status.js"></script>
         <script type="text/javascript" src="/js/index.js"></script>
     </head>

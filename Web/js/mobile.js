@@ -6,8 +6,7 @@ function optimizeMobile() {
    $(".btn").attr("style","font-size: 150%;");
    $(".glyphicon").addClass("display-3");
    $("select").attr("style","font-size: 110%; width: 80%; height: 2.0em");
-   $("td").attr("style","font-size: 150%;");
-   $("#firmwareVersion").attr("style","font-size: 150%;");
-   $(".popover-header").addClass("display-4");
+   $("input").attr("style","font-size: 110%; width: 100%; height: 1.5em");
+   $(".badge").attr("style","font-size: 110%;");
 
 };

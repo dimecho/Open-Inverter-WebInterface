@@ -1,4 +1,3 @@
-var os = "linux";
 var knobValue = 0;
 var knobTimer;
 //var TipRefreshTimer;
@@ -9,19 +8,6 @@ $(document).ready(function () {
     alertify.defaults.theme.ok = "btn btn-primary";
     alertify.defaults.theme.cancel = "btn btn-danger";
     alertify.defaults.theme.input = "form-control";
-
-    if (navigator.userAgent.match(/Android|webOS|iPhone|iPod|Blackberry/i)) {
-        os = "mobile";
-        optimizeMobile();
-    }else if (navigator.userAgent.match(/Mac/i)) {
-        os = "mac";
-    }else if (navigator.userAgent.match(/Win/i)) {
-        os = "windows";
-    }
-
-    //Debug
-    //os = "mobile";
-    //optimizeMobile();
 
     alertify.dialog('startInverterMode', function () {
         return {
@@ -157,10 +143,24 @@ function setParameter(cmd, value, save, notify) {
         }
     });
 
-    if(save)
+    if(save) {
+
         $.ajax("/serial.php?command=save"); //don't forget to save
-    if(notify)
-        $.notify({ message: cmd + "=" + value}, { type: "success" });
+    
+        if(notify){
+            /*
+             if(data.indexOf("Parameters stored") != -1)
+            {
+                //TODO: CRC32 check on entire params list
+
+                $.notify({ message: data },{ type: 'success' });
+            }else{
+                $.notify({ icon: 'glyphicon glyphicon-warning-sign', title: 'Error', message: data },{ type: 'danger' });
+            }
+            */
+            $.notify({ message: cmd + " = " + value}, { type: "success" });
+        }
+    }
 
     //console.log(e);
     return e;
@@ -504,10 +504,14 @@ function buildMenu() {
             col.append(status);
             row.append(col);
 
-            var span = $("<span>", { class: "badge badge-lg badge-info", id: "firmwareVersion" });
+            var span = $("<span>", { class: "badge badge-info", id: "firmwareVersion" });
             var col = $("<td>");
             col.append(span);
             row.append(col);
+
+            if(os === "mobile") {
+                span.attr("style","font-size: 150%;");
+            }
         }
     });
 };
