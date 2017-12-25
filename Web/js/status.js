@@ -3,8 +3,11 @@ var statusRefreshTimer;
 $(document).ready(function () {
 
     var version = getJSONFloatValue("version");
-    if(version > 0)
+    if(version > 0) {
         $("#firmwareVersion").empty().append("Firmware v" + version);
+        if (os === "mobile")
+            $("#firmwareVersion").attr("style","font-size: 150%;");
+    }
     
     buildStatus(false);
 });
@@ -120,6 +123,11 @@ function buildStatus(sync) {
 
             $('.tooltip').remove();
             $('[data-toggle="tooltip"]').tooltip();
+
+            if(os=== "mobile")
+            {
+                $(".svg-inject").attr("style","width:80px; height:80px;");
+            }
         }
     });
     

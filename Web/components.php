@@ -16,11 +16,15 @@
 			<?php
                 if($_GET["hardware"] == "1"){
             ?>
-			
                 pcb += "Hardware v1.0";
                 buildTable("Main Board v4", pcb + "/bom/base_board4.csv");
                 buildTable("Gate Driver v2", pcb + "/bom/gate_driver2.csv", "Note: DC-DC has changed. PCB \"gate_driver.brd\" contains different size (old) component RH0515D or IH0515S");
                 buildTable("Sensor Board v3", pcb + "/bom/sensor_board3.csv", "Add C4 & C5 100nF when using LEM HTFS current sensors");
+            <?php
+                }else if($_GET["hardware"] == "2"){
+            ?>
+                pcb += "Hardware v2.0";
+                buildTable("Main Board v5", pcb + "/bom/base_board5.csv");
             <?php
                 }else if($_GET["hardware"] == "damien"){
             ?>
@@ -52,8 +56,7 @@
             <?php include "menu.php" ?>
             <br/>
             <div class="row">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-10" id="components" style="display:none">
+                <div class="col" id="components" style="display:none">
                      <table class="table table-active bg-light table-bordered">
                         <tbody>
                             <tr align="center">
@@ -64,10 +67,20 @@
                                     Hardware v1.0 (Johannes Huebner)
                                 </td>
                                 <td>
+                                    <a href="/components.php?hardware=2">
+                                        <img src="/img/hardware_v2.jpg" class="img-thumbnail rounded" />
+                                    </a><br/><br/>
+                                    Hardware v2.0 (Johannes Huebner)
+                                </td>
+                            </tr>
+                            <tr align="center">
+                                <td>
                                     <a href="/components.php?hardware=damien">
                                         <img src="/img/hardware_v1_damien.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
                                     Hardware v1.0 (Damien Maguire)
+                                </td>
+                                <td>
                                 </td>
                             </tr>
                             <tr align="center">
@@ -87,7 +100,6 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-lg-1"></div>
             </div>
             <br/><br/><br/><br/><br/><br/>
             <!-- PDF -->

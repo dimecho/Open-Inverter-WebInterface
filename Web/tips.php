@@ -22,8 +22,7 @@
             <?php include "menu.php" ?>
             <br/>
              <div class="row">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-10">
+                <div class="col">
                     <table class="table table-active bg-light table-bordered table-striped" width="100%">
                         <tbody>
                             <tr>
@@ -32,7 +31,6 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-lg-1"></div>
             </div>
         </div>
     </body>

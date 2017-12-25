@@ -39,9 +39,8 @@
             <?php include "menu.php" ?>
             <br/>
             <div class="row">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-10">
-                    <table class="table table-active bg-light table-bordered">
+                <div class="col">
+                    <table class="table table-active bg-faded table-bordered">
                         <tbody>
                         <?php if(isset($_GET["fuses"])){ ?>
                             <tr>
@@ -135,9 +134,9 @@
                             <tr>
                                 <td>
                                 <center>
-                                    <div class="input-group" style="width:80%">
-                                        <span class = "input-group-addon" style="width:30%">
-                                            <select name="isp" class="form-control" form="Aform" id="ispList" style="width:100%">
+                                    <div class="input-group">
+                                        <span class = "input-group-addon" style="width:20%">
+                                            <select name="isp" class="form-control" form="Aform" id="ispList" style="width:90%;">
                                                 <option value="ponyser" selected="selected">ponyser</option>
                                                 <option value="usbtiny">usbtiny</option>
                                                 <option value="usbasp">usbasp</option>
@@ -145,8 +144,8 @@
                                                 <option value="arduino">arduino</option>
                                             </select>
                                         </span>
-                                        <span class = "input-group-addon" style="width:70%">
-                                            <select name="serial" class="form-control" form="Aform" id="serialList" style="width:100%">
+                                        <span class = "input-group-addon" style="width:40%">
+                                            <select name="serial" class="form-control" form="Aform" id="serialList" style="width:90%;">
                                             </select>
                                         </span>
                                         <span class = "input-group-addon">
@@ -169,7 +168,6 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-lg-1"></div>
             </div>
         </div>
         <form enctype="multipart/form-data" action="/attiny.php" method="POST" id="Aform">

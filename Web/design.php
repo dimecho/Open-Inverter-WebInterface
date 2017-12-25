@@ -14,8 +14,7 @@
             <?php include "menu.php" ?>
             <br/>
             <div class="row">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-10">
+                <div class="col">
                     <center>
                     <?php if(isset($_GET["id"])){ ?>
                         <script>
@@ -46,7 +45,6 @@
                     <?php } ?>
                     </center>
                 </div>
-                <div class="col-lg-1"></div>
             </div>
         </div>
     </body>

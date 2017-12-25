@@ -32,7 +32,7 @@ if [[ $(type -p php) ]]; then
     echo "Running as sudo ..."
     
     sudo killall php
-    sudo $(type -p php) -S 127.0.0.1:8080 -t "$(dirname "$0")/Web/" &
+    sudo $(type -p php) -S 0.0.0.0:8080 -t "$(dirname "$0")/Web/" &
     sleep 4
     
     checkUSB

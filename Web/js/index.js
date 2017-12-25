@@ -301,11 +301,11 @@ function checkUpdates() {
                 //console.log(data);
                 if(data !== "") {
                     var url = "https://github.com/poofik/Huebner-Inverter/releases/download/1.0/";
-                    if(os === "Mac"){
+                    if(os === "mac"){
                         url += "Huebner.Inverter.dmg";
-                    }else if(os === "Windows"){
+                    }else if(os === "windows"){
                         url += "Huebner.Inverter.Windows.zip";
-                    }else if(os === "Linux"){
+                    }else if(os === "linux"){
                         url += "Huebner.Inverter.Linux.tgz";
                     }
                     $.notify({

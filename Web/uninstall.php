@@ -9,8 +9,7 @@
             <?php include "menu.php" ?>
             <br/>
              <div class="row">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-10">
+                <div class="col">
                     <table class="table table-active bg-light table-bordered">
                         <tbody>
                             <tr>
@@ -55,7 +54,6 @@
                     </table>
                     <button class="browse btn btn-primary" type="button" onclick="Uninstall();"><i class="glyphicon glyphicon-trash"></i> Uninstall</button>
                 </div>
-                <div class="col-lg-1"></div>
             </div>
         </div>
         <br/>

@@ -1,8 +1,27 @@
+var os = "linux";
 var knobValue = 0;
 var knobTimer;
 //var TipRefreshTimer;
 
 $(document).ready(function () {
+
+    alertify.defaults.transition = "slide";
+    alertify.defaults.theme.ok = "btn btn-primary";
+    alertify.defaults.theme.cancel = "btn btn-danger";
+    alertify.defaults.theme.input = "form-control";
+
+    if (navigator.userAgent.match(/Android|webOS|iPhone|iPod|Blackberry/i)) {
+        os = "mobile";
+        optimizeMobile();
+    }else if (navigator.userAgent.match(/Mac/i)) {
+        os = "mac";
+    }else if (navigator.userAgent.match(/Win/i)) {
+        os = "windows";
+    }
+
+    //Debug
+    //os = "mobile";
+    //optimizeMobile();
 
     alertify.dialog('startInverterMode', function () {
         return {
@@ -98,6 +117,8 @@ $(document).ready(function () {
     });
     
     $(".knob").val(0).trigger('change');
+
+    buildMenu();
 	
 	/*
     TipRefreshTimer=setTimeout(function () {
@@ -186,6 +207,7 @@ function loadJSON() {
 
     var json = {};
 
+    //$.ajax("/js/debug.json", {
     $.ajax("/serial.php?command=json", {
         async: false,
         cache: false,
@@ -335,6 +357,9 @@ function giveCredit(csv) {
 };
 
 function buildTips() {
+    
+    if(os === "mobile")
+        return;
 
     var show = Math.random() >= 0.5;
 
@@ -361,6 +386,130 @@ function buildTips() {
             error: function error(xhr, textStatus, errorThrown) {}
         });
     }
+};
+
+function buildMenu() {
+
+    var file = "/js/menu.json";
+
+    if (os === "mobile") {
+        file = "/js/menu-mobile.json";
+    }
+
+    $.ajax(file, {
+        async: false,
+        type: 'GET',
+        dataType: 'json',
+        success: function success(json) {
+
+            //console.log(json);
+
+            var nav = $("#buildNav").empty();
+            var div = $("<div>", { class: "collapse navbar-collapse", id:"navbarsDefault" });
+            var container = $("<table>", { style: "width:100%;" });
+            var row = $("<tr>");
+            var col = $("<td>");
+
+            if (os === "mobile") {
+                
+                var button = $("<button>", { class: "navbar-toggler navbar-toggler-right", type: "button", "data-toggle":"collapse", "data-target": "#navbarsDefault", "aria-controls": "navbarsDefault", "aria-expanded": false, "aria-label": "Navigation" });
+                var span = $("<span>", { class: "text-white display-3 glyphicon glyphicon-menu-hamburger" });
+                button.append(span);
+                col.append(button);
+     
+                nav.addClass("navbar-toggleable-md navbar-inverse bg-inverse");
+                nav.attr("style","background-color: #000;");
+            }else{
+
+                nav.addClass("navbar-expand-md navbar-light bg-light");
+            }
+
+            col.append(div);
+            row.append(col);
+            container.append(row);
+            nav.append(container);
+
+            for(var key in json.menu)
+            {
+                //console.log(json.menu[key].id);
+
+                var ul = $("<ul>", { class: "navbar-nav" });
+                var li = $("<li>", { class: "nav-item" });
+                var a = $("<a>", { class: "nav-link bg-inverse", href: "#" });
+                var _i = $("<i>", { class: "glyphicon " +  json.menu[key].icon });
+                
+                a.append(_i);
+                a.append($("<b>").append(" " + json.menu[key].id));
+                li.append(a);
+                
+                if(json.menu[key].dropdown)
+                {
+                    li.addClass("dropdown");
+                    a.addClass("dropdown-toggle");
+                    a.attr("data-toggle","dropdown");
+                    a.attr("aria-haspopup",true);
+                    a.attr("aria-expanded",false);
+
+                    var dropdown_menu = $("<div>", { class: "dropdown-menu" });
+
+                    for(var d in json.menu[key].dropdown)
+                    {
+                        //console.log(json.menu[key].dropdown[d].id);
+                        var dropdown_id = json.menu[key].dropdown[d].id;
+
+                        if(json.menu[key].dropdown[d].onClick == undefined) {
+
+                            var d = $("<div>", { class: "dropdown-divider" });
+                            dropdown_menu.append(d);
+                        }else{
+                            
+                            var dropdown_item = $("<a>", { class: "dropdown-item", href: "#" });
+
+                            var icon = $("<i>", { class: "glyphicon " + json.menu[key].dropdown[d].icon });
+                            var item = $("<span>");
+
+                            if (json.menu[key].dropdown[d].onClick.indexOf(".php") != -1)
+                            {
+                                dropdown_item.attr("href", json.menu[key].dropdown[d].onClick);
+                            }else{
+                                dropdown_item.attr("onClick", json.menu[key].dropdown[d].onClick);
+                            }
+
+                            dropdown_item.append(icon);
+                            dropdown_item.append(item.append(" " + dropdown_id));
+                            dropdown_menu.append(dropdown_item);
+                        }
+
+                        if (os === "mobile") {
+                            icon.addClass("display-3");
+                            item.addClass("display-3");
+                        }
+                    }
+
+                    li.append(dropdown_menu);
+                }else{
+                    a.attr("href", json.menu[key].onClick);
+                }
+
+                if (os === "mobile") {
+                    a.addClass("display-4 text-white");
+                }
+
+                ul.append(li);
+                div.append(ul);
+            }
+
+            var status = $("<div>", { id: "opStatus" });
+            var col = $("<td>");
+            col.append(status);
+            row.append(col);
+
+            var span = $("<span>", { class: "badge badge-lg badge-info", id: "firmwareVersion" });
+            var col = $("<td>");
+            col.append(span);
+            row.append(col);
+        }
+    });
 };
 
 function deleteCookie(name, path, domain) {

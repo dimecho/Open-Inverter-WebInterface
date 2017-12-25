@@ -121,9 +121,8 @@
             <?php include "menu.php" ?>
             <br/><br/>
             <div class="row">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-10">
-                    <table class="table table-active bg-light table-bordered">
+                <div class="col">
+                    <table class="table table-active bg-faded table-bordered">
                         <tbody>
                         <?php if(isset($_FILES["firmware"])){ ?>
                             <tr>
@@ -189,9 +188,9 @@
                             <tr>
                                 <td>
                                     <center>
-                                        <div class="input-group" style="width:60%">
-                                            <span class="input-group-addon" style="width:90%">
-                                                <select name="serial" class="form-control" form="Aform" id="serialList" style="width:100%"></select>
+                                        <div class="input-group">
+                                            <span class="input-group-addon" style="width:80%">
+                                                <select name="serial" class="form-control" form="Aform" id="serialList" style="width:80%"></select>
                                             </span>
                                             <span class="input-group-addon">
                                                 <button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select BIN</button>
@@ -209,7 +208,6 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-lg-1"></div>
             </div>
         </div>
         <form enctype="multipart/form-data" action="/firmware.php" method="POST" id="Aform">

@@ -14,7 +14,7 @@
         if(isset($id['download']['all'])){
             $source = $id['download']['all'];
         }else{
-            $source = $id['download'][$GLOBALS['OS']];
+            $source = $id['download'][$GLOBALS['ClientOS']];
         }
         
         if ($GLOBALS["OS"] === "mac") {

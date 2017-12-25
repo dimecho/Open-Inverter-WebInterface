@@ -1,5 +1,6 @@
 <?php
     $GLOBALS["OS"] = "linux";
+    $GLOBALS["ClientOS"] = "linux";
     $GLOBALS["X11"] = "/Applications/Utilities/XQuartz.app/Contents/MacOS/X11";
     $GLOBALS["Software"] = array (
         'xquartz' => array (
@@ -204,6 +205,19 @@
             $GLOBALS["OS"] = "mac";
         }else if (strpos($uname, "win") !== false) {
             $GLOBALS["OS"] = "windows";
+        }
+        detectClientOS();
+    }
+
+    function detectClientOS()
+    {
+        $uname = strtolower($_SERVER['HTTP_USER_AGENT']);
+        if (strpos($uname, "mac") !== false) {
+            $GLOBALS["ClientOS"] = "mac";
+        }else if (strpos($uname, "win") !== false) {
+            $GLOBALS["ClientOS"] = "windows";
+        }else if (strpos($uname, "iphone") !== false || strpos($uname, "ipad") !== false || strpos($uname, "android") !== false) {
+            $GLOBALS["ClientOS"] = "mobile";
         }
     }
 

@@ -32,8 +32,7 @@
             <?php include "menu.php" ?>
             <br/>
             <div class="row">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-10">
+                <div class="col">
                     <table class="table table-active bg-light table-bordered"><tbody><tr><td><h4>Auto Tuning</h4></td></tr></tbody></table>
                     <table class="table table-active bg-light table-bordered">
                         <tr>
@@ -56,7 +55,6 @@
                     <table class="table table-active bg-light table-bordered"><tbody><tr><td><h4>Battery</h4></td></tr></tbody></table>
                     <table class="table table-active bg-light table-bordered" id="parameters_Battery"></table>
                 </div>
-                <div class="col-lg-1"></div>
             </div>
         </div>
     </body>

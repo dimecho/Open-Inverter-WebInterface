@@ -27,8 +27,7 @@
             <?php include "menu.php" ?>
             <br/>
             <div class="row">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-10" align="center">
+                <div class="col" align="center">
                     <div id="connection" style="display: none;">
                         <img src="/img/connection.jpg" class="thumbnail" width="80%" height="80%"/>
                         <br/><br/>
@@ -40,7 +39,6 @@
                     <div class="loader" style="display: none;"></div>
                     <table class="table table-active bg-light table-bordered table-striped table-hover" style="display:none;" id="parameters"></table>
                 </div>
-                <div class="col-lg-1"></div>
             </div>
         </div>
         <a class="safety" data-fancybox data-src="#warning" href="javascript:;" style="display: none;"></a>

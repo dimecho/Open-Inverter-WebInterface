@@ -13,8 +13,7 @@
             <?php include "menu.php" ?>
             <br/>
              <div class="row">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-10">
+                <div class="col">
                     <table class="table table-active bg-light table-bordered">
                         <tbody>
                             <tr>
@@ -25,7 +24,7 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-active bg-light table-bordered" width="100%">
+                    <table class="table table-active bg-faded table-bordered" width="100%">
                         <tbody>
                             <tr>
                                 <td>
@@ -113,9 +112,7 @@
                             </tr>
                         </tbody>
                     </table>
-                   
                 </div>
-                <div class="col-lg-1"></div>
             </div>
         </div>
     </body>
