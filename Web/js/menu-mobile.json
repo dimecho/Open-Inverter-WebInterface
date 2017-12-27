@@ -69,5 +69,22 @@
             "icon": "glyphicon-list-alt",
             "onClick": "/components.php"
         }]
+    }, {
+        "id": "Info",
+        "icon": "glyphicon-info-sign",
+        "onClick": "",
+        "dropdown": [{
+            "id": "Motor Classification",
+            "icon": "glyphicon-tasks",
+            "onClick": "/motor-class.php"
+        }, {
+            "id": "IGBT Test",
+            "icon": "glyphicon-hand-down",
+            "onClick": "/igbt-test.php"
+        }, {
+            "id": "Tips",
+            "icon": "glyphicon-question-sign",
+            "onClick": "/tips.php"
+        }]
     }]
 }

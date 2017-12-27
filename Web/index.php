@@ -25,7 +25,7 @@
             </div>
         </div>
         <a class="safety" data-fancybox data-src="#warning" href="javascript:;" style="display: none;"></a>
-        <div id="warning" style="display:none;width:640px;border-radius:5px">
+        <div id="warning" style="display:none;width:60%;border-radius:5px">
             <center>
                 <img src="/img/safety.png" />
             </center>

@@ -17,11 +17,16 @@
                 //stty -f $serial 115200 & screen $serial 115200 &
 
             }else{
-                exec("stty -f " .$com. " 115200");
-                exec("stty -f " .$com. " -parenb");
-                exec("stty -f " .$com. " cs8");
-                exec("stty -f " .$com. " cstopb");
-                exec("stty -f " .$com. " clocal -crtscts -ixon -ixoff");
+                #Raspberry Pi Fix
+                exec("minicom -b 115200 -o -D " .$com. " &");
+                exec("killall minicom");
+
+                #Linux set TTY speed
+                exec("stty -F " .$com. " 115200");
+                exec("stty -F " .$com. " -parenb");
+                exec("stty -F " .$com. " cs8");
+                exec("stty -F " .$com. " cstopb");
+                exec("stty -F " .$com. " clocal -crtscts -ixon -ixoff");
             }
 
             $uart = fopen($com, "rb+");

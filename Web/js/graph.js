@@ -7,6 +7,7 @@ var options;
 var xaxis = [];
 var chart;
 var ctx;
+var ctxFont = 12;
 var xhr;
 
 $(document).ready(function () {
@@ -50,7 +51,15 @@ $(document).ready(function () {
 
     Chart.defaults.global.animationSteps = 12;
 
-    ctx = document.getElementById("canvas").getContext("2d");
+    var canvas = document.getElementById("canvas");
+    ctx = canvas.getContext("2d");
+
+    if(os === "mobile") {
+        canvas.height = 400;
+        ctxFont = 40;
+    }else{
+        canvas.height = 200;
+    }
 
     /*
     ctx.webkitImageSmoothingEnabled = false;
@@ -385,6 +394,7 @@ function initPWMChart(duration) {
         legend: {
             display: true,
             labels: {
+                fontSize: ctxFont,
                 fontColor: 'rgb(0, 0, 0)'
             }
         },
@@ -407,10 +417,12 @@ function initPWMChart(duration) {
                 position: 'bottom',
                 //stacked: true,
                 scaleLabel: {
+                    fontSize: ctxFont,
                     display: true,
                     labelString: 'Time (Millisecond)'
                 },
                 ticks: {
+                    fontSize: ctxFont,
                     reverse: false,
                     maxRotation: 0
                 }
@@ -420,10 +432,12 @@ function initPWMChart(duration) {
                 position: 'left',
                 //stacked: true,
                 scaleLabel: {
+                    fontSize: ctxFont,
                     display: true,
                     labelString: 'Pulse'
                 },
                 ticks: {
+                    fontSize: ctxFont,
                     beginAtZero:true,
                     reverse: false,
                     stepSize: 0.5,
@@ -510,6 +524,7 @@ function initPAMChart(duration) {
         legend: {
             display: true,
             labels: {
+                fontSize: ctxFont,
                 fontColor: 'rgb(0, 0, 0)'
             }
         },
@@ -529,8 +544,8 @@ function initPAMChart(duration) {
                 position: 'bottom',
                 barPercentage: 1.0,
                 categoryPercentage: 2.0,
-
                 scaleLabel: {
+                    fontSize: ctxFont,
                     display: true,
                     //labelString: 'PWM (kHz/Cycle)'
                     labelString: 'Time (Milliseconds)'
@@ -545,6 +560,7 @@ function initPAMChart(duration) {
                 display: true,
                 position: 'left',
                 scaleLabel: {
+                    fontSize: ctxFont,
                     display: true,
                     labelString: 'Voltage (VDC)'
                 },
@@ -633,6 +649,7 @@ function initFrequenciesChart(duration) {
         legend: {
             display: true,
             labels: {
+                fontSize: ctxFont,
                 fontColor: 'rgb(0, 0, 0)'
             }
         },
@@ -650,12 +667,13 @@ function initFrequenciesChart(duration) {
             xAxes: [{
                 display: true,
                 position: 'bottom',
-
                 scaleLabel: {
+                    fontSize: ctxFont,
                     display: true,
                     labelString: 'Time (Seconds)'
                 },
                 ticks: {
+                    fontSize: ctxFont,
                     reverse: false,
                     maxRotation: 0,
                     stepSize: 50
@@ -665,10 +683,12 @@ function initFrequenciesChart(duration) {
                 display: true,
                 position: 'left',
                 scaleLabel: {
+                    fontSize: ctxFont,
                     display: true,
                     labelString: 'Frequency (Hz)'
                 },
                 ticks: {
+                    fontSize: ctxFont,
                     reverse: false,
                     stepSize: step,
                     suggestedMin: 0, //important
@@ -729,6 +749,7 @@ function initAmperageChart(duration) {
         legend: {
             display: true,
             labels: {
+                fontSize: ctxFont,
                 fontColor: 'rgb(0, 0, 0)'
             }
         },
@@ -754,12 +775,13 @@ function initAmperageChart(duration) {
             xAxes: [{
                 display: true,
                 position: 'bottom',
-
                 scaleLabel: {
+                    fontSize: ctxFont,
                     display: true,
                     labelString: 'Time (Seconds)'
                 },
                 ticks: {
+                    fontSize: ctxFont,
                     reverse: false,
                     maxRotation: 0,
                     stepSize: 50
@@ -769,10 +791,12 @@ function initAmperageChart(duration) {
                 display: true,
                 position: 'left',
                 scaleLabel: {
+                    fontSize: ctxFont,
                     display: true,
                     labelString: 'Current (A)'
                 },
                 ticks: {
+                    fontSize: ctxFont,
                     reverse: false,
                     stepSize: step,
                     suggestedMin: 0, //important
@@ -818,6 +842,7 @@ function initMotorChart(duration) {
         legend: {
             display: false,
             labels: {
+                fontSize: ctxFont,
                 fontColor: 'rgb(0, 0, 0)'
             }
         },
@@ -835,12 +860,13 @@ function initMotorChart(duration) {
             xAxes: [{
                 display: true,
                 position: 'bottom',
-
                 scaleLabel: {
+                    fontSize: ctxFont,
                     display: true,
                     labelString: 'Time (Seconds)'
                 },
                 ticks: {
+                    fontSize: ctxFont,
                     maxRotation: 0,
                     reverse: false
                 }
@@ -849,10 +875,12 @@ function initMotorChart(duration) {
                 display: true,
                 position: 'left',
                 scaleLabel: {
+                    fontSize: ctxFont,
                     display: true,
                     labelString: 'Speed (RPM)'
                 },
                 ticks: {
+                    fontSize: ctxFont,
                     reverse: false,
                     stepSize: 500,
                     suggestedMin: 0, //important
@@ -907,6 +935,7 @@ function initTemperatureChart(duration) {
         legend: {
             display: true,
             labels: {
+                fontSize: ctxFont,
                 fontColor: 'rgb(0, 0, 0)'
             }
         },
@@ -924,12 +953,13 @@ function initTemperatureChart(duration) {
             xAxes: [{
                 display: true,
                 position: 'bottom',
-
                 scaleLabel: {
+                    fontSize: ctxFont,
                     display: true,
                     labelString: 'Time (Seconds)'
                 },
                 ticks: {
+                    fontSize: ctxFont,
                     maxRotation: 0,
                     reverse: false
                 }
@@ -938,10 +968,12 @@ function initTemperatureChart(duration) {
                 display: true,
                 position: 'left',
                 scaleLabel: {
+                    fontSize: ctxFont,
                     display: true,
                     labelString: 'Degree °C'
                 },
                 ticks: {
+                    fontSize: ctxFont,
                     reverse: false,
                     stepSize: 10,
                     suggestedMin: 0, //important
@@ -1003,6 +1035,7 @@ function initBatteryChart(duration) {
         legend: {
             display: true,
             labels: {
+                fontSize: ctxFont,
                 fontColor: 'rgb(0, 0, 0)'
             }
         },
@@ -1020,12 +1053,13 @@ function initBatteryChart(duration) {
             xAxes: [{
                 display: true,
                 position: 'bottom',
-
                 scaleLabel: {
+                    fontSize: ctxFont,
                     display: true,
                     labelString: 'Time (Seconds)'
                 },
                 ticks: {
+                    fontSize: ctxFont,
                     maxRotation: 0,
                     reverse: false
                 }
@@ -1034,10 +1068,12 @@ function initBatteryChart(duration) {
                 display: true,
                 position: 'left',
                 scaleLabel: {
+                    fontSize: ctxFont,
                     display: true,
                     labelString: 'Voltage'
                 },
                 ticks: {
+                    fontSize: ctxFont,
                     reverse: false,
                     stepSize: step,
                     suggestedMin: 0, //important

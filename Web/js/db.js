@@ -20,7 +20,6 @@ function setMotorImage()
 
     var motortune = $("#motortune").empty();
     var table =  $("<table>");
-    var tbody = $("<tbody>");
 
     for(var t in motorDB.motors[i].tune)
     {
@@ -36,7 +35,7 @@ function setMotorImage()
                 var tr = $("<tr>");
                 var td = $("<td>").append(btn.append("[" + t + "] Set Motor for " + parseInt(json.udc) + " V"));
                 tr.append(td);
-                tbody.append(tr);
+                table.append(tr);
 
                 btn.click(function(){
 
@@ -54,10 +53,13 @@ function setMotorImage()
 
                     $(this).removeAttr("disabled");
                 });
+
+                if(os === "mobile")
+                    btn.attr("style","font-size: 140%;");
             }
         });
     }
-    table.append(tbody);
+
     motortune.append(table);
 };
 

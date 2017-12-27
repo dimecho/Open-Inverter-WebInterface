@@ -22,6 +22,8 @@
         }else if (navigator.userAgent.match(/Win/i)) {
             os = "windows";
         }
+        //DEBUG
+        //os = "mobile";
     });
 </script>
 <script type="text/javascript" src="/js/svg-injector.js"></script>

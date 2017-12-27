@@ -59,6 +59,13 @@ form {
   background: #ff704d
 }
 
+.nav-tabs > li > a {
+  color: #49afcd;
+}
+.nav-tabs > li > a:hover {
+  color: #000000; 
+}
+
 .loader {
   border: 5px solid #A9A9A9;
   border-top-width: 5px;
