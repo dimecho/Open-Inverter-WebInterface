@@ -20,7 +20,7 @@
                 #Raspberry Pi Fix
                 exec("minicom -b 115200 -o -D " .$com. " &");
                 exec("killall minicom");
-
+                
                 #Linux set TTY speed
                 exec("stty -F " .$com. " 115200");
                 exec("stty -F " .$com. " -parenb");

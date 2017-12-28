@@ -118,10 +118,15 @@
                 //Continue reading
                 $read = "";
                 if($cmd === "json\r"){
+                    /*
                     do {
                         $read .= fread($uart, 1);
                         json_decode($read);
                     } while (json_last_error() != JSON_ERROR_NONE);
+                    */
+                    $read .= fread($uart,9000);
+                    while (stripos($read, "}\r\n}") === false)
+                        $read .= fread($uart,2);
                 }else if($cmd === "all\r"){
                     while($read.= fread($uart, 1))
                         if(strpos($read,"tm_meas") !== false)
