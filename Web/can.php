@@ -24,7 +24,7 @@
             <?php include "menu.php" ?>
             <br/>
             <div class="row">
-                <div class="col">
+                <div class="col" align="center">
                     <table class="table table-active bg-light table-bordered">
                         <tr>
                             <td>
@@ -36,10 +36,10 @@
                     <table class="table table-active table-bordered">
                             <tr>
                                 <td>
-                                    <button type="button" class="btn btn-danger" onClick="setCANDefaults()"><i class="glyphicon glyphicon-erase"></i> Reset CAN Mapping</button>
+                                    <button type="button" class="btn btn-danger" onClick="setCANDefaults()"><i class="glyphicon glyphicon-erase"></i> Reset CAN</button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-success" onClick="saveCANMapping()"><i class="glyphicon glyphicon-erase"></i> Save CAN Mapping</button>
+                                    <button type="button" class="btn btn-success" onClick="saveCANMapping()"><i class="glyphicon glyphicon-erase"></i> Save CAN</button>
                                 </td>
                             </tr>
                     </table>

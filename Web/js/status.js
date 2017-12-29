@@ -4,20 +4,26 @@ $(document).ready(function () {
 
     var version = getJSONFloatValue("version");
     if(version > 0) {
-        $("#firmwareVersion").empty().append("Firmware v" + version);   
+        $("#firmwareVersion").empty().append("Firmware v" + version);
+        buildStatus(false);
     }
-    
-    buildStatus(false);
 });
 
 function buildStatus(sync) {
 
+    var error = false;
+
     $.ajax("/serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
         async: sync,
         cache: false,
-        timeout: 4000, // timeout 4 seconds
         type: 'GET',
         success: function success(data) {
+
+            if(data.indexOf("Error") != -1)
+            {
+                error = true;
+                return;
+            }
 
             data = data.replace("\n\n", "\n");
             data = data.split("\n");
@@ -129,8 +135,9 @@ function buildStatus(sync) {
         }
     });
     
-    statusRefreshTimer = setTimeout(function () {
-		clearTimeout(statusRefreshTimer);
-        buildStatus(true); //ajax syncro mode
-    }, 12000);
+    if(error === false)
+        statusRefreshTimer = setTimeout(function () {
+    		clearTimeout(statusRefreshTimer);
+            buildStatus(true); //ajax syncro mode
+        }, 12000);
 };

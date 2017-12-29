@@ -23,27 +23,21 @@ checkUSB()
     done
 }
 
-if [ -f /usr/bin/minicom ]; then
+if [[ $(type -p php) ]]; then
+    
+    for file in ./Linux/*; do
+        chmod +x "$file"
+    done
 
-    if [[ $(type -p php) ]]; then
-        
-        for file in ./Linux/*; do
-            chmod +x "$file"
-        done
-
-        echo "Running as sudo ..."
-        
-        sudo killall php
-        sudo php -S 0.0.0.0:8080 -t "$(dirname "$0")/Web/" &
-        sleep 4
-        
-        checkUSB
-    else
-
-        echo "PHP not Installed ...Install? [Y/n]"; read
-        ./Linux/php.sh
-    fi
+    echo "Running as sudo ..."
+    
+    sudo killall php
+    sudo php -S 0.0.0.0:8080 -t "$(dirname "$0")/Web/" &
+    sleep 4
+    
+    checkUSB
 else
-    echo "Minicom not Installed ...Install? [Y/n]"; read
-        sudo apt-get -y install minicom
+
+    echo "PHP not Installed ...Install? [Y/n]"; read
+    ./Linux/php.sh
 fi

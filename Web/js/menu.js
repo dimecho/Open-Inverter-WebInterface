@@ -167,12 +167,39 @@ function setParameter(cmd, value, save, notify) {
 };
 
 function sendCommand(cmd) {
+
     var e = ""
+
     $.ajax("/serial.php?command=" + cmd, {
         async: false,
+        cache: false,
+        timeout: 8000, // timeout 8 seconds
+        type: 'GET',
         success: function success(data) {
-            e = data;
-        }
+
+            if(data.indexOf("Error") != -1) {
+
+                var title = $("#title h3").empty();
+                title.append("Check Serial Connection");
+                var connection = $("#connection").show();
+
+                $.notify({ message: data }, { type: 'danger' });
+
+            }else{
+
+                if(cmd == "json") {
+                    try {
+                        e = JSON.parse(data);
+                    } catch(ex) {
+                        e = {};
+                        $.notify({ message: ex + ":" + data }, { type: 'danger' });
+                    }
+                }else{
+                    e = data;
+                }
+            }
+        },
+        error: function error(xhr, textStatus, errorThrown) {}
     });
     //console.log(e);
     return e;
@@ -201,37 +228,6 @@ function openExternalApp(app) {
     } else {
         $.ajax("open.php?app=" + app);
     }
-};
-
-function loadJSON() {
-
-    var json = {};
-
-    //$.ajax("/js/debug.json", {
-    $.ajax("/serial.php?command=json", {
-        async: false,
-        cache: false,
-        timeout: 8000, // timeout 8 seconds
-        type: 'GET',
-        //contentType: "application/text",
-        success: function success(data) {
-            //console.log(data);
-            if(data === "") {
-                var title = $("#title h3").empty();
-                title.append("Check Serial Connection");
-                var connection = $("#connection").show();
-            }else{
-                try {
-                    json = JSON.parse(data);
-                } catch(e) {
-                    $.notify({ message: e + ":" + data }, { type: 'danger' });
-                }
-            }
-        },
-        error: function error(xhr, textStatus, errorThrown) {}
-    });
-
-    return json;
 };
 
 function getJSONFloatValue(value) {

@@ -195,6 +195,8 @@ function buildParameters()
 {
 	var parameters = [];
 	var description = [];
+
+    $(".loader").show();
 	
 	$.ajax("/description.csv",{
 		async: false,
@@ -228,12 +230,10 @@ function buildParameters()
 		}
 	});
 
-    var json = loadJSON();
+    var json = sendCommand("json");
 
     if(Object.keys(json).length > 0)
     {
-        $(".loader").show();
-
         var legend = $("#legend").empty();
 		var menu = $("#parameters").empty();
 		var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>")).append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("Type")));
@@ -344,10 +344,10 @@ function buildParameters()
         $('[data-toggle="tooltip"]').tooltip();
 
 		basicChecks(json);
-
-        $(".loader").hide();
     }
-    
+
+    $(".loader").hide();
+
     checkUpdates();
 };
 

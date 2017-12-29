@@ -2,7 +2,7 @@ var saveTimer;
 
 $(document).ready(function () {
 
-    buildSimpleParameters(loadJSON());
+    buildSimpleParameters();
 
     $("#idlespeed").slider({
         //ticks: [-100, 0, 100, 200, 300, 400, 500],
@@ -54,9 +54,12 @@ function calculateCurve(value) {
     console.log(fweak);
 };
 
-function buildSimpleParameters(json) {
+function buildSimpleParameters() {
 
-    if (!json) return;
+    var json = sendCommand("json");
+
+    if(Object.keys(json).length == 0)
+        return;
 
     var motor = $("#parameters_Motor").empty().show();
     var battery = $("#parameters_Battery").empty().show();

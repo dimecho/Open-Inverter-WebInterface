@@ -12,7 +12,7 @@ function buildCANParameters() {
     
     $(".loader").show();
 
-    json = loadJSON();
+    json = sendCommand("json");
     
     if(json)
     {
@@ -47,16 +47,39 @@ function buildCANParameters() {
             //console.log(key);
             var cantx = $("<button>", { class:"btn " + db_cantx + " btn-sm mx-1", id:key + "-cantx" }).append("TX");
             var canrx = $("<button>", { class:"btn " + db_canrx + " btn-sm mx-1", id:key + "-canrx" }).append("RX");
-            var canid = $("<input>", { class:"text-center", type:"text", value:db_canid, id:key + "-cantxid" }).css({width:120});
+            var canid = $("<input>", { type:"number", class:"text-center", value:db_canid, id:key + "-cantxid" }).css({width:120});
             if(db_cantx == "btn-secondary")
                 canid.prop('disabled', true);
-            var canpos = $("<input>", { class:"text-center", type:"text", value:db_canpos, id:key }).css({width:120});
+            var canpos = $("<input>", { type:"number", class:"text-center", value:db_canpos, id:key }).css({width:120});
 
             var div = $("<div>", { class:"input-group" });
-            var cangain_sub = $("<button>", { class:"input-group-addon btn btn-secondary btn-sm" }).append("-");
-            var cangain = $("<input>", { class:"form-control text-center", type:"text", value:db_cangain, id:key + "-cangain" }).css({width:40});
-            var cangain_add = $("<button>", { class:"input-group-addon btn btn-secondary btn-sm" }).append("+");
-            div.append(cangain_sub).append(cangain).append(cangain_add);
+            var cangain = $("<input>", { type:"number", class:"form-control text-center", value:db_cangain, id:key + "-cangain" }).css({width:40});
+            
+            if(os === "mobile") {
+                div.append(cangain);
+            }else{
+                var cangain_sub = $("<button>", { class:"input-group-addon btn btn-secondary btn-sm" }).append("-");
+                var cangain_add = $("<button>", { class:"input-group-addon btn btn-secondary btn-sm" }).append("+");
+                div.append(cangain_sub).append(cangain).append(cangain_add);
+
+                cangain_sub.click(function(){
+                    //console.log($(this).parent().find("input").val());
+                    var value = parseInt($(this).parent().find("input").val());
+                    if(value > 1){
+                        value--;
+                        $(this).parent().find("input").val(value);
+                    }
+                });
+
+                cangain_add.click(function(){
+                    //console.log($(this).parent().find("input").val());
+                    var value = parseInt($(this).parent().find("input").val());
+                    if(value < 10){
+                        value++;
+                        $(this).parent().find("input").val(value);
+                    }
+                });
+            }
            
             var tr = $("<tr>");
             var td1 = $("<td>").append(key);
@@ -66,24 +89,6 @@ function buildCANParameters() {
             var td5 = $("<td>").append(canpos);
             var td6 = $("<td>").append(div);
             tbody.append(tr.append(td1).append(td2).append(td3).append(td4).append(td5).append(td6));
-
-            cangain_sub.click(function(){
-                //console.log($(this).parent().find("input").val());
-                var value = parseInt($(this).parent().find("input").val());
-                if(value > 1){
-                    value--;
-                    $(this).parent().find("input").val(value);
-                }
-            });
-
-            cangain_add.click(function(){
-                //console.log($(this).parent().find("input").val());
-                var value = parseInt($(this).parent().find("input").val());
-                if(value < 10){
-                    value++;
-                    $(this).parent().find("input").val(value);
-                }
-            });
 
             cantx.click(function(){
                 //console.log(this.id);
@@ -112,6 +117,12 @@ function buildCANParameters() {
             i++;
         };
         menu.show();
+
+        if(os === "mobile") {
+            $("table").attr("style","font-size: 140%;");
+            $("input").attr("style","font-size: 110%; width: 100%; height: 1.5em");
+            $(".btn").attr("style","font-size: 120%;");
+        }
 
         $('[data-toggle="tooltip"]').tooltip();
     }

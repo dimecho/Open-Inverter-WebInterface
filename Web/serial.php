@@ -10,14 +10,17 @@
     
     if(isset($_GET["com"]))
     {
-		if (PHP_OS === 'WINNT') {
-			echo serialDevice();
-			return;
-		}else if (PHP_OS === 'Darwin') {
+        $uname = strtolower(php_uname('s'));
+        if (strpos($uname, "darwin") !== false) {
             $command = "ls /dev/cu.*";
-		}else{
-			$command = "ls /dev/ttyUSB*";
-		}
+        }else if (strpos($uname, "win") !== false) {
+            echo serialDevice();
+            return;
+        }else if (strpos($uname, "pi") !== false) {
+            $command = "ls /dev/ttyAMA*";
+        }else{
+            $command = "ls /dev/ttyUSB*";
+        }
 		
 		$output = exec($command);
 
@@ -62,8 +65,8 @@
 	function readArray($cmd,$n)
     {
         $com = serialDevice();
-        if($com == "")
-            return;
+        if(strpos($com,"Error") !== false)
+            return $com;
 
 		$cmd = "get " .urldecode($cmd). "\r";
 		$read = "";
@@ -101,8 +104,8 @@
     function readSerial($cmd)
     {
         $com = serialDevice();
-        if($com == "")
-            return;
+        if(strpos($com,"Error") !== false)
+            return $com;
 
 		$cmd = urldecode($cmd). "\r";
         $read = "";
@@ -125,8 +128,8 @@
                     } while (json_last_error() != JSON_ERROR_NONE);
                     */
                     $read .= fread($uart,9000);
-                    while (stripos($read, "}\r\n}") === false)
-                        $read .= fread($uart,2);
+                    while (strpos($read, "}\r\n}") === false)
+                        $read .= fread($uart,1);
                 }else if($cmd === "all\r"){
                     while($read.= fread($uart, 1))
                         if(strpos($read,"tm_meas") !== false)
