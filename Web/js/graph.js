@@ -1,5 +1,5 @@
-var activeTab = "#graphA";
-var activeTabText = "Motor";
+var activeTab = "";
+var activeTabText = "";
 var syncronizedDelay = 1000;
 var syncronizedAccuracy = 0;
 var data;
@@ -12,36 +12,6 @@ var xhr;
 
 $(document).ready(function () {
 
-    $("#speed").slider({
-        /*
-        formatter: function(value) {
-            return 'Current value: ' + value;
-        },
-        */
-        min: 200,
-        max: 3000,
-        step: 1,
-        value: syncronizedDelay,
-        //scale: 'logarithmic',
-        reversed: true
-    }).on('slide', function (e) {
-
-        syncronizedDelay = e.value;
-        chart.options.animation.duration = syncronizedDelay;
-
-        var t = Math.round(syncronizedDelay / 1000 * 60);
-        //console.log(t);
-
-        chart.config.data.labels = initTimeAxis(t);
-        chart.update();
-
-        //console.log(syncronizedDelay);
-
-        //$.ajax("graph.php?delay=" + syncronizedDelay);
-
-        startChart();
-    });
-
     /*
     $(document).click(function (e) {
         if(xhr)
@@ -49,15 +19,18 @@ $(document).ready(function () {
     });
     */
 
-    Chart.defaults.global.animationSteps = 12;
-
     var canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
 
     if(os === "mobile") {
+
+        Chart.defaults.global.animationSteps = 0;
         canvas.height = 400;
         ctxFont = 40;
+
     }else{
+
+        Chart.defaults.global.animationSteps = 12;
         canvas.height = 200;
     }
 
@@ -66,28 +39,152 @@ $(document).ready(function () {
     ctx.mozImageSmoothingEnabled = false;
     ctx.imageSmoothingEnabled = false;
     */
-    var count = 10;
+    buildGraphMenu();
 
-    $('.nav-tabs a').click(function () {
-        $(this).tab('show');
-        //console.log(this);
-    });
-
-    $('.nav-tabs a').on('shown.bs.tab', function (event) {
-        //var x = $(event.target).text();         // active tab
-        //var y = $(event.relatedTarget).text();  // previous tab
-
-        activeTab = event.target.hash;
-        activeTabText = event.target.text;
-
-        stopChart();
-        initChart();
-    });
-	
-	//clearTimeout(StatusRefreshTimer);
-	buildTips();
     initChart();
 });
+
+function buildGraphMenu() {
+    //os = "mobile";
+
+    var tabs = ["Motor", "Temperature", "Battery", "Sensors", "Frequencies", "PWM"];
+
+    var menu = $("#buildGraphMenu").empty();
+    var footer = $("#buildGraphFooter").empty();
+
+    var btn_start = $("<button>", { class: "btn btn-success", onClick: "startChart()" }).append("Start Graph");
+    var btn_stop = $("<button>", { class: "btn btn-danger", onClick: "stopChart()" }).append("Stop Graph");
+   
+    activeTab = "#graph0";
+    activeTabText = tabs[0];
+
+    if (os === "mobile") {
+
+        var nav = $("<nav>", { class: "navbar navbar-toggleable-md navbar-light bg-faded" });
+        var div = $("<div>", { class: "collapse navbar-collapse", id: "navbarsGraph" });
+        var button = $("<button>", { class: "navbar-toggler navbar-toggler-right", type: "button", "data-toggle":"collapse", "data-target": "#navbarsGraph", "aria-controls": "navbarsGraph", "aria-expanded": false, "aria-label": "Navigation" });
+        var span = $("<span>", { class: "text-dark display-3 glyphicon glyphicon-menu-hamburger" });
+        var text = $("<a>", { class: "text-dark display-4", href:"#"}).append($("<b>").append(activeTabText));
+
+        button.append(span);
+        nav.append(button);
+        nav.append(text);
+
+        for (var i = 0; i < tabs.length; i++)
+        {
+            var ul = $("<ul>", { class: "navbar-nav" });
+            var li = $("<li>", { class: "nav-item" });
+            var a = $("<a>", { class: "nav-link display-4", id: i});
+            
+            a.append($("<b>").append(tabs[i]));
+            li.append(a);
+            ul.append(li);
+            div.append(ul);
+        }
+
+        nav.append(div);
+        menu.append(nav);
+
+        $('.nav-item a').click(function () {
+
+            button.click();
+
+            activeTab = "#graph" + this.id;
+            activeTabText = this.text;
+            text.empty();
+            text.append($("<b>").append(activeTabText));
+
+            stopChart();
+            initChart();
+        });
+
+        footer.append(btn_start);
+        footer.append(btn_stop);
+
+    }else{
+
+        $("head").append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/bootstrap-slider.css\" />");
+        $("head").append(" <script type=\"text/javascript\" src=\"/js/bootstrap-slider.js\"></script>");
+        $("head").append("<script type=\"text/javascript\" src=\"/js/jspdf.js\"></script>");
+
+        var ul = $("<ul>", { class: "nav nav-tabs", role: "tablist"});
+        var tabcontent = $("<div>", { class: "tab-content" });
+
+        for (var i = 0; i < tabs.length; i++)
+        {
+            var li = $("<li>", { class: "nav-item"});
+            var a = $("<a>", { class: "nav-link", href: "#graph" + i }).append(tabs[i]);
+            li.append(a);
+            ul.append(li);
+
+            var tabpanel = $("<div>", { class: "tab-pane fade", id: "graph" + i , role: "tabpanel" });
+            if (i ===0){
+                tabpanel.addClass("in active");
+            }
+
+            tabcontent.append(tabpanel);
+        }
+
+        menu.append(ul);
+        menu.append(tabcontent);
+
+        $('.nav-tabs a').click(function () {
+            $(this).tab('show');
+            //console.log(this);
+        });
+
+        $('.nav-tabs a').on('shown.bs.tab', function (event) {
+            //var x = $(event.target).text();         // active tab
+            //var y = $(event.relatedTarget).text();  // previous tab
+
+            activeTab = event.target.hash;
+            activeTabText = event.target.text;
+
+            stopChart();
+            initChart();
+        });
+
+        var btn_pdf = $("<button>", { class: "btn btn-warning", onClick: "exportPDF(true)" }).append("Export PDF");
+        var btn_img = $("<button>", { class: "btn btn-info", onClick: "exportPDF()" }).append("Export Image");
+
+        footer.append(btn_start);
+        footer.append(btn_stop);
+        footer.append(btn_pdf);
+        footer.append(btn_img);
+
+        /*
+        $("#speed").slider({
+            /
+            formatter: function(value) {
+                return 'Current value: ' + value;
+            },
+            /
+            min: 200,
+            max: 3000,
+            step: 1,
+            value: syncronizedDelay,
+            //scale: 'logarithmic',
+            reversed: true
+        }).on('slide', function (e) {
+
+            syncronizedDelay = e.value;
+            chart.options.animation.duration = syncronizedDelay;
+
+            var t = Math.round(syncronizedDelay / 1000 * 60);
+            //console.log(t);
+
+            chart.config.data.labels = initTimeAxis(t);
+            chart.update();
+
+            //console.log(syncronizedDelay);
+
+            //$.ajax("graph.php?delay=" + syncronizedDelay);
+
+            startChart();
+        });
+        */
+    }
+};
 
 function exportPDF(pdf) {
 
@@ -167,21 +264,21 @@ function exportPDF(pdf) {
 
 function initChart() {
 
-    var duration = $("#speed").slider('getValue');
+    var duration = 0;
+    //if(os !== "mobile")
+    //    duration = $("#speed").slider('getValue');
 
-    if (activeTab === "#graphA") {
+    if (activeTab === "#graph0") {
         initMotorChart(duration);
-    } else if (activeTab === "#graphB") {
+    } else if (activeTab === "#graph1") {
         initTemperatureChart(duration);
-    } else if (activeTab === "#graphC") {
+    } else if (activeTab === "#graph2") {
         initBatteryChart(duration);
-    } else if (activeTab === "#graphD") {
+    } else if (activeTab === "#graph3") {
         initAmperageChart(duration);
-    } else if (activeTab === "#graphE") {
+    } else if (activeTab === "#graph4") {
         initFrequenciesChart(duration);
-    } else if (activeTab === "#graphF") {
-        initPAMChart(duration);
-    } else if (activeTab === "#graphG") {
+    } else if (activeTab === "#graph5") {
         initPWMChart(duration);
     }
 
@@ -195,6 +292,9 @@ function initChart() {
     //chart.update();
 };
 
+function Slider(element, options) {
+};
+
 function startChart() {
 
     //console.log(activeTab);
@@ -206,20 +306,19 @@ function startChart() {
 
     syncronizedAccuracy = 0;
 
-    var duration = $("#speed").slider('getValue');
+    var duration = 0; //$("#speed").slider('getValue');
 
-    if (activeTab === "#graphA") {
+    if (activeTab === "#graph0") {
         updateChart(["speed"], true, 0.8);
-    } else if (activeTab === "#graphB") {
+    } else if (activeTab === "#graph1") {
         updateChart(["tmpm", "tmphs"]);
-    } else if (activeTab === "#graphC") {
+    } else if (activeTab === "#graph2") {
         updateChart(["udc", "uac"], true);
-    } else if (activeTab === "#graphD") {
+    } else if (activeTab === "#graph3") {
         updateChart(["il1rms", "idc"]);
-    } else if (activeTab === "#graphE") {
+    } else if (activeTab === "#graph4") {
         updateChart(["fweak", "fstat", "ampnom"]);
-    //} else if (activeTab === "#graphF") {
-    } else if (activeTab === "#graphG") {
+    } else if (activeTab === "#graph5") {
         updateChart(["pwmfrq", "deadtime"]);
     }
 };
@@ -479,114 +578,6 @@ function initPWMChart(duration) {
             }
         }
         */
-    };
-};
-
-//Pulse Amplitude Modulation
-function initPAMChart(duration) {
-
-    var udclim = 12; //getJSONFloatValue("udclim");
-    var pwmfrq = 8.8; //getJSONFloatValue("pwmfrq");
-    var step = udclim / 10;
-
-    data = {
-        labels: initTimeAxis(pwmfrq * 10),
-        datasets: [ {
-            type: "bar",
-            label: "L1", //red
-            backgroundColor: "rgba(255, 51, 0, 0.6)",
-            borderColor: "#ff3300",
-            borderWidth: 1,
-            data: []
-        }, {
-            type: "bar",
-            label: "L2", //green
-            backgroundColor: "rgba(102, 255, 51, 0.6)",
-            borderColor: "#39e600",
-            borderWidth: 1,
-            data: []
-        }, {
-            type: "bar",
-            label: "L3", //blue
-            backgroundColor: "rgba(51, 133, 255, 0.5)",
-            borderColor: "#0066ff",
-            borderWidth: 1,
-            data: []
-        }]
-    };
-
-    sinePAM(data.datasets[0].data,4,udclim,-2.25,0.1); //red
-    sinePAM(data.datasets[1].data,4,udclim,2.0,0.1); //green
-    sinePAM(data.datasets[2].data,4,udclim,0,0.1); //blue
-
-    options = {
-        //scaleUse2Y: true,
-        legend: {
-            display: true,
-            labels: {
-                fontSize: ctxFont,
-                fontColor: 'rgb(0, 0, 0)'
-            }
-        },
-        elements: {
-            point: {
-                radius: 0
-            }
-        },
-        tooltips: {
-            enabled: false
-        },
-        responsive: true,
-        //maintainAspectRatio: false,
-        scales: {
-            xAxes: [{
-                display: true,
-                position: 'bottom',
-                barPercentage: 1.0,
-                categoryPercentage: 2.0,
-                scaleLabel: {
-                    fontSize: ctxFont,
-                    display: true,
-                    //labelString: 'PWM (kHz/Cycle)'
-                    labelString: 'Time (Milliseconds)'
-                },
-                ticks: {
-                    reverse: false,
-                    maxRotation: 0,
-                    stepSize: 50
-                }
-            }],
-            yAxes: [{
-                display: true,
-                position: 'left',
-                scaleLabel: {
-                    fontSize: ctxFont,
-                    display: true,
-                    labelString: 'Voltage (VDC)'
-                },
-                ticks: {
-                    reverse: false,
-                    //stepSize: step,
-                    suggestedMin: 0, //important
-                    suggestedMax: udclim + step //important
-                }
-            }]
-        },
-        pan: {
-            enabled: true,
-            mode: 'xy'
-        },
-        zoom: {
-            enabled: true,
-            mode: 'xy',
-            limits: {
-                max: 100,
-                min: 0.5
-            }
-        },
-        animation: {
-            duration: duration
-        }
     };
 };
 

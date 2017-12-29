@@ -16,7 +16,7 @@
         }else if (strpos($uname, "win") !== false) {
             echo serialDevice();
             return;
-        }else if (strpos($uname, "pi") !== false) {
+        }else if (strpos(php_uname('m'), "arm") !== false) {
             $command = "ls /dev/ttyAMA*";
         }else{
             $command = "ls /dev/ttyUSB*";
@@ -127,8 +127,11 @@
                         json_decode($read);
                     } while (json_last_error() != JSON_ERROR_NONE);
                     */
-                    $read .= fread($uart,9000);
-                    while (strpos($read, "}\r\n}") === false)
+                    
+                    $read .= fread($uart,9500);
+
+                    //while (strpos($read, "}\r\n}") === false) //0.0720 seconds
+                    while (substr($read, -4) !== "}\r\n}") //0.0719 seconds
                         $read .= fread($uart,1);
                 }else if($cmd === "all\r"){
                     while($read.= fread($uart, 1))

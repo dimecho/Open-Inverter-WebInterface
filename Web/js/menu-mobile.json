@@ -55,6 +55,12 @@
         "icon": "glyphicon-compressed",
         "onClick": "",
         "dropdown": [{
+            "id": "Flash Firmware",
+            "icon": "glyphicon-object-align-left",
+            "onClick": "/firmware.php"
+        }, {
+            "id": "-"
+        }, {
             "id": "Switch Check",
             "icon": "glyphicon-dashboard",
             "onClick": "/switch-check.php"
