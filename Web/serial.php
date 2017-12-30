@@ -14,21 +14,20 @@
         if (strpos($uname, "darwin") !== false) {
             $command = "ls /dev/cu.*";
         }else if (strpos($uname, "win") !== false) {
-            echo serialDevice();
-            return;
+            $command = "powershell.exe -ExecutionPolicy Bypass -Command \"Write-Host $([System.IO.Ports.SerialPort]::GetPortNames()) -join ' '\"";
         }else if (strpos(php_uname('m'), "arm") !== false) {
             $command = "ls /dev/ttyAMA*";
         }else{
             $command = "ls /dev/ttyUSB*";
         }
-		
-		$output = exec($command);
 
-        //foreach ($output as $line) {
-        //    echo "$line\n";
-        //}
-		
+		$output = shell_exec($command);
+        $com = serialDevice();
+
         echo str_replace(" ", ",", $output);
+
+        if(strpos($com,"Error") === false)
+            echo "," . serialDevice();
 		
     }else{
 	

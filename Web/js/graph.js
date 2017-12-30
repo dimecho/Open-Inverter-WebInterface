@@ -292,14 +292,11 @@ function initChart() {
     //chart.update();
 };
 
-function Slider(element, options) {
-};
-
 function startChart() {
 
-    //console.log(activeTab);
+    console.log(activeTab);
 
-    clearTimeout(statusRefreshTimer);
+    //clearTimeout(statusRefreshTimer);
     stopChart();
 
     //$.ajax("graph.php?stream=start");
@@ -354,14 +351,6 @@ function sineWave(phase, amplitude, start, step) {
     }
 
     return array;
-};
-
-function sinePAM(array, phase, amplitude, start, step) {
-
-    for (var j = start; j <= phase * Math.PI; j += step) {
-        //console.log(j);
-        array.push(Math.sin(j) * amplitude); //[j, Math.sin(j)]
-    }
 };
 
 function sinePWM(phase, start, waveGraphRatio) {

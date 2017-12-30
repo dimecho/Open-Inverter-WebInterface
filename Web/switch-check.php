@@ -3,10 +3,6 @@
     <head>
         <?php include "header.php" ?>
         <script type="text/javascript" src="/js/switch-check.js"></script>
-        <style>
-            table { table-layout: fixed; }
-            td { width: 10%; }
-        </style>
     </head>
     <body>
         <div class="container">
@@ -15,102 +11,54 @@
              <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <span class="glyphicon glyphicon-triangle-right"></span> Check switches by flipping one at a time.
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tr>
+                            <td>
+                                <span class="glyphicon glyphicon-triangle-right"></span> Check switches by flipping one at a time.
+                            </td>
+                        </tr>
                     </table>
 
-                    <table class="table table-active bg-faded table-bordered" width="100%">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <center>
-                                        Protection
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        Emergency
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        Brake
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        Start
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        Forward
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        Reverse
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        Cruise
-                                    </center>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <center>
-                                        <div class="circle-red" id="din_mprot"></div>
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        <div class="circle-red" id ="din_emcystop"></div>
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        <div class="circle-red" id ="din_brake"></div>
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        <div class="circle-red" id ="din_start"></div>
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        <div class="circle-red" id ="din_forward"></div>
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        <div class="circle-red" id ="din_reverse"></div>
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        <div class="circle-red" id ="din_cruise"></div>
-                                    </center>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="7">
-                                <center>
-                                    Potentiometer
-                                    <br/><br/>
-                                    <input class="pot" value=0 />
-                                    <br/><br/>
-                                </center> 
-                                </td>
-                            </tr>
-                        </tbody>
+                    <table class="table table-active bg-light table-bordered" width="100%">
+                        <tr align="center">
+                            <td>Protection</td>
+                            <td>Emergency</td>
+                            <td>Brake</td>
+                            <td>Start</td>
+                            <td>Forward</td>
+                            <td>Reverse</td>
+                            <td>Cruise</td>
+                        </tr>
+                        <tr align="center">
+                            <td>
+                                <div class="circle-red" id="din_mprot"></div>
+                            </td>
+                            <td>
+                                <div class="circle-red" id ="din_emcystop"></div>
+                            </td>
+                            <td>
+                                <div class="circle-red" id ="din_brake"></div>
+                            </td>
+                            <td>
+                                <div class="circle-red" id ="din_start"></div>
+                            </td>
+                            <td>
+                                <div class="circle-red" id ="din_forward"></div>
+                            </td>
+                            <td>
+                                <div class="circle-red" id ="din_reverse"></div>
+                            </td>
+                            <td>
+                                <div class="circle-red" id ="din_cruise"></div>
+                            </td>
+                        </tr>
+                        <tr align="center">
+                            <td colspan="7">
+                                Potentiometer
+                                <br/><br/>
+                                <input class="pot" value=0 />
+                                <br/><br/>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>

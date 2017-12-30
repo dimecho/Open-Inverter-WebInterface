@@ -37,7 +37,7 @@
                 }else if($_GET["hardware"] == "tesla_rdu"){
             ?>
                 pcb += "Hardware v2.0 (Tesla Rear Drive)";
-                buildTable("Tesla Large Drive Unit Logic Board v2", pcb + "/bom/tesla_rdu_v2.csv");
+                buildTable("Tesla Large Drive Unit Logic Board v3", pcb + "/bom/tesla_rdu_v3.csv");
             <?php
                 }else if($_GET["hardware"] == "tesla_fdu"){
             ?>
@@ -102,21 +102,6 @@
                 </div>
             </div>
             <br/><br/><br/><br/><br/><br/>
-            <!-- PDF -->
-            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content" >
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <br/>
-                        </div>
-                        <div class="modal-body">
-                            <iframe src="" width="100%" height="100%" frameborder="0" id="componentPDF"></iframe>
-                            <!--<object type="application/pdf" data="pcb/Capacitor-Tags.pdf" width="100%" height="100%">Not Working</object>-->
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </body>
 </html>
