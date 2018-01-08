@@ -1,5 +1,11 @@
 #!/bin/sh
 
+myIP=$(ifconfig | grep "inet " | grep -v "127.0.0.1" | cut -f2 -d' '| awk '{print $1}')
+
+if [ -z $myIP ]; then
+    myIP="127.0.0.1"
+fi
+
 checkUSB()
 {
     shopt -s nocasematch
@@ -12,13 +18,13 @@ checkUSB()
                     cp -R "$(dirname "$0")/Web/config.inc" "$(dirname "$0")/Web/config.inc.php"
                     sed -i -e "s~/dev/cu.usbserial~$serial~g" "$(dirname "$0")/Web/config.inc.php"
                 fi
-                open -a $browser http://localhost:8080 &
+                open -a $browser http://$myIP:8080 &
                 return
             fi
         done
         echo "... Waiting for RS232-USB"
         if [[ $i -eq 1 ]]; then
-            open -a $browser http://localhost:8080/connect.html &
+            open -a $browser http://$myIP:8080/connect.html &
         fi
         sleep 2
     done
@@ -26,7 +32,7 @@ checkUSB()
 
 checkDrivers()
 {
-    open -a $browser http://localhost:8080/drivers.html &
+    open -a $browser http://$myIP:8080/drivers.html &
     echo "============================"
     echo "Installing RS232-USB Drivers"
     echo "============================"

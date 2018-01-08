@@ -2,14 +2,14 @@
 
     set_time_limit(30);
 
-    function serialDevice()
+    function serialDevice($init)
     {
         $com = "/dev/cu.usbserial";
         $uname = strtolower(php_uname('s'));
 
-        if(!isset($_SESSION["serial"])) {
+        if($init === true) {
 
-            if (strpos($uname, "win") !== false) {
+            if (strpos($uname, "windows") !== false) {
                 exec("mode " .$com. ": BAUD=115200 PARITY=n DATA=8 STOP=2 to=on xon=off octs=off rts=on");
 
             }else if (strpos($uname, "darwin") !== false) {
@@ -33,20 +33,19 @@
             }
 
             $uart = fopen($com, "rb+");
-
+            $read = "";
+            
             if($uart) {
                 //Unknown command sequence
                 //--------------------
                 fwrite($uart, "hello\r");
-                
+
                 while($read .= fread($uart, 1))
-                    if(strpos($read,"\r") !== false)
+                    if(strpos($read,"\n") !== false)
                         break;
                 
                 fclose($uart);
                 //--------------------
-
-                $_SESSION["serial"] = 1;
 
             }else{
                 return "Error: Cannot open ". $com;
