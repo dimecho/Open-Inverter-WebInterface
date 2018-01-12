@@ -6,11 +6,15 @@
     {
         $com = "/dev/cu.usbserial";
         $uname = strtolower(php_uname('s'));
+        $errors = "";
 
-        if($init === true) {
+        if(isset($init)) {
 
             if (strpos($uname, "windows") !== false) {
-                exec("mode " .$com. ": BAUD=115200 PARITY=n DATA=8 STOP=2 to=on xon=off octs=off rts=on");
+                $errors = shell_exec("mode " .$com. ": BAUD=115200 PARITY=n DATA=8 STOP=2 to=on xon=off octs=off rts=on");
+                
+                if(strpos($errors ,"Invalid") === false)
+                    $errors = "";
 
             }else if (strpos($uname, "darwin") !== false) {
                 //exec("screen " .$com. " 115200 &");
@@ -25,25 +29,22 @@
                 }
                 
                 #Linux set TTY speed
-                $errors = shell_exec("stty -F " .$com. " 115200 -parenb cs8 cstopb 2>&1");
+                $errors = shell_exec("stty -F " .$com. " 115200 -parenb cs8 cstopb");
                 #$errors .= shell_exec("stty -F " .$com. " clocal -crtscts -ixon -ixoff");
-
-                if($errors != "")
-                    return "Error: " . $errors;
             }
 
-            $uart = fopen($com, "rb+");
+            if($errors != "")
+                return "Error: " . $errors;
+
+            $uart = fopen($com, "r+");
             $read = "";
             
             if($uart) {
                 //Unknown command sequence
                 //--------------------
-                fwrite($uart, "hello\r");
-
-                while($read .= fread($uart, 1))
-                    if(strpos($read,"\n") !== false)
-                        break;
-                
+                fwrite($uart, "hello\n");
+                echo fgets($uart);
+                echo fgets($uart);
                 fclose($uart);
                 //--------------------
 

@@ -13,7 +13,7 @@ function Elevate() {
 }
 
 function openBrowser($url) {
-	$firefox = "C:\Program Files (x86)\Mozilla Firefox\firefox.exe"
+	$firefox = "C:\Program Files\Mozilla Firefox\firefox.exe"
 	If (Test-Path $firefox){
 		Start-Process $firefox $url
 	}Else{

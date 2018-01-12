@@ -1,8 +1,6 @@
 <?php
 
     require('config.inc.php');
-
-    //ini_set('memory_limit', '4096M');
     
     set_time_limit(160);
 
@@ -10,7 +8,7 @@
     
     if(isset($_GET["init"]))
     {
-        serialDevice(true);
+       serialDevice(true);
     }
     else if(isset($_GET["com"]))
     {
@@ -26,12 +24,13 @@
         }
 
 		$output = shell_exec($command);
-        $com = serialDevice();
 
         echo str_replace(" ", ",", $output);
 
         if(strpos($com,"Error") === false)
-            echo "," . serialDevice();
+        {
+            echo "," . serialDevice(null);
+        }
 		
     }else{
 	
@@ -41,8 +40,9 @@
         }
         else if(isset($_GET["get"]))
         {
-            
-            if(strpos($_GET["get"],",") !== false) //Multi-value support
+            $uname = strtolower(php_uname('s'));
+
+            if (strpos($uname, "darwin") !== false && strpos($_GET["get"],",") !== false) //Multi-value support for Mac
             {
                 $split = explode(",",$_GET["get"]);
                 for ($x = 0; $x < count($split); $x++)
@@ -50,6 +50,18 @@
             }else{
                 echo readSerial("get " .$_GET["get"]);
             }
+        }
+        else if(isset($_GET["stream"]))
+        {
+            $l = 1; //loop
+            $t = 0; //delay
+    
+            if(isset($_GET["loop"]))
+                $l = intval($_GET["loop"]);
+            if(isset($_GET["delay"]))
+                $t = intval($_GET["delay"]);
+    
+            streamSerial("get " .$_GET["stream"], $l, $t);
         }
         else if(isset($_GET["command"]))
         {
@@ -67,38 +79,26 @@
 	
 	function readArray($cmd,$n)
     {
-        $com = serialDevice();
+        $com = serialDevice(null);
         if(strpos($com,"Error") !== false)
             return $com;
 
-		$cmd = "get " .urldecode($cmd). "\r";
-		$read = "";
         $arr = array();
-		$uart = fopen($com, "rb+"); //Read & Write
-        stream_set_blocking($uart, 1); //O_NONBLOCK
-        stream_set_timeout($uart, 8);
+		$cmd = "get " .$cmd. "\n";
+		$uart = fopen($com, "r+"); //Read & Write
         
         fwrite($uart, $cmd);
-        while($read .= fread($uart, 1))
+        $read = fgets($uart); //echo
+
+        for ($x = 0; $x <= $n; $x++)
         {
-            if(strpos($read,$cmd) !== false) //Reached end of echo
-            {
-                for ($x = 0; $x <= $n; $x++)
-                {
-                    $read = "";
+            fwrite($uart, "!");
+            $read = fgets($uart);
+            $read = ltrim($read, "!");
 
-                    fwrite($uart, "!");
-                    fread($uart, 1); //Remove echo
-                    
-                    while($read .= fread($uart, 1))
-                        if(strpos($read,"\n") !== false)
-                            break;
-
-                    array_push($arr, (float)$read);
-                }
-                break;
-            }
+            array_push($arr, (float)$read);
         }
+
         fclose($uart);
         
 		return $arr;
@@ -106,73 +106,88 @@
 	
     function readSerial($cmd)
     {
-        $com = serialDevice();
+        $com = serialDevice(null);
         if(strpos($com,"Error") !== false)
             return $com;
 
-		$cmd = urldecode($cmd). "\r";
-        $read = "";
-		$uart = fopen($com, "rb+"); //Read & Write
-        stream_set_blocking($uart, 1); //O_NONBLOCK
-        stream_set_timeout($uart, 8);
+		$cmd = $cmd. "\n";
+		$uart = fopen($com, "r+"); //Read & Write
+        //stream_set_blocking($uart, 1); //O_NONBLOCK
+        //stream_set_timeout($uart, 8);
         
         fwrite($uart, $cmd);
-        while($read .= fread($uart, 1)) //stream_get_contents($uart)
-        {
-            if(strpos($read,$cmd) !== false) //Reached end of echo
-            {
-                //Continue reading
-                $read = "";
-                if($cmd === "json\r"){
-                    /*
-                    do {
-                        $read .= fread($uart, 1);
-                        json_decode($read);
-                    } while (json_last_error() != JSON_ERROR_NONE);
-                    */
-                    
-                    $read .= fread($uart,9500);
+        $read = fgets($uart); //echo
 
-                    //while (strpos($read, "}\r\n}") === false) //0.0720 seconds
-                    while (substr($read, -4) !== "}\r\n}") //0.0719 seconds
-                        $read .= fread($uart,1);
-                }else if($cmd === "all\r"){
-                    while($read.= fread($uart, 1))
-                        if(strpos($read,"tm_meas") !== false)
-                            break;
-                    $read .= "\t\t59652322";
-                //OSX has trouble reading sequencial command
-                /*
-                }else if(strpos($cmd,",") !== false){ //Multi-value support
-                    $split = explode(",",$cmd);
-                    for ($x = 0; $x < count($split); $x++) {
-                        $r = "";
-                        while($r .= fread($uart, 1))
-                            if(strpos($r,"\n") !== false)
-                                break;
-                        $read .= $r;
-                    }
-                */
-                //TODO: command=errors
-                }else{
-                    while($read .= fread($uart, 1))
-                        if(strpos($read,"\n") !== false)
-                            break;
+        //DEBUG
+        //echo $cmd;
+        //echo $read;
+
+        if($cmd === "json\n"){
+            $read = fread($uart,9500);
+            while (substr($read, -4) !== "}\r\n}")
+                $read .= fread($uart,1);
+        }else if($cmd === "all\n"){
+            $read = fread($uart,1000);
+            while (substr($read, -7) !== "tm_meas")
+                $read .= fread($uart,1);
+            $read .= "\t\t59652322";
+        }else{
+            if(strpos($cmd,",") !== false) //Multi-value support
+            {
+                $read = "";
+                $streamCount = 0;
+                $streamLength = substr_count($cmd, ',');
+
+                while($streamCount <= $streamLength)
+                {
+                    $read .= fgets($uart);
+                    $streamCount++;
                 }
-                $read = rtrim($read ,"\r");
-                $read = rtrim($read ,"\n");
-                break;
+
+            }else{
+                $read = fgets($uart);
             }
         }
-        
-        //$read = fgets($uart);
-        //while(!feof($uart)){
-            //$read .= stream_get_contents($fd, 1);
-            //$read .= fgets($uart);
-        //}
         fclose($uart);
         
+        $read = rtrim($read ,"\n");
+        $read = rtrim($read ,"\r");
+        
         return $read;
+    }
+
+    function streamSerial($cmd,$loop,$delay)
+    {
+        $streamLength = substr_count($cmd, ',');
+        $com = serialDevice(null);
+        $cmd = $cmd. "\n";
+        $uart = fopen($com, "r+"); //Read & Write
+
+        fwrite($uart, $cmd);
+        $read = fgets($uart); //echo
+
+        ob_end_flush();
+
+        for ($i = 0; $i < $loop; $i++)
+        {
+            $streamCount = 0;
+            fwrite($uart, "!");
+            
+            while($streamCount <= $streamLength)
+            {
+                $read = fgets($uart);
+                $read = ltrim($read, "!");
+                
+                echo str_replace("\r","",$read);
+                
+                usleep($delay);
+                $streamCount++;
+            }
+            ob_flush(); flush();
+        }
+        ob_start();
+
+        fclose($uart);
     }
 
     function calculateMedian($arr)

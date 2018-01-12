@@ -8,9 +8,9 @@
     {
 		//TODO: dynamic - $_GET["serial"]
 		
-		$uart = fopen(serialDevice(), "rb+"); //Read & Write
-		stream_set_blocking($uart, 1); //O_NONBLOCK
-        stream_set_timeout($uart, 30);
+		$uart = fopen(serialDevice(null), "r+"); //Read & Write
+		//stream_set_blocking($uart, 1); //O_NONBLOCK
+        //stream_set_timeout($uart, 30);
         
         $PAGE_SIZE_BYTES = 1024;
 		$file = urldecode($_GET["file"]);

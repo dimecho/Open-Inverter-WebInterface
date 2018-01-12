@@ -11,7 +11,7 @@
 	}else if (count($_FILES)){
 		
 		setParameters($_FILES['file']['tmp_name']);
-		header("Location:/index.php");
+		header("Location:index.php");
 		
 	}else{
 		
@@ -43,9 +43,9 @@
 		$string = file_get_contents($file);
 		$params = (array)json_decode($string);
 		
-		$uart = fopen(serialDevice(), "rb+"); //Read & Write
-		stream_set_blocking($uart, 1); //O_NONBLOCK
-        stream_set_timeout($uart, 30);
+		$uart = fopen(serialDevice(null), "r+"); //Read & Write
+		//stream_set_blocking($uart, 1); //O_NONBLOCK
+        //stream_set_timeout($uart, 30);
 		
 		fwrite($uart, "stop\n");
 		
