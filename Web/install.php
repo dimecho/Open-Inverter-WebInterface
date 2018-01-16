@@ -1,10 +1,11 @@
 <?php
-
-    include_once("common.php");
     
-    detectOS();
-
     set_time_limit(10000);
+
+    include("common.php");
+    
+    $os = detectOS();
+    $software = getSoftware();
 
     if(!isset($_GET["url"]) && isset($_GET["app"]))
     {
@@ -30,23 +31,22 @@
 
     function checkSoftware($app,$quite)
     {
-        $id = $GLOBALS["Software"][$app];
-        $path = $id['path'][$GLOBALS['OS']];
+        $path = $software[$app]["path"][$os];
         
         if($app == "arm"){
             checkARMCompiler($path,false);
 			return false;
         }else if($app == "inkscape") {
-            if ($GLOBALS["OS"] === "mac") {
-                if(!is_file($GLOBALS["X11"]))
+            if ($os === "mac") {
+                if(!is_file($software["xquartz"]["path"]["mac"]))
                 {
                     echo "confirmDownload('xquartz')";
                     return false;
                 }
             }
 		}else if($app == "eagle") {
-			if ($GLOBALS["OS"] === "windows") {
-                if(!is_file($GLOBALS["Software"]["designsparkpcb"]["path"]["windows"])){
+			if ($os === "windows") {
+                if(!is_file($software["designsparkpcb"]["path"]["windows"])){
                     echo "confirmDownload('designsparkpcb')";
                     return false;
                 }

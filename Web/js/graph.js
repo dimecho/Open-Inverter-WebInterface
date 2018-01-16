@@ -2,6 +2,7 @@ var activeTab = "";
 var activeTabText = "";
 var syncronizedDelay = 1000;
 var syncronizedAccuracy = 0;
+var streamTimer;
 var data;
 var options;
 var xaxis = [];
@@ -326,6 +327,8 @@ function stopChart() {
     //$.ajax("graph.php?stream=stop");
 
     if (xhr) xhr.abort();
+
+    clearTimeout(streamTimer);
 };
 
 function initTimeAxis(seconds) {
@@ -1081,16 +1084,25 @@ function initBatteryChart(duration) {
 
 function updateChart(value, autosize, accuracy) {
 
-    //Ajax Streaming (Otherwise HTTP headers consume too much CPU)
+    //clearTimeout(streamTimer);
+    
+    //Ajax Streaming
     //============================================================
     var last_response_len = false;
-    xhr = $.ajax("graph.php?stream=" + value.toString() + "&delay=" + syncronizedDelay, {
-        //xhr = $.ajax("http://127.0.0.1:8081/graph.php?stream=" + value+ "&delay=" + syncronizedDelay , {
-        //crossDomain: true,
+    var last = (value.length - 1);
+    var i = 0;
+    xhr = $.ajax({
+        url: "serial.php?stream=" + value.toString() + "&loop=100&delay=" + syncronizedDelay,
+        type: "GET",
+        async: true,
+        timeout: 4000,
+        crossDomain: true,
         xhrFields: {
-            onprogress: function onprogress(e) {
+            onprogress: function onprogress(e)
+            {
                 var this_response,
-                    response = e.currentTarget.response;
+                response = e.currentTarget.response;
+
                 if (last_response_len === false) {
                     this_response = response;
                     last_response_len = response.length;
@@ -1098,17 +1110,17 @@ function updateChart(value, autosize, accuracy) {
                     this_response = response.substring(last_response_len);
                     last_response_len = response.length;
                 }
-                
-                //console.log(this_response);
-                var split = this_response.split(",");
+                console.log(this_response);
 
-                for (var i = 0; i < value.length; i++)
+                var split = this_response.slice(0, -1).split("\n");
+
+                for (var d = 0; d < split.length; d++)
                 {
                     //console.log(value[i]);
-                    if (value[i] == "pwmfrq") {
+                    if (value[i] === "pwmfrq") {
 
-                        var pwmfrq = parseFloat(split[i]);
-                        var deadtime = parseFloat(split[i+1]);
+                        var pwmfrq = parseFloat(split[d]);
+                        var deadtime = parseFloat(split[d+1]);
                         var waveGraphRatio = 0.01;
 
                         data.datasets[0].data = sinePWM(4,-2.25,waveGraphRatio); //red
@@ -1120,11 +1132,11 @@ function updateChart(value, autosize, accuracy) {
                         //data.datasets[5].data = sineWave(4,1,0,waveGraphRatio); //blue
                         
                         break;
-                    }else if (value[i] != "fweak") {
-                        var point = parseFloat(split[i]);
+                    }else if (value[i] !== "fweak") {
+                        var point = parseFloat(split[d]);
                         //console.log(point);
 
-                        if (value[i] == "ampnom") {
+                        if (value[i] === "ampnom") {
                             var max = Math.max.apply(Math, data.datasets[i].data);
                             data.datasets[i + 1].data = sineWave(2,(max * point / 100),0,0.1);
                         } else {
@@ -1149,6 +1161,11 @@ function updateChart(value, autosize, accuracy) {
                             data.datasets[i].data.push(point);
                         }
                     }
+
+                    if (i == last)
+                        i = 0;
+                    else
+                        i++;
                 }
 
                 if (autosize) { //&& l == 1) //do it at start
@@ -1174,17 +1191,22 @@ function updateChart(value, autosize, accuracy) {
                 chart.update();
             }
         }
-    });
-    /*
-    .done(function(data)
-    {
-        console.log('Complete response = ' + data);
     })
-    .fail(function(data)
+    .done(function()
     {
-        console.log('Error: ', data);
-    });
-    */
+        streamTimer = setTimeout(function() {
+            updateChart(value, autosize, accuracy);
+        }, 500);
+    })
+    .fail(function(jqXHR, textStatus) {
+        if(textStatus === "timeout")
+        {     
+            streamTimer = setTimeout(function() {
+                updateChart(value, autosize, accuracy);
+            }, 1000);
+            //this.timeoutCount++;
+        }
+    });​
 };
 
 function getRandom(min, max) {

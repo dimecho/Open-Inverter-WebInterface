@@ -158,21 +158,20 @@
 
     function streamSerial($cmd,$loop,$delay)
     {
-        $streamLength = substr_count($cmd, ',');
         $com = serialDevice(null);
+        $streamLength = substr_count($cmd, ',');
         $cmd = $cmd. "\n";
         $uart = fopen($com, "r+"); //Read & Write
 
         fwrite($uart, $cmd);
         $read = fgets($uart); //echo
 
-        ob_end_flush();
-
         for ($i = 0; $i < $loop; $i++)
         {
             $streamCount = 0;
             fwrite($uart, "!");
             
+            ob_end_flush();
             while($streamCount <= $streamLength)
             {
                 $read = fgets($uart);
@@ -183,9 +182,8 @@
                 usleep($delay);
                 $streamCount++;
             }
-            ob_flush(); flush();
+            ob_start();
         }
-        ob_start();
 
         fclose($uart);
     }

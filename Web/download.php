@@ -1,27 +1,30 @@
 <?php
     session_start();
 
-    include_once("common.php");
+    include("common.php");
     
-    detectOS();
+    $os = detectOS();
+    $osclient = detectClientOS();
+    $software = getSoftware();
 
-    if(isset($_GET["start"]) || isset($_GET["download"])){
+    if(isset($_GET['start']) || isset($_GET['download'])){
 
-        $id = $GLOBALS["Software"][$_GET["start"]];
+        $id = $software[$_GET['start']];
+
         if($id == "")
-            $id = $GLOBALS["Software"][$_GET["download"]];
+            $id = $software[$_GET['download']];
 
         if(isset($id['download']['all'])){
             $source = $id['download']['all'];
         }else{
-            $source = $id['download'][$GLOBALS['ClientOS']];
+            $source = $id['download'][$osclient];
         }
         
-        if ($GLOBALS["OS"] === "mac") {
+        if ($os === "mac") {
             $destination = getenv("HOME"). "/Downloads/";
-        }else if ($GLOBALS["OS"]=== "windows") {
+        }else if ($os === "windows") {
             $destination = getenv("USERPROFILE"). "\\Downloads\\";
-        }else if ($GLOBALS["OS"] === "linux") {
+        }else if ($os === "linux") {
             $destination = getenv("HOME"). "/Downloads/";
         }
 
@@ -30,7 +33,7 @@
         $destination = $destination . $filename;
     }
 
-    if(isset($_GET["software"])){
+    if(isset($_GET['software'])){
 
         $array = array (
             'title' => "",
@@ -40,31 +43,31 @@
             'version' => ""
         );
         
-        $id = $GLOBALS["Software"][$_GET["software"]];
+        $id = $software[$_GET['software']];
 
         $array['title'] = $id['title'];
         if(isset($id['download']['all'])){
             $array['download'] = $id['download']['all'];
         }else{
-            $array['download'] = $id['download'][$GLOBALS['OS']];
+            $array['download'] = $id['download'][$os];
         }
-        $array['path'] = $id['path'][$GLOBALS['OS']];
+        $array['path'] = $id['path'][$os];
         $array['size'] = $id['download']['size'];
         $array['version'] = $id['download']['version'];
 
         echo json_encode($array);
         
-    }else if(isset($_GET["pause"])){
+    }else if(isset($_GET['pause'])){
 
-        echo $_GET["pause"];
-        $_SESSION["pause"] = $_GET["pause"];
+        echo $_GET['pause'];
+        $_SESSION['pause'] = $_GET['pause'];
 
-    }else if(isset($_GET["download"])){
+    }else if(isset($_GET['download'])){
 
         if($source != "") //Linux scripts without download
         {
             set_time_limit(10000);
-            $_SESSION["pause"] = "";
+            $_SESSION['pause'] = "";
             /*
             $source = file_get_contents($_GET["url"]);
             if (empty($source)) {
@@ -104,7 +107,7 @@
                 ob_flush();
                 flush();
 
-                while($_SESSION["pause"] == "pause")
+                while($_SESSION['pause'] == "pause")
                 {
                     sleep(1);
                 }
@@ -154,7 +157,7 @@
         <?php include "header.php" ?>
         <script>
             $(document).ready(function() {
-                download(<?php echo "\"".$_GET["start"]."\""; ?>);
+                download(<?php echo "\"".$_GET['start']."\""; ?>);
             });
         </script>
     </head>
@@ -163,8 +166,8 @@
             <?php include "menu.php" ?>
             <br/><br/>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
+                <div class="col"></div>
+                <div class="col">
                     <center>
                         <table class="table table-bordered">
                             <tbody>
@@ -199,7 +202,7 @@
                         </table>
                     </center>
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col"></div>
             </div>
         </div>
     </body>

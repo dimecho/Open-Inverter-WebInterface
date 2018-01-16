@@ -23,18 +23,20 @@
                     <table class="table table-active bg-light table-bordered table-striped table-hover" width="100%">
                         <tbody>
                         <?php
-                            include_once("common.php");
-                            detectOS();
-
+                            //include("common.php");
+                            
+                            $os = detectOS();
+                            $software = getSoftware();
                             $found = false;
-                            foreach($GLOBALS["Software"] as $id => $item)
+
+                            foreach($software as $id => $item)
                             {
-                                if(is_file($item["path"][$GLOBALS["OS"]])) //Filter only installed software
+                                if(is_file($item["path"][$os])) //Filter only installed software
                                 {
                                     $disabled = "";
                                     $builtin = "";
 
-                                    if($GLOBALS["OS"] == "mac" && strpos($item["path"]["mac"], "/usr/bin") !== false) //Cannot remove OSX built-in
+                                    if($os == "mac" && strpos($item["path"]["mac"], "/usr/bin") !== false) //Cannot remove OSX built-in
                                     {
                                         $disabled = "disabled='disabled'";
                                         $builtin = "<span style='color:red;'> (built-in)</span>";

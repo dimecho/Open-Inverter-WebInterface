@@ -1,6 +1,4 @@
 <?php
-
-	//require('config.inc.php');
     require('serial.php');
 
 	if(isset($_GET["db"])){
@@ -60,8 +58,6 @@
 		
 		fwrite($uart, "save\n");
 		fread($uart,1);
-		
 		fclose($uart);
 	}
-
 ?>

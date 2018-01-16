@@ -1,7 +1,5 @@
 <?php
-    include_once("common.php");
-    
-    detectOS();
+    include("common.php");
     
     if(isset($_GET["ajax"])){
         
@@ -86,9 +84,10 @@
                                                 url:
                                                 <?php
                                                     //$tmp_dir = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
+                                                    $os = detectOS();
                                                     echo "'";
                                                     echo "/bootloader.php?ajax=1";
-                                                    if ($GLOBALS["OS"] === "mac") {
+                                                    if ($os === "mac") {
                                                         $tmp_name = "/tmp/" .$_FILES['firmware']["name"];
                                                     }else{
                                                         $tmp_name = sys_get_temp_dir(). "/" .$_FILES['firmware']["name"];

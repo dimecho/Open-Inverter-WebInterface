@@ -1,7 +1,5 @@
 <?php
-    include_once("common.php");
-    
-    detectOS();
+    include("common.php");
     
     if(isset($_GET["ajax"])){
 
@@ -88,9 +86,10 @@
                                                 type: "GET",
                                                 url:
                                                 <?php
+                                                    $os = detectOS();
                                                     echo "'";
                                                     echo "/attiny.php?ajax=1";
-                                                    if ($GLOBALS["OS"] === "mac") {
+                                                    if ($os === "mac") {
                                                         $tmp_name = "/tmp/" .basename($_FILES['firmware']['tmp_name']). ".bin";
                                                     }else{
                                                         $tmp_name = sys_get_temp_dir(). "/" .basename($_FILES['firmware']['tmp_name']). ".bin";
