@@ -32,6 +32,8 @@ Console Management for [Huebner Inverter Project](http://johanneshuebner.com/qui
 
 ![Linux](Web/img/linux.png?raw=true) [Download for Linux](../../releases/download/1.0/Huebner.Inverter.Linux.tgz)
 
+![Linux](Web/img/esp8266.png?raw=true) [Download for ESP8266](../../releases/download/1.0/Huebner.Inverter.ESP8266.bin)
+
 ## Author
 
 Dima Dykhman

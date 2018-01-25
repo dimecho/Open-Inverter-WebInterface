@@ -354,29 +354,86 @@ function buildParameters()
 function checkUpdates() {
 
     var check = Math.random() >= 0.5;
-    if (check === true) {
-        $.ajax("/update.php", {
+    if (check === true)
+    {
+        var online = Base64.decode("aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3Bvb2Zpay9IdWVibmVyLUludmVydGVyL21hc3Rlci9XZWIvdmVyc2lvbi50eHQ=");
+        $.ajax(online, {
             async: true,
             success: function success(data) {
-                //console.log(data);
-                if(data !== "") {
-                    var url = "https://github.com/poofik/Huebner-Inverter/releases/download/1.0/";
-                    if(os === "mac"){
-                        url += "Huebner.Inverter.dmg";
-                    }else if(os === "windows"){
-                        url += "Huebner.Inverter.Windows.zip";
-                    }else if(os === "linux"){
-                        url += "Huebner.Inverter.Linux.tgz";
-                    }
-                    $.notify({
-                        icon: "glyphicon glyphicon-download-alt",
-                        title: "New Version",
-                        message: "Update available <a href='" + url + "'>Download</a> " + data
-                    }, {
-                        type: 'success'
+                try {
+                    var split = data.split("\n");
+                    var version = parseFloat(split[0]);
+                    var build = parseFloat(split[1]);
+
+                    $.ajax("version.txt", {
+                        async: false,
+                        success: function success(data) {
+                            
+                            var _split = data.split("\n");
+                            var _version = parseFloat(split[0]);
+                            var _build = parseFloat(split[1]);
+
+                            if(version > _version || build > _build)
+                            {
+                                var url = Base64.decode("aHR0cHM6Ly9naXRodWIuY29tL3Bvb2Zpay9IdWVibmVyLUludmVydGVyL3JlbGVhc2VzL2Rvd25sb2FkLw==");
+                                if(os === "mac"){
+                                    url += version + "/Huebner.Inverter.dmg";
+                                }else if(os === "windows"){
+                                    url += version + "/Huebner.Inverter.Windows.zip";
+                                }else if(os === "linux"){
+                                    url += version + "/Huebner.Inverter.Linux.tgz";
+                                }else if(os === "esp8266"){
+                                    url += version + "/Huebner.Inverter.ESP8266.bin";
+                                }
+                                $.notify({
+                                    icon: "glyphicon glyphicon-download-alt",
+                                    title: "New Version",
+                                    message: "Update available <a href='" + url + "'>Download</a>"
+                                }, {
+                                    type: 'success'
+                                });
+                            }
+                        }
                     });
-                }
+                } catch(e) {}
             }
         });
+    }
+};
+
+var Base64 = {
+
+    _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+
+    decode: function(input) {
+        var output = "";
+        var chr1, chr2, chr3;
+        var enc1, enc2, enc3, enc4;
+        var i = 0;
+
+        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+        while (i < input.length) {
+
+            enc1 = this._keyStr.indexOf(input.charAt(i++));
+            enc2 = this._keyStr.indexOf(input.charAt(i++));
+            enc3 = this._keyStr.indexOf(input.charAt(i++));
+            enc4 = this._keyStr.indexOf(input.charAt(i++));
+
+            chr1 = (enc1 << 2) | (enc2 >> 4);
+            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+            chr3 = ((enc3 & 3) << 6) | enc4;
+
+            output = output + String.fromCharCode(chr1);
+
+            if (enc3 != 64) {
+                output = output + String.fromCharCode(chr2);
+            }
+            if (enc4 != 64) {
+                output = output + String.fromCharCode(chr3);
+            }
+        }
+
+        return output;
     }
 };

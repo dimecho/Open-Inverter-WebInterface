@@ -24,14 +24,17 @@
         }
 
 		$output = shell_exec($command);
+        $output = str_replace("\n", ",", $output);
+        $output = str_replace(" ", ",", $output);
+        $output = rtrim($output,",");
 
-        echo str_replace(" ", ",", $output);
-
-        if(strpos($com,"Error") === false)
+        echo $output;
+        /*
+        if(strpos($com,"Error") === true)
         {
-            echo "," . serialDevice(null);
+            echo serialDevice(null);
         }
-		
+		*/
     }else{
 	
         if(isset($_GET["pk"]) && isset($_GET["name"]) && isset($_GET["value"]))
@@ -59,7 +62,7 @@
             if(isset($_GET["loop"]))
                 $l = intval($_GET["loop"]);
             if(isset($_GET["delay"]))
-                $t = intval($_GET["delay"]);
+                $t = intval($_GET["delay"]) * 1000;
     
             streamSerial("get " .$_GET["stream"], $l, $t);
         }
@@ -149,9 +152,9 @@
             }
         }
         fclose($uart);
-        
-        $read = rtrim($read ,"\n");
-        $read = rtrim($read ,"\r");
+
+        $read = str_replace("\r", "", $read);
+        $read = rtrim($read, "\n");
         
         return $read;
     }
@@ -169,7 +172,9 @@
         for ($i = 0; $i < $loop; $i++)
         {
             $streamCount = 0;
-            fwrite($uart, "!");
+
+            if($i != 0)
+                fwrite($uart, "!");
             
             ob_end_flush();
             while($streamCount <= $streamLength)
@@ -177,7 +182,7 @@
                 $read = fgets($uart);
                 $read = ltrim($read, "!");
                 
-                echo str_replace("\r","",$read);
+                echo str_replace("\r", "", $read);
                 
                 usleep($delay);
                 $streamCount++;

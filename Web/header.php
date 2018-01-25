@@ -11,20 +11,18 @@
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script>
     var os = "linux";
-    $(document).ready(function() {
-        if (navigator.userAgent.match(/Android|webOS|iPhone|iPod|Blackberry/i)) {
-            os = "mobile";
-            $.getScript("/js/mobile.js", function() {
-                optimizeMobile();
-            });
-        }else if (navigator.userAgent.match(/Mac/i)) {
-            os = "mac";
-        }else if (navigator.userAgent.match(/Win/i)) {
-            os = "windows";
-        }
-        //DEBUG
-        //os = "mobile";
-    });
+    if (navigator.userAgent.match(/Android|webOS|iPhone|iPod|Blackberry/i)) {
+        os = "mobile";
+        $.getScript("/js/mobile.js", function() {
+            optimizeMobile();
+        });
+    }else if (navigator.userAgent.match(/Mac/i)) {
+        os = "mac";
+    }else if (navigator.userAgent.match(/Win/i)) {
+        os = "windows";
+    }
+    //DEBUG
+    //os = "mobile";
 </script>
 <script type="text/javascript" src="/js/svg-injector.js"></script>
 <script type="text/javascript" src="/js/alertify.js"></script>

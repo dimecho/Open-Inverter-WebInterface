@@ -37,14 +37,20 @@
 		
 		fwrite($uart, "reset\r");
 		
-		wait_for_char($uart,'S'); //Wait for size request
+        var $c = wait_for_char($uart,array('S','2')); //Wait for size request
+
+		if($c == '2') //version 2 bootloader
+        {
+            fwrite($uart, 0xAA); //Send magic
+            wait_for_char($uart,array('S'));
+        }
 		
         print "Sending number of pages.." .$pages. "\n";
 		
 		fwrite($uart, chr($pages)); //Use 'chr', sending 'int' will cause Transmission Error
 		//fputs($uart,$pages);
 		
-		wait_for_char($uart,'P'); //Wait for page request
+		wait_for_char($uart,array('P')); //Wait for page request
 		
 		ob_flush();
 	    
@@ -251,13 +257,15 @@
 		return array_slice(unpack("C*", "\0".$s), 1);
 	}
 	
-	function wait_for_char($uart,$c)
+	function wait_for_char($uart, $c)
 	{
 		while($recv_char = fread($uart,1))
 		{
 			//print $recv_char. "\n";
-			if($recv_char == $c)
-				break;
+            foreach($c as $item)
+    			if($recv_char == $item)
+    				return $recv_char;
 		}
+        return -1;
 	}
 ?>

@@ -506,7 +506,7 @@ function buildMenu() {
             row.append(col);
 
             if(os === "mobile") {
-                span.attr("style","font-size: 140%;");
+                span.attr("style","font-size: 125%;");
             }
         }
     });

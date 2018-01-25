@@ -33,9 +33,9 @@
         "amperage": 400,
         "image": "img/Siemens_1PV5135.jpg",
         "tune": [{
-            "file": "Siemens_1PV5135.txt"
+            "file": "Siemens_1PV5135_hv1.txt"
         },{
-            "file": "Siemens_1PV5135-2.txt"
+            "file": "Siemens_1PV5135_lv1.txt"
         }]
     },{
         "model": "BY152FGF2A4",
@@ -51,11 +51,22 @@
         "manufacturer": "Tesla",
         "voltage": 400,
         "amperage": 300,
-        "image": "img/Tesla_ModelS_Front.jpg",
+        "image": "img/Tesla_FDU.jpg",
         "tune": [{
-            "file": "Tesla_ModelS_Front.txt"
+            "file": "Tesla_FDU_hv1.txt"
         },{
-            "file": "Tesla_ModelS_Front-2.txt"
+            "file": "Tesla_FDU_lv1.txt"
+        }]
+    },{
+        "model": "Model S (Rear)",
+        "manufacturer": "Tesla",
+        "voltage": 400,
+        "amperage": 300,
+        "image": "img/Tesla_RDU.jpg",
+        "tune": [{
+            "file": "Tesla_RDU_hv1.txt"
+        },{
+            "file": "Tesla_RDU_lv1.txt"
         }]
     }]
 }

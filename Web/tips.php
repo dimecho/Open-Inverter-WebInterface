@@ -3,17 +3,19 @@
     <head>
         <?php include "header.php" ?>
         <script>
-            $.ajax("tips.csv", {
-                success: function success(data)
-                {
-                    var row = data.split("\n");
-                    var ul = $("#tips");
-                    for (var i = 0; i < row.length; i++)
+            $(document).ready(function () {
+                $.ajax("tips.csv", {
+                    success: function success(data)
                     {
-                        var li = $("<li>").append(row[i]);
-                        ul.append(li);
+                        var row = data.split("\n");
+                        var ul = $("#tips");
+                        for (var i = 0; i < row.length; i++)
+                        {
+                            var li = $("<li>").append(row[i]);
+                            ul.append(li);
+                        }
                     }
-                }
+                });
             });
         </script>
     </head>

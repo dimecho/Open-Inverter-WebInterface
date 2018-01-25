@@ -83,3 +83,23 @@ form {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.chartWrapper {
+  position: relative;
+}
+
+.chartWrapper > canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events:none;
+}
+.chartAreaWrapper {
+  overflow-x: scroll;
+  position: relative;
+  width: 100%;
+}
+
+.chartAreaWrapper2 {
+  position: relative;
+}

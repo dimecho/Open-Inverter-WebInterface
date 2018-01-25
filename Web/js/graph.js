@@ -1,11 +1,10 @@
 var activeTab = "";
 var activeTabText = "";
-var syncronizedDelay = 1000;
+var syncronizedDelay = 600;
 var syncronizedAccuracy = 0;
 var streamTimer;
 var data;
 var options;
-var xaxis = [];
 var chart;
 var ctx;
 var ctxFont = 12;
@@ -26,13 +25,13 @@ $(document).ready(function () {
     if(os === "mobile") {
 
         Chart.defaults.global.animationSteps = 0;
-        canvas.height = 400;
+        canvas.height = 800;
         ctxFont = 40;
 
     }else{
 
         Chart.defaults.global.animationSteps = 12;
-        canvas.height = 200;
+        canvas.height = 640;
     }
 
     /*
@@ -153,14 +152,19 @@ function buildGraphMenu() {
         footer.append(btn_pdf);
         footer.append(btn_img);
 
-        /*
-        $("#speed").slider({
-            /
-            formatter: function(value) {
-                return 'Current value: ' + value;
-            },
-            /
-            min: 200,
+        var s = $("#buildGraphSlider").empty();
+        var slow_img = $("<img>", { class: "svg-inject", src: "img/slow.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Slow"} );
+        var input = $("<input>", { id: "speed", type: "text", "data-provide": "slider" });
+        var fast_img = $("<img>", { class: "svg-inject", src: "img/fast.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Fast"} );
+        
+        s.append(slow_img);
+        s.append(input);
+        s.append(fast_img);
+
+        //new SVGInjector().inject(document.querySelectorAll('.svg-inject'));
+
+        input.bootstrapSlider({
+            min: 10,
             max: 3000,
             step: 1,
             value: syncronizedDelay,
@@ -169,21 +173,16 @@ function buildGraphMenu() {
         }).on('slide', function (e) {
 
             syncronizedDelay = e.value;
-            chart.options.animation.duration = syncronizedDelay;
-
-            var t = Math.round(syncronizedDelay / 1000 * 60);
-            //console.log(t);
-
-            chart.config.data.labels = initTimeAxis(t);
-            chart.update();
-
             //console.log(syncronizedDelay);
 
-            //$.ajax("graph.php?delay=" + syncronizedDelay);
+            //var t = Math.round(syncronizedDelay / 1000 * 60);
+            //console.log(t);
 
-            startChart();
+            //chart.options.animation.duration = syncronizedDelay;
+            //chart.config.data.labels = initTimeAxis(t);
+            //chart.update();
+            //startChart();
         });
-        */
     }
 };
 
@@ -291,6 +290,8 @@ function initChart() {
         options: options
     });
     //chart.update();
+
+    $('.chartAreaWrapper2').width($('.chartAreaWrapper').width());
 };
 
 function startChart() {
@@ -331,9 +332,13 @@ function stopChart() {
     clearTimeout(streamTimer);
 };
 
-function initTimeAxis(seconds) {
+function initTimeAxis(seconds, labels) {
 
-    xaxis = [];
+    var xaxis = [];
+
+    if(labels)
+        xaxis = labels;
+
     for (var i = 0; i < seconds; i++) {
         if (i / 10 % 1 != 0) {
             xaxis.push("");
@@ -515,7 +520,7 @@ function initPWMChart(duration) {
                 ticks: {
                     fontSize: ctxFont,
                     reverse: false,
-                    maxRotation: 0
+                    maxRotation: 90
                 }
             }],
             yAxes: [{
@@ -537,11 +542,11 @@ function initPWMChart(duration) {
                 }
             }]
         },
+        /*
         pan: {
             enabled: true,
             mode: 'xy'
         },
-        /*
         zoom: {
             enabled: true,
             mode: 'xy',
@@ -576,7 +581,7 @@ function initPWMChart(duration) {
 function initFrequenciesChart(duration) {
 
     data = {
-        labels: initTimeAxis(62),
+        labels: initTimeAxis(60),
         datasets: [{
             type: 'line',
             label: "Field Weakening",
@@ -645,7 +650,7 @@ function initFrequenciesChart(duration) {
             enabled: false
         },
         responsive: true,
-        //maintainAspectRatio: false,
+        maintainAspectRatio: false,
         scales: {
             xAxes: [{
                 display: true,
@@ -653,12 +658,12 @@ function initFrequenciesChart(duration) {
                 scaleLabel: {
                     fontSize: ctxFont,
                     display: true,
-                    labelString: 'Time (Seconds)'
+                    labelString: 'Time (hh:mm:ss)'
                 },
                 ticks: {
                     fontSize: ctxFont,
                     reverse: false,
-                    maxRotation: 0,
+                    maxRotation: 90,
                     stepSize: 50
                 }
             }],
@@ -679,6 +684,7 @@ function initFrequenciesChart(duration) {
                 }
             }]
         },
+        /*
         pan: {
             enabled: true,
             mode: 'xy'
@@ -691,6 +697,7 @@ function initFrequenciesChart(duration) {
                 min: 0.5
             }
         },
+        */
         animation: {
             duration: duration
         }
@@ -701,7 +708,7 @@ function initAmperageChart(duration) {
 
     //RMS = LOCKED-ROTOR CURRENT
     data = {
-        labels: initTimeAxis(61),
+        labels: initTimeAxis(60),
         datasets: [{
             type: 'line',
             label: "AC Current",
@@ -753,7 +760,7 @@ function initAmperageChart(duration) {
         tooltipTemplate: "<%= label %> - <%= value %>",
         */
         responsive: true,
-        //maintainAspectRatio: false,
+        maintainAspectRatio: false,
         scales: {
             xAxes: [{
                 display: true,
@@ -761,12 +768,12 @@ function initAmperageChart(duration) {
                 scaleLabel: {
                     fontSize: ctxFont,
                     display: true,
-                    labelString: 'Time (Seconds)'
+                    labelString: 'Time (hh:mm:ss)'
                 },
                 ticks: {
                     fontSize: ctxFont,
                     reverse: false,
-                    maxRotation: 0,
+                    maxRotation: 90,
                     stepSize: 50
                 }
             }],
@@ -787,6 +794,7 @@ function initAmperageChart(duration) {
                 }
             }]
         },
+        /*
         pan: {
             enabled: true,
             mode: 'xy'
@@ -799,6 +807,7 @@ function initAmperageChart(duration) {
                 min: 0.5
             }
         },
+        */
         animation: {
             duration: duration
         }
@@ -808,7 +817,7 @@ function initAmperageChart(duration) {
 function initMotorChart(duration) {
 
     data = {
-        labels: initTimeAxis(61),
+        labels: initTimeAxis(60),
         datasets: [{
             type: 'line',
             label: "Motor Speed",
@@ -838,7 +847,7 @@ function initMotorChart(duration) {
             enabled: false
         },
         responsive: true,
-        //maintainAspectRatio: false,
+        maintainAspectRatio: false,
         scales: {
             xAxes: [{
                 display: true,
@@ -846,11 +855,11 @@ function initMotorChart(duration) {
                 scaleLabel: {
                     fontSize: ctxFont,
                     display: true,
-                    labelString: 'Time (Seconds)'
+                    labelString: 'Time (hh:mm:ss)'
                 },
                 ticks: {
                     fontSize: ctxFont,
-                    maxRotation: 0,
+                    maxRotation: 90,
                     reverse: false
                 }
             }],
@@ -871,6 +880,7 @@ function initMotorChart(duration) {
                 }
             }]
         },
+        /*
         pan: {
             enabled: true,
             mode: 'xy'
@@ -883,6 +893,7 @@ function initMotorChart(duration) {
                 min: 0.5
             }
         },
+        */
         animation: {
             duration: duration
         }
@@ -892,7 +903,7 @@ function initMotorChart(duration) {
 function initTemperatureChart(duration) {
 
     data = {
-        labels: initTimeAxis(61),
+        labels: initTimeAxis(60),
         datasets: [{
             type: 'line',
             label: "Motor",
@@ -931,7 +942,7 @@ function initTemperatureChart(duration) {
             enabled: false
         },
         responsive: true,
-        //maintainAspectRatio: false,
+        maintainAspectRatio: false,
         scales: {
             xAxes: [{
                 display: true,
@@ -939,11 +950,11 @@ function initTemperatureChart(duration) {
                 scaleLabel: {
                     fontSize: ctxFont,
                     display: true,
-                    labelString: 'Time (Seconds)'
+                    labelString: 'Time (hh:mm:ss)'
                 },
                 ticks: {
                     fontSize: ctxFont,
-                    maxRotation: 0,
+                    maxRotation: 90,
                     reverse: false
                 }
             }],
@@ -964,6 +975,7 @@ function initTemperatureChart(duration) {
                 }
             }]
         },
+        /*
         pan: {
             enabled: true,
             mode: 'xy'
@@ -976,6 +988,7 @@ function initTemperatureChart(duration) {
                 min: 0.5
             }
         },
+        */
         animation: {
             duration: duration
         }
@@ -985,7 +998,7 @@ function initTemperatureChart(duration) {
 function initBatteryChart(duration) {
 
     data = {
-        labels: initTimeAxis(61),
+        labels: initTimeAxis(60),
         datasets: [{
             type: 'line',
             label: "Battery",
@@ -1031,7 +1044,7 @@ function initBatteryChart(duration) {
             enabled: false
         },
         responsive: true,
-        //maintainAspectRatio: false,
+        maintainAspectRatio: false,
         scales: {
             xAxes: [{
                 display: true,
@@ -1039,11 +1052,11 @@ function initBatteryChart(duration) {
                 scaleLabel: {
                     fontSize: ctxFont,
                     display: true,
-                    labelString: 'Time (Seconds)'
+                    labelString: 'Time (hh:mm:ss)'
                 },
                 ticks: {
                     fontSize: ctxFont,
-                    maxRotation: 0,
+                    maxRotation: 90,
                     reverse: false
                 }
             }],
@@ -1064,6 +1077,7 @@ function initBatteryChart(duration) {
                 }
             }]
         },
+        /*
         pan: {
             enabled: true,
             mode: 'xy'
@@ -1076,8 +1090,9 @@ function initBatteryChart(duration) {
                 min: 0.5
             }
         },
+        */
         animation: {
-            duration: duration
+            duration: 0 //duration
         }
     };
 };
@@ -1092,11 +1107,11 @@ function updateChart(value, autosize, accuracy) {
     var last = (value.length - 1);
     var i = 0;
     xhr = $.ajax({
-        url: "serial.php?stream=" + value.toString() + "&loop=100&delay=" + syncronizedDelay,
+        url: "serial.php?stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay,
         type: "GET",
         async: true,
         timeout: 4000,
-        crossDomain: true,
+        //crossDomain: true,
         xhrFields: {
             onprogress: function onprogress(e)
             {
@@ -1110,15 +1125,15 @@ function updateChart(value, autosize, accuracy) {
                     this_response = response.substring(last_response_len);
                     last_response_len = response.length;
                 }
-                console.log(this_response);
+                //console.log(this_response);
 
                 var split = this_response.slice(0, -1).split("\n");
 
                 for (var d = 0; d < split.length; d++)
                 {
                     //console.log(value[i]);
-                    if (value[i] === "pwmfrq") {
-
+                    if (value[i] === "pwmfrq")
+                    {
                         var pwmfrq = parseFloat(split[d]);
                         var deadtime = parseFloat(split[d+1]);
                         var waveGraphRatio = 0.01;
@@ -1141,7 +1156,6 @@ function updateChart(value, autosize, accuracy) {
                             data.datasets[i + 1].data = sineWave(2,(max * point / 100),0,0.1);
                         } else {
 
-                            l = data.datasets[i].data.length;
                             if (accuracy) {
                                 var p = data.datasets[i].data[l - 1];
                                 var c = p * accuracy;
@@ -1155,23 +1169,59 @@ function updateChart(value, autosize, accuracy) {
                                 }
                             }
 
-                            if (l > xaxis.length) data.datasets[i].data = [];
-                            //data.datasets[0].data.shift();
+                            if(i == 0)
+                            {
+                                l = data.datasets[i].data.length;
+
+                                //Scroller
+                                if (l == data.labels.length) {
+                                    initTimeAxis(60, data.labels);
+                                    var newwidth = $('.chartAreaWrapper').width() + chart.width;
+                                    $('.chartAreaWrapper2').width(newwidth);
+                                    $('.chartAreaWrapper').animate({scrollLeft:newwidth}, 1000);
+                                }else if (l > (60 * 4)){
+                                    data.datasets[i].data = []; //empty
+                                    data.labels = initTimeAxis(60);
+                                    $('.chartAreaWrapper2').width($('.chartAreaWrapper').width());
+                                }
+
+                                //Timestamp
+                                if (l / 10 % 1 == 0)
+                                {
+                                    var d = new Date();
+                                    var hr = d.getHours();
+                                    /*
+                                    var ampm = "am";
+                                    if( hr > 12 ) {
+                                        hr -= 12;
+                                        ampm = "pm";
+                                    }
+                                    */
+                                    //console.log(l);
+                                    data.labels[l] = hr + ":" + d.getMinutes() + ":" + d.getSeconds();
+                                }
+                            }
 
                             data.datasets[i].data.push(point);
+                            //console.log(data.datasets[i].data);
                         }
                     }
-
+                    
                     if (i == last)
+                    {
                         i = 0;
+                    }
                     else
+                    {
                         i++;
+                    }
                 }
-
+                
                 if (autosize) { //&& l == 1) //do it at start
 
                     var largest = Math.max.apply(Math, data.datasets[0].data);
-                    //console.log(largest);
+                    //console.log("yAxes Sale:" + largest);
+
                     var step = 50;
 
                     if (largest > 3000) {
@@ -1191,22 +1241,20 @@ function updateChart(value, autosize, accuracy) {
                 chart.update();
             }
         }
-    })
-    .done(function()
+    }).done(function()
     {
-        streamTimer = setTimeout(function() {
+        //streamTimer = setTimeout(function() {
             updateChart(value, autosize, accuracy);
-        }, 500);
-    })
-    .fail(function(jqXHR, textStatus) {
+        //}, syncronizedDelay);
+    }).fail(function(jqXHR, textStatus) {
         if(textStatus === "timeout")
-        {     
+        {
             streamTimer = setTimeout(function() {
                 updateChart(value, autosize, accuracy);
             }, 1000);
             //this.timeoutCount++;
         }
-    });​
+    })
 };
 
 function getRandom(min, max) {

@@ -11,5 +11,4 @@ function optimizeMobile() {
    $(".nav-tabs li a").attr("style","font-size: 140%;");
    $("#warning").attr("style","display:none;width:90%;border-radius:5px;");
    $("#warning p").attr("style","font-size: 150%;");
-
 };

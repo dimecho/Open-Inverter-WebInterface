@@ -2,10 +2,9 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script type="text/javascript" src="/js/moment.js"></script>
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap-slider.css" />
+        <script type="text/javascript" src="/js/bootstrap-slider.js"></script>
         <script type="text/javascript" src="/js/chart.js"></script>
-        <script type="text/javascript" src="/js/chartjs-plugin-zoom.js"></script>
-        <script type="text/javascript" src="/js/chartjs-plugin-streaming.js"></script>
         <script type="text/javascript" src="/js/graph.js"></script>
     </head>
     <body>
@@ -13,15 +12,22 @@
             <?php include "menu.php" ?>
             <br/>
             <div class="row">
-                <div class="col">
-                    <table class="table table-active bg-light table-bordered" id="render">
+                <div class="col" align="center">
+                    <table class="table table-active bg-light" id="render">
                         <tr>
                             <td>
                                 <div id="buildGraphMenu"></div>
-                                <canvas id="canvas"></canvas>
                             </td>
                         </tr>
                     </table>
+                    <div id="buildGraphSlider"></div>
+                    <div class="chartWrapper bg-light">
+                        <div class="chartAreaWrapper">
+                            <div class="chartAreaWrapper2">
+                                <canvas id="canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
