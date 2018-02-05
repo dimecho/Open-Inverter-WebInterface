@@ -1,6 +1,6 @@
 //Load libraries
 #include <Wire.h>
-#include "LiquidCrystal_I2C.h"
+#include <LiquidCrystal_I2C.h>
 
 //Define variables
 #define I2C_ADDR           0x3F // I2C Address - Use i2c_scanner to find

@@ -2,6 +2,7 @@ var activeTab = "";
 var activeTabText = "";
 var syncronizedDelay = 600;
 var syncronizedAccuracy = 0;
+var graphDivision = 60;
 var streamTimer;
 var data;
 var options;
@@ -34,6 +35,7 @@ $(document).ready(function () {
         canvas.height = 640;
     }
 
+    //ctx.fillStyle = "white";
     /*
     ctx.webkitImageSmoothingEnabled = false;
     ctx.mozImageSmoothingEnabled = false;
@@ -58,7 +60,41 @@ function buildGraphMenu() {
     activeTab = "#graph0";
     activeTabText = tabs[0];
 
+    var s = $("#buildGraphSlider").empty();
+    var slow_img = $("<img>", { class: "svg-inject", src: "img/slow.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Slow"} );
+    var input = $("<input>", { id: "speed", type: "text", "data-provide": "slider", "data-slider-value": syncronizedDelay} );
+    var fast_img = $("<img>", { class: "svg-inject", src: "img/fast.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Fast"} );
+    
+    s.append(slow_img);
+    s.append(input);
+    s.append(fast_img);
+
+    //new SVGInjector().inject(document.querySelectorAll('.svg-inject'));
+
+    input.bootstrapSlider({
+        min: 10,
+        max: 3000,
+        step: 1,
+        value: syncronizedDelay,
+        //scale: 'logarithmic',
+        reversed: true
+    }).on('slide', function (e) {
+
+        syncronizedDelay = e.value;
+        //console.log(syncronizedDelay);
+
+        //var t = Math.round(syncronizedDelay / 1000 * 60);
+        //console.log(t);
+
+        //chart.options.animation.duration = syncronizedDelay;
+        //chart.config.data.labels = initTimeAxis(t);
+        //chart.update();
+        //startChart();
+    });
+
     if (os === "mobile") {
+
+        graphDivision = 40;
 
         var nav = $("<nav>", { class: "navbar navbar-toggleable-md navbar-light bg-faded" });
         var div = $("<div>", { class: "collapse navbar-collapse", id: "navbarsGraph" });
@@ -100,6 +136,13 @@ function buildGraphMenu() {
 
         footer.append(btn_start);
         footer.append(btn_stop);
+
+        slow_img.attr("style","width:80px; height:80px;");
+        $(".slider").attr("style","width:80%;");
+        $(".slider-track").attr("style","height:40px;");
+        $(".slider-handle").attr("style","width:70px;height:70px;");
+        fast_img.attr("style","width:80px; height:80px;");
+        $(".btn").attr("style","font-size: 150%;");
 
     }else{
 
@@ -151,38 +194,6 @@ function buildGraphMenu() {
         footer.append(btn_stop);
         footer.append(btn_pdf);
         footer.append(btn_img);
-
-        var s = $("#buildGraphSlider").empty();
-        var slow_img = $("<img>", { class: "svg-inject", src: "img/slow.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Slow"} );
-        var input = $("<input>", { id: "speed", type: "text", "data-provide": "slider" });
-        var fast_img = $("<img>", { class: "svg-inject", src: "img/fast.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Fast"} );
-        
-        s.append(slow_img);
-        s.append(input);
-        s.append(fast_img);
-
-        //new SVGInjector().inject(document.querySelectorAll('.svg-inject'));
-
-        input.bootstrapSlider({
-            min: 10,
-            max: 3000,
-            step: 1,
-            value: syncronizedDelay,
-            //scale: 'logarithmic',
-            reversed: true
-        }).on('slide', function (e) {
-
-            syncronizedDelay = e.value;
-            //console.log(syncronizedDelay);
-
-            //var t = Math.round(syncronizedDelay / 1000 * 60);
-            //console.log(t);
-
-            //chart.options.animation.duration = syncronizedDelay;
-            //chart.config.data.labels = initTimeAxis(t);
-            //chart.update();
-            //startChart();
-        });
     }
 };
 
@@ -264,9 +275,13 @@ function exportPDF(pdf) {
 
 function initChart() {
 
+    data = {};
+    options = {};
+
     var duration = 0;
-    //if(os !== "mobile")
-    //    duration = $("#speed").slider('getValue');
+
+    if(os !== "mobile")
+        duration = syncronizedDelay;
 
     if (activeTab === "#graph0") {
         initMotorChart(duration);
@@ -283,6 +298,7 @@ function initChart() {
     }
 
     if (chart) chart.destroy();
+    
     chart = new Chart(ctx, {
         //type: 'line',
         type: 'bar',
@@ -298,14 +314,18 @@ function startChart() {
 
     console.log(activeTab);
 
+    syncronizedAccuracy = 0;
+
     //clearTimeout(statusRefreshTimer);
     stopChart();
 
     //$.ajax("graph.php?stream=start");
 
-    syncronizedAccuracy = 0;
+    var mode = getJSONFloatValue('opmode');
 
-    var duration = 0; //$("#speed").slider('getValue');
+    if (mode === 2 || mode === 5) {
+        $("#potentiometer").show();
+    }
 
     if (activeTab === "#graph0") {
         updateChart(["speed"], true, 0.8);
@@ -318,7 +338,11 @@ function startChart() {
     } else if (activeTab === "#graph4") {
         updateChart(["fweak", "fstat", "ampnom"]);
     } else if (activeTab === "#graph5") {
-        updateChart(["pwmfrq", "deadtime"]);
+        if(getJSONFloatValue('opmode') > 0) {
+            updateChart(["pwmfrq", "deadtime"]);
+        }else{
+            $.notify({ message: 'Inverter is OFF - PWM cannot be generated' }, { type: 'danger' });
+        }
     }
 };
 
@@ -330,6 +354,8 @@ function stopChart() {
     if (xhr) xhr.abort();
 
     clearTimeout(streamTimer);
+
+    $("#potentiometer").hide();
 };
 
 function initTimeAxis(seconds, labels) {
@@ -340,11 +366,14 @@ function initTimeAxis(seconds, labels) {
         xaxis = labels;
 
     for (var i = 0; i < seconds; i++) {
+        xaxis.push("");
+        /*
         if (i / 10 % 1 != 0) {
             xaxis.push("");
         } else {
             xaxis.push(i);
         }
+        */
         //xaxis.push(i.toString());
     }
     return xaxis;
@@ -429,7 +458,7 @@ function initPWMChart(duration) {
         datasets: [ {
             type: "line",
             label: "L1 Delta", //red
-            backgroundColor: "transparent",
+            backgroundColor: "rgba(0, 0, 0, 0)",
             borderColor: "#ff3300",
             borderWidth: 1,
             data: []
@@ -437,7 +466,6 @@ function initPWMChart(duration) {
             hidden: true,
             type: "line",
             label: "L2 Delta", //green
-            backgroundColor: "transparent",
             borderColor: "#39e600",
             borderWidth: 1,
             data: []
@@ -445,14 +473,14 @@ function initPWMChart(duration) {
             hidden: true,
             type: "line",
             label: "L3 Delta", //blue
-            backgroundColor: "transparent",
+            backgroundColor: "rgba(0, 0, 0, 0)",
             borderColor: "#0066ff",
             borderWidth: 1,
             data: [],
         }, {
             type: "line",
             label: "L1 Analog", //red
-            backgroundColor: "transparent",
+            backgroundColor: "rgba(0, 0, 0, 0)",
             borderColor: "#ff3300",
             borderWidth: 1,
             data: []
@@ -460,7 +488,7 @@ function initPWMChart(duration) {
             hidden: true,
             type: "line",
             label: "L2 Analog", //green
-            backgroundColor: "transparent",
+            backgroundColor: "rgba(0, 0, 0, 0)",
             borderColor: "#39e600",
             borderWidth: 1,
             data: []
@@ -468,7 +496,7 @@ function initPWMChart(duration) {
             hidden: true,
             type: "line",
             label: "L3 Analog", //blue
-            backgroundColor: "transparent",
+            backgroundColor: "rgba(0, 0, 0, 0)",
             borderColor: "#0066ff",
             borderWidth: 1,
             data: [],
@@ -506,7 +534,7 @@ function initPWMChart(duration) {
             enabled: false
         },
         responsive: true,
-        //maintainAspectRatio: false,
+        maintainAspectRatio: false,
         scales: {
             xAxes: [{
                 display: true,
@@ -559,29 +587,13 @@ function initPWMChart(duration) {
         animation: {
             duration: duration
         }
-        /*
-        ,plugins: {
-            streaming: {
-                duration: 20000,
-                refresh: 1000,
-                delay: 2000,
-                onRefresh: function(chart) {
-                  chart.data.datasets.forEach(function(dataset) {
-                    dataset.data.push({
-                      x: Date.now(),
-                      y: Math.random()
-                    });
-                });
-            }
-        }
-        */
     };
 };
 
 function initFrequenciesChart(duration) {
 
     data = {
-        labels: initTimeAxis(60),
+        labels: initTimeAxis(graphDivision),
         datasets: [{
             type: 'line',
             label: "Field Weakening",
@@ -708,7 +720,7 @@ function initAmperageChart(duration) {
 
     //RMS = LOCKED-ROTOR CURRENT
     data = {
-        labels: initTimeAxis(60),
+        labels: initTimeAxis(graphDivision),
         datasets: [{
             type: 'line',
             label: "AC Current",
@@ -817,7 +829,7 @@ function initAmperageChart(duration) {
 function initMotorChart(duration) {
 
     data = {
-        labels: initTimeAxis(60),
+        labels: initTimeAxis(graphDivision),
         datasets: [{
             type: 'line',
             label: "Motor Speed",
@@ -903,7 +915,7 @@ function initMotorChart(duration) {
 function initTemperatureChart(duration) {
 
     data = {
-        labels: initTimeAxis(60),
+        labels: initTimeAxis(graphDivision),
         datasets: [{
             type: 'line',
             label: "Motor",
@@ -998,7 +1010,7 @@ function initTemperatureChart(duration) {
 function initBatteryChart(duration) {
 
     data = {
-        labels: initTimeAxis(60),
+        labels: initTimeAxis(graphDivision),
         datasets: [{
             type: 'line',
             label: "Battery",
@@ -1175,13 +1187,16 @@ function updateChart(value, autosize, accuracy) {
 
                                 //Scroller
                                 if (l == data.labels.length) {
-                                    initTimeAxis(60, data.labels);
+
+                                    initTimeAxis(graphDivision, data.labels);
                                     var newwidth = $('.chartAreaWrapper').width() + chart.width;
                                     $('.chartAreaWrapper2').width(newwidth);
                                     $('.chartAreaWrapper').animate({scrollLeft:newwidth}, 1000);
-                                }else if (l > (60 * 4)){
+
+                                }else if (l > (graphDivision * 5)){
+                                    
                                     data.datasets[i].data = []; //empty
-                                    data.labels = initTimeAxis(60);
+                                    data.labels = initTimeAxis(graphDivision);
                                     $('.chartAreaWrapper2').width($('.chartAreaWrapper').width());
                                 }
 

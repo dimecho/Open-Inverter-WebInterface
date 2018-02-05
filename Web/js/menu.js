@@ -1,7 +1,3 @@
-var knobValue = 0;
-var knobTimer;
-//var TipRefreshTimer;
-
 $(document).ready(function () {
 
     alertify.defaults.transition = "slide";
@@ -83,26 +79,6 @@ $(document).ready(function () {
             }
         };
     }, false, 'confirm');
-
-    $(".knob").knob({
-        "displayPrevious":true,
-        "value": 0,
-        change: function change(value) {
-            if (value <= knobValue + 5) { //Avoid hard jumps
-                //console.log(value);
-                clearTimeout(knobTimer);
-                knobTimer = setTimeout(function () {
-                    setParameter("fslipspnt", value);
-                }, 80);
-                knobValue = value;
-            } else {
-                console.log("!" + value + ">" + knobValue);
-                $(".knob").val(knobValue).trigger('change');
-            }
-        }
-    });
-    
-    $(".knob").val(0).trigger('change');
 
     buildMenu();
 	
@@ -265,15 +241,15 @@ function startInverter(mode) {
 
     if (data.indexOf("started") != -1) {
         $.notify({ message: "Inverter started" }, { type: "success" });
+        /*
         if (mode === 2 || mode === 5) {
             $("#potentiometer").show();
             $(".collapse").collapse('show');
         }
+        */
     } else {
         $.notify({
-            icon: "glyphicon glyphicon-warning-sign",
-            title: "Error",
-            message: data
+            icon: "glyphicon glyphicon-warning-sign", title: "Error", message: data
         }, {
             type: "danger"
         });
@@ -290,19 +266,19 @@ function stopInverter() {
         setParameter("chargemode", "0", false, false);
     } else {
         $.notify({
-            icon: "glyphicon glyphicon-warning-sign",
-            title: "Error",
-            message: data
+            icon: "glyphicon glyphicon-warning-sign", title: "Error", message: data
         }, {
             type: "danger"
         });
     }
     $(".collapse").collapse();
 
+    /*
     setTimeout(function () {
         $("#potentiometer").hide();
         //location.reload();
     }, 1000);
+    */
 };
 
 function setDefaults() {
@@ -318,9 +294,7 @@ function setDefaults() {
             $.notify({ message: "Inverter reset to Default" }, { type: "success" });
         } else {
             $.notify({
-                icon: "glyphicon glyphicon-warning-sign",
-                title: "Error",
-                message: data
+                icon: "glyphicon glyphicon-warning-sign", title: "Error", message: data
             }, {
                 type: "danger"
             });
@@ -347,7 +321,7 @@ function giveCredit(csv) {
             }else{
                 name = data;
             }
-            $.notify({ message: "Designed By: " + name + url },{ type: 'success' });
+            $.notify({ message: "Designed By: " + name + url }, { type: 'success' });
         }
     });
 };

@@ -2,6 +2,8 @@
 <html>
     <head>
         <?php include "header.php" ?>
+        <script type="text/javascript" src="/js/potentiometer.js"></script>
+        <script type="text/javascript" src="/js/jquery.knob.js"></script>
         <script type="text/javascript" src="/js/switch-check.js"></script>
     </head>
     <body>
@@ -55,7 +57,7 @@
                             <td colspan="7">
                                 Potentiometer
                                 <br/><br/>
-                                <input class="pot" value=0 />
+                                <input class="knob" data-displayinput="true" data-min="0" data-max="100" data-fgcolor="#222222" data-bgcolor="#FFFFFF" value="0">
                                 <br/><br/>
                             </td>
                         </tr>

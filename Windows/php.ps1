@@ -24,7 +24,7 @@ if($args[0] -eq "uninstall") {
     if (-Not (Test-Path "$env:TEMP\$phpFile")) {
     	Write-Host "Downloading PHP 7"  -ForegroundColor Green
         Write-Host ""
-    	Invoke-WebRequest -Uri http://windows.php.net/downloads/releases/$phpFile -OutFile "$env:TEMP\$phpFile"
+    	Invoke-WebRequest -Uri http://windows.php.net/downloads/releases/archives/$phpFile -OutFile "$env:TEMP\$phpFile"
     }
 
     # Visual C++ Redistributable for Visual Studio 2015

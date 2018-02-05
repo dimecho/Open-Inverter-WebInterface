@@ -27,7 +27,6 @@
 <script type="text/javascript" src="/js/svg-injector.js"></script>
 <script type="text/javascript" src="/js/alertify.js"></script>
 <script type="text/javascript" src="/js/download.js"></script>
-<script type="text/javascript" src="/js/jquery.knob.js"></script>
 <script type="text/javascript" src="/js/fancybox.js"></script>
 <script type="text/javascript" src="/js/bootstrap.js"></script>
 <script type="text/javascript" src="/js/bootstrap-notify.js"></script>

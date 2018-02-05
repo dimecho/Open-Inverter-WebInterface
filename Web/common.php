@@ -32,13 +32,12 @@
 
     function getSoftware()
     {
-        $data = file_get_contents("js/software.json");
+        $data = file_get_contents($_SERVER["DOCUMENT_ROOT"] .  "/js/software.json");
         $json = json_decode($data, true);
-
         $json["gcc"]["download"]["version"] = (PHP_OS === 'WINNT' ? "4.7.1" : shell_exec("gcc -dumpversion"));
         $json["python"]["download"]["version"] = (PHP_OS === 'WINNT' ? "3.6.2" : shell_exec("python -c 'import sys; print(\".\".join(map(str, sys.version_info[:3])))'"));
         $json["php"]["download"]["version"] = (PHP_OS === 'WINNT' ? "5.6" : phpversion());
-
+        
         return $json;
     }
 

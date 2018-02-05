@@ -4,6 +4,8 @@
         <?php include "header.php" ?>
         <link rel="stylesheet" type="text/css" href="/css/bootstrap-slider.css" />
         <script type="text/javascript" src="/js/bootstrap-slider.js"></script>
+        <script type="text/javascript" src="/js/potentiometer.js"></script>
+        <script type="text/javascript" src="/js/jquery.knob.js"></script>
         <script type="text/javascript" src="/js/chart.js"></script>
         <script type="text/javascript" src="/js/graph.js"></script>
     </head>
@@ -20,6 +22,9 @@
                             </td>
                         </tr>
                     </table>
+                    <div id="potentiometer" style="display:none">
+                        <input class="knob" data-displayinput="true" data-min="0" data-max="100" data-fgcolor="#222222" data-bgcolor="#FFFFFF" value="0">
+                    </div>
                     <div id="buildGraphSlider"></div>
                     <div class="chartWrapper bg-light">
                         <div class="chartAreaWrapper">
