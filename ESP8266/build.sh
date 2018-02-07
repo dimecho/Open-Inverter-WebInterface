@@ -16,7 +16,7 @@ for i in "${array[@]}"; do
     cp -rf ../Web/css/$i data/css
 done
 
-array=( jquery.js jquery.knob.js jszip.js alertify.js bootstrap.js bootstrap-editable.js bootstrap-slider.js bootstrap-notify.js can.js graph.js index.js menu.js status.js simple.js chart.js switch-check.js svg-injector.js )
+array=( jquery.js jquery.knob.js jszip.js alertify.js bootstrap.js bootstrap-editable.js bootstrap-slider.js bootstrap-notify.js can.js graph.js index.js menu.js status.js simple.js chart.js chartjs-plugin-datalabels.js switch-check.js svg-injector.js )
 for i in "${array[@]}"; do
     cp -rf ../Web/js/$i data/js
 done

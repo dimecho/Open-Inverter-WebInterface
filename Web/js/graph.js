@@ -454,21 +454,29 @@ function sinePWM(phase, start, waveGraphRatio) {
 function initPWMChart(duration) {
 
     data = {
-        labels: initTimeAxis(1000),
+        labels: initTimeAxis(750),
+        backgroundColor: "#ffffff",
         datasets: [ {
             type: "line",
             label: "L1 Delta", //red
             backgroundColor: "rgba(0, 0, 0, 0)",
             borderColor: "#ff3300",
             borderWidth: 1,
-            data: []
+            data: [0],
+            datalabels: {
+                display: false
+            }
         }, {
             hidden: true,
             type: "line",
             label: "L2 Delta", //green
+            backgroundColor: "rgba(0, 0, 0, 0)",
             borderColor: "#39e600",
             borderWidth: 1,
-            data: []
+            data: [0],
+            datalabels: {
+                display: false
+            }
         }, {
             hidden: true,
             type: "line",
@@ -476,42 +484,104 @@ function initPWMChart(duration) {
             backgroundColor: "rgba(0, 0, 0, 0)",
             borderColor: "#0066ff",
             borderWidth: 1,
-            data: [],
+            data: [0],
+            datalabels: {
+                display: false
+            }
         }, {
             type: "line",
             label: "L1 Analog", //red
-            backgroundColor: "rgba(0, 0, 0, 0)",
             borderColor: "#ff3300",
+            backgroundColor: "rgba(0, 0, 0, 0)",
             borderWidth: 1,
-            data: []
+            data: [0],
+            datalabels: {
+                display: false
+            }
         }, {
-            hidden: true,
             type: "line",
             label: "L2 Analog", //green
             backgroundColor: "rgba(0, 0, 0, 0)",
             borderColor: "#39e600",
             borderWidth: 1,
-            data: []
+            data: [0],
+            datalabels: {
+                display: false
+            }
         }, {
-            hidden: true,
             type: "line",
             label: "L3 Analog", //blue
             backgroundColor: "rgba(0, 0, 0, 0)",
             borderColor: "#0066ff",
             borderWidth: 1,
-            data: [],
+            data: [0],
+            datalabels: {
+                display: false
+            }
+        }, {
+            type: "line",
+            label: "Angle",
+            backgroundColor: "rgba(0, 0, 0, 0)",
+            //borderColor: "#39e600",
+            borderWidth: 1,
+            data: Array(1000).fill(0),
+            //borderDash: [10,5],
+            datalabels: {
+                //display: false,
+                /*
+                align: function(context) {
+                    return context.active ? 'end' : 'center';
+                }
+                */
+            }
+        }, {
+            type: "line",
+            label: "Slip",
+            backgroundColor: "rgba(0, 0, 0, 0)",
+            //borderColor: "#39e600",
+            borderWidth: 1,
+            data: Array(1000).fill(0),
+            //borderDash: [10,5],
+            datalabels: {
+                //display: false,
+                /*
+                align: function(context) {
+                    return context.active ? 'end' : 'center';
+                }
+                */
+            }
         }]
     };
 
     var waveGraphRatio = 0.01;
 
-    data.datasets[0].data = sinePWM(4,-2.25,waveGraphRatio); //red
-    data.datasets[1].data = sinePWM(4,2.0,waveGraphRatio); //green
-    data.datasets[2].data = sinePWM(4,0,waveGraphRatio); //blue
+    data.datasets[0].data = sinePWM(2,-2.25,waveGraphRatio); //red
+    data.datasets[1].data = sinePWM(2,2.25,waveGraphRatio); //green
+    data.datasets[2].data = sinePWM(2,0,waveGraphRatio); //blue
 
-    data.datasets[3].data = sineWave(4,1,-2.25,waveGraphRatio); //red
-    data.datasets[4].data = sineWave(4,1,2.0,waveGraphRatio); //green
-    data.datasets[5].data = sineWave(4,1,0,waveGraphRatio); //blue
+    data.datasets[3].data = sineWave(2,1,-2.25,waveGraphRatio); //red
+    data.datasets[4].data = sineWave(3.5,1,2.25,waveGraphRatio); //green
+    data.datasets[5].data = sineWave(2.5,1,0,waveGraphRatio); //blue
+
+    //Angle
+    var p = (data.datasets[6].data.length - 368) / 4;
+    for (i = 1; i <= 4; i++) {
+        var x = p * i;
+        data.datasets[6].data[x] = 1.2;
+        data.datasets[6].data[x + 1] = -1.2;
+        //console.log(x);
+    }
+
+    //Rotor
+    /*
+    var p = (data.datasets[7].data.length - 380) / 4;
+    for (i = 1; i <= 4; i++) {
+        var x = p * i;
+        data.datasets[7].data[x] = 1.2;
+        data.datasets[7].data[x + 1] = -1.2;
+        //console.log(x);
+    }
+    */
 
     options = {
         //scaleUse2Y: true,
@@ -519,7 +589,7 @@ function initPWMChart(duration) {
             display: true,
             labels: {
                 fontSize: ctxFont,
-                fontColor: 'rgb(0, 0, 0)'
+                fontColor: "#000000",
             }
         },
         elements: {
@@ -537,7 +607,7 @@ function initPWMChart(duration) {
         maintainAspectRatio: false,
         scales: {
             xAxes: [{
-                display: true,
+                display: false,
                 position: 'bottom',
                 //stacked: true,
                 scaleLabel: {
@@ -545,11 +615,15 @@ function initPWMChart(duration) {
                     display: true,
                     labelString: 'Time (Millisecond)'
                 },
+                /*
                 ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 10,
                     fontSize: ctxFont,
                     reverse: false,
                     maxRotation: 90
                 }
+                */
             }],
             yAxes: [{
                 display: true,
@@ -569,6 +643,47 @@ function initPWMChart(duration) {
                     suggestedMax: 1.5 //important
                 }
             }]
+        },
+        plugins: {
+            datalabels: {
+                //color: "#39e600",
+                display: function(context) {
+                    return context.dataset.data[context.dataIndex] != 0; //hide zeros
+                },
+                formatter: function(value, context) {
+                    var p = (context.dataset.data.length - 368) / 4;
+                    /*
+                    console.log(p);
+                    console.log(p*2);
+                    console.log(p*3);
+                    console.log(p*4);
+                    */
+
+                    if(context.dataIndex === p || context.dataIndex === p + 1) {
+                        return "90°";
+                    }else if(context.dataIndex === (p * 2) || context.dataIndex === (p * 2) + 1) {
+                        return "180°";
+                    }else if(context.dataIndex === (p * 3) || context.dataIndex === (p * 3) + 1) {
+                        return "270°";
+                    }else if(context.dataIndex === (p * 4) || context.dataIndex === (p * 4) + 1) {
+                        return "360°";
+                    }
+                },
+                //offset: 8,
+                textAlign: 'center'
+                /*
+                font: {
+                    weight: 'bold'
+                },
+                borderWidth: 1,
+                borderRadius: 4,
+                backgroundColor: function(context) {
+                    return context.dataset.backgroundColor;
+                },
+                formatter: Math.round
+
+                */
+            }
         },
         /*
         pan: {
@@ -602,7 +717,10 @@ function initFrequenciesChart(duration) {
             borderWidth: 1,
             hoverBackgroundColor: "rgba(0, 0, 0, 0)",
             hoverBorderColor: "#ff0000",
-            data: [0]
+            data: [0],
+            datalabels: {
+                display: false
+            }
         }, {
             type: 'line',
             label: "Stator Frequency",
@@ -611,7 +729,10 @@ function initFrequenciesChart(duration) {
             borderWidth: 2,
             hoverBackgroundColor: "#90caf9",
             hoverBorderColor: "#33b5e5",
-            data: [0]
+            data: [0],
+            datalabels: {
+                display: false
+            }
         }, {
             type: 'line',
             label: "Amplitude Max",
@@ -620,7 +741,10 @@ function initFrequenciesChart(duration) {
             borderWidth: 2,
             hoverBackgroundColor: "rgba(0, 0, 0, 0)",
             hoverBorderColor: "#bdbdbd",
-            data: [0]
+            data: [0],
+            datalabels: {
+                display: false
+            }
         }, {
             type: 'line',
             label: "Amplitude Nominal",
@@ -629,7 +753,10 @@ function initFrequenciesChart(duration) {
             borderWidth: 2,
             hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
             hoverBorderColor: "#FF8800",
-            data: [0]
+            data: [0],
+            datalabels: {
+                display: false
+            }
         }]
     };
 
@@ -724,21 +851,27 @@ function initAmperageChart(duration) {
         datasets: [{
             type: 'line',
             label: "AC Current",
-            backgroundColor: "rgba(51, 153, 255,0.2)",
+            backgroundColor: "rgba(51, 153, 255, 0.2)",
             borderColor: "rgba(0,0,0,0.2)",
             borderWidth: 2,
-            hoverBackgroundColor: "rgba(51, 153, 255,0.4)",
+            hoverBackgroundColor: "rgba(51, 153, 255, 0.4)",
             hoverBorderColor: "rgba(0,0,0,0.5)",
-            data: [0]
+            data: [0],
+            datalabels: {
+                display: false
+            }
         }, {
             type: 'line',
             label: "DC Current",
-            backgroundColor: "rgba(102, 255, 51,0.2)",
+            backgroundColor: "rgba(102, 255, 51, 0.2)",
             borderColor: "rgba(0,0,0,0.2)",
             borderWidth: 2,
-            hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
+            hoverBackgroundColor: "rgba(102, 255, 51, 0.4)",
             hoverBorderColor: "rgba(0,0,0,0.5)",
-            data: [0]
+            data: [0],
+            datalabels: {
+                display: false
+            }
         }]
     };
 
@@ -838,7 +971,10 @@ function initMotorChart(duration) {
             borderWidth: 2,
             hoverBackgroundColor: "rgba(255,99,132,0.4)",
             hoverBorderColor: "rgba(255,99,132,1)",
-            data: [0]
+            data: [0],
+            datalabels: {
+                display: false
+            }
         }]
     };
 
@@ -924,7 +1060,10 @@ function initTemperatureChart(duration) {
             borderWidth: 2,
             hoverBackgroundColor: "rgba(51, 153, 255,0.4)",
             hoverBorderColor: "rgba(0,0,0,0.5)",
-            data: [0]
+            data: [0],
+            datalabels: {
+                display: false
+            }
         }, {
             type: 'line',
             label: "Inverter",
@@ -933,7 +1072,10 @@ function initTemperatureChart(duration) {
             borderWidth: 2,
             hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
             hoverBorderColor: "rgba(0,0,0,0.5)",
-            data: [0]
+            data: [0],
+            datalabels: {
+                display: false
+            }
         }]
     };
 

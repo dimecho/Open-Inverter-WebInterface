@@ -26,20 +26,16 @@
             <br/><br/>
             <div class="row">
                 <div class="col">
-                    <center>
-                        <table class="table table-active bg-light table-bordered">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="progress progress-striped active">
-                                            <div class="progress-bar" style="width:1%" id="progressBar"></div>
-                                        </div>
-                                        <div id="output"></div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </center>
+                    <table class="table table-active bg-light table-bordered">
+                        <tr align="center">
+                            <td>
+                                <div class="progress progress-striped active">
+                                    <div class="progress-bar" style="width:1%" id="progressBar"></div>
+                                </div>
+                                <div id="output"></div>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>

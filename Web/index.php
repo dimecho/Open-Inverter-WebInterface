@@ -38,13 +38,11 @@
             This project is for educational purpose. High power electronics can cause damage, death or injury. You have decided to build your own inverter so you are responsible for what you do.
             </p>
             <table class="table">
-                <tbody>
-                    <tr>
-                        <td>
-                            <center><button type="button" class="btn btn-danger" onClick="$.fancybox.close();setCookie('safety', 1, 360);buildParameters();"><i class="glyphicon glyphicon-cog"></i> I Agree</button></center>
-                        </td>
-                    </tr>
-                </tbody>
+                <tr>
+                    <td>
+                        <center><button type="button" class="btn btn-danger" onClick="$.fancybox.close();setCookie('safety', 1, 360);buildParameters();"><i class="glyphicon glyphicon-cog"></i> I Agree</button></center>
+                    </td>
+                </tr>
             </table>
         </div>
     </body>

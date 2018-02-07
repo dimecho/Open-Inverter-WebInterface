@@ -129,7 +129,6 @@
             <div class="row">
                 <div class="col">
                     <table class="table table-active bg-faded table-bordered">
-                        <tbody>
                         <?php if(isset($_FILES["firmware"])){ ?>
                             <tr>
                                 <td>
@@ -192,27 +191,24 @@
                                     });
                                 });
                             </script>
-                            <tr>
+                            <tr align="center">
                                 <td>
-                                    <center>
-                                        <div class="input-group">
-                                            <span class="input-group-addon" style="width:80%">
-                                                <select name="serial" class="form-control" form="Aform" id="serialList" style="width:80%"></select>
-                                            </span>
-                                            <span class="input-group-addon">
-                                                <button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select BIN</button>
-                                            </span>
-                                        </div>
-                                        <br><br>
-                                        <span class="badge badge-lg badge-warning">Caution: Main board for Olimex powered with 3.3V - Double check your USB-TTL adapter.</span>
-                                        <br>
-                                        <br>
-                                        <img src="/firmware/img/usb_ttl.jpg" class="rounded">
-                                    </center>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="width:80%">
+                                            <select name="serial" class="form-control" form="Aform" id="serialList" style="width:80%"></select>
+                                        </span>
+                                        <span class="input-group-addon">
+                                            <button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select BIN</button>
+                                        </span>
+                                    </div>
+                                    <br><br>
+                                    <span class="badge badge-lg badge-warning">Caution: Main board for Olimex powered with 3.3V - Double check your USB-TTL adapter.</span>
+                                    <br>
+                                    <br>
+                                    <img src="/firmware/img/usb_ttl.jpg" class="rounded">
                                 </td>
                             </tr>
                         <?php } ?>
-                        </tbody>
                     </table>
                 </div>
             </div>

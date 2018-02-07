@@ -39,7 +39,6 @@
             <div class="row">
                 <div class="col">
                     <table class="table table-active bg-faded table-bordered">
-                        <tbody>
                         <?php if(isset($_GET["fuses"])){ ?>
                             <tr>
                                 <td>
@@ -130,9 +129,8 @@
                                     });
                                 });
                             </script>
-                            <tr>
+                            <tr align="center">
                                 <td>
-                                <center>
                                     <div class="input-group">
                                         <span class = "input-group-addon" style="width:20%">
                                             <select name="isp" class="form-control" form="Aform" id="ispList" style="width:90%;">
@@ -160,11 +158,9 @@
                                         <img src="/firmware/img/attiny13.png" />
                                         <img src="/firmware/img/avr_programmer.jpg" /><br/>
                                     </div>
-                                </center>
                                 </td>
                             </tr>
                         <?php } ?>
-                        </tbody>
                     </table>
                 </div>
             </div>

@@ -11,17 +11,13 @@
              <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <span class="glyphicon glyphicon-trash"></span> Remove Software installed by Huebner Inverter.
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tr>
+                            <td>
+                                <span class="glyphicon glyphicon-trash"></span> Remove Software installed by Huebner Inverter.
+                            </td>
+                        </tr>
                     </table>
-
                     <table class="table table-active bg-light table-bordered table-striped table-hover" width="100%">
-                        <tbody>
                         <?php
                             //include("common.php");
                             
@@ -52,7 +48,6 @@
                                 }
                             }
                         ?>
-                        </tbody>
                     </table>
                     <button class="browse btn btn-primary" type="button" onclick="Uninstall();"><i class="glyphicon glyphicon-trash"></i> Uninstall</button>
                 </div>

@@ -69,7 +69,6 @@
             <div class="row">
                 <div class="col">
                     <table class="table table-active bg-faded table-bordered">
-                        <tbody>
                         <?php if(isset($_FILES["firmware"])){ ?>
                             <tr>
                                 <td>
@@ -122,25 +121,22 @@
                                     setJTAGImage();
                                 });
                             </script>
-                            <tr>
+                            <tr align="center">
                                 <td>
-                                    <center>
-                                        <div class="input-group">
-                                            <span class = "input-group-addon" style="width:80%">
-                                                <select name="interface" class="form-control" form="Aform" onchange="setJTAGImage()" id="jtag-interface" style="width:80%"></select>
-                                            </span>
-                                            <span class = "input-group-addon">
-                                                <button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select BIN/HEX</button>
-                                            </span>
-                                        </div>
-                                        <br/><br/>
-                                        <h2 id="jtag-name"></h2>
-                                        <img src="" id="jtag-image" class="rounded" />
-                                    </center>
+                                    <div class="input-group">
+                                        <span class = "input-group-addon" style="width:80%">
+                                            <select name="interface" class="form-control" form="Aform" onchange="setJTAGImage()" id="jtag-interface" style="width:80%"></select>
+                                        </span>
+                                        <span class = "input-group-addon">
+                                            <button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select BIN/HEX</button>
+                                        </span>
+                                    </div>
+                                    <br/><br/>
+                                    <h2 id="jtag-name"></h2>
+                                    <img src="" id="jtag-image" class="rounded" />
                                 </td>
                             </tr>
                         <?php } ?>
-                        </tbody>
                     </table>
                 </div>
             </div>

@@ -26,11 +26,9 @@
              <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered table-striped" width="100%">
-                        <tbody>
-                            <tr>
-                                <td><ul id="tips"></ul></td>
-                            </tr>
-                        </tbody>
+                        <tr>
+                            <td><ul id="tips"></ul></td>
+                        </tr>
                     </table>
                 </div>
             </div>

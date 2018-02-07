@@ -34,14 +34,14 @@
                         </tr>
                     </table>
                     <table class="table table-active table-bordered">
-                            <tr>
-                                <td>
-                                    <button type="button" class="btn btn-danger" onClick="setCANDefaults()"><i class="glyphicon glyphicon-erase"></i> Reset CAN</button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-success" onClick="saveCANMapping()"><i class="glyphicon glyphicon-erase"></i> Save CAN</button>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                <button type="button" class="btn btn-danger" onClick="setCANDefaults()"><i class="glyphicon glyphicon-erase"></i> Reset CAN</button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-success" onClick="saveCANMapping()"><i class="glyphicon glyphicon-erase"></i> Save CAN</button>
+                            </td>
+                        </tr>
                     </table>
                     <div class="loader" style="display: none;"></div>
                     <table class="table table-active bg-light table-bordered table-striped table-hover" style="display:none;" id="parameters"></table>
