@@ -3,5 +3,5 @@ if [ "$1" = "uninstall" ] ; then
     osascript -e "do shell script \"rm -rf /Applications/DesignSparkPCB.app; rm -rf /Applications/EAGLE-8.5.2;\" with administrator privileges"
 else
     cd "$(dirname "$0")"
-    osascript -e "do shell script \"cp -R ./DesignSparkPCB.app /Applications; installer -pkg ~/Downloads/Autodesk_EAGLE_8.5.2_English_Mac_64bit.pkg -target /\" with administrator privileges"
+    osascript -e "do shell script \"cp -R ./DesignSparkPCB.app /Applications; installer -pkg ~/Downloads/Autodesk_EAGLE_8.6.0_English_Mac_64bit.pkg -target /\" with administrator privileges"
 fi

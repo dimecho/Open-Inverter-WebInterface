@@ -41,7 +41,7 @@ else
         #--------- BOOTLOADER ------------
         cd ~/Documents/tumanako-inverter-fw-motorControl-master/
         if [ ! -d ./src/bootloader ]; then
-            tar xzfv "$(dirname "$0")/Web/firmware/bootloader.zip" -C ./src/
+            tar xzfv "$(dirname "$0")/Web/firmware/bootloader_v2.zip" -C ./src/
         fi
         #if [ ! -d ./src/bootloader/libopencm3 ]; then
         #    ln -s libopencm3/include/libopencm3 ./src/bootloader/libopencm3

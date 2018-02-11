@@ -67,7 +67,7 @@ if($args[0] -eq "uninstall") {
             #--------- BOOTLOADER ------------
             Set-Location "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master"
             if (-Not (Test-Path src\bootloader)) {
-                $zip = $shell.NameSpace((Split-Path $PSScriptRoot -Parent) + "\Web\firmware\bootloader.zip")
+                $zip = $shell.NameSpace((Split-Path $PSScriptRoot -Parent) + "\Web\firmware\bootloader_v2.zip")
                 foreach($item in $zip.items())
                 {
                     $shell.Namespace("$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master\src\").copyhere($item)

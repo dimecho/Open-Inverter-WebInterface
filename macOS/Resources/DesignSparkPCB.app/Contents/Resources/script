@@ -11,27 +11,38 @@ export LANG="en_US"
 export WINEARCH=win32
 export WINEPREFIX="$HOME/.wine"
 export DYLD_FALLBACK_LIBRARY_PATH=/usr/X11/lib
+export FREETYPE_PROPERTIES="truetype:interpreter-version=35"
 
-if [ ! -d "$HOME/.wine/drive_c/Program Files/DesignSpark/DesignSpark PCB 8.1 Beta" ]; then
+if [ ! -d "$HOME/.wine/drive_c/Program Files/DesignSpark/DesignSpark PCB 8.1" ]; then
 
     export PATH=$PATH:"$(dirname "$0")"
+
+    winetricks fontsmooth-rgb
+    winetricks settings fontsmooth=rgb
+
     winetricks d3dx9
     winetricks d3dx10
     winetricks d3dx11
+
     winetricks mfc40
     winetricks mfc42
+
     winetricks mono28
+    #winetricks dotnet40
+
     winetricks msvc80
     winetricks msvc90
     winetricks msvc100
+
     winetricks vcrun6
     winetricks vcrun2005
     winetricks vcrun2008
     winetricks vcrun2010
     winetricks vcrun2012
     winetricks vcrun2013
-    #winetricks fontsmooth-rgb
-    #winetricks settings fontsmooth=rgb
+    winetricks vcrun2015
+
+    #mkdir "$HOME/.wine/drive_c/DSLib"
 
     if [ ! -f "$HOME/Downloads/DesignSparkPCB_v8.1_Beta.exe" ]; then
         cd "$HOME//Downloads"
@@ -41,5 +52,5 @@ if [ ! -d "$HOME/.wine/drive_c/Program Files/DesignSpark/DesignSpark PCB 8.1 Bet
     cd "/Applications/Wine Devel.app/Contents/Resources/wine/bin/"
     ./wine ~/Downloads/DesignSparkPCB_v8.1_Beta.exe
 else
-    open -a "Wine Devel" --args "$HOME/.wine/drive_c/Program Files/DesignSpark/DesignSpark PCB 8.1 Beta/DesignSpark.exe" "$1"
+    open -a "Wine Devel" --args "$HOME/.wine/drive_c/Program Files/DesignSpark/DesignSpark PCB 8.1/DesignSpark.exe" "$1"
 fi

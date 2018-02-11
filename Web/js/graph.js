@@ -556,8 +556,8 @@ function initPWMChart(duration) {
     var waveGraphRatio = 0.01;
 
     data.datasets[0].data = sinePWM(2,-2.25,waveGraphRatio); //red
-    data.datasets[1].data = sinePWM(2,2.25,waveGraphRatio); //green
-    data.datasets[2].data = sinePWM(2,0,waveGraphRatio); //blue
+    data.datasets[1].data = sinePWM(3.5,2.25,waveGraphRatio); //green
+    data.datasets[2].data = sinePWM(2.5,0,waveGraphRatio); //blue
 
     data.datasets[3].data = sineWave(2,1,-2.25,waveGraphRatio); //red
     data.datasets[4].data = sineWave(3.5,1,2.25,waveGraphRatio); //green

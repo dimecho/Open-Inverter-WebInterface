@@ -27,7 +27,7 @@ else
     #--------- BOOTLOADER ------------
     cd "$HOME/Documents/tumanako-inverter-fw-motorControl-master"
     if [ ! -d ./src/bootloader ]; then
-        unzip "$(dirname "$0")/../Web/firmware/bootloader.zip" -d ./src/
+        unzip "$(dirname "$0")/../Web/firmware/bootloader_v2.zip" -d ./src/
     fi
     cd ./src/bootloader
     make clean
