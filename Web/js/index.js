@@ -366,12 +366,14 @@ function checkUpdates() {
                     var build = parseFloat(split[1]);
 
                     $.ajax("version.txt", {
-                        async: false,
+                        async: true,
                         success: function success(data) {
-                            
+
                             var _split = data.split("\n");
-                            var _version = parseFloat(split[0]);
-                            var _build = parseFloat(split[1]);
+                            var _version = parseFloat(_split[0]);
+                            var _build = parseFloat(_split[1]);
+
+                            console.log("Version:" + _version + " Build:" + _build);
 
                             if(version > _version || build > _build)
                             {

@@ -37,7 +37,7 @@
 		
 		fwrite($uart, "reset\r");
 		
-        var $c = wait_for_char($uart,array('S','2')); //Wait for size request
+        $c = wait_for_char($uart,array('S','2')); //Wait for size request
 
 		if($c == '2') //version 2 bootloader
         {

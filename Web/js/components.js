@@ -1,3 +1,12 @@
+/*
+E6    20% tolerance
+E12   10% tolerance
+E24   5% tolerance
+E48   2% tolerance
+E96   1% tolerance
+E192  0.5, 0.25, 0.1% tolerances
+*/
+
 function buildTable(title, csv, notes) {
 
     $.ajax(csv, {

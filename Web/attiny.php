@@ -1,7 +1,8 @@
 <?php
-    include("common.php");
     
     if(isset($_GET["ajax"])){
+
+        include("common.php");
 
         if(isset($_GET["fuse"]))
         {
@@ -38,6 +39,13 @@
             <br/>
             <div class="row">
                 <div class="col">
+                     <table class="table table-active table-bordered">
+                        <tr>
+                            <td align="center">
+                                <img class="svg-inject" src="img/chip.svg" style="vertical-align:middle" /> <a class="text-dark" href="firmware/attiny13.zip">ATTiny13</a>
+                            </td>
+                        </tr>
+                    </table>
                     <table class="table table-active bg-faded table-bordered">
                         <?php if(isset($_GET["fuses"])){ ?>
                             <tr>

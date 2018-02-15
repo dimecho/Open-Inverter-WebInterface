@@ -1,7 +1,8 @@
 <?php
-    include("common.php");
-    
+
     if(isset($_GET["ajax"])){
+
+        include("common.php");
         
         $command = runCommand("openocd", urldecode($_GET["file"]). " " .urldecode($_GET["interface"]));
         exec($command, $output, $return);
@@ -15,9 +16,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <?php
-            include "header.php";
-        ?>
+        <?php include "header.php"; ?>
         <script>
             var jtag_interface = [
                 "interface/ftdi/olimex-arm-usb-ocd-h.cfg",
@@ -65,10 +64,20 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/><br/>
+            <br/>
             <div class="row">
                 <div class="col">
-                    <table class="table table-active bg-faded table-bordered">
+                    <table class="table table-active table-bordered">
+                        <tr>
+                            <td align="center">
+                                <img class="svg-inject" src="img/chip.svg" style="vertical-align:middle" /> <a class="text-dark" href="firmware/bootloader_v1.zip">Version 1</a>
+                            </td>
+                            <td align="center">
+                               <img class="svg-inject" src="img/chip.svg" style="vertical-align:middle" /> <a class="text-dark" href="firmware/bootloader_v2.zip">Version 2</a>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="table table-active  table-bordered">
                         <?php if(isset($_FILES["firmware"])){ ?>
                             <tr>
                                 <td>

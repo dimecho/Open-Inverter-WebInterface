@@ -26,15 +26,15 @@
     }
     else if(isset($_GET["check"]))
     {
-        checkSoftware($_GET["check"],false);
+        checkSoftware($software,$os,$_GET["check"],false);
     }
 
-    function checkSoftware($app,$quite)
+    function checkSoftware($software,$os,$app,$quite)
     {
         $path = $software[$app]["path"][$os];
         
         if($app == "arm"){
-            checkARMCompiler($path,false);
+            checkARMCompiler($software,$os,$path,false);
 			return false;
         }else if($app == "inkscape") {
             if ($os === "mac") {
@@ -64,7 +64,7 @@
         }
     }
 
-    function checkARMCompiler($path,$remove)
+    function checkARMCompiler($software,$os,$path,$remove)
     {
         if(is_file($path))
         {
@@ -72,11 +72,11 @@
             {
                 removeDirectory($path);
             }else{
-                if(checkSoftware("gcc",true))
+                if(checkSoftware($software,$os,"gcc",true))
                 {
-                    if(checkSoftware("python",true))
+                    if(checkSoftware($software,$os,"python",true))
                     {
-                        if(checkSoftware("source",true))
+                        if(checkSoftware($software,$os,"source",true))
                         {
                             echo "openExternalApp('source')";
                         }else{

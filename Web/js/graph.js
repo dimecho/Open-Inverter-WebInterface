@@ -965,7 +965,7 @@ function initMotorChart(duration) {
         labels: initTimeAxis(graphDivision),
         datasets: [{
             type: 'line',
-            label: "Motor Speed",
+            label: "Motor RPM",
             backgroundColor: "rgba(255,99,132,0.2)",
             borderColor: "rgba(255,99,132,1)",
             borderWidth: 2,
@@ -975,12 +975,24 @@ function initMotorChart(duration) {
             datalabels: {
                 display: false
             }
+        }, {
+            type: 'line',
+            label: "Throttle",
+            backgroundColor: "rgba(102, 255, 51, 0.2)",
+            borderColor: "rgba(0,0,0,0.2)",
+            borderWidth: 2,
+            hoverBackgroundColor: "rgba(102, 255, 51, 0.4)",
+            hoverBorderColor: "rgba(0,0,0,0.5)",
+            data: [0],
+            datalabels: {
+                display: false
+            }
         }]
     };
 
     options = {
         legend: {
-            display: false,
+            display: true,
             labels: {
                 fontSize: ctxFont,
                 fontColor: 'rgb(0, 0, 0)'
