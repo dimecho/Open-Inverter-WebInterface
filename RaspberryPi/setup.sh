@@ -13,35 +13,38 @@ fi
 
 echo "...Installing Web Server"
 sudo aptitude install -y php5-common php5-cgi php5
+sudo mkdir -p /var/www/html
 
-htmlLocation="/var/www/html"
-echo "...Installing Web Files ${htmlLocation}"
+echo "...Installing Web Files /var/www/html"
 cd /tmp
 wget -N https://github.com/poofik/Huebner-Inverter/releases/download/1.0/Huebner.Inverter.Linux.tgz
 tar -xvzf Huebner.Inverter.Linux.tgz
 rm Huebner.Inverter.Linux.tgz
-sudo mkdir -p $htmlLocation
-sudo cp -rf ./Web/* $htmlLocation
+sudo cp -rf ./Web/* /var/www/html
+rm "Huebner Inverter.sh"
 rm -r ./Web
 rm -r ./Linux
 
 echo "...Configuring Web Files (config.inc.php)"
 echo " > Enter Serial (Example: /dev/ttyAMA0)"
 read dev_serial
-sudo cp -R $htmlLocation/config.inc $htmlLocation/config.inc.php
-sudo sed -i -e "s~/dev/cu.usbserial~$dev_serial~g" $htmlLocation/config.inc.php
+sudo rm /var/www/html/js/menu.json
+sudo cp -R /var/www/html/js/menu-pi.json /var/www/html/js/menu.json
+sudo cp -R /var/www/html/config.inc /var/www/html/config.inc.php
+sudo sed -i -e "s~/dev/cu.usbserial~$dev_serial~g" /var/www/html/config.inc.php
 
 echo "...Configuring PHP Autostart"
 rclocal="/etc/rc.local"
 sudo sh -c "sudo echo '#!/bin/bash
-sudo -u www-data php -S 0.0.0.0:8080 -t /var/www/html/ &
+sudo -u www-data php -S 0.0.0.0:8080 -t /var/www/html &
 exit 0' > ${rclocal}"
 sudo chmod 755 $rclocal
 
 echo "...Setting Web Server Permissions"
 sudo adduser www-data www-data
 sudo chown -R www-data:www-data /var/www
-sudo chmod -R 755 /var/www
+sudo chmod -R 755 /var/www/html
+sudo chmod -R 777 /var/www/html/db/database.can
 sudo usermod -a -G www-data pi #Optional: SFTP uploads
 
 echo "...Setting TTY Permissions"

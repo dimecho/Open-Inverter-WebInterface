@@ -1,0 +1,100 @@
+{
+    "menu": [{
+        "id": "Motor",
+        "icon": "glyphicon-cd",
+        "onClick": "",
+        "dropdown": [{
+            "id": "Start Inverter",
+            "icon": "glyphicon-flash",
+            "onClick": "alertify.startInverterMode(\"<i class='glyphicon glyphicon-dashboard'></i> Warning: Before starting the inverter set the throttle control to zero.\")"
+        }, {
+            "id": "Stop Inverter",
+            "icon": "glyphicon-alert",
+            "onClick": "stopInverter()"
+        }, {
+            "id": "Reset to Default",
+            "icon": "glyphicon-erase",
+            "onClick": "setDefaults()"
+        }, {
+            "id": "Motor Database",
+            "icon": "glyphicon-align-justify",
+            "onClick": "/db.php"
+        }, {
+            "id": "-"
+        }, {
+            "id": "Parameters",
+            "icon": "glyphicon-transfer",
+            "onClick": "/index.php"
+        }, {
+            "id": "Graph",
+            "icon": "glyphicon-signal",
+            "onClick": "/graph.php"
+        }, {
+            "id": "-"
+        }, {
+            "id": "Upload",
+            "icon": "glyphicon-upload",
+            "onClick": "uploadSnapshot()"
+        }, {
+            "id": "Download",
+            "icon": "glyphicon-download",
+            "onClick": "downloadSnapshot()"
+        }, {
+            "id": "-"
+        }, {
+            "id": "Auto Tuning",
+            "icon": "glyphicon-random",
+            "onClick": "/simple.php"
+        }, {
+            "id": "CAN Mapping",
+            "icon": "glyphicon-list-alt",
+            "onClick": "/can.php"
+        }]
+    }, {
+        "id": "Inverter",
+        "icon": "glyphicon-compressed",
+        "onClick": "",
+        "dropdown": [{
+            "id": "Flash Firmware",
+            "icon": "glyphicon-object-align-left",
+            "onClick": "/firmware.php"
+        }, {
+            "id": "-"
+        }, {
+            "id": "Switch Check",
+            "icon": "glyphicon-dashboard",
+            "onClick": "/switch-check.php"
+        }, {
+            "id": "-"
+        }, {
+            "id": "Wiring Diagram",
+            "icon": "glyphicon-flash",
+            "onClick": "/wiring.php"
+        }, {
+            "id": "Components",
+            "icon": "glyphicon-list-alt",
+            "onClick": "/components.php"
+        }]
+    }, {
+        "id": "Info",
+        "icon": "glyphicon-info-sign",
+        "onClick": "",
+        "dropdown": [{
+            "id": "Motor Classification",
+            "icon": "glyphicon-tasks",
+            "onClick": "/motor-class.php"
+        }, {
+            "id": "IGBT Test",
+            "icon": "glyphicon-hand-down",
+            "onClick": "/igbt-test.php"
+        }, {
+            "id": "Power Stage",
+            "icon": "glyphicon-flash",
+            "onClick": "/design.php"
+        }, {
+            "id": "Tips",
+            "icon": "glyphicon-question-sign",
+            "onClick": "/tips.php"
+        }]
+    }]
+}

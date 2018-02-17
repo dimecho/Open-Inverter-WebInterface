@@ -2,14 +2,16 @@ INSTRUCTIONS FOR RASPBERRYPI ZERO
 
 Setup
 
-1) Download RaspberryPi (Light) image
-2) Flash SD card with image using "Etcher" app
+1) Download RaspberryPi-Lite image - https://www.raspberrypi.org/downloads/raspbian/
+2) Flash SD card with image using "Etcher" app - https://etcher.io/
 3) Mount SD card and copy files from /boot to SD volume "boot"
 4) Modify wpa_supplicant.conf to your WiFi SSID + password
 5) Insert SD to RaspberryPi and turn it on
 6) During boot Pi should automatically connected to your WiFi AP
 7) SFTP to Pi using WinSCP (Windows) or Cyberduck (MacOS) with IP 192.168.1.x
    Note: This IP depends in your router DHCP lease - check your home networking
+   Username: pi
+   Password: raspberry
 8) Navigate to /home/pi and upload setup.sh
 9) SSH to your Pi "putty" (Windows) or "ssh -l pi 192.168.1.x" (MacOS)
    Run Commands:
