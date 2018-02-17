@@ -48,11 +48,17 @@ sudo chmod -R 777 /var/www/html/db/database.can
 sudo usermod -a -G www-data pi #Optional: SFTP uploads
 
 echo "...Setting TTY Permissions"
-sudo aptitude install -y minicom
-ls -la /dev/ttyAMA0
-sudo systemctl enable serial-getty@ttyAMA0.service
 sudo usermod -a -G dialout www-data
 sudo usermod -a -G tty www-data
+sudo aptitude install -y minicom
+sudo systemctl stop serial-getty@ttyAMA0.service
+sudo systemctl disable serial-getty@ttyAMA0.service
+#sudo systemctl stop serial-getty@ttyS0.service
+#sudo systemctl disable serial-getty@ttyS0.service
+sudo systemctl mask serial-getty@ttyAMA0.service
+sudo systemctl mask serial-getty@serial0.service
+sudo systemctl mask serial-getty@serial1.service
+ls -la /dev/ttyAMA0
 #UART on the Pi-3 you will need to disable bluetooth
 sudo systemctl disable hciuart
 sudo sh -c "sudo echo '

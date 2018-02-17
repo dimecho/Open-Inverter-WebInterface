@@ -9,7 +9,8 @@ Setup
 5) Insert SD to RaspberryPi and turn it on
 6) During boot Pi should automatically connected to your WiFi AP
 7) SFTP to Pi using WinSCP (Windows) or Cyberduck (MacOS) with IP 192.168.1.x
-   Note: This IP depends in your router DHCP lease - check your home networking
+   Note: This IP depends in your router DHCP lease
+         Use Pi Finder Utility - https://github.com/adafruit/Adafruit-Pi-Finder/releases
    Username: pi
    Password: raspberry
 8) Navigate to /home/pi and upload setup.sh
