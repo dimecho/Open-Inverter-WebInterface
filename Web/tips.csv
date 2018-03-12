@@ -16,3 +16,4 @@ Some STM32 pins are 5V tolerant and all others can take 5V with a simple 10k ser
 CAN gain of 10 (i.e. 100mV resolution)
 Firmware HEX file has the target address already in it.
 Current STM32F103 usage: 20% flash, 30% sram, 30% cpu at the highest PWM frequency.
+pwmpol is gate 'polarity' Active High = Off, Active Low = On (pulling the gates to ground)

@@ -32,5 +32,5 @@ Pin 10 -> RXD (pi) TXD (inverter)
 Usage
 
 1) Connect to RaspberryPi WiFi Access Point (ex: Inverter)
-   Note: WPA password you supplier in setup script
+   Note: WPA password you supplied in setup script
 2) Open web browser and go to http://192.168.42.1:8080

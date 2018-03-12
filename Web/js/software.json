@@ -92,7 +92,7 @@
     "openscad" : {
         "title" : "OpenSCAD - 3D CAD",
         "download" : {
-            "mac" : "http://files.openscad.org/OpenSCAD-2015.03-3.dmg",
+            "mac" : "http://files.openscad.org/snapshots/OpenSCAD-2017.12.23.dmg",
             "windows" : "http://files.openscad.org/OpenSCAD-2015.03-x86-64-Installer.exe",
             "linux" : "",
             "size" : 25,
@@ -137,16 +137,16 @@
     "eagle" : {
         "title" : "AutoCAD Eagle - PCB Design Software",
         "download" : {
-            "mac" : "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.6.0_English_Mac_64bit.pkg",
-            "windows" : "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.6.0_English_Win_64bit.exe",
-            "linux" : "http://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_8.6.0_English_Linux_64bit.tar.gz",
+            "mac" : "https://eagle-updates.circuits.io/downloads/8_6_3/Autodesk_EAGLE_8.6.3_English_Mac_64bit.pkg",
+            "windows" : "https://eagle-updates.circuits.io/downloads/8_6_3/Autodesk_EAGLE_8.6.3_English_Win_64bit.exe",
+            "linux" : "https://eagle-updates.circuits.io/downloads/8_6_3/Autodesk_EAGLE_8.6.3_English_Linux_64bit.tar.gz",
             "size" : 120,
-            "version" : "8.6.0"
+            "version" : "8.6.3"
         },
         "path" : {
-            "mac" : "/Applications/EAGLE-8.5.2/Eagle.app/Contents/MacOS/Eagle",
-            "windows" : "C:\\EAGLE-8.5.2\\bin\\eagle.exe",
-            "linux" : "/opt/eagle-8.5.2/bin/eagle"
+            "mac" : "/Applications/EAGLE-8.6.3/Eagle.app/Contents/MacOS/Eagle",
+            "windows" : "C:\\EAGLE-8.6.3\\bin\\eagle.exe",
+            "linux" : "/opt/eagle-8.6.3/bin/eagle"
         }
     },
     "designsparkpcb" : {

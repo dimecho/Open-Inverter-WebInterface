@@ -16,10 +16,6 @@
             "icon": "glyphicon-erase",
             "onClick": "setDefaults()"
         }, {
-            "id": "Motor Database",
-            "icon": "glyphicon-align-justify",
-            "onClick": "/db.php"
-        }, {
             "id": "-"
         }, {
             "id": "Parameters",

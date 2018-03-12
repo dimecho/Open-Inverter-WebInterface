@@ -22,6 +22,8 @@ const char* ACCESS_POINT_SSID = "Inverter";
 const char* ACCESS_POINT_PASSWORD = "12345678";
 const int ACCESS_POINT_CHANNEL = 2;
 
+bool phpTag[] = { false, false, false, false };
+
 void setup()
 {
   Serial.begin(115200);
@@ -29,26 +31,26 @@ void setup()
 
   //EEPROM.begin(512);
 
+  WiFi.mode(WIFI_AP); //WFi Access Point Mode
+  //WiFi.mode(WIFI_STA); //WiFi Client Mode
+
+  IPAddress ip(192, 168, 4, 1);
+  IPAddress gateway(192, 168, 4, 1);
+  IPAddress subnet(255, 255, 255, 0);
+  WiFi.softAPConfig(ip, gateway, subnet);
+  WiFi.softAP(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD, ACCESS_POINT_CHANNEL);
+
+  PRINTDEBUG(WiFi.softAPIP());
+
   /*
     WiFi.begin(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD);  //Connect to the WiFi network
     while (WiFi.status() != WL_CONNECTED) {  //Wait for connection
-  	delay(500);
-  	Serial.println("Waiting to connect…");
+    delay(500);
+    Serial.println("Waiting to connect…");
     }
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
   */
-
-  WiFi.mode(WIFI_AP); //WFi Access Point Mode
-  //WiFi.mode(WIFI_STA); //WiFi Client Mode
-
-  IPAddress ip(192, 168, 43, 1);
-  IPAddress gateway(192, 168, 43, 1);
-  IPAddress subnet(255, 255, 255, 0);
-  WiFi.softAPConfig(ip, gateway, subnet);
-  WiFi.softAP(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD,ACCESS_POINT_CHANNEL);
-
-  PRINTDEBUG(WiFi.softAPIP());
 
   server.on("/serial.php", []() {
 
@@ -72,7 +74,7 @@ void setup()
     Snapshot();
   });
 
-  server.on("/esp8266.php", HTTP_POST, []() {
+  server.on("/esp8266.php", []() {
     ESP8266Updater();
   });
 
@@ -80,8 +82,8 @@ void setup()
     STM32Updater();
   });
 
-  server.on("/", HTTP_GET, []() {
-    HTTPServer("index.php");
+  server.on("/", []() {
+    HTTPServer("/index.php");
   });
 
   server.onNotFound([]() {
@@ -99,7 +101,7 @@ void setup()
 
   // Set up mDNS responder:
   // - first argument is the domain name, in this example
-  //   the fully-qualified domain name is "esp8266.local"
+  //   the fully-qualified domain name is "http://inverter.local"
   // - second argument is the IP address to advertise
   //   we send our IP address on the WiFi network
   if (!MDNS.begin("inverter")) {
@@ -123,67 +125,89 @@ void loop()
   //serverSecure.handleClient();
 }
 
-String PHP(String line, bool tag[], int i)
+String PHP(String line, int i)
 {
-  if (line.indexOf("<?php") > 0) {
-    tag[i] = true;
-    line = "";
-  } else if (line.indexOf("?>") > 0) {
-    tag[i] = false;
-    line = "";
+  //PRINTDEBUG(line);
+  
+  if (line.indexOf("<?php") != -1) {
+    line.replace("<?php", "");
+    phpTag[i] = true;
   }
+  
+  if (phpTag[i] == true) {
 
-  if (tag[i] == true) {
+    if (line.indexOf("include") != -1 ) {
+      //line.trim();
+      line.replace("'", "\"");
+      line.replace("(", "");
+      line.replace(")", "");
+      line.replace(";", "");
+      int s = line.indexOf("\"") + 1;
+      int e = line.lastIndexOf("\"");
+      String include = line.substring(s, e);
 
-    if (line.indexOf("include") > 0) {
+      PRINTDEBUG("include:" + include);
 
-      String include = line.substring(line.indexOf('"', 1), line.indexOf('"', 2));
-
-      PRINTDEBUG(include);
-
-      File f = SPIFFS.open(include, "r");
-      if (!f) {
+      File f = SPIFFS.open("/" + include, "r");
+      if (!f)
+      {
         PRINTDEBUG(include + " (file not found)");
+        
       } else {
+
+        String l;
+        int x = i + 1;
+        phpTag[x] = false;
+        
         while (f.available()) {
-          line += f.readStringUntil('\n');
-          //line += PHP(f.readStringUntil('\n'),tag,(i+1));
+          l = f.readStringUntil('\n');
+          line += PHP(l, x);
+          line += "\n";
         }
         f.close();
       }
+
+      line.replace("include", "");
+      line.replace("\"" + include + "\"", "");
+      
     } else {
       line = "";
     }
   }
+
+  if (line.indexOf("?>") != -1) {
+    line.replace("?>", "");
+    phpTag[i] = false;
+  }
+  
   return line;
 }
 
 bool HTTPServer(String file)
 {
   PRINTDEBUG((server.method() == HTTP_GET) ? "GET" : "POST");
-
+  
+  PRINTDEBUG(file);
+  
   if (SPIFFS.exists(file))
   {
     File f = SPIFFS.open(file, "r");
     if (f)
     {
-      return false;
-    } else {
-
       PRINTDEBUG(f.size());
 
       String contentType = getContentType(file);
 
       if (file.indexOf(".php") > 0) {
 
-        bool php[] = { false, false, false, false };
         String response = "";
-        String line = "";
+        String l = "";
+        phpTag[0] = false;
 
         while (f.available()) {
-          line = f.readStringUntil('\n');
-          line = PHP(line, php, 0);
-          response += line;
+          l = f.readStringUntil('\n');
+          response += PHP(l, 0);
+          response += "\n";
         }
         server.send(200, contentType, response);
       } else {
@@ -196,9 +220,11 @@ bool HTTPServer(String file)
         server.streamFile(f, contentType);
       }
       f.close();
+      
+      return true;
+    } else {
+      return false;
     }
-    return true;
-
   } else {
     return false;
   }
