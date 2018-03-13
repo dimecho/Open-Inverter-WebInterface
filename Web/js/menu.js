@@ -438,7 +438,7 @@ function buildMenu() {
                             var icon = $("<i>", { class: "glyphicon " + json.menu[key].dropdown[d].icon });
                             var item = $("<span>");
 
-                            if (json.menu[key].dropdown[d].onClick.indexOf(".php") != -1)
+                            if (json.menu[key].dropdown[d].onClick.indexOf("/") != -1)
                             {
                                 dropdown_item.attr("href", json.menu[key].dropdown[d].onClick);
                             }else{

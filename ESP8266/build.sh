@@ -16,14 +16,14 @@ for i in "${array[@]}"; do
     cp -rf ../Web/css/$i data/css
 done
 
-array=( jquery.js jquery.knob.js fancybox.js jszip.js alertify.js bootstrap.js bootstrap-editable.js bootstrap-slider.js bootstrap-notify.js can.js graph.js index.js menu.js status.js simple.js chart.js chartjs-plugin-datalabels.js switch-check.js svg-injector.js )
+array=( jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js bootstrap-editable.js bootstrap-slider.js bootstrap-notify.js can.js graph.js index.js menu.js status.js simple.js chart.js chartjs-plugin-datalabels.js switch-check.js svg-injector.js )
 for i in "${array[@]}"; do
     cp -rf ../Web/js/$i data/js
 done
 cp -rf ../Web/js/menu-esp8266.json data/js/menu.json
 cp -rf ../Web/js/menu-esp8266.json data/js/menu-mobile.json
 
-array=( background.png safety.png alert.svg battery.svg engine.svg idea.svg key.svg magnet.svg plug.svg temperature.svg motor-class.png clear.png loading.gif esp8266.png temp_indicator.png encoder_lowpass.png)
+array=( background.png safety.png alert.svg battery.svg engine.svg idea.svg key.svg magnet.svg plug.svg temperature.svg slow.svg fast.svg motor-class.png clear.png loading.gif esp8266.png temp_indicator.png encoder_lowpass.png)
 for i in "${array[@]}"; do
     cp -rf ../Web/img/$i data/img
 done
@@ -62,20 +62,13 @@ for f in $(find data -type f -name '*.*'); do
         #Find and replace
         #================
         for ff in $(find data -type f -name '*.php' -o -name '*.js' -o -name '*.css'); do
-            sed -i -e 's/$o/$fe/g' "$ff"
-            sed -i -e 's/   //g' "$ff"
-            rm "$ff-e"
+            #sed -i -e 's/$o/$fe/g' "$ff"
+            #sed -i -e 's/   //g' "$ff"
+            while read a ; do echo ${a//$o/$fe} ; done < $ff > $ff.t ; mv $ff{.t,}
         done
 
         mv -f "data/$f" "data/$nn"
     fi
-done
-
-#==============
-#Cleanup
-#==============
-for f in $(find data -type f -name '.*' ! -name '.gitignore'); do
-    rm "$f"
 done
 
 #==============

@@ -8,6 +8,8 @@
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
+#include <WiFiUdp.h>
+#include <ArduinoOTA.h>
 #include <ESP8266WebServer.h>
 //#include <ESP8266WebServerSecure.h>
 #include <ESP8266HTTPUpdateServer.h>
@@ -17,112 +19,137 @@ ESP8266WebServer server(80);
 //ESP8266WebServerSecure serverSecure(443);
 ESP8266HTTPUpdateServer updater;
 
-const int ACCESS_POINT_MODE = 0;
-const char* ACCESS_POINT_SSID = "Inverter";
-const char* ACCESS_POINT_PASSWORD = "12345678";
-const int ACCESS_POINT_CHANNEL = 2;
-
+int ACCESS_POINT_MODE = 0;
+char* ACCESS_POINT_SSID = "Inverter";
+char* ACCESS_POINT_PASSWORD = "12345678";
+int ACCESS_POINT_CHANNEL = 2;
 bool phpTag[] = { false, false, false, false };
 
 void setup()
 {
-  Serial.begin(115200);
-  while (!Serial) delay(250);
+	Serial.begin(115200);
+	while (!Serial) delay(250);
 
-  //EEPROM.begin(512);
+	//EEPROM.begin(512);
+	
+	if(ACCESS_POINT_MODE == 0)
+	{
+		//=====================
+		//WiFi Access Point Mode
+		//=====================
+		WiFi.mode(WIFI_AP);
+		IPAddress ip(192, 168, 4, 1);
+		IPAddress gateway(192, 168, 4, 1);
+		IPAddress subnet(255, 255, 255, 0);
+		WiFi.softAPConfig(ip, gateway, subnet);
+		WiFi.softAP(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD, ACCESS_POINT_CHANNEL);
+		PRINTDEBUG(WiFi.softAPIP());
+	}else{
+		//================
+		//WiFi Client Mode
+		//================
+		WiFi.mode(WIFI_STA);
+		WiFi.begin(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD);  //Connect to the WiFi network
+		while (WiFi.waitForConnectResult() != WL_CONNECTED) {
+			Serial.println("Connection Failed! Rebooting...");
+			delay(5000);
+			ESP.restart();
+		}
+		PRINTDEBUG(WiFi.localIP());
+	}
+	
+	//===================
+	//Arduino OTA Updater
+	//===================
+	/*
+	Port defaults to 8266
+	ArduinoOTA.setPort(8266);
+	Hostname defaults to esp8266-[ChipID]
+ */
+	ArduinoOTA.setHostname("inverter");
+ /*
+	No authentication by default
+	ArduinoOTA.setPassword((const char *)"123");
+	*/
 
-  WiFi.mode(WIFI_AP); //WFi Access Point Mode
-  //WiFi.mode(WIFI_STA); //WiFi Client Mode
+	ArduinoOTA.onStart([]() {
+		Serial.println("Start");
+	});
+	ArduinoOTA.onEnd([]() {
+		Serial.println("\nEnd");
+	});
+	//ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+	//  Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+	//});
+	ArduinoOTA.onError([](ota_error_t error) {
+		Serial.printf("Error[%u]: ", error);
+		if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
+		else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
+		else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
+		else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
+		else if (error == OTA_END_ERROR) Serial.println("End Failed");
+	});
+	ArduinoOTA.begin();
 
-  IPAddress ip(192, 168, 4, 1);
-  IPAddress gateway(192, 168, 4, 1);
-  IPAddress subnet(255, 255, 255, 0);
-  WiFi.softAPConfig(ip, gateway, subnet);
-  WiFi.softAP(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD, ACCESS_POINT_CHANNEL);
+	//===============
+	//Web OTA Updater
+	//===============
+	//updater.setup(&server, "/firmware", update_username, update_password);
+	updater.setup(&server);
 
-  PRINTDEBUG(WiFi.softAPIP());
+	//===============
+	//Web Server
+	//===============
+	server.on("/serial.php", []() {
+		if (server.hasArg("get"))
+		{
+		  server.send(200, "text/plain", readSerial("get " + server.arg("get")));
+		}
+		else if (server.hasArg("command"))
+		{
+		  server.send(200, "text/plain", readSerial(server.arg("command")));
+		}
+		else if (server.hasArg("stream"))
+		{
+		  String l = server.arg("loop");
+		  String t = server.arg("delay");
+		  readStream("get " + server.arg("stream"), l.toInt(), t.toInt());
+		}
+	});
+	server.on("/snapshot.php", []() {
+		Snapshot();
+	});
+	server.on("/firmware.php", HTTP_POST, []() {
+		STM32Updater();
+	});
+	server.on("/", []() {
+		HTTPServer("/index.php");
+	});
+	server.onNotFound([]() {
+	if (!HTTPServer(server.uri()))
+		server.send(404, "text/plain", "404: Not Found");
+	});
+	//serverSecure.setServerKeyAndCert_P(rsakey, sizeof(rsakey), x509, sizeof(x509));
+	server.begin();
+	
+	//===========
+	//File system
+	//===========
+	SPIFFS.begin();
 
-  /*
-    WiFi.begin(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD);  //Connect to the WiFi network
-    while (WiFi.status() != WL_CONNECTED) {  //Wait for connection
-    delay(500);
-    Serial.println("Waiting to connect…");
-    }
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
-  */
-
-  server.on("/serial.php", []() {
-
-    if (server.hasArg("get"))
-    {
-      server.send(200, "text/plain", readSerial("get " + server.arg("get")));
-    }
-    else if (server.hasArg("command"))
-    {
-      server.send(200, "text/plain", readSerial(server.arg("command")));
-    }
-    else if (server.hasArg("stream"))
-    {
-      String l = server.arg("loop");
-      String t = server.arg("delay");
-      readStream("get " + server.arg("stream"), l.toInt(), t.toInt());
-    }
-  });
-
-  server.on("/snapshot.php", []() {
-    Snapshot();
-  });
-
-  server.on("/esp8266.php", []() {
-    ESP8266Updater();
-  });
-
-  server.on("/firmware.php", HTTP_POST, []() {
-    STM32Updater();
-  });
-
-  server.on("/", []() {
-    HTTPServer("/index.php");
-  });
-
-  server.onNotFound([]() {
-    if (!HTTPServer(server.uri()))
-      server.send(404, "text/plain", "404: Not Found");
-  });
-
-  SPIFFS.begin();
-
-  //updater.setup(&server, "/firmware", update_username, update_password);
-  updater.setup(&server);
-   
-  //serverSecure.setServerKeyAndCert_P(rsakey, sizeof(rsakey), x509, sizeof(x509));
-  server.begin();
-
-  // Set up mDNS responder:
-  // - first argument is the domain name, in this example
-  //   the fully-qualified domain name is "http://inverter.local"
-  // - second argument is the IP address to advertise
-  //   we send our IP address on the WiFi network
-  if (!MDNS.begin("inverter")) {
-    PRINTDEBUG("Error setting up MDNS responder!");
-    while (1) {
-      delay(1000);
-    }
-  }
-  
-  // Add service to MDNS-SD
-  MDNS.addService("http", "tcp", 80);
-  //MDNS.addService("https", "tcp", 443);
+	//==================================
+	//DNS Server - http://inverter.local
+	//==================================
+	MDNS.begin("inverter");
+	MDNS.addService("http", "tcp", 80);
+	//MDNS.addService("https", "tcp", 443);
 }
 
 void loop()
 {
-  //Serial.printf("Stations connected = %d\n", WiFi.softAPgetStationNum());
-  //delay(3000);
-
-  server.handleClient();
-  //serverSecure.handleClient();
+	ArduinoOTA.handle();
+	server.handleClient();
+	//serverSecure.handleClient();
 }
 
 String PHP(String line, int i)
@@ -331,34 +358,6 @@ String readStream(String cmd, int _loop, int _delay)
 
   server.sendHeader("Content-Length", "0");
   server.send(200, "text/plain", "");
-}
-
-//====================
-// ESP8266 UPDATER
-//====================
-void ESP8266Updater()
-{
-  String html = "";
-  String img = "<img src=\"img/esp8266.png\" />";
-
-  if (server.method() == HTTP_POST)
-  {
-    html = "";
-  } else {
-    String v = "0";
-    String b = "0";
-
-    File f = SPIFFS.open("version.txt", "r");
-    if (f)
-    {
-      v = f.readStringUntil('\n');
-      b = f.readStringUntil('\n');
-    }
-    String header = (String)"<header><script src=\"/js/jszip.js\"></script><script src=\"/js/esp8266.js\"></script></header>";
-    String form = (String)"<form enctype=\"multipart/form-data\" action=\"esp8266.php\" method=\"POST\"><input type=\"file\" onchange=\"javascript:this.form.submit();\" /><input type=\"submit\" /></form>";
-    html = (String)"<html>" + header + "<body><center>" + img + " ESP8266 Firmware Version:" + VERSION + " - Web Interface Version:" + v + " (Build:" + b + ")<br/>" + form + "</center></body></html>";
-  }
-  server.send(200, "text/plain", html);
 }
 
 //==================
