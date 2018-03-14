@@ -16,7 +16,7 @@ checkUSB()
                     i=30
                 else
                     cp -R "$(dirname "$0")/Web/config.inc" "$(dirname "$0")/Web/config.inc.php"
-                    sed -i -e "s~/dev/cu.usbserial~$serial~g" "$(dirname "$0")/Web/config.inc.php"
+                    sed -i '' 's~/dev/cu.usbserial~'"$serial"'~g' "$(dirname "$0")/Web/config.inc.php"
                 fi
                 open -a $browser http://$myIP:8080 &
                 return

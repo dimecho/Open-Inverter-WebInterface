@@ -30,10 +30,13 @@ done
 
 cp -rf ../Web/fonts/glyphicons-halflings-regular.ttf data/fonts
 cp -rf ../Web/fonts/glyphicons-halflings-regular.woff data/fonts
+cp -rf ../Web/fonts/glyphicons-halflings-regular.woff2 data/fonts
 
 #======================
 #Correct long filenames
 #======================
+export LC_CTYPE=C
+export LANG=C
 for f in $(find data -type f -name '*.*'); do
     
     f="/"${f#"data/"} #remove path folder name
@@ -62,9 +65,8 @@ for f in $(find data -type f -name '*.*'); do
         #Find and replace
         #================
         for ff in $(find data -type f -name '*.php' -o -name '*.js' -o -name '*.css'); do
-            #sed -i -e 's/$o/$fe/g' "$ff"
-            #sed -i -e 's/   //g' "$ff"
-            while read a ; do echo ${a//$o/$fe} ; done < $ff > $ff.t ; mv $ff{.t,}
+            sed -i '' 's/'"$o"'/'"$fe"'/g' "$ff"
+            sed -i '' 's/   //g' "$ff"
         done
 
         mv -f "data/$f" "data/$nn"

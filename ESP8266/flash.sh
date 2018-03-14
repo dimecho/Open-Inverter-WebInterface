@@ -14,6 +14,7 @@ echo " > Restore Flash? (y/n)"
 read yn
 if [ $yn = y ]; then
     sudo esptool.py --port /dev/cu.usbserial --baud 115200 write_flash 0x000000 Huebner.Inverter.ESP8266.bin
+    #sudo espota.py -i 192.168.4.1 -p 8266 -f Huebner.Inverter.ESP8266.bin -d -r
 else
     echo " > Backup Flash? (y/n)"
     read yn

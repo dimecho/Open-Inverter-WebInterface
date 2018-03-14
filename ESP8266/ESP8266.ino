@@ -1,5 +1,5 @@
 #define VERSION 1.0
-#define DEBUG 1
+#define DEBUG 0
 #define PRINTDEBUG(STR) \
   {  \
     if (DEBUG) Serial.println(STR); \
@@ -11,12 +11,10 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include <ESP8266WebServer.h>
-//#include <ESP8266WebServerSecure.h>
 #include <ESP8266HTTPUpdateServer.h>
 #include <ArduinoJson.h>
 
 ESP8266WebServer server(80);
-//ESP8266WebServerSecure serverSecure(443);
 ESP8266HTTPUpdateServer updater;
 
 int ACCESS_POINT_MODE = 0;
@@ -30,17 +28,18 @@ void setup()
 	Serial.begin(115200);
 	while (!Serial) delay(250);
 
-	//EEPROM.begin(512);
-	
+	EEPROM.begin(512);
+
 	if(ACCESS_POINT_MODE == 0)
 	{
 		//=====================
 		//WiFi Access Point Mode
 		//=====================
 		WiFi.mode(WIFI_AP);
-		IPAddress ip(192, 168, 4, 1);
+    IPAddress ip(192, 168, 4, 1);
 		IPAddress gateway(192, 168, 4, 1);
 		IPAddress subnet(255, 255, 255, 0);
+    IPAddress dns0(192, 168, 4, 1);
 		WiFi.softAPConfig(ip, gateway, subnet);
 		WiFi.softAP(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD, ACCESS_POINT_CHANNEL);
 		PRINTDEBUG(WiFi.softAPIP());
@@ -64,23 +63,33 @@ void setup()
 	/*
 	Port defaults to 8266
 	ArduinoOTA.setPort(8266);
-	Hostname defaults to esp8266-[ChipID]
- */
-	ArduinoOTA.setHostname("inverter");
- /*
-	No authentication by default
-	ArduinoOTA.setPassword((const char *)"123");
-	*/
 
-	ArduinoOTA.onStart([]() {
-		Serial.println("Start");
-	});
+	Hostname defaults to esp8266-[ChipID]
+	ArduinoOTA.setHostname("inverter");
+  
+	No authentication by default
+	ArduinoOTA.setPassword("admin");
+  
+  Password can be set with it's md5 value as well
+  MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
+  ArduinoOTA.setPasswordHash("21232f297a57a5a743894a0e4a801fc3");
+	*/
+  ArduinoOTA.onStart([]() {
+    String type;
+    if (ArduinoOTA.getCommand() == U_FLASH) {
+      type = "sketch";
+    } else { // U_SPIFFS
+      type = "filesystem";
+      SPIFFS.end(); //unmount SPIFFS
+    }
+    Serial.println("Start updating " + type);
+  });
 	ArduinoOTA.onEnd([]() {
 		Serial.println("\nEnd");
 	});
-	//ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-	//  Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
-	//});
+	ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+	  Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+	});
 	ArduinoOTA.onError([](ota_error_t error) {
 		Serial.printf("Error[%u]: ", error);
 		if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
@@ -129,27 +138,26 @@ void setup()
 	if (!HTTPServer(server.uri()))
 		server.send(404, "text/plain", "404: Not Found");
 	});
-	//serverSecure.setServerKeyAndCert_P(rsakey, sizeof(rsakey), x509, sizeof(x509));
 	server.begin();
-	
+
 	//===========
 	//File system
 	//===========
 	SPIFFS.begin();
 
-	//==================================
-	//DNS Server - http://inverter.local
-	//==================================
+	//==========
+	//DNS Server
+	//==========
+  //http://inverter.local
 	MDNS.begin("inverter");
 	MDNS.addService("http", "tcp", 80);
-	//MDNS.addService("https", "tcp", 443);
+  MDNS.addService("arduino", "tcp", 8266);
 }
 
 void loop()
 {
 	ArduinoOTA.handle();
 	server.handleClient();
-	//serverSecure.handleClient();
 }
 
 String PHP(String line, int i)
@@ -189,7 +197,7 @@ String PHP(String line, int i)
         while (f.available()) {
           l = f.readStringUntil('\n');
           line += PHP(l, x);
-          line += "\n";
+          //line += "\n";
         }
         f.close();
       }
@@ -221,12 +229,12 @@ bool HTTPServer(String file)
     File f = SPIFFS.open(file, "r");
     if (f)
     {
-      PRINTDEBUG(f.size());
+      //PRINTDEBUG(f.size());
 
       String contentType = getContentType(file);
-
+      
       if (file.indexOf(".php") > 0) {
-
+        
         String response = "";
         String l = "";
         phpTag[0] = false;
@@ -234,17 +242,13 @@ bool HTTPServer(String file)
         while (f.available()) {
           l = f.readStringUntil('\n');
           response += PHP(l, 0);
-          response += "\n";
+          //response += "\n";
         }
         server.send(200, contentType, response);
+        
       } else {
-        /*
-          while (f.available()) {
-            response += f.readStringUntil('\n');
-          }
-        */
-        server.sendHeader("Content-Encoding", "gzip");
-        server.streamFile(f, contentType);
+         server.sendHeader("Content-Encoding", "gzip");
+         server.streamFile(f, contentType);
       }
       f.close();
       
@@ -270,6 +274,7 @@ String getContentType(String filename)
   else if (filename.endsWith(".gif")) return "image/gif";
   else if (filename.endsWith(".jpg")) return "image/jpeg";
   else if (filename.endsWith(".ico")) return "image/x-icon";
+  else if (filename.endsWith(".svg")) return "image/svg+xml";
   else if (filename.endsWith(".xml")) return "text/xml";
   else if (filename.endsWith(".pdf")) return "application/x-pdf";
   else if (filename.endsWith(".zip")) return "application/x-zip";
