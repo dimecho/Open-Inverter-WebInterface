@@ -53,8 +53,8 @@
         "dropdown": [{
             "id": "Flash ESP8266",
             "icon": "glyphicon-object-align-horizontal",
-            "onClick": "/update"
-        },{
+            "onClick": "/esp8266.php"
+        }, {
             "id": "Flash Firmware",
             "icon": "glyphicon-object-align-left",
             "onClick": "/firmware.php"

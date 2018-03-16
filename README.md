@@ -32,7 +32,7 @@ Console Management for [Huebner Inverter Project](http://johanneshuebner.com/qui
 
 ![Linux](Web/img/linux.png?raw=true) [Download for Linux](../../releases/download/1.0/Huebner.Inverter.Linux.tgz)
 
-![ESP8266](Web/img/esp8266.png?raw=true) [Download for ESP8266](../../releases/download/1.0/Huebner.Inverter.ESP8266.bin)
+![ESP8266](Web/img/esp8266.png?raw=true) [Download for ESP8266](../../releases/download/1.0/Huebner.Inverter.ESP8266.zip)
 
 ![RaspberryPi](Web/img/pi.png?raw=true) [Download for RaspberryPi](../../releases/download/1.0/Huebner.Inverter.Pi.zip)
 

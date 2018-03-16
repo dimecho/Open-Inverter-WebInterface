@@ -1,5 +1,5 @@
 #define VERSION 1.0
-#define DEBUG 0
+#define DEBUG 1
 #define PRINTDEBUG(STR) \
   {  \
     if (DEBUG) Serial.println(STR); \
@@ -12,68 +12,93 @@
 #include <ArduinoOTA.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPUpdateServer.h>
-#include <ArduinoJson.h>
 
 ESP8266WebServer server(80);
 ESP8266HTTPUpdateServer updater;
+File fsUpload;
 
 int ACCESS_POINT_MODE = 0;
-char* ACCESS_POINT_SSID = "Inverter";
-char* ACCESS_POINT_PASSWORD = "12345678";
-int ACCESS_POINT_CHANNEL = 2;
+char ACCESS_POINT_SSID[] = "Inverter";
+char ACCESS_POINT_PASSWORD[] = "12345678";
+int ACCESS_POINT_CHANNEL = 7;
+int ACCESS_POINT_HIDE = 0;
 bool phpTag[] = { false, false, false, false };
+int eepromAddress = 0;
 
 void setup()
 {
-	Serial.begin(115200);
-	while (!Serial) delay(250);
+  Serial.begin(115200);
+  while (!Serial) delay(250);
 
-	EEPROM.begin(512);
+  //======================
+  //NVRAM type of Settings
+  //======================
+  EEPROM.begin(512);
+  int v = EEPROM.read(0);
+  if (v == 0) {
+    PRINTDEBUG("Resetting NVRAM");
+    //Clear - write a 0 to all 512 bytes of the EEPROM
+    for (int i = 0; i < 512; i++)
+      EEPROM.write(i, 0);
+    EEPROM.put(0, ACCESS_POINT_MODE);
+    EEPROM.put(1, ACCESS_POINT_SSID);
+    EEPROM.put(2, ACCESS_POINT_PASSWORD);
+    EEPROM.put(3, ACCESS_POINT_CHANNEL);
+    EEPROM.put(4, ACCESS_POINT_HIDE);
+    EEPROM.commit();
+  } else {
+    PRINTDEBUG("Reading NVRAM");
+    EEPROM.get(1, ACCESS_POINT_SSID);
+    EEPROM.get(2, ACCESS_POINT_PASSWORD);
+    EEPROM.get(3, ACCESS_POINT_CHANNEL);
+    EEPROM.get(4, ACCESS_POINT_HIDE);
+  }
+  EEPROM.end();
 
-	if(ACCESS_POINT_MODE == 0)
-	{
-		//=====================
-		//WiFi Access Point Mode
-		//=====================
-		WiFi.mode(WIFI_AP);
+  if (ACCESS_POINT_MODE == 0) {
+    //=====================
+    //WiFi Access Point Mode
+    //=====================
+    WiFi.mode(WIFI_AP);
     IPAddress ip(192, 168, 4, 1);
-		IPAddress gateway(192, 168, 4, 1);
-		IPAddress subnet(255, 255, 255, 0);
+    IPAddress gateway(192, 168, 4, 1);
+    IPAddress subnet(255, 255, 255, 0);
     IPAddress dns0(192, 168, 4, 1);
-		WiFi.softAPConfig(ip, gateway, subnet);
-		WiFi.softAP(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD, ACCESS_POINT_CHANNEL);
-		PRINTDEBUG(WiFi.softAPIP());
-	}else{
-		//================
-		//WiFi Client Mode
-		//================
-		WiFi.mode(WIFI_STA);
-		WiFi.begin(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD);  //Connect to the WiFi network
-		while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-			Serial.println("Connection Failed! Rebooting...");
-			delay(5000);
-			ESP.restart();
-		}
-		PRINTDEBUG(WiFi.localIP());
-	}
-	
-	//===================
-	//Arduino OTA Updater
-	//===================
-	/*
-	Port defaults to 8266
-	ArduinoOTA.setPort(8266);
+    WiFi.softAPConfig(ip, gateway, subnet);
+    WiFi.softAP(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD, ACCESS_POINT_CHANNEL, ACCESS_POINT_HIDE);
+    PRINTDEBUG(WiFi.softAPIP());
+  } else {
+    //================
+    //WiFi Client Mode
+    //================
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD);  //Connect to the WiFi network
+    //WiFi.enableAP(0);
+    while (WiFi.waitForConnectResult() != WL_CONNECTED) {
+      Serial.println("Connection Failed! Rebooting...");
+      delay(5000);
+      ESP.restart();
+    }
+    PRINTDEBUG(WiFi.localIP());
+  }
 
-	Hostname defaults to esp8266-[ChipID]
-	ArduinoOTA.setHostname("inverter");
-  
-	No authentication by default
-	ArduinoOTA.setPassword("admin");
-  
-  Password can be set with it's md5 value as well
-  MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
-  ArduinoOTA.setPasswordHash("21232f297a57a5a743894a0e4a801fc3");
-	*/
+  //===================
+  //Arduino OTA Updater
+  //===================
+  /*
+    Port defaults to 8266
+    ArduinoOTA.setPort(8266);
+
+    Hostname defaults to esp8266-[ChipID]
+    ArduinoOTA.setHostname("inverter");
+
+    No authentication by default
+    ArduinoOTA.setPassword("admin");
+
+    Password can be set with it's md5 value as well
+    MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
+    ArduinoOTA.setPasswordHash("21232f297a57a5a743894a0e4a801fc3");
+  */
   ArduinoOTA.onStart([]() {
     String type;
     if (ArduinoOTA.getCommand() == U_FLASH) {
@@ -84,93 +109,99 @@ void setup()
     }
     Serial.println("Start updating " + type);
   });
-	ArduinoOTA.onEnd([]() {
-		Serial.println("\nEnd");
-	});
-	ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-	  Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
-	});
-	ArduinoOTA.onError([](ota_error_t error) {
-		Serial.printf("Error[%u]: ", error);
-		if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
-		else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
-		else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
-		else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
-		else if (error == OTA_END_ERROR) Serial.println("End Failed");
-	});
-	ArduinoOTA.begin();
+  ArduinoOTA.onEnd([]() {
+    Serial.println("\nEnd");
+  });
+  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+    Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+  });
+  ArduinoOTA.onError([](ota_error_t error) {
+    Serial.printf("Error[%u]: ", error);
+    if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
+    else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
+    else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
+    else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
+    else if (error == OTA_END_ERROR) Serial.println("End Failed");
+  });
+  ArduinoOTA.begin();
 
-	//===============
-	//Web OTA Updater
-	//===============
-	//updater.setup(&server, "/firmware", update_username, update_password);
-	updater.setup(&server);
+  //===============
+  //Web OTA Updater
+  //===============
+  //updater.setup(&server, "/firmware", update_username, update_password);
+  updater.setup(&server);
 
-	//===============
-	//Web Server
-	//===============
-	server.on("/serial.php", []() {
-		if (server.hasArg("get"))
-		{
-		  server.send(200, "text/plain", readSerial("get " + server.arg("get")));
-		}
-		else if (server.hasArg("command"))
-		{
-		  server.send(200, "text/plain", readSerial(server.arg("command")));
-		}
-		else if (server.hasArg("stream"))
-		{
-		  String l = server.arg("loop");
-		  String t = server.arg("delay");
-		  readStream("get " + server.arg("stream"), l.toInt(), t.toInt());
-		}
-	});
-	server.on("/snapshot.php", []() {
-		Snapshot();
-	});
-	server.on("/firmware.php", HTTP_POST, []() {
-		STM32Updater();
-	});
-	server.on("/", []() {
-		HTTPServer("/index.php");
-	});
-	server.onNotFound([]() {
-	if (!HTTPServer(server.uri()))
-		server.send(404, "text/plain", "404: Not Found");
-	});
-	server.begin();
+  //===============
+  //Web Server
+  //===============
+  server.on("/esp", HTTP_GET, []() {
+    server.send(200, "text/plain", "1");
+  });
+  server.on("/serial.php", []() {
+    if (server.hasArg("get"))
+    {
+      server.send(200, "text/plain", readSerial("get " + server.arg("get")));
+    }
+    else if (server.hasArg("command"))
+    {
+      server.send(200, "text/plain", readSerial(server.arg("command")));
+    }
+    else if (server.hasArg("stream"))
+    {
+      String l = server.arg("loop");
+      String t = server.arg("delay");
+      readStream("get " + server.arg("stream"), l.toInt(), t.toInt());
+    }
+  });
+  server.on("/snapshot.php", HTTP_GET, []() {
+    Snapshot();
+  });
+  server.on("/snapshot.php", HTTP_POST, []() {
+    server.send(200);
+  }, SnapshotUpload );
+  server.on("/firmware.php", HTTP_POST, []() {
+    server.send(200);
+  }, STM32Upload );
+  server.on("/", []() {
+    HTTPServer("/index.php");
+  });
+  server.onNotFound([]() {
+    if (!HTTPServer(server.uri()))
+      server.send(404, "text/plain", "404: Not Found");
+  });
+  server.begin();
 
-	//===========
-	//File system
-	//===========
-	SPIFFS.begin();
+  //===========
+  //File system
+  //===========
+  SPIFFS.begin();
 
-	//==========
-	//DNS Server
-	//==========
+  //==========
+  //DNS Server
+  //==========
   //http://inverter.local
-	MDNS.begin("inverter");
-	MDNS.addService("http", "tcp", 80);
+  MDNS.begin("inverter");
+  MDNS.addService("http", "tcp", 80);
   MDNS.addService("arduino", "tcp", 8266);
 }
 
 void loop()
 {
-	ArduinoOTA.handle();
-	server.handleClient();
+  ArduinoOTA.handle();
+  server.handleClient();
 }
 
 String PHP(String line, int i)
 {
   //PRINTDEBUG(line);
-  
+
   if (line.indexOf("<?php") != -1) {
     line.replace("<?php", "");
     phpTag[i] = true;
   }
-  
-  if (phpTag[i] == true) {
 
+  if (phpTag[i] == true)
+  {
     if (line.indexOf("include") != -1 ) {
       //line.trim();
       line.replace("'", "\"");
@@ -181,19 +212,19 @@ String PHP(String line, int i)
       int e = line.lastIndexOf("\"");
       String include = line.substring(s, e);
 
-      PRINTDEBUG("include:" + include);
+      //PRINTDEBUG("include:" + include);
 
       File f = SPIFFS.open("/" + include, "r");
       if (!f)
       {
-        PRINTDEBUG(include + " (file not found)");
-        
+        //PRINTDEBUG(include + " (file not found)");
+
       } else {
 
         String l;
         int x = i + 1;
         phpTag[x] = false;
-        
+
         while (f.available()) {
           l = f.readStringUntil('\n');
           line += PHP(l, x);
@@ -204,7 +235,7 @@ String PHP(String line, int i)
 
       line.replace("include", "");
       line.replace("\"" + include + "\"", "");
-      
+
     } else {
       line = "";
     }
@@ -214,16 +245,15 @@ String PHP(String line, int i)
     line.replace("?>", "");
     phpTag[i] = false;
   }
-  
+
   return line;
 }
 
 bool HTTPServer(String file)
 {
   PRINTDEBUG((server.method() == HTTP_GET) ? "GET" : "POST");
-  
   PRINTDEBUG(file);
-  
+
   if (SPIFFS.exists(file))
   {
     File f = SPIFFS.open(file, "r");
@@ -232,9 +262,9 @@ bool HTTPServer(String file)
       //PRINTDEBUG(f.size());
 
       String contentType = getContentType(file);
-      
+
       if (file.indexOf(".php") > 0) {
-        
+
         String response = "";
         String l = "";
         phpTag[0] = false;
@@ -245,13 +275,13 @@ bool HTTPServer(String file)
           //response += "\n";
         }
         server.send(200, contentType, response);
-        
+
       } else {
-         server.sendHeader("Content-Encoding", "gzip");
-         server.streamFile(f, contentType);
+        server.sendHeader("Content-Encoding", "gzip");
+        server.streamFile(f, contentType);
       }
       f.close();
-      
+
       return true;
     } else {
       return false;
@@ -284,38 +314,73 @@ String getContentType(String filename)
 //====================
 // SAVE/UPLOAD CONFIG
 //====================
-void Snapshot()
+void SnapshotUpload()
 {
-  if (server.method() == HTTP_POST)
+  HTTPUpload& upload = server.upload();
+
+  if (upload.status == UPLOAD_FILE_START)
   {
+    PRINTDEBUG(upload.filename);
+    fsUpload = SPIFFS.open("/" + upload.filename, "w");
+  }
+  else if (upload.status == UPLOAD_FILE_WRITE)
+  {
+    if (fsUpload)
+      fsUpload.write(upload.buf, upload.currentSize);
+  }
+  else if (upload.status == UPLOAD_FILE_END)
+  {
+    if (fsUpload) {
+      fsUpload.close();
 
-  } else {
-    String read = readSerial("all");
+      PRINTDEBUG(upload.totalSize);
 
-    char charBuffer[read.length() + 1];
-    read.toCharArray(charBuffer, read.length());
-
-    DynamicJsonBuffer jsonBuffer;
-    JsonObject& root = jsonBuffer.createObject();
-
-    char * split = strtok(charBuffer, "\n");
-    while (split != NULL)
-    {
-      //printf ("%s\n", split);
-      String values = String(split);
-      for (int i = 0; i < values.length(); i++) {
-        if (values.substring(i, i + 1) == "\t") {
-          root[values.substring(0, i)] = values.substring(i + 1);
-          break;
+      File f = SPIFFS.open("/" + upload.filename, "r");
+      while (f.available()) {
+        String cmd = f.readStringUntil('\n');
+        cmd.replace("\"", "");
+        cmd.replace(":", "");
+        cmd.replace(",", "");
+        cmd.replace("    ", "");
+        if (!cmd.startsWith("{") && !cmd.endsWith("}")) {
+          Serial.print("set " + cmd);
+          Serial.print("\n");
         }
       }
-      split = strtok(NULL, "\n");
-    }
 
-    root.prettyPrintTo(read);
+      Serial.print("save");
+      Serial.print("\n");
+
+      f.close();
+
+      SPIFFS.remove("/" + upload.filename);
+
+      server.sendHeader("Location", "/index.php");
+      server.send(303);
+
+    } else {
+      server.send(500, "text/plain", "500: Couldn't Upload File");
+    }
+  }
+}
+
+void Snapshot()
+{
+  if (server.method() == HTTP_GET)
+  {
+    String output;
+
+    //quick json format
+    output = readSerial("all");
+    output.substring(1, output.length() - 2);
+    output += "{";
+    output.replace("\r", "");
+    output.replace("\t\t", "\": \"");
+    output.replace("\n", "\",\n    \"");
+    output += "}";
 
     server.sendHeader("Content-Disposition", "attachment; filename=\"snapshot.txt\"");
-    server.send(200, "text/json", read);
+    server.send(200, "text/json", output);
   }
 }
 
@@ -324,51 +389,72 @@ void Snapshot()
 //===================
 String readSerial(String cmd)
 {
-  String read = "";
+  char b[255];
+  size_t len = 0;
+  String output;
 
   Serial.print(cmd);
+  Serial.print("\n");
+  Serial.readBytes(b, cmd.length() + 1); //consume echo
 
-  while (Serial.available()) {
-    read += Serial.readString();
-  }
+  do {
+    memset(b, 0, sizeof(b));
+    len = Serial.readBytes(b, sizeof(b) - 1);
+    output += b;
+  } while (len > 0);
 
-  return read;
+  /*
+    while (Serial.available() > 0)
+    {
+    char c = Serial.read();
+    output += c;
+    }
+  */
+
+  return output;
 }
 
 String readStream(String cmd, int _loop, int _delay)
 {
-  String read = "";
-  char buffer[1];
-  
+  char b[255];
+  size_t len = 0;
+  String output;
+
   server.sendHeader("Connection", "Keep-Alive");
   server.sendHeader("Access-Control-Allow-Origin", "*");
   server.send(200, "text/plain", "" );
 
   Serial.print(cmd);
+  Serial.print("\n");
+  Serial.readBytes(b, cmd.length() + 1); //consume echo
 
   for (int i = 0; i < _loop; i++) {
-    read = "";
-    if(i != 0)
+    output = "";
+    if (i != 0)
     {
       Serial.print("!");
-      Serial.readBytes(buffer, 1); //consume "!"
+      Serial.readBytes(b, 1); //consume "!"
     }
-    while (Serial.available()) {
-      read += Serial.readString();
-      server.sendContent(read);
-      server.client().flush();
-    }
+
+    do {
+      memset(b, 0, sizeof(b));
+      len = Serial.readBytes(b, sizeof(b) - 1);
+      output += b;
+    } while (len > 0);
+
+    server.sendContent(output);
+    server.client().flush();
   }
   server.client().stop(); //This doesn't close connection
+  server.sendHeader("Content-Length", "0"); //This does
 
-  server.sendHeader("Content-Length", "0");
   server.send(200, "text/plain", "");
 }
 
 //==================
 // STM32 UPDATER
 //==================
-void STM32Updater()
+void STM32Upload()
 {
   HTTPUpload& upload = server.upload();
 
@@ -417,7 +503,7 @@ void STM32Updater()
 
     char s[] = {'S', '2'};
     char p[] = {'P'};
-    
+
     char c = wait_for_char(s); //Wait for size request
     if (c == '2') { //version 2 bootloader
       Serial.write(0xAA); //Send magic

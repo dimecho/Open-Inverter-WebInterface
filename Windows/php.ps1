@@ -20,25 +20,25 @@ if($args[0] -eq "uninstall") {
     Write-Host "...Installing PHP"
     
     # Download PHP
-    $phpFile = "php-7.2.1-Win32-VC15-x64.zip"
-    if (-Not (Test-Path "$env:TEMP\$phpFile")) {
-    	Write-Host "Downloading PHP 7"  -ForegroundColor Green
-        Write-Host ""
-    	Invoke-WebRequest -Uri http://windows.php.net/downloads/releases/archives/$phpFile -OutFile "$env:TEMP\$phpFile"
+    $phpFile = "php-7.2.2-Win32-VC15-x64.zip"
+    if (-Not (Test-Path "$env:userprofile\Downloads\$phpFile")) {
+    	Write-Host "Downloading PHP 7.2"  -ForegroundColor Green
+        Write-Host "$env:userprofile\Downloads\$phpFile"
+        Invoke-WebRequest -Uri "https://windows.php.net/downloads/releases/archives/$phpFile" -OutFile "$env:userprofile\Downloads\$phpFile"
     }
 
     # Visual C++ Redistributable for Visual Studio 2015
     if (-Not (Test-Path 'HKLM:\SOFTWARE\Classes\Installer\Dependencies\{d992c12e-cab2-426f-bde3-fb8c53950b0d}')) {
     	Write-Host "Downloading C++ Redistributable for Visual Studio 2015"  -ForegroundColor Green
         Write-Host ""
-    	Invoke-WebRequest -Uri https://download.microsoft.com/download/6/A/A/6AA4EDFF-645B-48C5-81CC-ED5963AEAD48/vc_redist.x64.exe -OutFile "$env:TEMP\vc_redist.x64.exe"
-    	Start-Process "$env:TEMP\vc_redist.x64.exe" /q:a -Wait
+        Invoke-WebRequest -Uri "https://download.microsoft.com/download/6/A/A/6AA4EDFF-645B-48C5-81CC-ED5963AEAD48/vc_redist.x64.exe" -OutFile "$env:userprofile\Downloads\vc_redist.x64.exe"
+		Start-Process "$env:userprofile\Downloads\vc_redist.x64.exe" /q:a -Wait
     }
 
     New-Item "$env:programfiles\PHP" -ItemType directory -ErrorAction SilentlyContinue
 
     $shell = new-object -com Shell.Application
-    $zip = $shell.NameSpace("$env:TEMP\$phpFile")
+    $zip = $shell.NameSpace("$env:userprofile\Downloads\$phpFile")
     foreach($item in $zip.items())
     {
     	$shell.Namespace("$env:programfiles\PHP\").copyhere($item)
