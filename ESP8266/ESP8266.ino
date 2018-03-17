@@ -34,10 +34,10 @@ void setup()
   //NVRAM type of Settings
   //======================
   EEPROM.begin(512);
-  int v = EEPROM.read(0);
+  int v = EEPROM.read(1);
   if (v == 0) {
     PRINTDEBUG("Resetting NVRAM");
-    //Clear - write a 0 to all 512 bytes of the EEPROM
+    //Clear - write 0 to all 512 bytes of EEPROM
     for (int i = 0; i < 512; i++)
       EEPROM.write(i, 0);
     EEPROM.put(0, ACCESS_POINT_MODE);
@@ -48,6 +48,7 @@ void setup()
     EEPROM.commit();
   } else {
     PRINTDEBUG("Reading NVRAM");
+    //EEPROM.get(0, ACCESS_POINT_MODE);
     EEPROM.get(1, ACCESS_POINT_SSID);
     EEPROM.get(2, ACCESS_POINT_PASSWORD);
     EEPROM.get(3, ACCESS_POINT_CHANNEL);
@@ -134,11 +135,12 @@ void setup()
   //===============
   //Web Server
   //===============
-  server.on("/esp", HTTP_GET, []() {
-    server.send(200, "text/plain", "1");
-  });
   server.on("/serial.php", []() {
-    if (server.hasArg("get"))
+    if (server.hasArg("com"))
+    {
+      server.send(200, "text/plain", "ESP8266 UART");
+    }
+    else if (server.hasArg("get"))
     {
       server.send(200, "text/plain", readSerial("get " + server.arg("get")));
     }
@@ -198,6 +200,9 @@ String PHP(String line, int i)
   if (line.indexOf("<?php") != -1) {
     line.replace("<?php", "");
     phpTag[i] = true;
+  } else if (line.indexOf("?>") != -1) {
+    line = "";
+    phpTag[i] = false;
   }
 
   if (phpTag[i] == true)
@@ -212,7 +217,7 @@ String PHP(String line, int i)
       int e = line.lastIndexOf("\"");
       String include = line.substring(s, e);
 
-      //PRINTDEBUG("include:" + include);
+      PRINTDEBUG("include:" + include);
 
       File f = SPIFFS.open("/" + include, "r");
       if (!f)
@@ -235,15 +240,14 @@ String PHP(String line, int i)
 
       line.replace("include", "");
       line.replace("\"" + include + "\"", "");
+      if (line.indexOf("?>") != -1) {
+        line.replace("?>", "");
+        phpTag[i] = false;
+      }
 
     } else {
       line = "";
     }
-  }
-
-  if (line.indexOf("?>") != -1) {
-    line.replace("?>", "");
-    phpTag[i] = false;
   }
 
   return line;
@@ -352,7 +356,6 @@ void SnapshotUpload()
       Serial.print("\n");
 
       f.close();
-
       SPIFFS.remove("/" + upload.filename);
 
       server.sendHeader("Location", "/index.php");
@@ -460,115 +463,131 @@ void STM32Upload()
 
   if (upload.status == UPLOAD_FILE_START) {
 
-    if (!upload.filename.endsWith(".bin"))
-    {
-      server.send(500, "text/plain", "Firmware must be binary");
-    }
+    PRINTDEBUG(upload.filename);
 
-    //} else if (upload.status == UPLOAD_FILE_WRITE) {
-    //fsUploadFile.write(upload.buf, upload.currentSize);
+    if (!upload.filename.endsWith(".bin")) {
+      server.send(500, "text/plain", "Firmware must be binary");
+    } else {
+      fsUpload = SPIFFS.open("/" + upload.filename, "w");
+    }
+  }
+  else if (upload.status == UPLOAD_FILE_WRITE)
+  {
+    if (fsUpload)
+      fsUpload.write(upload.buf, upload.currentSize);
 
   } else if (upload.status == UPLOAD_FILE_END) {
 
-    uint32_t *data = new uint32_t[upload.totalSize];
-    memcpy(data, upload.buf, sizeof(upload.buf)); //fill in the data
+    if (fsUpload) {
+      fsUpload.close();
 
-    int PAGE_SIZE_BYTES = 1024;
-    int len = upload.totalSize;
-    int pages = round((len + PAGE_SIZE_BYTES - 1) / PAGE_SIZE_BYTES);
+      PRINTDEBUG(upload.totalSize);
 
-    while ((sizeof(data) % PAGE_SIZE_BYTES) > 0) //Fill ramaining bytes with zeros, prevents corrupted endings
-    {
-      //Allocate new array and copy in data
-      uint32_t *append = new uint32_t[sizeof(data) + 1];
-      memcpy(append, data, sizeof(data));
+      File f = SPIFFS.open("/" + upload.filename, "r");
+      uint32_t *data = new uint32_t[f.size()];
+      while (f.available()) {
+        data += char(f.read());
+      }
+      f.close();
+      SPIFFS.remove("/" + upload.filename);
 
-      //Delete old array
-      delete [] data;
+      int PAGE_SIZE_BYTES = 1024;
+      int len = upload.totalSize;
+      int pages = round((len + PAGE_SIZE_BYTES - 1) / PAGE_SIZE_BYTES);
 
-      //Swap with new array
-      data = append;
-    }
-
-    if (Serial.available() < 0) {
-      server.send(500, "text/plain", "Serial not connected");
-      return;
-    }
-
-    PRINTDEBUG("File length is $len bytes/$pages pages");
-
-    PRINTDEBUG("Resetting device...\n");
-
-    Serial.print("reset\r");
-
-    char s[] = {'S', '2'};
-    char p[] = {'P'};
-
-    char c = wait_for_char(s); //Wait for size request
-    if (c == '2') { //version 2 bootloader
-      Serial.write(0xAA); //Send magic
-      wait_for_char(s);
-    }
-
-    PRINTDEBUG("Sending number of pages...\n");
-
-    Serial.print(pages);
-
-    wait_for_char(p); //Wait for page request
-
-    int page = 0;
-    bool done = false;
-    int idx = 0;
-
-    while (done != true)
-    {
-      PRINTDEBUG("Sending page " + page);
-
-      uint32_t crc = calcStmCrc(data, idx, PAGE_SIZE_BYTES);
-      char c;
-
-      while (c != 'C')
+      while ((sizeof(data) % PAGE_SIZE_BYTES) > 0) //Fill ramaining bytes with zeros, prevents corrupted endings
       {
-        idx = page * PAGE_SIZE_BYTES;
-        int cnt = 0;
+        //Allocate new array and copy in data
+        uint32_t *append = new uint32_t[sizeof(data) + 1];
+        memcpy(append, data, sizeof(data));
 
-        while (cnt < PAGE_SIZE_BYTES)
+        //Delete old array
+        delete [] data;
+
+        //Swap with new array
+        data = append;
+      }
+
+      if (Serial.available() < 0) {
+        server.send(500, "text/plain", "Serial not connected");
+        return;
+      }
+
+      PRINTDEBUG("File length is $len bytes/$pages pages");
+
+      PRINTDEBUG("Resetting device...\n");
+
+      Serial.print("reset\r");
+
+      char s[] = {'S', '2'};
+      char p[] = {'P'};
+
+      char c = wait_for_char(s); //Wait for size request
+      if (c == '2') { //version 2 bootloader
+        Serial.write(0xAA); //Send magic
+        wait_for_char(s);
+      }
+
+      PRINTDEBUG("Sending number of pages...\n");
+
+      Serial.print(pages);
+
+      wait_for_char(p); //Wait for page request
+
+      int page = 0;
+      bool done = false;
+      int idx = 0;
+
+      while (done != true)
+      {
+        PRINTDEBUG("Sending page " + page);
+
+        uint32_t crc = calcStmCrc(data, idx, PAGE_SIZE_BYTES);
+        char c;
+
+        while (c != 'C')
         {
-          Serial.write(data[idx]);
-          //PRINTDEBUG((char)data[idx]);
-          idx++;
-          cnt++;
+          idx = page * PAGE_SIZE_BYTES;
+          int cnt = 0;
+
+          while (cnt < PAGE_SIZE_BYTES)
+          {
+            Serial.write(data[idx]);
+            //PRINTDEBUG((char)data[idx]);
+            idx++;
+            cnt++;
+          }
+
+          c = Serial.read();
+
+          if (c == 'T')
+            PRINTDEBUG("Transmission Error");
         }
+
+        PRINTDEBUG("Sending CRC... ");
+
+        Serial.write(crc & 0xFF);
+        Serial.write((crc >> 8) & 0xFF);
+        Serial.write((crc >> 16) & 0xFF);
+        Serial.write((crc >> 24) & 0xFF);
 
         c = Serial.read();
 
-        if (c == 'T')
-          PRINTDEBUG("Transmission Error");
-      }
-
-      PRINTDEBUG("Sending CRC... ");
-
-      Serial.write(crc & 0xFF);
-      Serial.write((crc >> 8) & 0xFF);
-      Serial.write((crc >> 16) & 0xFF);
-      Serial.write((crc >> 24) & 0xFF);
-
-      c = Serial.read();
-
-      if ('D' == c)
-      {
-        PRINTDEBUG("CRC correct!\n");
-        PRINTDEBUG("Update done!\n");
-        done = true;
-      }
-      else if ('E' == c)
-      {
-        PRINTDEBUG("CRC error!\n");
-      }
-      else if ('P' == c)
-      {
-        PRINTDEBUG("CRC correct!\n");
-        page++;
+        if ('D' == c)
+        {
+          PRINTDEBUG("CRC correct!\n");
+          PRINTDEBUG("Update done!\n");
+          done = true;
+        }
+        else if ('E' == c)
+        {
+          PRINTDEBUG("CRC error!\n");
+        }
+        else if ('P' == c)
+        {
+          PRINTDEBUG("CRC correct!\n");
+          page++;
+        }
       }
     }
   }

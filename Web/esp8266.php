@@ -11,11 +11,9 @@
 		var progressBar = $("#progressBar");
 		progressBar.css("width", i + "%");
 		i++;
-		if(i >= 100) {
+		if(i == 100) {
 			clearInterval(timer);
-			setTimeout(function (){
-				$($formName).submit();
-			},1000);
+			$(formName).submit();
 		}
 	};
 	
@@ -23,21 +21,22 @@
 		$("#fileSPIFFS").change(function() {
 			i = 1;
 			formName = "#formSPIFFS";
-			timer = setInterval(progressTimer, 200);
+			timer = setInterval(progressTimer, 40);
 		});
+
 		$("#fileRAM").change(function() {
 			i = 1;
 			formName = "#formRAM";
-			timer = setInterval(progressTimer, 200);
+			timer = setInterval(progressTimer, 40);
 		});
-	});
-	
-	$(document).on('click', '.browseSPIFFS', function(evt){
-		$('#fileSPIFFS').trigger('click');
-	});
-	
-	$(document).on('click', '.browseRAM', function(evt){
-		$('#fileRAM').trigger('click');
+
+		$("#browseSPIFFS").click(function(){
+			$("#fileSPIFFS").trigger("click");
+		});
+		
+		$("#browseRAM").click(function(){
+			$("#fileRAM").trigger("click");
+		});
 	});
 	</script>
  </head>
@@ -50,18 +49,17 @@
 				<table class="table table-active bg-faded table-bordered">
 					<tr>
 						<td colspan="2">
-							<span class="badge badge-lg badge-danger">Select SPIFFS first and RAM second</span><br/>
-							<span class="badge badge-lg badge-info">flash-spiffs.bin contains SPIFFS file system</span><br/>
-							<span class="badge badge-lg badge-info">flash-ram.bin contains Arduino compiled program</span><br/>
-							<span class="badge badge-lg badge-warning">flash-full.bin contains entire 2MB flash</span>
+							<span class="badge badge-lg badge-primary">flash-spiffs.bin contains SPIFFS file system</span><br/>
+							<span class="badge badge-lg badge-primary">flash-ram.bin contains Arduino sketch</span><br/>
+							<span class="badge badge-lg badge-danger">flash-full.bin contains entire 2MB flash</span>
 						</td>
 					</tr>
 					<tr align="center">
 						<td align="center">
-							<button class="browseSPIFFS btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Flash SPIFFS</button>
+							<button class="btn btn-primary" type="button" id="browseSPIFFS"><i class="glyphicon glyphicon-search"></i> Flash SPIFFS</button>
 						</td>
 						<td align="center">
-							<button class="browseRAM btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Flash RAM</button>
+							<button class="btn btn-primary" type="button" id="browseRAM"><i class="glyphicon glyphicon-search"></i> Flash RAM</button>
 						</td>
 					</tr>
 					<tr align="center">
@@ -75,13 +73,15 @@
 			</div>
 		</div>
 	</div>
-	<form action="/update" method="POST" id="formRAM" enctype="multipart/form-data">
-		<input name="update" type="file" id="fileRAM" />
-		<input type="submit" hidden/>
+	<form method="POST" action="/update?cmd=0" enctype="multipart/form-data" id="formRAM">
+        <input type='hidden' name='cmd' value='0' hidden />
+		<input type="file" name="update" id="fileRAM" hidden />
+		<input type="submit" hidden />
 	</form>
-	<form action="/update" method="POST" id="formSPIFFS" enctype="multipart/form-data">
-		<input name="update" type="file" id="fileSPIFFS" />
-		<input type="submit" hidden/>
+	<form method="POST" action="/update?cmd=100" enctype="multipart/form-data" id="formSPIFFS">
+        <input type='hidden' name='cmd' value='100' hidden />
+		<input type="file" name="update" id="fileSPIFFS" hidden />
+		<input type="submit" hidden />
 	</form>
 </body>
 </html>

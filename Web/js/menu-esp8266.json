@@ -59,6 +59,10 @@
             "icon": "glyphicon-object-align-left",
             "onClick": "/firmware.php"
         }, {
+            "id": "Download ATTiny13",
+            "icon": "glyphicon-object-align-horizontal",
+            "onClick": "/firmware/attiny13.zip"
+        }, {
             "id": "-"
         }, {
             "id": "Switch Check",

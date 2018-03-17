@@ -9,7 +9,7 @@ Setup
 5) Run ./spiffs.sh (spiffs.bat Windows) build and flash SPIFFS
 6) Open ESP8266.ino with Arduino IDE and upload sketch
 7) Solder GPIO-0 bridge back to 1 to enable FLASH
-
+8) Connect to inverter TTL
 
 Wiring
           ______

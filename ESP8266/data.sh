@@ -5,8 +5,14 @@ cp -rf ./tools ~/Documents/Arduino
 #==============
 #Copy Files
 #==============
+mkdir -p data/css
+mkdir -p data/js
+mkdir -p data/img
+mkdir -p data/fonts
+mkdir -p data/firmware
+mkdir -p data/firmware/img
 
-array=( index.php header.php menu.php can.php graph.php firmware.php simple.php tips.php switch-check.php motor-class.php version.txt tips.csv description.csv favicon.ico)
+array=( index.php header.php menu.php esp8266.php can.php graph.php firmware.php simple.php tips.php switch-check.php motor-class.php version.txt tips.csv description.csv favicon.ico)
 for i in "${array[@]}"; do
     cp -rf ../Web/$i data
 done
@@ -16,7 +22,7 @@ for i in "${array[@]}"; do
     cp -rf ../Web/css/$i data/css
 done
 
-array=( jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js bootstrap-editable.js bootstrap-slider.js bootstrap-notify.js can.js graph.js index.js menu.js status.js simple.js chart.js chartjs-plugin-datalabels.js switch-check.js svg-injector.js )
+array=( jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js bootstrap-editable.js bootstrap-slider.js bootstrap-notify.js firmware.js can.js graph.js index.js menu.js status.js simple.js chart.js chartjs-plugin-datalabels.js switch-check.js svg-injector.js )
 for i in "${array[@]}"; do
     cp -rf ../Web/js/$i data/js
 done
@@ -31,6 +37,9 @@ done
 cp -rf ../Web/fonts/glyphicons-halflings-regular.ttf data/fonts
 cp -rf ../Web/fonts/glyphicons-halflings-regular.woff data/fonts
 cp -rf ../Web/fonts/glyphicons-halflings-regular.woff2 data/fonts
+
+cp -rf ../Web/firmware/attiny13.zip data/firmware
+cp -rf ../Web/firmware/img/esp8266.jpg data/firmware/img
 
 #======================
 #Correct long filenames
