@@ -1,3 +1,4 @@
+var esp8266 = false;
 $(document).ready(function()
 {
     $(".safety").fancybox({
@@ -14,9 +15,9 @@ $(document).ready(function()
 
     if(os !== "mobile") {
         
-        $("head").append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/bootstrap-editable.css\" />"); 
+        $.getScript("js/bootstrap-editable.js").done(function(script, textStatus) {
 
-        $.getScript("/js/bootstrap-editable.js", function() {
+            $("head").append("<link rel=\"stylesheet\" type=\"text/css\" href=\"css/bootstrap-editable.css\" />"); 
 
             $('#parameters').editable({
                 selector: 'a',
@@ -33,6 +34,7 @@ $(document).ready(function()
                 },
                 validate: function(value) {
 
+                    clearTimeout(statusRefreshTimer); //Pause status refresh
                     if (!validateInput(this.id,value)) {
                         return '-';
                     }
@@ -55,9 +57,12 @@ $(document).ready(function()
                         }else{
                             $.notify({ icon: 'glyphicon glyphicon-warning-sign', title: 'Error', message: data },{ type: 'danger' });
                         }
+                        buildStatus(true); //Resume status refresh
                     //}
                 }
             });
+        }).fail(function( jqxhr, settings, exception ) {
+            esp8266 = true;
         });
     }
 
@@ -253,10 +258,8 @@ function buildParameters()
 			var a = $("<a>");
 			var tr = $("<tr>");
 
-            if(os === "mobile") {
-                var a = $("<input>", { type:"number", "id":key, class:"form-control", value:json[key].value });
-                tr.attr("style","font-size: 140%;");
-                a.attr("style","font-size: 110%; width: 100%; height: 1.5em");
+            if(os === "mobile" || esp8266 === true) {
+                var a = $("<input>", { type:"text", "id":key, class:"form-control", value:json[key].value });
                 a.on('change paste', function() {
                     var element = $(this);
                     if(element.val() != "") {
@@ -264,7 +267,11 @@ function buildParameters()
                             setParameter(element.attr("id"),element.val(),true,true);
                     }
                 });
-
+                if(os === "mobile") {
+                    tr.attr("style","font-size: 140%;");
+                    a.attr("style","font-size: 110%; width: 100%; height: 1.5em");
+                    a.attr("type","number");
+                }
             }else{
                 var a = $("<a>", { href:"#", "id":key, "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":json[key].unit + " ("+ json[key].default + ")"});
                 a.append(json[key].value);

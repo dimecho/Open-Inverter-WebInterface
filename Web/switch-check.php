@@ -2,9 +2,9 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script type="text/javascript" src="/js/potentiometer.js"></script>
-        <script type="text/javascript" src="/js/jquery.knob.js"></script>
-        <script type="text/javascript" src="/js/switch-check.js"></script>
+        <script type="text/javascript" src="js/potentiometer.js"></script>
+        <script type="text/javascript" src="js/jquery.knob.js"></script>
+        <script type="text/javascript" src="js/switch-check.js"></script>
     </head>
     <body>
         <div class="container">

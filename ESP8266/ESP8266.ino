@@ -1,5 +1,5 @@
 #define VERSION 1.0
-#define DEBUG 1
+#define DEBUG 0
 #define PRINTDEBUG(STR) \
   {  \
     if (DEBUG) Serial.println(STR); \
@@ -135,10 +135,27 @@ void setup()
   //===============
   //Web Server
   //===============
-  server.on("/serial.php", []() {
-    if (server.hasArg("com"))
+  server.on("/9d813656-a9a6-4978-8dea-ffb3a8498b1c", HTTP_GET, []() {
+    String result=SPIFFS.format()?"OK":"Error";
+    FSInfo fs_info;
+    SPIFFS.info(fs_info);
+    server.send(200, "text/plain", "<b>Format " + result + "</b><br/>Total Flash Size: " + String(ESP.getFlashChipSize()) + "<br>SPIFFS Size: " + String(fs_info.totalBytes) + "<br>SPIFFS Used: " + String(fs_info.usedBytes));
+  });
+  server.on("/reset", HTTP_GET, []() {
+     ESP.restart();
+  });
+  server.on("/serial.php", HTTP_GET, []() {
+    if (server.hasArg("init"))
+    {
+      server.send(200, "text/plain", readSerial("hello"));
+    }
+    else if (server.hasArg("com"))
     {
       server.send(200, "text/plain", "ESP8266 UART");
+    }
+    else if (server.hasArg("pk") && server.hasArg("name") && server.hasArg("value"))
+    {
+      server.send(200, "text/plain", readSerial("set " + server.arg("name") + " " + server.arg("value")));
     }
     else if (server.hasArg("get"))
     {
@@ -233,7 +250,7 @@ String PHP(String line, int i)
         while (f.available()) {
           l = f.readStringUntil('\n');
           line += PHP(l, x);
-          //line += "\n";
+          line += "\n";
         }
         f.close();
       }
@@ -276,7 +293,7 @@ bool HTTPServer(String file)
         while (f.available()) {
           l = f.readStringUntil('\n');
           response += PHP(l, 0);
-          //response += "\n";
+          response += "\n";
         }
         server.send(200, contentType, response);
 
@@ -369,22 +386,19 @@ void SnapshotUpload()
 
 void Snapshot()
 {
-  if (server.method() == HTTP_GET)
-  {
-    String output;
+  //quick json format
+  String json;
+  String all = readSerial("all");
 
-    //quick json format
-    output = readSerial("all");
-    output.substring(1, output.length() - 2);
-    output += "{";
-    output.replace("\r", "");
-    output.replace("\t\t", "\": \"");
-    output.replace("\n", "\",\n    \"");
-    output += "}";
+  all.replace("\r", "");
+  all = all.substring(0, (all.length() - 1));
+  all.replace("\t\t", "\": \"");
+  all.replace("\n", "\",\n    \"");
 
-    server.sendHeader("Content-Disposition", "attachment; filename=\"snapshot.txt\"");
-    server.send(200, "text/json", output);
-  }
+  json = "{\n    \"" + all + "\"\n}";
+
+  server.sendHeader("Content-Disposition", "attachment; filename=\"snapshot.txt\"");
+  server.send(200, "text/json", json);
 }
 
 //===================
@@ -405,6 +419,10 @@ String readSerial(String cmd)
     len = Serial.readBytes(b, sizeof(b) - 1);
     output += b;
   } while (len > 0);
+
+  if (output.indexOf(cmd + "\n") != -1 ) { //Got echo, try again ...OVERVOLTAGE?
+    output = readSerial(cmd);
+  }
 
   /*
     while (Serial.available() > 0)

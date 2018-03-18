@@ -137,7 +137,7 @@
                                             <select name="interface" class="form-control" form="Aform" onchange="setJTAGImage()" id="jtag-interface" style="width:80%"></select>
                                         </span>
                                         <span class = "input-group-addon">
-                                            <button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select BIN/HEX</button>
+                                            <button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select stm32_loader.hex</button>
                                         </span>
                                     </div>
                                     <br/><br/>

@@ -14,21 +14,19 @@ form {
   display: none;
 }
 .tooltip-inner {
-    max-width: 500px !important;
+  max-width: 500px !important;
 }
 .badge-lg {
   font-size:13px !important;
   font-weight:normal !important;
 }
-
 .svg-inject {
-    width:32px;
-    height:32px;
-    margin: 8px auto;
-    padding: 4px;
-    vertical-align: top;
+  width:32px;
+  height:32px;
+  margin: 8px auto;
+  padding: 4px;
+  vertical-align: top;
 }
-
 .svg-green * {
   fill:#569e26;
 }
@@ -58,14 +56,12 @@ form {
   border-color: #e62e00;
   background: #ff704d
 }
-
 .nav-tabs > li > a {
   color: #49afcd;
 }
 .nav-tabs > li > a:hover {
   color: #000000; 
 }
-
 .loader {
   border: 5px solid #A9A9A9;
   border-top-width: 5px;
@@ -78,16 +74,13 @@ form {
   width: 50px;
   height: 50px;
 }
-
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
-
 .chartWrapper {
   position: relative;
 }
-
 .chartWrapper > canvas {
   position: absolute;
   left: 0;
@@ -99,7 +92,6 @@ form {
   position: relative;
   width: 100%;
 }
-
 .chartAreaWrapper2 {
   position: relative;
 }

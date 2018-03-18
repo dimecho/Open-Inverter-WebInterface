@@ -21,12 +21,18 @@
 		$("#fileSPIFFS").change(function() {
 			i = 1;
 			formName = "#formSPIFFS";
-			timer = setInterval(progressTimer, 40);
+			timer = setInterval(progressTimer, 250);
+			//Format SPIFFS
+			$.ajax("/9d813656-a9a6-4978-8dea-ffb3a8498b1c", {
+		        success: function success(data) {
+		            $.notify({ message: data }, { type: "success" });
+		            $.ajax("/reset");
+		        }
+		    });
 		});
-
-		$("#fileRAM").change(function() {
+		$("#fileSketch").change(function() {
 			i = 1;
-			formName = "#formRAM";
+			formName = "#formSketch";
 			timer = setInterval(progressTimer, 40);
 		});
 
@@ -34,8 +40,8 @@
 			$("#fileSPIFFS").trigger("click");
 		});
 		
-		$("#browseRAM").click(function(){
-			$("#fileRAM").trigger("click");
+		$("#browseSketch").click(function(){
+			$("#fileSketch").trigger("click");
 		});
 	});
 	</script>
@@ -49,17 +55,16 @@
 				<table class="table table-active bg-faded table-bordered">
 					<tr>
 						<td colspan="2">
-							<span class="badge badge-lg badge-primary">flash-spiffs.bin contains SPIFFS file system</span><br/>
-							<span class="badge badge-lg badge-primary">flash-ram.bin contains Arduino sketch</span><br/>
-							<span class="badge badge-lg badge-danger">flash-full.bin contains entire 2MB flash</span>
+							<span class="badge badge-lg badge-warning">flash-spiffs.bin contains SPIFFS file system</span><br/>
+							<span class="badge badge-lg badge-warning">flash-sketch.bin contains Arduino program</span><br/>
 						</td>
 					</tr>
 					<tr align="center">
 						<td align="center">
-							<button class="btn btn-primary" type="button" id="browseSPIFFS"><i class="glyphicon glyphicon-search"></i> Flash SPIFFS</button>
+							<button class="btn btn-primary" type="button" id="browseSPIFFS"><i class="glyphicon glyphicon-th"></i> Flash SPIFFS</button>
 						</td>
 						<td align="center">
-							<button class="btn btn-primary" type="button" id="browseRAM"><i class="glyphicon glyphicon-search"></i> Flash RAM</button>
+							<button class="btn btn-primary" type="button" id="browseSketch"><i class="glyphicon glyphicon-th"></i> Flash Sketch</button>
 						</td>
 					</tr>
 					<tr align="center">
@@ -73,13 +78,13 @@
 			</div>
 		</div>
 	</div>
-	<form method="POST" action="/update?cmd=0" enctype="multipart/form-data" id="formRAM">
-        <input type='hidden' name='cmd' value='0' hidden />
-		<input type="file" name="update" id="fileRAM" hidden />
+	<form method="POST" action="/update?cmd=0" enctype="multipart/form-data" id="formSketch">
+        <input type='hidden' name='cmd' value='0' />
+		<input type="file" name="update" id="fileSketch" hidden />
 		<input type="submit" hidden />
 	</form>
 	<form method="POST" action="/update?cmd=100" enctype="multipart/form-data" id="formSPIFFS">
-        <input type='hidden' name='cmd' value='100' hidden />
+        <input type='hidden' name='cmd' value='100' />
 		<input type="file" name="update" id="fileSPIFFS" hidden />
 		<input type="submit" hidden />
 	</form>

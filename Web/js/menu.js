@@ -285,12 +285,14 @@ function setDefaults() {
 
     alertify.confirm('', 'Reset all settings back to default.', function () {
 
+        sendCommand("can clear");
+        $.ajax("/can.php?clear=1");
+
         var data = sendCommand("defaults");
         //console.log(data);
 
         if (data.indexOf("Defaults loaded") != -1) {
-            sendCommand("can clear");
-            $.ajax("/can.php?clear=1");
+            sendCommand("save");
             $.notify({ message: "Inverter reset to Default" }, { type: "success" });
         } else {
             $.notify({
@@ -427,7 +429,8 @@ function buildMenu() {
                         //console.log(json.menu[key].dropdown[d].id);
                         var dropdown_id = json.menu[key].dropdown[d].id;
 
-                        if(json.menu[key].dropdown[d].onClick == undefined) {
+                        var onclick = json.menu[key].dropdown[d].onClick;
+                        if(onclick == undefined) {
 
                             var d = $("<div>", { class: "dropdown-divider" });
                             dropdown_menu.append(d);
@@ -438,11 +441,11 @@ function buildMenu() {
                             var icon = $("<i>", { class: "glyphicon " + json.menu[key].dropdown[d].icon });
                             var item = $("<span>");
 
-                            if (json.menu[key].dropdown[d].onClick.indexOf("/") != -1)
+                            if (onclick.indexOf("/") != -1 && onclick.indexOf("alertify") == -1)
                             {
-                                dropdown_item.attr("href", json.menu[key].dropdown[d].onClick);
+                                dropdown_item.attr("href", onclick);
                             }else{
-                                dropdown_item.attr("onClick", json.menu[key].dropdown[d].onClick);
+                                dropdown_item.attr("onClick", onclick);
                             }
 
                             dropdown_item.append(icon);

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-cp -rf ./tools ~/Documents/Arduino
-
 #==============
 #Copy Files
 #==============
@@ -17,25 +15,25 @@ for i in "${array[@]}"; do
     cp -rf ../Web/$i data
 done
 
-array=( alertify.css fancybox.css animate.css bootstrap.css bootstrap-editable.css bootstrap-slider.css glyphicons.css spin.css style.css )
+array=( alertify.css fancybox.css animate.css bootstrap.css bootstrap-slider.css glyphicons.css style.css)
 for i in "${array[@]}"; do
     cp -rf ../Web/css/$i data/css
 done
 
-array=( jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js bootstrap-editable.js bootstrap-slider.js bootstrap-notify.js firmware.js can.js graph.js index.js menu.js status.js simple.js chart.js chartjs-plugin-datalabels.js switch-check.js svg-injector.js )
+array=( jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js bootstrap-slider.js bootstrap-notify.js firmware.js can.js graph.js index.js menu.js status.js simple.js chart.js chartjs-plugin-datalabels.js switch-check.js svg-injector.js mobile.js)
 for i in "${array[@]}"; do
     cp -rf ../Web/js/$i data/js
 done
 cp -rf ../Web/js/menu-esp8266.json data/js/menu.json
 cp -rf ../Web/js/menu-esp8266.json data/js/menu-mobile.json
 
-array=( background.png safety.png alert.svg battery.svg engine.svg idea.svg key.svg magnet.svg plug.svg temperature.svg slow.svg fast.svg motor-class.png clear.png loading.gif esp8266.png temp_indicator.png encoder_lowpass.png)
+array=( background.png safety.png alert.svg battery.svg engine.svg idea.svg key.svg magnet.svg plug.svg temperature.svg slow.svg fast.svg clear.png loading.gif temp_indicator.png encoder_lowpass.png)
 for i in "${array[@]}"; do
     cp -rf ../Web/img/$i data/img
 done
 
-cp -rf ../Web/fonts/glyphicons-halflings-regular.ttf data/fonts
-cp -rf ../Web/fonts/glyphicons-halflings-regular.woff data/fonts
+#cp -rf ../Web/fonts/glyphicons-halflings-regular.ttf data/fonts
+#cp -rf ../Web/fonts/glyphicons-halflings-regular.woff data/fonts
 cp -rf ../Web/fonts/glyphicons-halflings-regular.woff2 data/fonts
 
 cp -rf ../Web/firmware/attiny13.zip data/firmware
@@ -75,7 +73,7 @@ for f in $(find data -type f -name '*.*'); do
         #================
         for ff in $(find data -type f -name '*.php' -o -name '*.js' -o -name '*.css'); do
             sed -i '' 's/'"$o"'/'"$fe"'/g' "$ff"
-            sed -i '' 's/   //g' "$ff"
+            #sed -i '' 's/   //g' "$ff"
         done
 
         mv -f "data/$f" "data/$nn"

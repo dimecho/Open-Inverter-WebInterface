@@ -158,7 +158,7 @@
                                         <select name="serial" class="form-control" form="Aform" id="serialList" style="width:80%"></select>
                                     </span>
                                     <span class="input-group-addon">
-                                        <button class="btn btn-primary" type="button" id="browseFirmware"><i class="glyphicon glyphicon-search"></i> Select BIN</button>
+                                        <button class="btn btn-primary" type="button" id="browseFirmware"><i class="glyphicon glyphicon-search"></i> Select stm32_sine.bin</button>
                                     </span>
                                 </div>
                                 <br/><br/>

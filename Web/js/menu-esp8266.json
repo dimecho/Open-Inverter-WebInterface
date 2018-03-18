@@ -70,17 +70,8 @@
             "onClick": "/switch-check.php"
         }]
     }, {
-        "id": "Info",
-        "icon": "glyphicon-info-sign",
-        "onClick": "",
-        "dropdown": [{
-            "id": "Motor Classification",
-            "icon": "glyphicon-tasks",
-            "onClick": "/motor-class.php"
-        }, {
-            "id": "Tips",
-            "icon": "glyphicon-question-sign",
-            "onClick": "/tips.php"
-        }]
+        "id": "Tips",
+        "icon": "glyphicon-question-sign",
+        "onClick": "/tips.php"
     }]
 }

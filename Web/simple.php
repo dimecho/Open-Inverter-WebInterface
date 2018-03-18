@@ -2,22 +2,11 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <link rel="stylesheet" type="text/css" href="/css/bootstrap-slider.css" />
-        <script type="text/javascript" src="/js/bootstrap-slider.js"></script>
-        <script type="text/javascript" src="/js/status.js"></script>
-        <script type="text/javascript" src="/js/simple.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-slider.css" />
+        <script type="text/javascript" src="js/bootstrap-slider.js"></script>
+        <script type="text/javascript" src="js/status.js"></script>
+        <script type="text/javascript" src="js/simple.js"></script>
         <style>
-            /*
-            #udc .slider-track-high {
-                background: green;
-            }
-            #udc .slider-track-low {
-                background: red;
-            }
-            #udc .slider-selection {
-                background: yellow;
-            }
-            */
             .tooltip-inner {
                 user-select: none;
                 -moz-user-select: none;
@@ -33,7 +22,7 @@
             <br/>
             <div class="row">
                 <div class="col">
-                    <table class="table table-active bg-light table-bordered"><tbody><tr><td><h4>Auto Tuning</h4></td></tr></tbody></table>
+                    <table class="table table-active bg-light table-bordered"><tr><td><h4>Auto Tuning</h4></td></tr></table>
                     <table class="table table-active bg-light table-bordered">
                         <tr>
                             <td>
