@@ -24,7 +24,7 @@
     //DEBUG
     //os = "mobile";
 </script>
-<script type="text/javascript" src="/js/svg-injector.js"></script>
+<script type="text/javascript" src="/js/iconic.js"></script>
 <script type="text/javascript" src="/js/alertify.js"></script>
 <script type="text/javascript" src="/js/download.js"></script>
 <script type="text/javascript" src="/js/fancybox.js"></script>

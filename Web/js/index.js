@@ -203,18 +203,14 @@ function buildParameters()
 
     $(".loader").show();
 	
-	$.ajax("/description.csv",{
+	$.ajax("description.csv",{
 		async: false,
-		//dataType: 'text',
-		//contentType: "application/text",
-		beforeSend: function (req) {
-		  req.overrideMimeType('text/plain; charset=x-user-defined');
-		},
+        dataType : 'text',
 		success: function(data)
 		{
 			var row = data.split("\n");
 
-			for (var i = 0; i < row.length; i++) {
+			for (var i = 1; i < row.length; i++) {
 				
 				var split = row[i].split(",");
 				var d = "";
@@ -226,6 +222,8 @@ function buildParameters()
 				}else{
 					d = split[5];
 				}
+                //console.log(split[0]);
+                //console.log(d.replace(/"/g, ''));
 
 				parameters.push(split[0]);
 				description.push(d.replace(/"/g, ''));

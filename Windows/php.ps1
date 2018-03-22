@@ -18,20 +18,23 @@ if($args[0] -eq "uninstall") {
 }else{
     Elevate
     Write-Host "...Installing PHP"
+
+    $AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
+    [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
     
     # Download PHP
     $phpFile = "php-7.2.2-Win32-VC15-x64.zip"
     if (-Not (Test-Path "$env:userprofile\Downloads\$phpFile")) {
     	Write-Host "Downloading PHP 7.2"  -ForegroundColor Green
         Write-Host "$env:userprofile\Downloads\$phpFile"
-        Invoke-WebRequest -Uri "https://windows.php.net/downloads/releases/archives/$phpFile" -OutFile "$env:userprofile\Downloads\$phpFile"
+        Invoke-WebRequest -Uri "https://windows.php.net/downloads/releases/archives/$phpFile" -OutFile "$env:userprofile\Downloads\$phpFile" -Debug
     }
 
     # Visual C++ Redistributable for Visual Studio 2015
     if (-Not (Test-Path 'HKLM:\SOFTWARE\Classes\Installer\Dependencies\{d992c12e-cab2-426f-bde3-fb8c53950b0d}')) {
     	Write-Host "Downloading C++ Redistributable for Visual Studio 2015"  -ForegroundColor Green
         Write-Host ""
-        Invoke-WebRequest -Uri "https://download.microsoft.com/download/6/A/A/6AA4EDFF-645B-48C5-81CC-ED5963AEAD48/vc_redist.x64.exe" -OutFile "$env:userprofile\Downloads\vc_redist.x64.exe"
+        Invoke-WebRequest -Uri "https://download.microsoft.com/download/6/A/A/6AA4EDFF-645B-48C5-81CC-ED5963AEAD48/vc_redist.x64.exe" -OutFile "$env:userprofile\Downloads\vc_redist.x64.exe" -Debug
 		Start-Process "$env:userprofile\Downloads\vc_redist.x64.exe" /q:a -Wait
     }
 

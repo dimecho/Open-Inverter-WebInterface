@@ -81,6 +81,11 @@ $(document).ready(function () {
     }, false, 'confirm');
 
     buildMenu();
+
+    var version = getJSONFloatValue("version");
+    if(version > 0) {
+        $("#firmwareVersion").empty().append("Firmware v" + version);
+    }
 	
 	/*
     TipRefreshTimer=setTimeout(function () {
@@ -121,11 +126,11 @@ function setParameter(cmd, value, save, notify) {
 
     if(save) {
 
-        $.ajax("/serial.php?command=save"); //don't forget to save
+        var data = sendCommand("save");
     
-        if(notify){
-            /*
-             if(data.indexOf("Parameters stored") != -1)
+        if(notify) {
+
+            if(data.indexOf("Parameters stored") != -1)
             {
                 //TODO: CRC32 check on entire params list
 
@@ -133,8 +138,6 @@ function setParameter(cmd, value, save, notify) {
             }else{
                 $.notify({ icon: 'glyphicon glyphicon-warning-sign', title: 'Error', message: data },{ type: 'danger' });
             }
-            */
-            $.notify({ message: cmd + " = " + value}, { type: "success" });
         }
     }
 
@@ -347,7 +350,7 @@ function buildTips() {
 
                 for (var i = 0; i < row.length; i++) {
                     if (i === n) {
-                        img = $("<img>", { class: "svg-inject", src: "img/idea.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h8>Tip: " + row[i] + "</h8>" });
+                        img = $("<img>", { class: "iconic", "data-src": "img/idea.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h8>Tip: " + row[i] + "</h8>" });
                         opStatus.append(img);
                         break;
                     }
@@ -477,7 +480,7 @@ function buildMenu() {
             col.append(status);
             row.append(col);
 
-            var span = $("<span>", { class: "badge badge-info", id: "firmwareVersion" });
+            var span = $("<span>", { class: "badge badge-info float-right", id: "firmwareVersion" });
             var col = $("<td>");
             col.append(span);
             row.append(col);

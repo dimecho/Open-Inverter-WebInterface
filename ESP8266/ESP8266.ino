@@ -33,6 +33,7 @@ void setup()
   //======================
   //NVRAM type of Settings
   //======================
+  /*
   EEPROM.begin(512);
   int v = EEPROM.read(1);
   if (v == 0) {
@@ -55,7 +56,7 @@ void setup()
     EEPROM.get(4, ACCESS_POINT_HIDE);
   }
   EEPROM.end();
-
+  */
   if (ACCESS_POINT_MODE == 0) {
     //=====================
     //WiFi Access Point Mode

@@ -56,41 +56,51 @@ function buildGraphMenu() {
 
     var btn_start = $("<button>", { class: "btn btn-success", onClick: "startChart()" }).append("Start Graph");
     var btn_stop = $("<button>", { class: "btn btn-danger", onClick: "stopChart()" }).append("Stop Graph");
-   
+    var btn_pdf = $("<button>", { class: "btn btn-warning", onClick: "exportPDF(true)" }).append("Export PDF");
+    var btn_img = $("<button>", { class: "btn btn-info", onClick: "exportPDF()" }).append("Export Image");
+
+    $.getScript("js/bootstrap-slider.js").done(function(script, textStatus) {
+
+        $("head").append("<link rel=\"stylesheet\" type=\"text/css\" href=\"css/bootstrap-slider.css\" />");
+
+        var s = $("#buildGraphSlider").empty();
+        var slow_img = "Slow  "; //$("<img>", { class: "svg-inject", src: "img/slow.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Slow"} );
+        var input = $("<input>", { id: "speed", type: "text", "data-provide": "slider", "data-slider-value": syncronizedDelay} );
+        var fast_img = "  Fast"; //$("<img>", { class: "svg-inject", src: "img/fast.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Fast"} );
+        
+        s.append(slow_img);
+        s.append(input);
+        s.append(fast_img);
+
+        //new SVGInjector().inject(document.querySelectorAll('.svg-inject'));
+
+        input.bootstrapSlider({
+            min: 10,
+            max: 3000,
+            step: 1,
+            value: syncronizedDelay,
+            //scale: 'logarithmic',
+            reversed: true
+        }).on('slide', function (e) {
+
+            syncronizedDelay = e.value;
+            //console.log(syncronizedDelay);
+
+            //var t = Math.round(syncronizedDelay / 1000 * 60);
+            //console.log(t);
+
+            //chart.options.animation.duration = syncronizedDelay;
+            //chart.config.data.labels = initTimeAxis(t);
+            //chart.update();
+            //startChart();
+        });
+    });
+
     activeTab = "#graph0";
     activeTabText = tabs[0];
 
-    var s = $("#buildGraphSlider").empty();
-    var slow_img = $("<img>", { class: "svg-inject", src: "img/slow.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Slow"} );
-    var input = $("<input>", { id: "speed", type: "text", "data-provide": "slider", "data-slider-value": syncronizedDelay} );
-    var fast_img = $("<img>", { class: "svg-inject", src: "img/fast.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Fast"} );
-    
-    s.append(slow_img);
-    s.append(input);
-    s.append(fast_img);
-
-    //new SVGInjector().inject(document.querySelectorAll('.svg-inject'));
-
-    input.bootstrapSlider({
-        min: 10,
-        max: 3000,
-        step: 1,
-        value: syncronizedDelay,
-        //scale: 'logarithmic',
-        reversed: true
-    }).on('slide', function (e) {
-
-        syncronizedDelay = e.value;
-        //console.log(syncronizedDelay);
-
-        //var t = Math.round(syncronizedDelay / 1000 * 60);
-        //console.log(t);
-
-        //chart.options.animation.duration = syncronizedDelay;
-        //chart.config.data.labels = initTimeAxis(t);
-        //chart.update();
-        //startChart();
-    });
+    footer.append(btn_start);
+    footer.append(btn_stop);
 
     if (os === "mobile") {
 
@@ -134,21 +144,14 @@ function buildGraphMenu() {
             initChart();
         });
 
-        footer.append(btn_start);
-        footer.append(btn_stop);
-
-        slow_img.attr("style","width:80px; height:80px;");
+        //slow_img.attr("style","width:80px; height:80px;");
         $(".slider").attr("style","width:80%;");
         $(".slider-track").attr("style","height:40px;");
         $(".slider-handle").attr("style","width:70px;height:70px;");
-        fast_img.attr("style","width:80px; height:80px;");
+        //fast_img.attr("style","width:80px; height:80px;");
         $(".btn").attr("style","font-size: 150%;");
 
     }else{
-
-        $("head").append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/bootstrap-slider.css\" />");
-        $("head").append(" <script type=\"text/javascript\" src=\"/js/bootstrap-slider.js\"></script>");
-        $("head").append("<script type=\"text/javascript\" src=\"/js/jspdf.js\"></script>");
 
         var ul = $("<ul>", { class: "nav nav-tabs", role: "tablist"});
         var tabcontent = $("<div>", { class: "tab-content" });
@@ -187,12 +190,9 @@ function buildGraphMenu() {
             initChart();
         });
 
-        var btn_pdf = $("<button>", { class: "btn btn-warning", onClick: "exportPDF(true)" }).append("Export PDF");
-        var btn_img = $("<button>", { class: "btn btn-info", onClick: "exportPDF()" }).append("Export Image");
-
-        footer.append(btn_start);
-        footer.append(btn_stop);
-        footer.append(btn_pdf);
+        $.getScript("js/jspdf.js").done(function(script, textStatus) {
+            footer.append(btn_pdf);
+        });
         footer.append(btn_img);
     }
 };

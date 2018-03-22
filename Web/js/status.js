@@ -1,12 +1,7 @@
 var statusRefreshTimer;
 
 $(document).ready(function () {
-
-    var version = getJSONFloatValue("version");
-    if(version > 0) {
-        $("#firmwareVersion").empty().append("Firmware v" + version);
-        buildStatus(false);
-    }
+    buildStatus(false);
 });
 
 function buildStatus(sync) {
@@ -33,7 +28,7 @@ function buildStatus(sync) {
 
             if(data[0] != "") {
 
-                var img = $("<img>", { class: "svg-inject", src: "img/key.svg", "data-toggle": "tooltip", "data-html": "true" });
+                var img = $("<img>", { class: "iconic", "data-src": "img/key.svg", "data-toggle": "tooltip", "data-html": "true" });
                 //$("#potentiometer").hide();
 
                 if (parseFloat(data[15]) === 3) {
@@ -62,12 +57,12 @@ function buildStatus(sync) {
                 //========================
                 /*
                 if(json.ocurlim.value > 0){
-                    div.append($("<img>", {src:"img/amperage.svg"}));
+                    div.append($("<img>", {"data-src":"img/amperage.svg"}));
                 }
                 opStatus.append(div);
                 */
                 //========================
-                img = $("<img>", { class: "svg-inject", src: "img/battery.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[1] + "V</h6>" });
+                img = $("<img>", { class: "iconic", "data-src": "img/battery.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[1] + "V</h6>" });
                 if (parseFloat(data[1]) > parseFloat(data[2]) && parseFloat(data[1]) > 10 && parseFloat(data[1]) < 520) { // && parseFloat(data[15]) !== 0) {
                     img.addClass("svg-green");
                 } else {
@@ -75,7 +70,7 @@ function buildStatus(sync) {
                 }
                 opStatus.append(img);
                 //========================
-                img = $("<img>", { class: "svg-inject", src: "img/temperature.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[3] + "°C</h6>"});
+                img = $("<img>", { class: "iconic", "data-src": "img/temperature.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[3] + "°C</h6>"});
                 if (parseFloat(data[3]) > 150 || parseFloat(data[4]) > 150) {
                     img.addClass("svg-red");
                     opStatus.append(img);
@@ -84,14 +79,14 @@ function buildStatus(sync) {
                     opStatus.append(img);
                 }
                 //========================
-                img = $("<img>", { class: "svg-inject", src: "img/magnet.svg","data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[5] + "ms</h6>" });
+                img = $("<img>", { class: "iconic", "data-src": "img/magnet.svg","data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[5] + "ms</h6>" });
                 if(parseFloat(data[5]) < 22){
                     img.addClass("svg-red");
                     opStatus.append(img);
                 }
                 //========================
                 /*
-                img = $("<img>", { class: "svg-inject", src: "img/speedometer.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + speed + "RPM</h6>" });
+                img = $("<img>", { class: "iconic", src: "img/speedometer.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + speed + "RPM</h6>" });
                 if (speed > 6000) {
                     img.addClass("svg-red");
                     opStatus.append(img);
@@ -102,29 +97,39 @@ function buildStatus(sync) {
                 */
                 //========================
                 if (parseFloat(data[7]) != 1 && parseFloat(data[15]) === 0) {
-                    img = $("<img>", { class: "svg-inject", src: "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Probably forgot PIN 11 to 12V</h6>" });
+                    img = $("<img>", { class: "iconic", "data-src": "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Probably forgot PIN 11 to 12V</h6>" });
                     opStatus.append(img);
                 }
                 //========================
                 var errors = sendCommand("errors");
                 if (errors.length > 1 && errors.indexOf("No Errors") === -1) {
 
-                    img = $("<img>", { class: "svg-inject", src: "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + errors + "</h6>" });
+                    img = $("<img>", { class: "iconic", "data-src": "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + errors + "</h6>" });
                     opStatus.append(img);
                 }
             }else{
-                img = $("<img>", { class: "svg-inject", src: "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Inverter Disconnected</h6>" });
+                img = $("<img>", { class: "iconic", "data-src": "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Inverter Disconnected</h6>" });
                 opStatus.append(img);
             }
 			
 			$("#opStatus").empty().append(opStatus);
+
+            buildTips();
             
             //console.log(document.querySelectorAll('.svg-inject'));
-
-            new SVGInjector().inject(document.querySelectorAll('.svg-inject'));
+            //new SVGInjector().inject(document.querySelectorAll('.svg-inject'));
+           
+            var iconic = IconicJS({
+              autoInjectSelector: 'img.iconic',
+              pngFallback: 'assets/png',
+              each: function (svg) {
+                console.log('Injected an SVG! ' + svg.id);
+              },
+              autoInjectDone: function (count) {
+                console.log('Auto injection of ' + count + ' SVGs complete. We did it.');
+              }
+            });
 			
-			buildTips();
-
             $('.tooltip').remove();
             $('[data-toggle="tooltip"]').tooltip();
 
