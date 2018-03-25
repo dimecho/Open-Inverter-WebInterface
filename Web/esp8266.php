@@ -23,7 +23,7 @@
 			formName = "#formSPIFFS";
 			timer = setInterval(progressTimer, 250);
 			//Format SPIFFS
-			$.ajax("/9d813656-a9a6-4978-8dea-ffb3a8498b1c", {
+			$.ajax("/format", {
 		        success: function success(data) {
 		            $.notify({ message: data }, { type: "success" });
 		            $.ajax("/reset");
@@ -52,13 +52,45 @@
 		<br/><br/>
 		<div class="row">
 			<div class="col">
-				<table class="table table-active bg-faded table-bordered">
-					<tr>
-						<td colspan="2">
-							<span class="badge badge-lg badge-warning">flash-spiffs.bin contains SPIFFS file system</span><br/>
-							<span class="badge badge-lg badge-warning">flash-sketch.bin contains Arduino program</span><br/>
-						</td>
-					</tr>
+			    <table class="table table-active table-bordered">
+                    <tr>
+                        <td>
+                        	<form method="POST" action="/nvram">
+                        		<fieldset class="form-group">
+                        			<legend>ESP8266 Wireless Connection Mode:</legend>
+		                        	<div class="form-check">
+		                        		<label class="form-check-label">
+									    <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+									        WiFi Access Point
+									    </label>
+									</div>
+									<div class="form-check">
+		                        		<label class="form-check-label">
+									    <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="option2">
+									        WiFi Client
+									    </label>
+									</div>
+								</fieldset>
+								<div class="form-group">
+									<label class="sr-only" for="inputWiFiSSID">SSID</label>
+									<div class="input-group">
+								    	<div class="input-group-addon"><i class="glyphicon glyphicon-signal prefix"> </i></div>
+								    	<input type="text" id="inputWiFiSSID" class="form-control" placeholder="SSID">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="sr-only" for="inputWiFiPassword">Password</label>
+									<div class="input-group">
+										<div class="input-group-addon"><i class="glyphicon glyphicon-lock prefix"> </i></div>
+								    	<input type="password" id="inputWiFiPassword" class="form-control" placeholder="Password">
+									</div>
+								</div>
+								<center><button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-ok-sign"></i> Save</button></center>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+				<table class="table table-active table-bordered">
 					<tr align="center">
 						<td align="center">
 							<button class="btn btn-primary" type="button" id="browseSPIFFS"><i class="glyphicon glyphicon-th"></i> Flash SPIFFS</button>
@@ -79,13 +111,13 @@
 		</div>
 	</div>
 	<form method="POST" action="/update?cmd=0" enctype="multipart/form-data" id="formSketch">
-        <input type='hidden' name='cmd' value='0' />
-		<input type="file" name="update" id="fileSketch" hidden />
+		<input type='hidden' name='cmd' value='0'>
+		<input type="file" name="firmware" id="fileSketch" hidden />
 		<input type="submit" hidden />
 	</form>
 	<form method="POST" action="/update?cmd=100" enctype="multipart/form-data" id="formSPIFFS">
-        <input type='hidden' name='cmd' value='100' />
-		<input type="file" name="update" id="fileSPIFFS" hidden />
+		<input type='hidden' name='cmd' value='100'>
+		<input type="file" name="spiffs" id="fileSPIFFS" hidden />
 		<input type="submit" hidden />
 	</form>
 </body>

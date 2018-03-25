@@ -1,7 +1,19 @@
 var statusRefreshTimer;
 
 $(document).ready(function () {
-    buildStatus(false);
+    
+    buildStatus(true);
+
+    var iconic = IconicJS({
+        autoInjectSelector: 'img.iconic',
+        pngFallback: 'assets/png',
+        each: function (svg) {
+            console.log('Injected an SVG! ' + svg.id);
+        },
+        autoInjectDone: function (count) {
+            console.log('Auto injection of ' + count + ' SVGs complete. We did it.');
+        }
+    });
 });
 
 function buildStatus(sync) {
@@ -10,10 +22,8 @@ function buildStatus(sync) {
 
     $.ajax("/serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
         async: sync,
-        cache: false,
-        type: 'GET',
-        success: function success(data) {
-
+        success: function success(data)
+        {
             if(data.indexOf("Error") != -1)
             {
                 error = true;
@@ -21,14 +31,15 @@ function buildStatus(sync) {
             }
 
             data = data.replace("\n\n", "\n");
-            data = data.split("\n");
-            //console.log(data);
+            data = data.split(/\n/);
+
+            console.log(data);
             
             var opStatus = $("<span>");
+            var img = $("<img>", { class: "iconic", "data-src": "img/key.svg", "data-toggle": "tooltip", "data-html": "true" });
 
-            if(data[0] != "") {
+            if(data[0] !== "") {
 
-                var img = $("<img>", { class: "iconic", "data-src": "img/key.svg", "data-toggle": "tooltip", "data-html": "true" });
                 //$("#potentiometer").hide();
 
                 if (parseFloat(data[15]) === 3) {
@@ -118,22 +129,11 @@ function buildStatus(sync) {
             
             //console.log(document.querySelectorAll('.svg-inject'));
             //new SVGInjector().inject(document.querySelectorAll('.svg-inject'));
-           
-            var iconic = IconicJS({
-              autoInjectSelector: 'img.iconic',
-              pngFallback: 'assets/png',
-              each: function (svg) {
-                console.log('Injected an SVG! ' + svg.id);
-              },
-              autoInjectDone: function (count) {
-                console.log('Auto injection of ' + count + ' SVGs complete. We did it.');
-              }
-            });
 			
             $('.tooltip').remove();
             $('[data-toggle="tooltip"]').tooltip();
 
-            if(os=== "mobile")
+            if(os === "mobile")
             {
                 $(".svg-inject").attr("style","width:80px; height:80px;");
             }
@@ -145,4 +145,4 @@ function buildStatus(sync) {
     		clearTimeout(statusRefreshTimer);
             buildStatus(true); //ajax syncro mode
         }, 12000);
-};
+}

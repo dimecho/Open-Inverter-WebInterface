@@ -40,35 +40,37 @@ $(document).ready(function () {
             callback:function(closeEvent){
 
                 //0=Off, 1=Run, 2=ManualRun, 3=Boost, 4=Buck, 5=Sine, 6=AcHeat
-                if (getJSONFloatValue("potnom") > 20) {
-                    alertify.alert("High RPM Warning", "Adjust your Potentiometer down to zero before starting Inverter.", function () {
-                        alertify.message('OK');
-                    });
-                } else {
-                    if(closeEvent.index === 0) {
-                        startInverter(1);
-                    }else if(closeEvent.index === 1) {
-                        startInverter(2);
-                    }else if(closeEvent.index === 2) {
-                        startInverter(5);
-                    }else if(closeEvent.index === 3) {
-                        $.notify({ message: "Experimental Area" }, { type: 'danger' });
-                        startInverter(3);
-                        setParameter("chargemode", 3, false, true);
-                    }else if(closeEvent.index === 4) {
-                        $.notify({ message: "Experimental Area" }, { type: 'danger' });
-                        startInverter(4);
-                        setParameter("chargemode", 4, false, true);
-                    }
+                getJSONFloatValue('potnom', function(potnom) {
+                    if (potnom > 20) {
+                        alertify.alert("High RPM Warning", "Adjust your Potentiometer down to zero before starting Inverter.", function () {
+                            alertify.message('OK');
+                        });
+                    } else {
+                        if(closeEvent.index === 0) {
+                            startInverter(1);
+                        }else if(closeEvent.index === 1) {
+                            startInverter(2);
+                        }else if(closeEvent.index === 2) {
+                            startInverter(5);
+                        }else if(closeEvent.index === 3) {
+                            $.notify({ message: "Experimental Area" }, { type: 'danger' });
+                            startInverter(3);
+                            setParameter("chargemode", 3, false, true);
+                        }else if(closeEvent.index === 4) {
+                            $.notify({ message: "Experimental Area" }, { type: 'danger' });
+                            startInverter(4);
+                            setParameter("chargemode", 4, false, true);
+                        }
 
-                    if(closeEvent.index === 2 || closeEvent.index === 3) {
-                        if(getJSONFloatValue("chargecur") === 0) {
-                            alertify.prompt("Current Limit", "Enter Charge Current Limit (A)", "", function (event, input) {
-                                setParameter("chargecur", input, true, true);
-                            }, function () {});
+                        if(closeEvent.index === 2 || closeEvent.index === 3) {
+                            if(getJSONFloatValue("chargecur") === 0) {
+                                alertify.prompt("Current Limit", "Enter Charge Current Limit (A)", "", function (event, input) {
+                                    setParameter("chargecur", input, true, true);
+                                }, function () {});
+                            }
                         }
                     }
-                }
+                });
             },
             hooks: {
                 onshow: function() {
@@ -82,10 +84,11 @@ $(document).ready(function () {
 
     buildMenu();
 
-    var version = getJSONFloatValue("version");
-    if(version > 0) {
-        $("#firmwareVersion").empty().append("Firmware v" + version);
-    }
+    getJSONFloatValue("version", function(version) {
+        if(version > 0) {
+            $("#firmwareVersion").empty().append("Firmware v" + version);
+        }
+    });
 	
 	/*
     TipRefreshTimer=setTimeout(function () {
@@ -118,28 +121,29 @@ function setParameter(cmd, value, save, notify) {
     var e = "";
 
     $.ajax("/serial.php?pk=1&name=" + cmd + "&value=" + value, {
-        async: false,
+        //async: false,
+        async: true,
         success: function success(data) {
             e = data;
-        }
-    });
 
-    if(save) {
+            if(save) {
 
-        var data = sendCommand("save");
-    
-        if(notify) {
+                var data = sendCommand("save");
+            
+                if(notify) {
 
-            if(data.indexOf("Parameters stored") != -1)
-            {
-                //TODO: CRC32 check on entire params list
+                    if(data.indexOf("Parameters stored") != -1)
+                    {
+                        //TODO: CRC32 check on entire params list
 
-                $.notify({ message: data },{ type: 'success' });
-            }else{
-                $.notify({ icon: 'glyphicon glyphicon-warning-sign', title: 'Error', message: data },{ type: 'danger' });
+                        $.notify({ message: data },{ type: 'success' });
+                    }else{
+                        $.notify({ icon: 'glyphicon glyphicon-warning-sign', title: 'Error', message: data },{ type: 'danger' });
+                    }
+                }
             }
         }
-    }
+    });
 
     //console.log(e);
     return e;
@@ -152,8 +156,7 @@ function sendCommand(cmd) {
     $.ajax("/serial.php?command=" + cmd, {
         async: false,
         cache: false,
-        timeout: 8000, // timeout 8 seconds
-        type: 'GET',
+        timeout: 32000, // timeout 32 seconds
         success: function success(data) {
 
             if(data.indexOf("Error") != -1) {
@@ -209,14 +212,22 @@ function openExternalApp(app) {
     }
 };
 
-function getJSONFloatValue(value) {
+function getJSONFloatValue(value, callback) {
+
     var f = 0;
+    var sync = false;
+
+    if(callback)
+        sync = true;
+
     $.ajax("/serial.php?get=" + value, {
-        async: false,
+        async: sync,
         success: function success(data) {
             f = parseFloat(data);
             if(isNaN(f))
                 f = 0;
+            if(callback)
+                callback(f);
         }
     });
     //console.log(f);

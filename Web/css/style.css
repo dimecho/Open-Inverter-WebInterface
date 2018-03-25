@@ -10,9 +10,6 @@ body {
   -o-background-size: cover;
   background-size: cover;
 }
-form {
-  display: none;
-}
 .tooltip-inner {
   max-width: 500px !important;
 }

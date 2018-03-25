@@ -1,4 +1,5 @@
 var esp8266 = false;
+
 $(document).ready(function()
 {
     $(".safety").fancybox({
@@ -28,16 +29,19 @@ $(document).ready(function()
                 savenochange: false,
                 ajaxOptions: {
                     type: 'get',
-                    async: false,
+                    async: true,
+                    //async: false,
                     //type: 'put',
                     //dataType: 'json'
                 },
                 validate: function(value) {
 
                     clearTimeout(statusRefreshTimer); //Pause status refresh
-                    if (!validateInput(this.id,value)) {
-                        return '-';
-                    }
+
+                    validateInput(this.id, value, function(r) {
+                        if(r === true)
+                            return '-';
+                    });
                 },
                 success: function(response, newValue)
                 {
@@ -61,6 +65,9 @@ $(document).ready(function()
                     //}
                 }
             });
+
+            //buildStatus(true);
+
         }).fail(function( jqxhr, settings, exception ) {
             esp8266 = true;
         });
@@ -84,82 +91,91 @@ function inputText(id)
     return getVariable;
 }
 
-function validateInput(id,value)
+function validateInput(id, value, callback)
 {
-    if(getJSONFloatValue('opmode') > 0 && id != 'fslipspnt'){
-        stopInverter();
-        $.notify({ message: 'Inverter must not be in operating mode.' }, { type: 'danger' });
-        return false;
-    }
+    getJSONFloatValue('opmode', function(opmode) {
+        if(opmode > 0 && id != 'fslipspnt') {
+            stopInverter();
+            $.notify({ message: 'Inverter must not be in operating mode.' }, { type: 'danger' });
+            callback(false);
+            return;
+        }else{
+            if (isInt(parseInt(value)) == false && isFloat(parseFloat(value)) == false){
+                $.notify({ message: id + ' Value must be a number' }, { type: 'danger' });
+                callback(false);
+                return;
+            }else if(id == 'fmin'){
+                if(parseFloat(value) > parseFloat(inputText('#fslipmin')))
+                {
+                    $.notify({ message: 'Should be set below fslipmin' }, { type: 'danger' });
+                    callback(false);
+                    return;
+                }
+            }else  if(id == 'polepairs'){
+                if ($.inArray(parseInt(value), [ 1, 2, 3, 4, 5]) == -1)
+                {
+                    $.notify({ message: 'Pole pairs = half # of motor poles' }, { type: 'danger' });
+                    callback(false);
+                    return;
+                }
+            }else  if(id == 'udcmin'){
+                if(parseInt(value) > parseInt(inputText("#udcmax")))
+                {
+                    $.notify({ message: 'Should be below maximum voltage (udcmax)' }, { type: 'danger' });
+                    callback(false);
+                    return;
+                }
+            }else  if(id == 'udcmax'){
+                if(parseInt(value) > parseInt(inputText("#udclim")))
+                {
+                    $.notify({ message: 'Should be lower than cut-off voltage (udclim)' }, { type: 'danger' });
+                    callback(false);
+                    return;
+                }
+            }else  if(id == 'udclim'){
+                if(parseInt(value) <= parseInt(inputText("#udcmax")))
+                {
+                    $.notify({ message: 'Should be above maximum voltage (udcmax)' }, { type: 'danger' });
+                    callback(false);
+                    return;
+                }
+            }else if(id == 'udcsw'){
+                if(parseInt(value) > parseInt(inputText("#udcmax")))
+                {
+                    $.notify({ message: 'Should be below maximum voltage (udcmax)' }, { type: 'danger' });
+                    callback(false);
+                    return;
+                }
+            }else if(id == 'udcsw'){
+                if(parseInt(value) > parseInt(inputText("#udcmin")))
+                {
+                    $.notify({ message: 'Should be below minimum voltage (udcmin)' }, { type: 'danger' });
+                    callback(false);
+                    return;
+                }
+            }else if(id == 'fslipmin'){
+                if(parseFloat(value) <= parseFloat(inputText('#fmin')))
+                {
+                    $.notify({ message: 'Should be above starting frequency (fmin)' }, { type: 'danger' });
+                    callback(false);
+                    return;
+                }
+            /*
+            }else  if(id == 'ocurlim'){
+                if(value > 0)
+                {
+                    return 'Current limit should be set as negative';
+                }*/
+            }
 
-    if (isInt(parseInt(value)) == false && isFloat(parseFloat(value)) == false){
-        $.notify({ message: 'Value must be a number' }, { type: 'danger' });
-        return false;
-    }
-
-    if(id == 'fmin'){
-
-        if(parseFloat(value) > parseFloat(inputText('#fslipmin')))
-        {
-            $.notify({ message: 'Should be set below fslipmin' }, { type: 'danger' });
-            return false;
+            var notify = $.notify({ message: id + " = " + $.trim(value) },{
+                //allow_dismiss: false,
+                //showProgressbar: true,
+                type: 'warning'
+            });
+            callback(true);
         }
-    }else  if(id == 'polepairs'){
-        if ($.inArray(parseInt(value), [ 1, 2, 3, 4, 5]) == -1)
-        {
-            $.notify({ message: 'Pole pairs = half # of motor poles' }, { type: 'danger' });
-            return false;
-        }
-    }else  if(id == 'udcmin'){
-        if(parseInt(value) > parseInt(inputText("#udcmax")))
-        {
-            $.notify({ message: 'Should be below maximum voltage (udcmax)' }, { type: 'danger' });
-            return false;
-        }
-    }else  if(id == 'udcmax'){
-        if(parseInt(value) > parseInt(inputText("#udclim")))
-        {
-            $.notify({ message: 'Should be lower than cut-off voltage (udclim)' }, { type: 'danger' });
-            return false;
-        }
-    }else  if(id == 'udclim'){
-        if(parseInt(value) <= parseInt(inputText("#udcmax")))
-        {
-            $.notify({ message: 'Should be above maximum voltage (udcmax)' }, { type: 'danger' });
-            return false;
-        }
-    }else if(id == 'udcsw'){
-        if(parseInt(value) > parseInt(inputText("#udcmax")))
-        {
-            $.notify({ message: 'Should be below maximum voltage (udcmax)' }, { type: 'danger' });
-            return false;
-        }
-    }else if(id == 'udcsw'){
-        if(parseInt(value) > parseInt(inputText("#udcmin")))
-        {
-            $.notify({ message: 'Should be below minimum voltage (udcmin)' }, { type: 'danger' });
-            return false;
-        }
-    }else if(id == 'fslipmin'){
-        if(parseFloat(value) <= parseFloat(inputText('#fmin')))
-        {
-            $.notify({ message: 'Should be above starting frequency (fmin)' }, { type: 'danger' });
-            return false;
-        }
-    /*
-    }else  if(id == 'ocurlim'){
-        if(value > 0)
-        {
-            return 'Current limit should be set as negative';
-        }*/
-    }
-
-    var notify = $.notify({ message: id + " = " + $.trim(value) },{
-        //allow_dismiss: false,
-        //showProgressbar: true,
-        type: 'warning'
     });
-    return true;
 };
 
 function basicChecks(json)
@@ -261,8 +277,10 @@ function buildParameters()
                 a.on('change paste', function() {
                     var element = $(this);
                     if(element.val() != "") {
-                        if(validateInput(element.attr("id"),element.val()))
-                            setParameter(element.attr("id"),element.val(),true,true);
+                        validateInput(element.attr("id"), element.val(), function(r) {
+                            if(r === true) 
+                                setParameter(element.attr("id"),element.val(),true,true);
+                        });
                     }
                 });
                 if(os === "mobile") {

@@ -1,9 +1,5 @@
 #define VERSION 1.0
-#define DEBUG 0
-#define PRINTDEBUG(STR) \
-  {  \
-    if (DEBUG) Serial.println(STR); \
-  }
+#define DEBUG Serial
 #include <FS.h>
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
@@ -11,7 +7,7 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include <ESP8266WebServer.h>
-#include <ESP8266HTTPUpdateServer.h>
+#include "src/ESP8266HTTPUpdateServer.h"
 
 ESP8266WebServer server(80);
 ESP8266HTTPUpdateServer updater;
@@ -34,9 +30,9 @@ void setup()
   //NVRAM type of Settings
   //======================
   /*
-  EEPROM.begin(512);
-  int v = EEPROM.read(1);
-  if (v == 0) {
+    EEPROM.begin(512);
+    int v = EEPROM.read(1);
+    if (v == 0) {
     PRINTDEBUG("Resetting NVRAM");
     //Clear - write 0 to all 512 bytes of EEPROM
     for (int i = 0; i < 512; i++)
@@ -47,15 +43,15 @@ void setup()
     EEPROM.put(3, ACCESS_POINT_CHANNEL);
     EEPROM.put(4, ACCESS_POINT_HIDE);
     EEPROM.commit();
-  } else {
+    } else {
     PRINTDEBUG("Reading NVRAM");
     //EEPROM.get(0, ACCESS_POINT_MODE);
     EEPROM.get(1, ACCESS_POINT_SSID);
     EEPROM.get(2, ACCESS_POINT_PASSWORD);
     EEPROM.get(3, ACCESS_POINT_CHANNEL);
     EEPROM.get(4, ACCESS_POINT_HIDE);
-  }
-  EEPROM.end();
+    }
+    EEPROM.end();
   */
   if (ACCESS_POINT_MODE == 0) {
     //=====================
@@ -68,7 +64,7 @@ void setup()
     IPAddress dns0(192, 168, 4, 1);
     WiFi.softAPConfig(ip, gateway, subnet);
     WiFi.softAP(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD, ACCESS_POINT_CHANNEL, ACCESS_POINT_HIDE);
-    PRINTDEBUG(WiFi.softAPIP());
+    DEBUG.println(WiFi.softAPIP());
   } else {
     //================
     //WiFi Client Mode
@@ -81,7 +77,7 @@ void setup()
       delay(5000);
       ESP.restart();
     }
-    PRINTDEBUG(WiFi.localIP());
+    DEBUG.println(WiFi.localIP());
   }
 
   //===================
@@ -109,21 +105,21 @@ void setup()
       type = "filesystem";
       SPIFFS.end(); //unmount SPIFFS
     }
-    Serial.println("Start updating " + type);
+    DEBUG.println("Start updating " + type);
   });
   ArduinoOTA.onEnd([]() {
-    Serial.println("\nEnd");
+    DEBUG.println("\nEnd");
   });
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-    Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+    DEBUG.printf("Progress: %u%%\r", (progress / (total / 100)));
   });
   ArduinoOTA.onError([](ota_error_t error) {
-    Serial.printf("Error[%u]: ", error);
-    if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
-    else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
-    else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
-    else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
-    else if (error == OTA_END_ERROR) Serial.println("End Failed");
+    DEBUG.printf("Error[%u]: ", error);
+    if (error == OTA_AUTH_ERROR) DEBUG.println("Auth Failed");
+    else if (error == OTA_BEGIN_ERROR) DEBUG.println("Begin Failed");
+    else if (error == OTA_CONNECT_ERROR) DEBUG.println("Connect Failed");
+    else if (error == OTA_RECEIVE_ERROR) DEBUG.println("Receive Failed");
+    else if (error == OTA_END_ERROR) DEBUG.println("End Failed");
   });
   ArduinoOTA.begin();
 
@@ -136,14 +132,17 @@ void setup()
   //===============
   //Web Server
   //===============
-  server.on("/9d813656-a9a6-4978-8dea-ffb3a8498b1c", HTTP_GET, []() {
-    String result=SPIFFS.format()?"OK":"Error";
+  server.on("/format", HTTP_GET, []() {
+    String result = SPIFFS.format() ? "OK" : "Error";
     FSInfo fs_info;
     SPIFFS.info(fs_info);
     server.send(200, "text/plain", "<b>Format " + result + "</b><br/>Total Flash Size: " + String(ESP.getFlashChipSize()) + "<br>SPIFFS Size: " + String(fs_info.totalBytes) + "<br>SPIFFS Used: " + String(fs_info.usedBytes));
   });
   server.on("/reset", HTTP_GET, []() {
-     ESP.restart();
+    ESP.restart();
+  });
+  server.on("/nvram", HTTP_POST, []() {
+    NVRAMUpload();
   });
   server.on("/serial.php", HTTP_GET, []() {
     if (server.hasArg("init"))
@@ -160,7 +159,23 @@ void setup()
     }
     else if (server.hasArg("get"))
     {
-      server.send(200, "text/plain", readSerial("get " + server.arg("get")));
+      String sz = server.arg("get");
+      String out;
+      
+      if (sz.indexOf(",") != -1 )
+      {
+          char buf[sz.length()+1];
+          sz.toCharArray(buf, sizeof(buf));
+          char *p = buf;
+          char *str;
+          while ((str = strtok_r(p, ",", &p)) != NULL) //split
+          {
+            out += readSerial("get " + String(str));
+          }
+      }else{
+        out = readSerial("get " + sz);
+      }
+      server.send(200, "text/plain", out);
     }
     else if (server.hasArg("command"))
     {
@@ -211,9 +226,34 @@ void loop()
   server.handleClient();
 }
 
+//=============
+// NVRAM CONFIG
+//=============
+void NVRAMUpload()
+{
+  String message;
+  for (int i = 0; i < server.args(); i++) {
+    message += (String)i + " – > ";
+    message += server.argName(i) + ": ";
+    message += server.arg(i) + "\n";
+    /*
+    EEPROM.put(0, ACCESS_POINT_MODE);
+    EEPROM.put(1, ACCESS_POINT_SSID);
+    EEPROM.put(2, ACCESS_POINT_PASSWORD);
+    EEPROM.put(3, ACCESS_POINT_CHANNEL);
+    EEPROM.put(4, ACCESS_POINT_HIDE);
+    EEPROM.commit();
+    */
+  }
+  server.send(200, "text/plain", message);
+}
+
+//=============
+// PHP MINI
+//=============
 String PHP(String line, int i)
 {
-  //PRINTDEBUG(line);
+  //DEBUG.println(line);
 
   if (line.indexOf("<?php") != -1) {
     line.replace("<?php", "");
@@ -235,12 +275,12 @@ String PHP(String line, int i)
       int e = line.lastIndexOf("\"");
       String include = line.substring(s, e);
 
-      PRINTDEBUG("include:" + include);
+      DEBUG.println("include:" + include);
 
       File f = SPIFFS.open("/" + include, "r");
       if (!f)
       {
-        //PRINTDEBUG(include + " (file not found)");
+        //DEBUG.println(include + " (file not found)");
 
       } else {
 
@@ -273,15 +313,15 @@ String PHP(String line, int i)
 
 bool HTTPServer(String file)
 {
-  PRINTDEBUG((server.method() == HTTP_GET) ? "GET" : "POST");
-  PRINTDEBUG(file);
+  DEBUG.println((server.method() == HTTP_GET) ? "GET" : "POST");
+  DEBUG.println(file);
 
   if (SPIFFS.exists(file))
   {
     File f = SPIFFS.open(file, "r");
     if (f)
     {
-      //PRINTDEBUG(f.size());
+      //DEBUG.println(f.size());
 
       String contentType = getContentType(file);
 
@@ -330,6 +370,7 @@ String getContentType(String filename)
   else if (filename.endsWith(".xml")) return "text/xml";
   else if (filename.endsWith(".pdf")) return "application/x-pdf";
   else if (filename.endsWith(".zip")) return "application/x-zip";
+  else if (filename.endsWith(".csv")) return "text/plain";
   return "text/plain";
 }
 
@@ -342,7 +383,7 @@ void SnapshotUpload()
 
   if (upload.status == UPLOAD_FILE_START)
   {
-    PRINTDEBUG(upload.filename);
+    DEBUG.println(upload.filename);
     fsUpload = SPIFFS.open("/" + upload.filename, "w");
   }
   else if (upload.status == UPLOAD_FILE_WRITE)
@@ -355,7 +396,7 @@ void SnapshotUpload()
     if (fsUpload) {
       fsUpload.close();
 
-      PRINTDEBUG(upload.totalSize);
+      DEBUG.println(upload.totalSize);
 
       File f = SPIFFS.open("/" + upload.filename, "r");
       while (f.available()) {
@@ -421,7 +462,7 @@ String readSerial(String cmd)
     output += b;
   } while (len > 0);
 
-  if (output.indexOf(cmd + "\n") != -1 ) { //Got echo, try again ...OVERVOLTAGE?
+  if (output.indexOf(cmd + "\n") != -1) { //Got echo, try again ...OVERVOLTAGE?
     output = readSerial(cmd);
   }
 
@@ -482,7 +523,7 @@ void STM32Upload()
 
   if (upload.status == UPLOAD_FILE_START) {
 
-    PRINTDEBUG(upload.filename);
+    DEBUG.println(upload.filename);
 
     if (!upload.filename.endsWith(".bin")) {
       server.send(500, "text/plain", "Firmware must be binary");
@@ -500,7 +541,7 @@ void STM32Upload()
     if (fsUpload) {
       fsUpload.close();
 
-      PRINTDEBUG(upload.totalSize);
+      DEBUG.println(upload.totalSize);
 
       File f = SPIFFS.open("/" + upload.filename, "r");
       uint32_t *data = new uint32_t[f.size()];
@@ -532,9 +573,9 @@ void STM32Upload()
         return;
       }
 
-      PRINTDEBUG("File length is $len bytes/$pages pages");
+      DEBUG.println("File length is $len bytes/$pages pages");
 
-      PRINTDEBUG("Resetting device...\n");
+      DEBUG.println("Resetting device...\n");
 
       Serial.print("reset\r");
 
@@ -547,7 +588,7 @@ void STM32Upload()
         wait_for_char(s);
       }
 
-      PRINTDEBUG("Sending number of pages...\n");
+      DEBUG.println("Sending number of pages...\n");
 
       Serial.print(pages);
 
@@ -559,7 +600,7 @@ void STM32Upload()
 
       while (done != true)
       {
-        PRINTDEBUG("Sending page " + page);
+        DEBUG.println("Sending page " + page);
 
         uint32_t crc = calcStmCrc(data, idx, PAGE_SIZE_BYTES);
         char c;
@@ -572,7 +613,7 @@ void STM32Upload()
           while (cnt < PAGE_SIZE_BYTES)
           {
             Serial.write(data[idx]);
-            //PRINTDEBUG((char)data[idx]);
+            //DEBUG.println((char)data[idx]);
             idx++;
             cnt++;
           }
@@ -580,10 +621,10 @@ void STM32Upload()
           c = Serial.read();
 
           if (c == 'T')
-            PRINTDEBUG("Transmission Error");
+            DEBUG.println("Transmission Error");
         }
 
-        PRINTDEBUG("Sending CRC... ");
+        DEBUG.println("Sending CRC... ");
 
         Serial.write(crc & 0xFF);
         Serial.write((crc >> 8) & 0xFF);
@@ -594,17 +635,17 @@ void STM32Upload()
 
         if ('D' == c)
         {
-          PRINTDEBUG("CRC correct!\n");
-          PRINTDEBUG("Update done!\n");
+          DEBUG.println("CRC correct!\n");
+          DEBUG.println("Update done!\n");
           done = true;
         }
         else if ('E' == c)
         {
-          PRINTDEBUG("CRC error!\n");
+          DEBUG.println("CRC error!\n");
         }
         else if ('P' == c)
         {
-          PRINTDEBUG("CRC correct!\n");
+          DEBUG.println("CRC correct!\n");
           page++;
         }
       }
