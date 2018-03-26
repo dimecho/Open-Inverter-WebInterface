@@ -1,8 +1,10 @@
 #!/bin/sh
 
-myIP=$(ifconfig | grep "inet " | grep -v "127.0.0.1" | cut -f2 -d' '| awk '{print $1}')
+browser="Safari"
 
-if [ -z $myIP ]; then
+myIP=$(ifconfig | grep "inet " | grep -v "127.0.0.1" | cut -f2 -d' '| awk 'NR==1{print $1}')
+
+if [ -z "$myIP" ]; then
     myIP="127.0.0.1"
 fi
 
@@ -43,8 +45,8 @@ cd "$(dirname "$0")"
 
 if [ -d /Applications/Firefox.app ]; then
     browser="Firefox"
-else
-    browser="Safari"
+else if[ -d /Applications/Chrome.app ]
+    browser="Chrome"
 fi
 
 pkill -9 php

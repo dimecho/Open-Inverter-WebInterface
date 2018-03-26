@@ -16,8 +16,32 @@
 			$(formName).submit();
 		}
 	};
+
+	function WiFiHiddenCheck(element) {
+		if(element.checked) {
+			$("#WiFiHidden").val("1");
+		}else{
+			$("#WiFiHidden").val("0");
+		}
+	};
 	
 	$(document).ready(function() {
+		$.ajax("/nvram", {
+            dataType: 'json',
+	        success: function success(data) {
+                console.log(data);
+                if(data["nvram0"] == "0") {
+                	$("#WiFiModeAP").prop("checked", true);
+                }else{
+                	$("#WiFiModeClient").prop("checked", true);
+                }
+                var bool_value = data["nvram1"] == "1" ? true : false
+                $("#WiFiHidden").val(data["nvram1"]);
+                $("WiFiHiddenCheckbox").prop("checked", bool_value);
+                $("#WiFiChannel").val(data["nvram2"]);
+                $("#WiFiSSID").val(data["nvram3"]);
+	        }
+	    });
 		$("#fileSPIFFS").change(function() {
 			i = 1;
 			formName = "#formSPIFFS";
@@ -26,7 +50,6 @@
 			$.ajax("/format", {
 		        success: function success(data) {
 		            $.notify({ message: data }, { type: "success" });
-		            $.ajax("/reset");
 		        }
 		    });
 		});
@@ -57,32 +80,57 @@
                         <td>
                         	<form method="POST" action="/nvram">
                         		<fieldset class="form-group">
-                        			<legend>ESP8266 Wireless Connection Mode:</legend>
+                        			<legend>ESP8266 Wireless Connection:</legend>
 		                        	<div class="form-check">
 		                        		<label class="form-check-label">
-									    <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+									    <input type="radio" class="form-check-input" id="WiFiModeAP" name="WiFiMode" value="0">
 									        WiFi Access Point
 									    </label>
 									</div>
 									<div class="form-check">
 		                        		<label class="form-check-label">
-									    <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="option2">
+									    <input type="radio" class="form-check-input" id="WiFiModeClient" name="WiFiMode" value="1">
 									        WiFi Client
 									    </label>
 									</div>
+									<br/>
+									<div class="form-check">
+									  <label class="form-check-label">
+									  	<input type="hidden" id="WiFiHidden" name="WiFiHidden" value="0">
+									    <input type="checkbox" id="WiFiHiddenCheckbox" class="form-check-input" onclick="WiFiHiddenCheck(this);">
+									    	Hidden SSID
+									  </label>
+									</div>
 								</fieldset>
 								<div class="form-group">
-									<label class="sr-only" for="inputWiFiSSID">SSID</label>
+									<label for="WiFiChannel">Channel</label>
 									<div class="input-group">
-								    	<div class="input-group-addon"><i class="glyphicon glyphicon-signal prefix"> </i></div>
-								    	<input type="text" id="inputWiFiSSID" class="form-control" placeholder="SSID">
+										<div class="input-group-addon"><i class="glyphicon glyphicon-align-left"></i></div>
+										<select id="WiFiChannel" class="form-control" name="WiFiChannel">
+											<option>1</option>
+											<option>2</option>
+											<option>3</option>
+											<option>4</option>
+											<option>5</option>
+											<option>6</option>
+											<option>7</option>
+											<option>8</option>
+											<option>9</option>
+											<option>10</option>
+											<option>11</option>
+										</select>
+									</div>
+								</div> 
+								<div class="form-group">
+									<div class="input-group">
+								    	<div class="input-group-addon"><i class="glyphicon glyphicon-signal"></i></div>
+								    	<input type="text" id="WiFiSSID" name="WiFiSSID" class="form-control" placeholder="SSID">
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="sr-only" for="inputWiFiPassword">Password</label>
 									<div class="input-group">
-										<div class="input-group-addon"><i class="glyphicon glyphicon-lock prefix"> </i></div>
-								    	<input type="password" id="inputWiFiPassword" class="form-control" placeholder="Password">
+										<div class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></div>
+								    	<input type="password" id="WiFiPassword" name="WiFiPassword" class="form-control" placeholder="Password">
 									</div>
 								</div>
 								<center><button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-ok-sign"></i> Save</button></center>

@@ -36,8 +36,6 @@ $(document).ready(function()
                 },
                 validate: function(value) {
 
-                    clearTimeout(statusRefreshTimer); //Pause status refresh
-
                     validateInput(this.id, value, function(r) {
                         if(r === true)
                             return '-';
@@ -61,12 +59,9 @@ $(document).ready(function()
                         }else{
                             $.notify({ icon: 'glyphicon glyphicon-warning-sign', title: 'Error', message: data },{ type: 'danger' });
                         }
-                        buildStatus(true); //Resume status refresh
                     //}
                 }
             });
-
-            //buildStatus(true);
 
         }).fail(function( jqxhr, settings, exception ) {
             esp8266 = true;

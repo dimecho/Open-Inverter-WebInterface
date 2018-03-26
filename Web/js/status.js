@@ -1,40 +1,29 @@
 var statusRefreshTimer;
+var iconic;
 
 $(document).ready(function () {
+
+    iconic = IconicJS();
     
     buildStatus(true);
-
-    var iconic = IconicJS({
-        autoInjectSelector: 'img.iconic',
-        pngFallback: 'assets/png',
-        each: function (svg) {
-            console.log('Injected an SVG! ' + svg.id);
-        },
-        autoInjectDone: function (count) {
-            console.log('Auto injection of ' + count + ' SVGs complete. We did it.');
-        }
-    });
 });
 
 function buildStatus(sync) {
 
-    var error = false;
+    clearTimeout(statusRefreshTimer);
 
     $.ajax("/serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
         async: sync,
         success: function success(data)
         {
-            if(data.indexOf("Error") != -1)
-            {
-                error = true;
-                return;
-            }
-
+        
             data = data.replace("\n\n", "\n");
             data = data.split(/\n/);
 
-            console.log(data);
-            
+            //console.log(data);
+
+            $('.tooltip').remove();
+
             var opStatus = $("<span>");
             var img = $("<img>", { class: "iconic", "data-src": "img/key.svg", "data-toggle": "tooltip", "data-html": "true" });
 
@@ -65,6 +54,7 @@ function buildStatus(sync) {
                     $("#potentiometer").show();
                 }
                 opStatus.append(img);
+                iconic.inject(img);
                 //========================
                 /*
                 if(json.ocurlim.value > 0){
@@ -80,20 +70,24 @@ function buildStatus(sync) {
                     img.addClass("svg-red");
                 }
                 opStatus.append(img);
+                iconic.inject(img);
                 //========================
                 img = $("<img>", { class: "iconic", "data-src": "img/temperature.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[3] + "°C</h6>"});
                 if (parseFloat(data[3]) > 150 || parseFloat(data[4]) > 150) {
                     img.addClass("svg-red");
                     opStatus.append(img);
+                    iconic.inject(img);
                 } else if (parseFloat(data[3]) < 0 || parseFloat(data[4]) < 0 || parseFloat(data[3]) > 100 || parseFloat(data[4]) > 100) {
                     img.addClass("svg-yellow");
                     opStatus.append(img);
+                    iconic.inject(img);
                 }
                 //========================
                 img = $("<img>", { class: "iconic", "data-src": "img/magnet.svg","data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[5] + "ms</h6>" });
                 if(parseFloat(data[5]) < 22){
                     img.addClass("svg-red");
                     opStatus.append(img);
+                    iconic.inject(img);
                 }
                 //========================
                 /*
@@ -110,6 +104,7 @@ function buildStatus(sync) {
                 if (parseFloat(data[7]) != 1 && parseFloat(data[15]) === 0) {
                     img = $("<img>", { class: "iconic", "data-src": "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Probably forgot PIN 11 to 12V</h6>" });
                     opStatus.append(img);
+                    iconic.inject(img);
                 }
                 //========================
                 var errors = sendCommand("errors");
@@ -117,32 +112,30 @@ function buildStatus(sync) {
 
                     img = $("<img>", { class: "iconic", "data-src": "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + errors + "</h6>" });
                     opStatus.append(img);
+                    iconic.inject(img);
                 }
             }else{
                 img = $("<img>", { class: "iconic", "data-src": "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Inverter Disconnected</h6>" });
                 opStatus.append(img);
+                iconic.inject(img);
             }
 			
 			$("#opStatus").empty().append(opStatus);
 
             buildTips();
-            
-            //console.log(document.querySelectorAll('.svg-inject'));
-            //new SVGInjector().inject(document.querySelectorAll('.svg-inject'));
-			
-            $('.tooltip').remove();
-            $('[data-toggle="tooltip"]').tooltip();
 
             if(os === "mobile")
             {
-                $(".svg-inject").attr("style","width:80px; height:80px;");
+                $(".iconic").attr("style","width:80px; height:80px;");
             }
+            
+            //iconic.inject('img.iconic');
+			
+            $('[data-toggle="tooltip"]').tooltip();
+
+            statusRefreshTimer = setTimeout(function () {
+                buildStatus(true);
+            }, 12000);
         }
     });
-    
-    if(error === false)
-        statusRefreshTimer = setTimeout(function () {
-    		clearTimeout(statusRefreshTimer);
-            buildStatus(true); //ajax syncro mode
-        }, 12000);
 }

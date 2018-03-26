@@ -158,27 +158,15 @@ function sendCommand(cmd) {
         cache: false,
         timeout: 32000, // timeout 32 seconds
         success: function success(data) {
-
-            if(data.indexOf("Error") != -1) {
-
-                var title = $("#title h3").empty();
-                title.append("Check Serial Connection");
-                var connection = $("#connection").show();
-
-                $.notify({ message: data }, { type: 'danger' });
-
-            }else{
-
-                if(cmd == "json") {
-                    try {
-                        e = JSON.parse(data);
-                    } catch(ex) {
-                        e = {};
-                        $.notify({ message: ex + ":" + data }, { type: 'danger' });
-                    }
-                }else{
-                    e = data;
+            if(cmd == "json") {
+                try {
+                    e = JSON.parse(data);
+                } catch(ex) {
+                    e = {};
+                    $.notify({ message: ex + ":" + data }, { type: 'danger' });
                 }
+            }else{
+                e = data;
             }
         },
         error: function error(xhr, textStatus, errorThrown) {}
