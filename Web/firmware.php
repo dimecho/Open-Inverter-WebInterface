@@ -153,11 +153,12 @@
                                 echo "<div id=\"output\"></div>";
                             }else{
                             ?>
+                                <div class="loader"></div>
                                 <div class="input-group">
-                                    <span class="input-group-addon" style="width:80%">
+                                    <span class="input-group-addon hidden" style="width:80%">
                                         <select name="serial" class="form-control" form="Aform" id="serialList" style="width:80%"></select>
                                     </span>
-                                    <span class="input-group-addon">
+                                    <span class="input-group-addon hidden">
                                         <button class="btn btn-primary" type="button" id="browseFirmware"><i class="glyphicon glyphicon-search"></i> Select stm32_sine.bin</button>
                                     </span>
                                 </div>

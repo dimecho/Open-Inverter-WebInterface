@@ -26,10 +26,11 @@
 	};
 	
 	$(document).ready(function() {
+
 		$.ajax("/nvram", {
             dataType: 'json',
 	        success: function success(data) {
-                console.log(data);
+                //console.log(data);
                 if(data["nvram0"] == "0") {
                 	$("#WiFiModeAP").prop("checked", true);
                 }else{
@@ -40,8 +41,12 @@
                 $("WiFiHiddenCheckbox").prop("checked", bool_value);
                 $("#WiFiChannel").val(data["nvram2"]);
                 $("#WiFiSSID").val(data["nvram3"]);
+                
+                $(".loader").hide();
+                $("#parameters").show();
 	        }
 	    });
+
 		$("#fileSPIFFS").change(function() {
 			i = 1;
 			formName = "#formSPIFFS";
@@ -50,9 +55,13 @@
 			$.ajax("/format", {
 		        success: function success(data) {
 		            $.notify({ message: data }, { type: "success" });
+		            $.ajax("/reset");
+		            clearInterval(timer);
+		            timer = setInterval(progressTimer, 50);
 		        }
 		    });
 		});
+
 		$("#fileSketch").change(function() {
 			i = 1;
 			formName = "#formSketch";
@@ -78,7 +87,8 @@
 			    <table class="table table-active table-bordered">
                     <tr>
                         <td>
-                        	<form method="POST" action="/nvram">
+                        	<center><div class="loader"></div></center>
+                        	<form class="hidden" method="POST" action="/nvram" id="parameters">
                         		<fieldset class="form-group">
                         			<legend>ESP8266 Wireless Connection:</legend>
 		                        	<div class="form-check">

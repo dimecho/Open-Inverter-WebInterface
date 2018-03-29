@@ -14,15 +14,20 @@ $(document).ready(function() {
     });
 
     $.ajax({
-        async: false,
-        type: "GET",
         url: "/serial.php?com=list",
-        success: function(data){
+        timeout: 4000,
+        success: function(data) {
             //console.log(data);
             var s = data.split(',');
             for (var i = 0; i < s.length; i++) {
                 $("#serialList").append($("<option>",{value:s[i],selected:'selected'}).append(s[i]));
             }
+            $(".loader").hide();
+            $(".input-group-addon").show();
+        },
+        error: function() {
+            $(".loader").hide();
+            $(".input-group-addon").show();
         }
     });
     

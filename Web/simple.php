@@ -39,10 +39,11 @@
                             </td>
                         </tr>
                     </table>
-                    <table class="table table-active bg-light table-bordered"><thead><tr><td><h4>Motor</h4></td></tr></thead></table>
-                    <table class="table table-active bg-light table-bordered" id="parameters_Motor"></table>
-                    <table class="table table-active bg-light table-bordered"><tbody><tr><td><h4>Battery</h4></td></tr></tbody></table>
-                    <table class="table table-active bg-light table-bordered" id="parameters_Battery"></table>
+                    <center><div class="loader hidden"></div></center>
+                    <table class="table table-active bg-light table-bordered"><tr><td><h4>Motor</h4></td></tr></table>
+                    <table class="table table-active bg-light table-bordered table-striped table-hover" id="parameters_Motor"></table>
+                    <table class="table table-active bg-light table-bordered"><tr><td><h4>Battery</h4></td></tr></table>
+                    <table class="table table-active bg-light table-bordered table-striped table-hover" id="parameters_Battery"></table>
                 </div>
             </div>
         </div>

@@ -46,9 +46,9 @@ void setup()
     ACCESS_POINT_HIDE = NVRAM_Read(1).toInt();
     ACCESS_POINT_CHANNEL = NVRAM_Read(2).toInt();
     String s = NVRAM_Read(3);
-    s.toCharArray(ACCESS_POINT_SSID, s.length()+1);
+    s.toCharArray(ACCESS_POINT_SSID, s.length() + 1);
     String p = NVRAM_Read(4);
-    p.toCharArray(ACCESS_POINT_PASSWORD, p.length()+1);
+    p.toCharArray(ACCESS_POINT_PASSWORD, p.length() + 1);
   }
   //EEPROM.end();
 
@@ -138,10 +138,10 @@ void setup()
     FSInfo fs_info;
     SPIFFS.info(fs_info);
     server.send(200, "text/plain", "<b>Format " + result + "</b><br/>Total Flash Size: " + String(ESP.getFlashChipSize()) + "<br>SPIFFS Size: " + String(fs_info.totalBytes) + "<br>SPIFFS Used: " + String(fs_info.usedBytes));
-    delay(5000);
-    ESP.restart();
   });
   server.on("/reset", HTTP_GET, []() {
+    server.send(200, "text/plain", "...");
+    delay(500);
     ESP.restart();
   });
   server.on("/nvram", HTTP_GET, []() {
@@ -216,6 +216,7 @@ void setup()
   //File system
   //===========
   SPIFFS.begin();
+  SPIFFS.remove("/esp.log");
 
   //==========
   //DNS Server
@@ -241,10 +242,10 @@ void NVRAM()
   for (int i = 0; i < 4; i++) {
     out += "\t\"nvram" + String(i) + "\": \"" + NVRAM_Read(i) + "\",\n";
   }
- 
+
   //out += "\t\"var3\": \"" + String(ACCESS_POINT_SSID) + "\",\n";
   //out += "\t\"var4\": \"" + String(ACCESS_POINT_PASSWORD) + "\",\n";
-  
+
   out = out.substring(0, (out.length() - 2));
   out += "\n}";
 
@@ -386,7 +387,8 @@ bool HTTPServer(String file)
           response += "\n";
         }
         server.send(200, contentType, response);
-
+      } else if (file.indexOf(".log") > 0) {
+        server.streamFile(f, contentType);
       } else {
         server.sendHeader("Content-Encoding", "gzip");
         server.streamFile(f, contentType);
@@ -420,6 +422,7 @@ String getContentType(String filename)
   else if (filename.endsWith(".pdf")) return "application/x-pdf";
   else if (filename.endsWith(".zip")) return "application/x-zip";
   else if (filename.endsWith(".csv")) return "text/plain";
+  else if (filename.endsWith(".log")) return "text/plain";
   return "text/plain";
 }
 
@@ -502,21 +505,18 @@ String readSerial(String cmd)
   size_t len = 0;
   String output;
 
+  while (Serial.available())
+    Serial.read(); //flush all previous output
+
   Serial.print(cmd);
   Serial.print("\n");
   Serial.readBytes(b, cmd.length() + 1); //consume echo
-
   do {
     memset(b, 0, sizeof(b));
     len = Serial.readBytes(b, sizeof(b) - 1);
     output += b;
   } while (len > 0);
 
-  /*
-    if (output.indexOf(cmd + "\n") != -1) { //Got echo, try again ...OVERVOLTAGE?
-    output = readSerial(cmd);
-    }
-  */
   return output;
 }
 
@@ -526,9 +526,7 @@ String readStream(String cmd, int _loop, int _delay)
   size_t len = 0;
   String output;
 
-  server.sendHeader("Connection", "Keep-Alive");
-  server.sendHeader("Access-Control-Allow-Origin", "*");
-  server.send(200, "text/plain", "" );
+  server.send(200, "text/plain; charset=utf-8", "" );
 
   Serial.print(cmd);
   Serial.print("\n");
@@ -551,10 +549,7 @@ String readStream(String cmd, int _loop, int _delay)
     server.sendContent(output);
     server.client().flush();
   }
-  server.client().stop(); //This doesn't close connection
-  server.sendHeader("Content-Length", "0"); //This does
-
-  server.send(200, "text/plain", "");
+  server.client().stop();
 }
 
 //==================
@@ -583,156 +578,139 @@ void STM32Upload()
 
     if (fsUpload) {
       fsUpload.close();
-
-      String out;
-
-      //DEBUG.println(upload.totalSize);
-
       File f = SPIFFS.open("/" + upload.filename, "r");
-      uint32_t *data = new uint32_t[f.size()];
-      while (f.available()) {
-        data += char(f.read());
-      }
-      f.close();
-      SPIFFS.remove("/" + upload.filename);
 
+      server.sendHeader("Refresh", "10; url=/index.php");
+      server.send(200, "text/html; charset=utf-8", "");
+      server.sendContent("<pre>");
+
+      timeout = 0;
+      char c;
       int PAGE_SIZE_BYTES = 1024;
-      int len = upload.totalSize;
-      int pages = round((len + PAGE_SIZE_BYTES - 1) / PAGE_SIZE_BYTES);
+      int len = f.size();
+      int pages = (len / PAGE_SIZE_BYTES) + 1;
+      //int pages = (len + PAGE_SIZE_BYTES - 1) / PAGE_SIZE_BYTES;
 
-      while ((sizeof(data) % PAGE_SIZE_BYTES) > 0) //Fill ramaining bytes with zeros, prevents corrupted endings
-      {
-        //Allocate new array and copy in data
-        uint32_t *append = new uint32_t[sizeof(data) + 1];
-        memcpy(append, data, sizeof(data));
+      server.sendContent("File length is " + String(len) + " bytes/" + String(pages) + " pages\n");
 
-        //Delete old array
-        delete [] data;
+      while (Serial.available())
+        Serial.read();
 
-        //Swap with new array
-        data = append;
-      }
-
-      if (Serial.available() < 0) {
-        server.send(500, "text/plain", "Serial not connected");
-        return;
-      }
-
-      out += "File length is $len bytes/$pages pages";
-      out += "Resetting device...\n";
-
+      server.sendContent("Resetting device...\n");
       Serial.print("reset\r");
 
-      char s[] = {'S', '2'};
-      char p[] = {'P'};
+      do {
+        c = Serial.read();
+        server.sendContent(String(c));
+        timeout++;
+      } while (c != 'S' && c != '2' && timeout < 50000);
 
-      char c = wait_for_char(s); //Wait for size request
-      if (c == '2') { //version 2 bootloader
+      server.sendContent("\n" + String(timeout) + "\n");
+      
+      if (c == '2')
+      {
+        server.sendContent("Bootloader v2 detected\n");
         Serial.write(0xAA); //Send magic
-        wait_for_char(s);
+        while (Serial.read() != 'S');
       }
 
-      out += "Sending number of pages...\n";
-
-      Serial.print(pages);
-
-      wait_for_char(p); //Wait for page request
-
-      int page = 0;
-      bool done = false;
-      int idx = 0;
-
-      while (done != true)
+      if (timeout < 50000)
       {
-        out += "Sending page " + page;
+        server.sendContent("Sending number of pages...\n");
+        Serial.write(pages);
 
-        uint32_t crc = calcStmCrc(data, idx, PAGE_SIZE_BYTES);
-        char c;
+        while (Serial.read() != 'P'); //Wait for page request
 
-        while (c != 'C')
+        int page = 0;
+        bool done = false;
+
+        while (done != true)
         {
-          idx = page * PAGE_SIZE_BYTES;
-          int cnt = 0;
+          server.sendContent("Sending page " + String(page) + "\n");
 
-          while (cnt < PAGE_SIZE_BYTES)
+          char data[PAGE_SIZE_BYTES];
+          size_t bytesRead = f.readBytes(data, sizeof(data));
+
+          while (bytesRead < PAGE_SIZE_BYTES) //Fill ramaining bytes with zeros, prevents corrupted endings
+            data[bytesRead++] = 0xff;
+
+          uint32_t crc = crc32((uint32_t*)data, PAGE_SIZE_BYTES / 4, 0xffffffff);
+
+          while (c != 'C')
           {
-            Serial.write(data[idx]);
-            //DEBUG.println((char)data[idx]);
-            idx++;
-            cnt++;
+            Serial.write(data, sizeof(data));
+            while (!Serial.available());
+            c = Serial.read();
+
+            if (c == 'T')
+            {
+              server.sendContent("Transmission Error\n");
+            }
           }
 
+          server.sendContent("Sending CRC...\n");
+
+          Serial.write((char*)&crc, sizeof(uint32_t));
+          while (!Serial.available());
           c = Serial.read();
 
-          if (c == 'T')
-            out += "Transmission Error";
+          if ('D' == c)
+          {
+            server.sendContent("CRC correct!\n");
+            server.sendContent("Update done!\n");
+
+            done = true;
+          }
+          else if ('E' == c)
+          {
+            server.sendContent("CRC error!\n");
+          }
+          else if ('P' == c)
+          {
+            server.sendContent("CRC correct!\n");
+            page++;
+          }
         }
-
-        out += "Sending CRC... ";
-
-        Serial.write(crc & 0xFF);
-        Serial.write((crc >> 8) & 0xFF);
-        Serial.write((crc >> 16) & 0xFF);
-        Serial.write((crc >> 24) & 0xFF);
-
-        c = Serial.read();
-
-        if ('D' == c)
-        {
-          out += "CRC correct!\n";
-          out += "Update done!\n";
-          done = true;
-        }
-        else if ('E' == c)
-        {
-          out += "CRC error!\n";
-        }
-        else if ('P' == c)
-        {
-          out += "CRC correct!\n";
-          page++;
-        }
-      }
-      server.send(200, "text/plain", out);
-    }
-  }
-}
-
-char wait_for_char(char c[])
-{
-  char recv_char;
-  while (recv_char = Serial.read())
-  {
-    for ( int i = 0; i < sizeof(c); ++i )
-      if (recv_char == c[i])
-        return recv_char;
-  }
-
-  return -1;
-}
-
-uint32_t calcStmCrc(uint32_t *data, uint32_t idx, uint32_t len)
-{
-  uint32_t cnt = 0;
-  uint32_t crc = 0xffffffff;
-
-  while (cnt < len)
-  {
-    uint32_t _word = data[idx] | (data[idx + 1] << 8) | (data[idx + 2] << 16) | (data[idx + 3] << 24);
-    cnt = cnt + 4;
-    idx = idx + 4;
-
-    crc = crc ^ _word;
-    for (uint32_t i = 0; i < 32; i++)
-    {
-      if (crc & 0x80000000)
-      {
-        crc = ((crc << 1) ^ 0x04C11DB7) & 0xffffffff; //Polynomial used in STM32
       } else {
-        crc = (crc << 1) & 0xffffffff;
+        server.sendContent("STM32 is bricked - Try pressing reset button during upload\n");
       }
+      server.sendContent("</pre>");
+      //server.client().flush();
+
+      f.close();
+      SPIFFS.remove("/" + upload.filename);
     }
   }
+}
 
+static uint32_t crc32_word(uint32_t Crc, uint32_t Data)
+{
+  int i;
+
+  Crc = Crc ^ Data;
+
+  for (i = 0; i < 32; i++)
+    if (Crc & 0x80000000)
+      Crc = (Crc << 1) ^ 0x04C11DB7; // Polynomial used in STM32
+    else
+      Crc = (Crc << 1);
+
+  return (Crc);
+}
+
+static uint32_t crc32(uint32_t* data, uint32_t len, uint32_t crc)
+{
+  for (uint32_t i = 0; i < len; i++)
+    crc = crc32_word(crc, data[i]);
   return crc;
+}
+
+//=========================
+// FOR DEVELOPMENT PURPOSES
+//=========================
+void Log(String line)
+{
+  File f = SPIFFS.open("/esp.log", "a");
+  f.println(line);
+  f.close();
 }

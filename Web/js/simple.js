@@ -4,25 +4,6 @@ $(document).ready(function () {
 
     buildSimpleParameters();
 
-    $("#idlespeed").slider({
-        //ticks: [-100, 0, 100, 200, 300, 400, 500],
-        //ticks_positions: [-100, 0, 100, 200, 300, 400, 500],
-        //ticks_labels: ['Disabled', '0 RPM', '100 RPM', '200 RPM', '300 RPM', '400 RPM', '500 RPM'],
-        min: 100,
-        max: 1000,
-        step: 100,
-        enabled: false
-    });
-
-    $("#idlespeed-enabled").click(function () {
-        if (this.checked) {
-            $("#idlespeed").slider("enable");
-        } else {
-            $("#idlespeed").slider("disable");
-            $("#idlespeed").slider({ value: -100 });
-        }
-    });
-
     $("#ex6").on("slide", function (slideEvt) {
         $("#ex6SliderVal").text(slideEvt.value);
     });
@@ -54,199 +35,193 @@ function calculateCurve(value) {
     console.log(fweak);
 };
 
+function simpleRow(id, txt) {
+
+    var input = $("<input>", { id: id, type: "text", "data-provide": "slider" });
+    var td1 = $("<td>",{width:"20%"}).append(txt);
+    var td2 = $("<td>",{align:"center"}).append(input);
+    var tr = $("<tr>").append(td1).append(td2)
+
+    return tr;
+};
+
 function buildSimpleParameters() {
+
+    $(".loader").show();
 
     var json = sendCommand("json");
 
-    if(Object.keys(json).length == 0)
-        return;
+    if(Object.keys(json).length > 0)
+    {
+        var motor = $("#parameters_Motor").empty();
+        var battery = $("#parameters_Battery").empty();
 
-    var motor = $("#parameters_Motor").empty().show();
-    var battery = $("#parameters_Battery").empty().show();
-    var tbody = $("<tbody>");
-    var td1;
-    var td2;
-    var input;
+        //=======================
+        motor.append(simpleRow("polepairs", "Poles"));
+        motor.append(simpleRow("udcnom", "Motor Rating (V)"));
+        motor.append(simpleRow("boost", "Resistance (&#8486;)"));
+        motor.append(simpleRow("fweak", "Speed (RPM)"));
+        motor.append(simpleRow("idlespeed", "Idle (RPM)"));
+        motor.append(simpleRow("ampmin", "Torque (%)"));
+        motor.append(simpleRow("fmax", "Frequency (Hz)"));
+        motor.append(simpleRow("pwm", "Pulse Width Modulation (kHz)"));
 
-    //=======================
-    input = $("<input>", { id: "polepairs", type: "text", "data-provide": "slider" });
-    tr = $("<tr>");
-    td1 = $("<td>").append("Poles");
-    td2 = $("<td>").append(input);
-    tbody.append(tr.append(td1).append(td2));
+        battery.append(simpleRow("udc", "Voltage (V)"));
+        battery.append(simpleRow("ocurlim", "Current (A)"));
+        battery.append(simpleRow("brknom", "Regenerative (%)"));
+        //=======================
 
-    input = $("<input>", {id:"boost", type:"text", "data-provide": "slider"});
-    tr = $("<tr>");
-    td1 = $("<td>").append("Resistance (&#8486;)");
-    td2 = $("<td>").append(input);
-    tbody.append(tr.append(td1).append(td2));
+        $("#polepairs").slider({
+            ticks: [2, 4, 6, 8, 10],
+            step: 2,
+            min: 2,
+            max: 10,
+            value: json.polepairs.value * 2
+        }).on('slideStop', function (e) {
+            validateInput("polepairs",e.value/2);
+            setParameter("polepairs",e.value/2,true,true);
+        });
+        //=======================
+        $("#udcnom").slider({
+            min: 12,
+            max: 480,
+            step: 1,
+            value: json.udcnom.value,
+            precision: 1,
+            tooltip_position: 'left'
+        }).on('slideStop', function (e) {
+            validateInput("udcnom",e.value);
+            setParameter("udcnom",e.value,true,true);
+        });
+        //=======================
+        //TODO: account for battery voltage
+        $("#boost").slider({
+            min: 0.0,
+            max: 10.0,
+            step: 0.1,
+            value: json.boost.value/1000,
+            precision: 1,
+            tooltip_position: 'left'
+        }).on('slideStop', function (e) {
+            validateInput("boost",e.value*1000);
+            setParameter("boost",e.value*1000,true,true);
+        });
+        //=======================
+        $("#fweak").slider({
+            min: 0,
+            max: 5000,
+            step: 100,
+            value: Math.round(json.fweak.value / json.fmax.value * 5000), //(json.udcmax.value / 1.41 / json.udcmax.value),
+            enabled: false
+        });
+        //=======================
+        $("#idlespeed").slider({
+            min: -100,
+            max: 3000,
+            step: 1,
+            ticks: [-100, 100, 500, 1000, 2000, 3000],
+            //ticks_positions: [-100, 100, 500, 1000, 2000, 3000],
+            ticks_labels: ['Disabled', '100 RPM', '500 RPM', '1000 RPM', '2000 RPM', '3000 RPM'],
+            value: json.idlespeed.value
+        }).on('slideStop', function (e) {
+            validateInput("idlespeed",e.value);
+            setParameter("idlespeed",e.value,true,true);
+        });
+        //=======================
+        //TODO: calculate true torque - fweak,boost etc
+        $("#ampmin").slider({
+            min: 1,
+            max: 100,
+            step: 1,
+            value: json.ampmin.value
+        }).on('slideStop', function (e) {
+            validateInput("ampmin",e.value);
+            setParameter("ampmin",e.value,true,true);
+        });
+        //=======================
+        $("#fmax").slider({
+            step: 1,
+            min: 20,
+            max: 200,
+            value: json.fmax.value
+        }).on('slideStop', function (e) {
+            //console.log(e.value);
+            //calculateCurve(e.value);   //calculate fweak
+            validateInput("fmax",e.value);
+            setParameter("fmax",e.value,true,true);
+        });
+        //=======================
+        $("#pwm").slider({
+            min: 0,
+            max: 4,
+            step: 1,
+            ticks: [4,3,2,1,0],
+            ticks_labels: ["1.1 Hz", "2.2 Hz", "4.4 Hz", "8.8 Hz", "17.6 Hz"],
+            value: json.pwmfrq.value
+        }).on('slideStop', function (e) {
+            //console.log(e.value);
+            //calculateCurve(e.value);   //calculate fweak
+            validateInput("pwmfrq",e.value);
+            setParameter("pwmfrq",e.value,true,true);
+        });
+        //=======================
+        $("#udc").slider({
+            min: 12,
+            max: 54,
+            value: [json.udcmin.value, json.udcmax.value],
+            range: true
+        }).on('slideStop', function (e) {
 
-    input = $("<input>", { id: "fweak", type: "text", "data-provide": "slider"});
-    tr = $("<tr>");
-    td1 = $("<td>").append("Speed (RPM)");
-    td2 = $("<td>").append(input);
-    tbody.append(tr.append(td1).append(td2));
+            slider_adjustment("udc",[400,220,120,54]);
+            if (e.value[1] < 55) {
+                //set fmin 0.5
+                //set boost 10000
+            }
+            //calculateCurve(e.value); //calculate fweak
 
-    input = $("<input>", { id: "idlespeed", type: "text", "data-provide": "slider", "data-slider-value": 100 });
-    var e = $("<input>", { id: "idlespeed-enabled", type: "checkbox" });
-    tr = $("<tr>");
-    td1 = $("<td>").append("Idle (RPM)");
-    td2 = $("<td>").append(input).append(e);
-    tbody.append(tr.append(td1).append(td2));
+            validateInput("udcmin",e.value[0]);
+            validateInput("udcmax",e.value[1]);
 
-    input = $("<input>", { id: "ampmin", type: "text", "data-provide": "slider" });
-    tr = $("<tr>");
-    td1 = $("<td>").append("Torque (%)");
-    td2 = $("<td>").append(input);
-    tbody.append(tr.append(td1).append(td2));
-
-    input = $("<input>", { id: "fmax", type: "text", "data-provide": "slider" });
-    tr = $("<tr>");
-    td1 = $("<td>").append("Frequency (Hz)");
-    td2 = $("<td>").append(input);
-    tbody.append(tr.append(td1).append(td2));
-
-    input = $("<input>", { id: "pwm", type: "text", "data-provide": "slider"});
-    tr = $("<tr>");
-    td1 = $("<td>").append("Pulse Width Modulation (kHz)");
-    td2 = $("<td>").append(input);
-    tbody.append(tr.append(td1).append(td2));
-
-    motor.append(tbody);
-    //=======================
-
-    tbody = $("<tbody>");
-    input = $("<input>", { id: "udc", type: "text", "data-provide": "slider" });
-    tr = $("<tr>");
-    td1 = $("<td>").append("Voltage (V)");
-    td2 = $("<td>").append(input);
-    tbody.append(tr.append(td1).append(td2));
-
-    input = $("<input>", { id: "ocurlim", type: "text", "data-provide": "slider"});
-    tr = $("<tr>");
-    td1 = $("<td>").append("Current (A)");
-    td2 = $("<td>").append(input);
-    tbody.append(tr.append(td1).append(td2));
-
-    input = $("<input>", { id: "brknom", type: "text", "data-provide": "slider" });
-    tr = $("<tr>");
-    td1 = $("<td>").append("Regenerative (%)");
-    td2 = $("<td>").append(input);
-    tbody.append(tr.append(td1).append(td2));
-    //=======================
-    battery.append(tbody);
-    //=======================
-
-    $("#polepairs").slider({
-        ticks: [2, 4, 6, 8, 10],
-        step: 2,
-        min: 2,
-        max: 10,
-        value: json.polepairs.value * 2
-    }).on('slideStop', function (e) {
-        setParameter("polepairs",e.value/2,true,true);
-    });
-    //=======================
-    //TODO: account for battery voltage
-    $("#boost").slider({
-        min: 0.0,
-        max: 10.0,
-        step: 0.1,
-        value: json.boost.value/1000,
-        precision: 1,
-        tooltip_position: 'left'
-    }).on('slideStop', function (e) {
-        setParameter("boost",e.value*1000,true,true);
-    });
-    //=======================
-    $("#fweak").slider({
-        min: 0,
-        max: 5000,
-        step: 100,
-        value: Math.round(json.fweak.value / json.fmax.value * 5000), //(json.udcmax.value / 1.41 / json.udcmax.value),
-        enabled: false
-    });
-    //=======================
-    //TODO: calculate true torque - fweak,boost etc
-    $("#ampmin").slider({
-        min: 1,
-        max: 100,
-        step: 1,
-        value: json.ampmin.value
-    }).on('slideStop', function (e) {
-        setParameter("ampmin",e.value,true,true);
-    });
-    //=======================
-    $("#fmax").slider({
-        step: 1,
-        min: 20,
-        max: 200,
-        value: json.fmax.value
-    }).on('slideStop', function (e) {
-        //console.log(e.value);
-        //calculateCurve(e.value);   //calculate fweak
-        setParameter("fmax",e.value,true,true);
-    });
-    //=======================
-    $("#pwm").slider({
-        min: 0,
-        max: 4,
-        step: 1,
-        ticks: [4,3,2,1,0],
-        ticks_labels: ["1.1","2.2","4.4","8.8","17.6"],
-        value: json.pwmfrq.value
-    }).on('slideStop', function (e) {
-        //console.log(e.value);
-        //calculateCurve(e.value);   //calculate fweak
-        setParameter("pwmfrq",e.value,true,true);
-    });
-    //=======================
-    $("#udc").slider({
-        min: 12,
-        max: 54,
-        value: [json.udcmin.value, json.udcmax.value],
-        range: true
-    }).on('slideStop', function (e) {
-
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(function(){
+                setParameter("udcmin",e.value[0],true,true);
+                setParameter("udcmax",e.value[1],true,true);
+            }, 2000);
+        });
         slider_adjustment("udc",[400,220,120,54]);
-        if (e.value[1] < 55) {
-            //set fmin 0.5
-            //set boost 10000
-        }
-        //calculateCurve(e.value); //calculate fweak
+        //=======================
+        $("#ocurlim").slider({
+            step: 1,
+            min: 0,
+            max: 100,
+            value: 0-json.ocurlim.value,
+            focus: false
+        }).on('slideStop', function (e) {
+            slider_adjustment("ocurlim",[800,400,200,100]);
 
-        clearTimeout(saveTimer);
-        saveTimer = setTimeout(function(){
-            setParameter("udcmin",e.value[0],true,true);
-            setParameter("udcmax",e.value[1],true,true);
-        }, 2000);
-    });
-    slider_adjustment("udc",[400,220,120,54]);
-    //=======================
-    $("#ocurlim").slider({
-        step: 1,
-        min: 0,
-        max: 100,
-        value: 0-json.ocurlim.value,
-        focus: false
-    }).on('slideStop', function (e) {
+            validateInput("ocurlim",(0-e.value));
+
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(function(){
+                setParameter("ocurlim",(0-e.value),true,true);
+            }, 1000);
+        });
         slider_adjustment("ocurlim",[800,400,200,100]);
+        //=======================
+        $("#brknom").slider({
+            min: 1,
+            max: 90,
+            value: json.brknom.value,
+            focus: false
+        }).on('slideStop', function (e) {
+            validateInput("brknom",e.value);
+            setParameter("brknom",e.value,true,true);
+        });
 
-        clearTimeout(saveTimer);
-        saveTimer = setTimeout(function(){
-            setParameter("ocurlim",(0-e.value),true,true);
-        }, 1000);
-    });
-    slider_adjustment("ocurlim",[800,400,200,100]);
-    //=======================
-    $("#brknom").slider({
-        min: 1,
-        max: 90,
-        value: json.brknom.value,
-        focus: false
-    }).on('slideStop', function (e) {
-        setParameter("brknom",e.value,true,true);
-    });
+        motor.show();
+        battery.show();
+    }
+    $(".loader").hide();
 };
 
 function slider_adjustment(id,array) {

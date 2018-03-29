@@ -10,8 +10,14 @@ body {
   -o-background-size: cover;
   background-size: cover;
 }
+.hidden {
+  display: none;
+}
 .tooltip-inner {
-  max-width: 500px !important;
+  max-width: 500px;
+}
+.slider {
+  width: 90% !important;
 }
 .badge-lg {
   font-size:13px !important;

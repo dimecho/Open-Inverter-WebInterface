@@ -16,7 +16,7 @@
             <br/>
             <div class="row">
                 <div class="col" align="center">
-                    <div id="connection" style="display: none;">
+                    <div class="hidden" id="connection">
                         <img src="/img/connection.jpg" class="thumbnail" width="80%" height="80%"/>
                         <br/><br/>
                         <div class="btn-group">
@@ -24,13 +24,13 @@
                             <button class="btn btn-secondary">Do not connect 5 volt power to serial connection (3.3 volt only)</button>
                         </div>
                     </div>
-                    <div class="loader" style="display: none;"></div>
-                    <table class="table table-active bg-light table-bordered table-striped table-hover" style="display:none;" id="parameters"></table>
+                    <div class="loader hidden"></div>
+                    <table class="table table-active bg-light table-bordered table-striped table-hover" id="parameters"></table>
                 </div>
             </div>
         </div>
-        <a class="safety" data-fancybox data-src="#warning" href="javascript:;" style="display: none;"></a>
-        <div id="warning" style="display:none;width:60%;border-radius:5px">
+        <a class="safety" data-fancybox data-src="#warning" href="javascript:;"></a>
+        <div class="hidden" id="warning" style="width:60%;border-radius:5px">
             <center>
                 <img src="/img/safety.png" />
             </center>
