@@ -15,7 +15,7 @@ File fsUpload;
 
 int ACCESS_POINT_MODE = 0;
 char ACCESS_POINT_SSID[] = "Inverter";
-char ACCESS_POINT_PASSWORD[] = "12345678";
+char ACCESS_POINT_PASSWORD[] = "inverter123";
 int ACCESS_POINT_CHANNEL = 7;
 int ACCESS_POINT_HIDE = 0;
 bool phpTag[] = { false, false, false, false };

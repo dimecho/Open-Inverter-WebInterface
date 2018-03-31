@@ -2,11 +2,9 @@ var saveTimer;
 
 $(document).ready(function () {
 
-    buildSimpleParameters();
+    $.notify({ message: 'Experimental Area' }, { type: 'danger' });
 
-    $("#ex6").on("slide", function (slideEvt) {
-        $("#ex6SliderVal").text(slideEvt.value);
-    });
+    buildSimpleParameters();
 
     $("#brknompedal-enabled").click(function () {
         if (this.checked) {
@@ -23,10 +21,7 @@ $(document).ready(function () {
         console.log(e.target.nextSibling.id + ":" + e.value);
     });
     */
-
     //var delay =  speed.slider('getValue');
-
-    $.notify({ message: 'Experimental Area' }, { type: 'danger' });
 });
 
 function calculateCurve(value) {
@@ -166,8 +161,8 @@ function buildSimpleParameters() {
         });
         //=======================
         $("#udc").slider({
-            min: 12,
-            max: 54,
+            min: 10,
+            max: 400,
             value: [json.udcmin.value, json.udcmax.value],
             range: true
         }).on('slideStop', function (e) {

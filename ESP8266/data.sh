@@ -101,3 +101,7 @@ for f in $(find data -type f -name '*.*' ! -name '*.php' ! -name '.gitignore'); 
     gzip "$f"
     mv "$f.gz" "$f"
 done
+
+mkspiffs -c ./data/ -b 8192 -p 256 -s $(($(du -ks data | cut -f1) * 1024)) flash-spiffs.bin
+#mkspiffs -c ./data/ -b 8192 -p 256 -s 1028096 flash-spiffs.bin
+#mkspiffs -i flash-spiffs.bin

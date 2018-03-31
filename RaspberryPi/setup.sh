@@ -85,7 +85,7 @@ if [ $yn = y ]; then
     echo "Enter WiFi WPA Password (Example: inverter123)"
     read wifi_password
 
-    echo "Enter WiFi IP (Example: 192.168.42.1)"
+    echo "Enter WiFi IP (Example: 192.168.4.1)"
     read wifi_ip
 
     echo "...Configuring Static IP Address [$wifi_ip]"

@@ -33,4 +33,4 @@ Usage
 
 1) Connect to RaspberryPi WiFi Access Point (ex: Inverter)
    Note: WPA password you supplied in setup script
-2) Open web browser and go to http://192.168.42.1:8080
+2) Open web browser and go to http://192.168.4.1:8080
