@@ -21,7 +21,7 @@ Setup (Upgrade Existing)
     [Web Browser - Recommended]
 
     1) Connect to ESP8266 WiFi (see Usage)
-    2) Go to http://192.168.4.1/upgrade and flash Sketch and SPIFFS
+    2) Go to http://192.168.4.1/update and flash Sketch and SPIFFS
 
     [Computer]
 

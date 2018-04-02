@@ -59,6 +59,10 @@
             "icon": "glyphicon-object-align-left",
             "onClick": "/firmware.php"
         }, {
+            "id": "Flash ATTiny13",
+            "icon": "glyphicon-object-align-bottom",
+            "onClick": "/attiny13.php"
+        }, {
             "id": "-"
         }, {
             "id": "Switch Check",

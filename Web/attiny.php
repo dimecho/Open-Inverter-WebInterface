@@ -1,36 +1,12 @@
-<?php
-    
-    if(isset($_GET["ajax"])){
-
-        include("common.php");
-
-        if(isset($_GET["fuse"]))
-        {
-            $command = runCommand("fuse", $_GET["isp"]. " " .$_GET["serial"]);
-        }else{
-            $command = runCommand("attiny", $_GET["file"]. " " .$_GET["isp"]. " " .$_GET["serial"]);
-        }
-        exec($command, $output, $return);
-        
-        echo "$command\n";
-        foreach ($output as $line) {
-            echo "$line\n";
-        }
-    }else{
-?>
 <!DOCTYPE html>
 <html>
     <head>
         <?php include "header.php"; ?>
+        <link rel="stylesheet" href="css/androidstudio.css">
+        <script src="js/highlight.js"></script>
         <script>
-            $(document).on('click', '.browse', function(){
-                var file = $('.file');
-                file.trigger('click');
-            });
-
-            $(document).on('click', '.fuses', function(){
-                window.location.href = "/attiny.php?fuses=1&isp=" + $("#ispList option:selected").text() + "&serial=" + $("#serialList option:selected").text();
-            });
+            IconicJS();
+            hljs.initHighlightingOnLoad();
         </script>
     </head>
     <body>
@@ -39,144 +15,92 @@
             <br/>
             <div class="row">
                 <div class="col">
-                     <table class="table table-active table-bordered">
-                        <tr>
-                            <td align="center">
-                                <img class="svg-inject" src="img/chip.svg" style="vertical-align:middle" /> <a class="text-dark" href="firmware/attiny13.zip">ATTiny13</a>
-                            </td>
-                        </tr>
-                    </table>
                     <table class="table table-active bg-faded table-bordered">
-                        <?php if(isset($_GET["fuses"])){ ?>
                             <tr>
                                 <td>
-                                    <script>
-                                        $(document).ready(function() {
-                                            var progressBar = $("#progressBar");
-                                            for (i = 0; i < 100; i++) {
-                                                setTimeout(function(){ progressBar.css("width", i + "%"); }, i*2000);
-                                            }
-                                            $.ajax({
-                                                type: "GET",
-                                                url: "/attiny.php?ajax=1&fuse=1",
-                                                success: function(data){
-                                                    console.log(data);
-                                                    progressBar.css("width","100%");
-                                                    $("#output").append($("<pre>").append(data));
-                                                }
-                                            });
-                                        });
-                                    </script>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar" style="width:1%" id="progressBar"></div>
-                                    </div>
-                                    <input type="checkbox" checked="checked"> SPIEN *
-                                    <input type="checkbox"> CKDIV8
-                                    <input type="checkbox" checked="checked"> SUT0
-                                    <input type="checkbox" checked="checked"> CKSEL0
+                                    Version 1 inverter was using ATTiny13 chip to isolate high voltage detection from main controller.
                                     <br/><br/>
-                                    <a href="http://eleccelerator.com/fusecalc/fusecalc.php?chip=attiny13a&LOW=7A&HIGH=FF&LOCKBIT=FF" target="_blank">Fuse Calculator</a>
-                                    <br/>
-                                    <div id="output"></div>
+                                    <img class="iconic" src="img/chip.svg" style="vertical-align:middle" /> <a class="text-dark" href="firmware/attiny13.zip">ATTiny13</a>
+                                    <pre>
+<code>#include <avr/io.h>
+#include <util/delay.h>
+
+#define PERIOD 1500
+
+int __attribute__((OS_main)) main(void)
+{
+   uint16_t on, off;
+
+   ADMUX = 1; //ADC1
+   ADCSRA = (1 << ADEN) | (1 << ADSC) | (1 << ADPS2) | (1 << ADPS1);
+   DDRB = 1 << PIN0;
+   while (ADCSRA & (1 << ADSC));
+
+   while(1)
+   {
+      /* ADC ranges up to 1023, period is defined as 1500.
+      So we essentially limit the maximum duty cycle to about 65%
+      to stay within 3.3V on the receiving side */
+      on = ADC ;
+      off = PERIOD - on;
+      ADCSRA |= 1 << ADSC;
+      while (on--)
+      {
+         PORTB = 1 << PIN0;
+      }
+
+      while (off--)
+      {
+         PORTB = 0;
+      }
+   }
+}</code>
+                                    </pre>
+                                    <center>
+                                        You can buy a proper AVR programmer.<br/><br/>
+                                        <img src="firmware/img/avr_programmer.jpg" /><br/><br/>
+                                        Or use Raspberry Pi to flash ATTiny13.<br/><br/>
+                                        <img src="firmware/img/avr_programmer_pi.png" /><br/><br/>
+                                        ATTiny13 Pinout.<br/><br/>
+                                        <img src="/firmware/img/attiny13.png" /><br/><br/>
+                                    </center>
+                                    SSH to Pi and run AVRDude installation.
+                                    <pre>
+<code>sudo apt-get install avrdude</code>
+                                    </pre>
+                                    Open AVRDude configuration file for editing.
+                                    <pre>
+<code>sudo nano /etc/avrdude.conf</code>
+                                    </pre>
+                                    In Nano, use ctrl-w to search for linuxgpio. This is the section that controls the GPIO pins used for programming. The section needs to be uncommented. Set the MOSI, MISO and SCK entries to the GPIO pins on the Pi.
+                                    <pre>
+<code>programmer
+  id    = "linuxgpio";
+  desc  = "Use the Linux sysfs interface to bitbang GPIO lines";
+  type  = "linuxgpio";
+  reset = 12;
+  sck   = 11;
+  mosi  = 10;
+  miso  = 9;
+;</code>
+                                    </pre>
+                                    Test connection.
+                                    <pre>
+<code>sudo /usr/bin/avrdude -p t13 -c linuxgpio -v -t</code>
+                                    </pre>
+                                    Flash firmware.
+                                    <pre>
+<code>sudo avrdude -p t13 -c linuxgpio -U flash:w:volt-pwm-attiny13.bin</code>
+                                    </pre>
+                                    Backup firmware.
+                                    <pre>
+<code>sudo avrdude -p t13 -c linuxgpio -U flash:r:flashdump.bin:r</code>
+                                    </pre>
                                 </td>
                             </tr>
-                        <?php }else if(isset($_FILES["firmware"])){ ?>
-                            <tr>
-                                <td>
-                                    <script>
-                                        $(document).ready(function() {
-                                            var progressBar = $("#progressBar");
-                                            for (i = 0; i < 100; i++) {
-                                                setTimeout(function(){ progressBar.css("width", i + "%"); }, i*2000);
-                                            }
-                                            $.ajax({
-                                                type: "GET",
-                                                url:
-                                                <?php
-                                                    $os = detectOS();
-                                                    echo "'";
-                                                    echo "/attiny.php?ajax=1";
-                                                    if ($os === "mac") {
-                                                        $tmp_name = "/tmp/" .basename($_FILES['firmware']['tmp_name']). ".bin";
-                                                    }else{
-                                                        $tmp_name = sys_get_temp_dir(). "/" .basename($_FILES['firmware']['tmp_name']). ".bin";
-                                                    }
-                                                    move_uploaded_file($_FILES['firmware']['tmp_name'], $tmp_name);
-                                                    echo "&file=" .$tmp_name;
-                                                    echo "&serial=" .$_POST["serial"];
-                                                    echo "&isp=" .$_POST["isp"];
-                                                    echo "'";
-                                                ?>,
-                                                success: function(data){
-                                                    //console.log(data);
-                                                    progressBar.css("width","100%");
-                                                    $("#output").append($("<pre>").append(data));
-                                                }
-                                            });
-                                        });
-                                    </script>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar" style="width:1%" id="progressBar"></div>
-                                    </div>
-                                    <div id="output"></div>
-                                </td>
-                            </tr>
-                        <?php }else{ ?>
-                            <script>
-                                $(document).ready(function() {
-                                    $.ajax({
-                                        type: "GET",
-                                        url: "/serial.php?com=list",
-                                        success: function(data){
-                                            //console.log(data);
-                                            var s = data.split(',');
-                                            for (i = 0; i < s.length; i++) {
-                                                $("#serialList").append($("<option>",{value:s[i],selected:'selected'}).append(s[i]));
-                                            }
-                                        }
-                                    });
-                                });
-                            </script>
-                            <tr align="center">
-                                <td>
-                                    <div class="input-group">
-                                        <span class = "input-group-addon" style="width:20%">
-                                            <select name="isp" class="form-control" form="Aform" id="ispList" style="width:90%;">
-                                                <option value="ponyser" selected="selected">ponyser</option>
-                                                <option value="usbtiny">usbtiny</option>
-                                                <option value="usbasp">usbasp</option>
-                                                <option value="usbtinyisp">usbtinyisp</option>
-                                                <option value="arduino">arduino</option>
-                                            </select>
-                                        </span>
-                                        <span class = "input-group-addon" style="width:40%">
-                                            <select name="serial" class="form-control" form="Aform" id="serialList" style="width:90%;">
-                                            </select>
-                                        </span>
-                                        <span class = "input-group-addon">
-                                            <button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select HEX</button>
-                                            <button class="fuses btn btn-danger" type="button"><i class="glyphicon glyphicon-download-alt"></i> Reset Fuses</button>
-                                        </span>
-                                    </div>
-                                    <br/><br/>
-                                    <span class="badge badge-lg badge-danger">Prolific chipset USB to Serial adapters will not work, use a "legacy" serial port.</span>
-                                    <br/><br/>
-                                    <div style="background-color:#ffffff;">
-                                        <img src="/firmware/img/avr_programmer_serial.png" /><br/>
-                                        <img src="/firmware/img/attiny13.png" />
-                                        <img src="/firmware/img/avr_programmer.jpg" /><br/>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php } ?>
                     </table>
                 </div>
             </div>
         </div>
-        <form enctype="multipart/form-data" action="/attiny.php" method="POST" id="Aform">
-            <input type="file" name="firmware" class="file" hidden onchange="javascript:this.form.submit();" />
-            <input type="submit" hidden />
-        </form>
     </body>
 </html>
-<?php } ?>

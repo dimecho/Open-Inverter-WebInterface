@@ -63,9 +63,9 @@
             "icon": "glyphicon-object-align-left",
             "onClick": "/firmware.php"
         }, {
-            "id": "Flash ATtiny13 Chip",
+            "id": "Flash ATTiny13",
             "icon": "glyphicon-object-align-bottom",
-            "onClick": "checkSoftware(\"attiny\")"
+            "onClick": "/attiny13.php"
         }, {
             "id": "Compile from Source",
             "icon": "glyphicon-console",
