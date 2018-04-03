@@ -26,7 +26,7 @@
                     <div id="potentiometer" style="display:none">
                         <input class="knob" data-displayinput="true" data-min="0" data-max="100" data-fgcolor="#222222" data-bgcolor="#FFFFFF" value="0">
                     </div>
-                    <div style="width:50%"><div id="buildGraphSlider"></div></div>
+                    <div style="width:60%"><div id="buildGraphSlider"></div></div>
                     <div class="chartWrapper bg-light">
                         <div class="chartAreaWrapper">
                             <div class="chartAreaWrapper2">

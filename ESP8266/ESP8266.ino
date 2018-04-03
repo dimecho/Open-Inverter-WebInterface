@@ -204,7 +204,13 @@ void setup()
     server.send(200);
   }, STM32Upload );
   server.on("/", []() {
-    HTTPServer("/index.php");
+    if (SPIFFS.exists("/index.php")) {
+      server.sendHeader("Location", "/index.php");
+      server.send(303);
+    } else {
+      server.sendHeader("Refresh", "6; url=/update");
+      server.send(200, "text/html", "File System Not Found ...Upload SPIFFS");
+    }
   });
   server.onNotFound([]() {
     if (!HTTPServer(server.uri()))
@@ -606,7 +612,7 @@ void STM32Upload()
       } while (c != 'S' && c != '2' && timeout < 50000);
 
       server.sendContent("\n" + String(timeout) + "\n");
-      
+
       if (c == '2')
       {
         server.sendContent("Bootloader v2 detected\n");

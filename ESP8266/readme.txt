@@ -5,6 +5,12 @@ Build (From Source Code)
     1) Run ./data.sh (data.bat Windows) build data directory
     2) Open ESP8266.ino with Arduino IDE (Sketch -> Export compiled Binary) or upload sketch
 
+    [Arduino Developer Setup]
+
+    1) Arduino/File -> Preferences -> Additional Boards Manager URLs: http://arduino.esp8266.com/stable/package_esp8266com_index.json
+    2) Tools -> Boards -> Board Manager -> esp8266 -> Install
+    3) Tools -> Boards -> Olimex MOD-WIFI-ESP8266
+
 Setup (New from Factory)
 
     1) Solder GPIO-0 bridge to 0 to enable UART
