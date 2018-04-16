@@ -4,30 +4,83 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>Resources/en.lproj/InfoPlist.strings</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			MiLKDDnrUKr4EmuvhS5VQwxHGK8=
-			</data>
-			<key>optional</key>
-			<true/>
-		</dict>
+		<key>Resources/Distribution.xml</key>
+		<data>
+		8Cmkj3+DRaARn1MvUV7BiUGFxGM=
+		</data>
+		<key>Resources/License.rtf</key>
+		<data>
+		lrKNpgVWMmiP5Ukq1ccoRi/SvPo=
+		</data>
+		<key>Resources/Welcome.rtf</key>
+		<data>
+		a4Si+KMvYguWsSM1Ha8nvTYQibI=
+		</data>
+		<key>Resources/postinstall</key>
+		<data>
+		GsOXyuo80kZOD9ViamVy+AhGi78=
+		</data>
+		<key>Resources/preinstall</key>
+		<data>
+		+uHBGgFp/33JByrmNEO4Qbpedb0=
+		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>Resources/en.lproj/InfoPlist.strings</key>
+		<key>Resources/Distribution.xml</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			MiLKDDnrUKr4EmuvhS5VQwxHGK8=
+			8Cmkj3+DRaARn1MvUV7BiUGFxGM=
 			</data>
 			<key>hash2</key>
 			<data>
-			Oc8u4Ht7Mz58F50L9NeYpbcq9qTlhPUeZCcDu/pPyCg=
+			ZFshXHI2jC9Gqqw8gSFe5Ibag52rPVdOeBoqKRp18gg=
 			</data>
-			<key>optional</key>
-			<true/>
+		</dict>
+		<key>Resources/License.rtf</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			lrKNpgVWMmiP5Ukq1ccoRi/SvPo=
+			</data>
+			<key>hash2</key>
+			<data>
+			ONrYYQA6oBolcr3LYH7Ty/APqW3rcvZNQbKfQAscR+w=
+			</data>
+		</dict>
+		<key>Resources/Welcome.rtf</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			a4Si+KMvYguWsSM1Ha8nvTYQibI=
+			</data>
+			<key>hash2</key>
+			<data>
+			xV0Q8JI4cseQ6mh5yxfX34ECfhrelIw/5etjXzWClm4=
+			</data>
+		</dict>
+		<key>Resources/postinstall</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			GsOXyuo80kZOD9ViamVy+AhGi78=
+			</data>
+			<key>hash2</key>
+			<data>
+			OLl2/IZOcWtYb+p/MAXDCj3Z41EbN5qY6/IrscSufCQ=
+			</data>
+		</dict>
+		<key>Resources/preinstall</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			+uHBGgFp/33JByrmNEO4Qbpedb0=
+			</data>
+			<key>hash2</key>
+			<data>
+			4+T6PQgRyaHG/eZArqSQCq8KIOsTzKOBbPoQsFQVHdA=
+			</data>
 		</dict>
 	</dict>
 	<key>rules</key>

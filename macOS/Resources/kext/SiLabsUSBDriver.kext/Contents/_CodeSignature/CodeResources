@@ -3,37 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>files</key>
-	<dict>
-		<key>Resources/English.lproj/InfoPlist.strings</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			DRScNoSTX1DEJQY/+IXCT/+F/BQ=
-			</data>
-			<key>optional</key>
-			<true/>
-		</dict>
-		<key>Resources/Info.plist</key>
-		<data>
-		LBPsiSudSYtbOkhhmwihjOv89go=
-		</data>
-	</dict>
+	<dict/>
 	<key>files2</key>
-	<dict>
-		<key>Resources/English.lproj/InfoPlist.strings</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			DRScNoSTX1DEJQY/+IXCT/+F/BQ=
-			</data>
-			<key>optional</key>
-			<true/>
-		</dict>
-		<key>Resources/Info.plist</key>
-		<data>
-		LBPsiSudSYtbOkhhmwihjOv89go=
-		</data>
-	</dict>
+	<dict/>
 	<key>rules</key>
 	<dict>
 		<key>^Resources/</key>
@@ -51,6 +23,11 @@
 			<true/>
 			<key>weight</key>
 			<real>1100</real>
+		</dict>
+		<key>^Resources/Base\.lproj/</key>
+		<dict>
+			<key>weight</key>
+			<real>1010</real>
 		</dict>
 		<key>^version.plist$</key>
 		<true/>
@@ -110,6 +87,11 @@
 			<true/>
 			<key>weight</key>
 			<real>1100</real>
+		</dict>
+		<key>^Resources/Base\.lproj/</key>
+		<dict>
+			<key>weight</key>
+			<real>1010</real>
 		</dict>
 		<key>^[^/]+$</key>
 		<dict>

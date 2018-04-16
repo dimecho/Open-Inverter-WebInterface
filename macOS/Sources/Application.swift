@@ -42,27 +42,32 @@ class Application: NSViewController, NSApplicationDelegate
     
     func checkConnection()
     {
-        var found = false
+		var timeout = 20
         repeat {
             var portIterator: io_iterator_t = 0
             let kernResult = findSerialDevices(kIOSerialBSDAllTypes, serialPortIterator: &portIterator)
             if kernResult == KERN_SUCCESS {
                 printSerialPath(portIterator)
             }
-            
+			
             for i in 0...(serialPathArray.count-1)
             {
                 //print(serialPathArray[i])
+				
+				let usb = serialPathArray[i].uppercased()
                 
-                if (serialPathArray[i].uppercased().range(of: "USB") != nil)
+                if (usb.range(of: "USB") != nil || usb.range(of: "CH34") != nil || usb.range(of: "PL23") != nil)
                 {
+					timeout = 0;
                     serialPath = serialPathArray[i]
                     openSerial()
-                    found = true
+					break;
                 }
             }
-            sleep(4)
-        }while found != true
+			
+            sleep(5)
+			timeout -= 1
+        }while timeout > 0
     }
     
     func openSerial()

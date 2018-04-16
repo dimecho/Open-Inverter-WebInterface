@@ -3,11 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>14A298i</string>
+	<string>16G1114</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
 	<string>SiLabsUSBDriver</string>
+	<key>CFBundleGetInfoString</key>
+	<string>Version 5.0.4</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.silabs.driver.CP210xVCPDriver</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -18,25 +20,29 @@
 	<string>KEXT</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>MacOSX</string>
+	</array>
 	<key>CFBundleVersion</key>
-	<string>4.10.14</string>
+	<string>5.0.4</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
-	<string>6A1052d</string>
+	<string>9C40b</string>
 	<key>DTPlatformVersion</key>
 	<string>GM</string>
 	<key>DTSDKBuild</key>
-	<string>13F26</string>
+	<string>17C76</string>
 	<key>DTSDKName</key>
-	<string>macosx10.9</string>
+	<string>macosx10.13</string>
 	<key>DTXcode</key>
-	<string>0610</string>
+	<string>0920</string>
 	<key>DTXcodeBuild</key>
-	<string>6A1052d</string>
+	<string>9C40b</string>
 	<key>IOKitPersonalities</key>
 	<dict>
-		<key> Cadex Electronics Inc. - 1</key>
+		<key> Cadex Electronics Inc.</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.silabs.driver.CP210xVCPDriver</string>
@@ -47,7 +53,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -72,7 +78,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -97,7 +103,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -122,7 +128,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -147,7 +153,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -172,7 +178,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -197,7 +203,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -222,7 +228,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -247,7 +253,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -272,7 +278,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -297,7 +303,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -322,7 +328,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -347,7 +353,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -372,7 +378,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -397,7 +403,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -422,7 +428,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -447,7 +453,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -472,7 +478,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -497,7 +503,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -522,7 +528,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -547,7 +553,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -572,7 +578,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -597,7 +603,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -622,7 +628,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -647,7 +653,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -672,7 +678,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -697,7 +703,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -722,7 +728,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -747,7 +753,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -772,7 +778,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -797,7 +803,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -822,7 +828,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -847,7 +853,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -872,7 +878,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -897,7 +903,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -922,7 +928,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -947,7 +953,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -972,7 +978,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -997,7 +1003,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1022,7 +1028,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1047,7 +1053,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1072,7 +1078,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1097,7 +1103,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1122,7 +1128,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1147,7 +1153,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1172,7 +1178,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1186,6 +1192,56 @@
 			<key>idVendor</key>
 			<integer>4047</integer>
 		</dict>
+		<key>HUSBZB-1: GoControl QuickStick zigbee</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>GoControl QuickStick Combo</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>1</integer>
+			<key>idProduct</key>
+			<integer>35370</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
+		<key>HUSBZB-1: GoControl QuickStick zwave</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>GoControl QuickStick Combo</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>35370</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
 		<key>IMST GmbH</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
@@ -1197,7 +1253,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1222,7 +1278,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1247,7 +1303,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1272,7 +1328,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1297,7 +1353,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1322,7 +1378,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1347,7 +1403,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1372,7 +1428,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1397,7 +1453,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1422,7 +1478,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1447,7 +1503,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1472,7 +1528,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1497,7 +1553,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1522,7 +1578,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1547,7 +1603,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1572,7 +1628,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1597,7 +1653,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1622,7 +1678,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1647,7 +1703,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1672,7 +1728,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1697,7 +1753,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1722,7 +1778,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1747,7 +1803,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1772,7 +1828,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1797,7 +1853,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1822,7 +1878,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1847,7 +1903,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1872,7 +1928,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1897,7 +1953,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1922,7 +1978,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1947,7 +2003,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1972,7 +2028,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -1997,7 +2053,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2022,7 +2078,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2047,7 +2103,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2072,7 +2128,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2097,7 +2153,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2122,7 +2178,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2147,7 +2203,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2172,7 +2228,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2197,7 +2253,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2222,7 +2278,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2247,7 +2303,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2272,7 +2328,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2297,7 +2353,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2311,6 +2367,56 @@
 			<key>idVendor</key>
 			<integer>12693</integer>
 		</dict>
+		<key>Lunatico Astronomia</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>Armadillo Platypus USB</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>2481</integer>
+			<key>idVendor</key>
+			<integer>5824</integer>
+		</dict>
+		<key>METER Group Inc. USA</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>METER USB</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>33812</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
 		<key>MMB Research Inc.</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
@@ -2322,7 +2428,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2347,7 +2453,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2372,7 +2478,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2386,6 +2492,31 @@
 			<key>idVendor</key>
 			<integer>4292</integer>
 		</dict>
+		<key>NETGEAR</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>NETGEAR</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>4352</integer>
+			<key>idVendor</key>
+			<integer>2118</integer>
+		</dict>
 		<key>NetBurner, Inc.</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
@@ -2397,7 +2528,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2408,6 +2539,56 @@
 			<integer>0</integer>
 			<key>idProduct</key>
 			<integer>33952</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
+		<key>Notch Dock</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>Notch Dock</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>35754</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
+		<key>PICARO</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>PICARO USB Drivers</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>35830</integer>
 			<key>idVendor</key>
 			<integer>4292</integer>
 		</dict>
@@ -2422,7 +2603,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2447,7 +2628,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2472,7 +2653,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2497,7 +2678,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2522,7 +2703,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2547,7 +2728,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2572,7 +2753,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2597,7 +2778,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2622,7 +2803,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2647,7 +2828,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2672,7 +2853,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2697,7 +2878,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>IOTTYBaseName</key>
 			<string>Fitbit</string>
 			<key>New Interface Detected Action</key>
@@ -2724,7 +2905,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2749,7 +2930,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2774,7 +2955,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2788,6 +2969,31 @@
 			<key>idVendor</key>
 			<integer>2675</integer>
 		</dict>
+		<key>Sony Corporation</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>Sony Corporation CP210x USB to UART Bridge</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>3209</integer>
+			<key>idVendor</key>
+			<integer>1356</integer>
+		</dict>
 		<key>Starizona</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
@@ -2799,7 +3005,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2824,7 +3030,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2849,7 +3055,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2874,7 +3080,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2899,7 +3105,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2924,7 +3130,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2949,7 +3155,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2974,7 +3180,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -2999,7 +3205,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -3013,6 +3219,31 @@
 			<key>idVendor</key>
 			<integer>9221</integer>
 		</dict>
+		<key>Zero-Click Data Cable</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>Zero-Click Data Cable</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>43690</integer>
+			<key>idVendor</key>
+			<integer>6132</integer>
+		</dict>
 		<key>Zonge International - 1</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
@@ -3024,7 +3255,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -3049,7 +3280,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -3074,7 +3305,7 @@
 			<key>IOMatchCategory</key>
 			<string>com_silabs_driver_CP210xVCPDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBInterface</string>
+			<string>IOUSBHostInterface</string>
 			<key>New Interface Detected Action</key>
 			<string>None</string>
 			<key>USB Product Name</key>
@@ -3089,16 +3320,18 @@
 			<integer>4292</integer>
 		</dict>
 	</dict>
+	<key>NSHumanReadableCopyright</key>
+	<string>© 2017-2018 Silicon Laboratories, Inc. All Rights Reserved</string>
 	<key>OSBundleLibraries</key>
 	<dict>
 		<key>com.apple.iokit.IOSerialFamily</key>
-		<string>1.0.4</string>
-		<key>com.apple.iokit.IOUSBFamily</key>
-		<string>2.7.7</string>
+		<string>11.0</string>
+		<key>com.apple.iokit.IOUSBHostFamily</key>
+		<string>1.0.1</string>
 		<key>com.apple.kpi.iokit</key>
-		<string>8.0.0</string>
+		<string>15.6</string>
 		<key>com.apple.kpi.libkern</key>
-		<string>8.0.0</string>
+		<string>15.6</string>
 	</dict>
 </dict>
 </plist>

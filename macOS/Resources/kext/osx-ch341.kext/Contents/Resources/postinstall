@@ -1,0 +1,14 @@
+#!/bin/sh
+
+#  postinstall.sh
+#  Driver CH341
+#
+#  Created by Jeroen Arnoldus on 02-12-14.
+#  Copyright (c) 2014 Repleo, Amstelveen, The Netherlands - All rights reserved.
+
+touch /Library/Extensions
+cd /Library/Extensions
+
+kextload osx-ch341.kext | true
+
+

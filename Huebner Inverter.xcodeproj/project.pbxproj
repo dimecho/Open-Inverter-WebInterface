@@ -10,7 +10,6 @@
 		3249F2A21D599E3900ECF5B4 /* openscad in Resources */ = {isa = PBXBuildFile; fileRef = 3249F2A11D599E3900ECF5B4 /* openscad */; };
 		324C22E81CF429E7003A1AF5 /* eagle in Resources */ = {isa = PBXBuildFile; fileRef = 324C22E71CF429E7003A1AF5 /* eagle */; };
 		325B6C851DBBE3EC00421596 /* fuse in Resources */ = {isa = PBXBuildFile; fileRef = 325B6C841DBBE3EC00421596 /* fuse */; };
-		3274D25E1D3DF5C500573511 /* attiny in Resources */ = {isa = PBXBuildFile; fileRef = 3274D25D1D3DF5C500573511 /* attiny */; };
 		328002011D6AAA4A001C5E4E /* run in Resources */ = {isa = PBXBuildFile; fileRef = 328002001D6AAA4A001C5E4E /* run */; };
 		32D281B41CF0066E00606B12 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D281B31CF0066E00606B12 /* Application.swift */; };
 		32D281B61CF0066F00606B12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32D281B51CF0066F00606B12 /* Assets.xcassets */; };
@@ -29,7 +28,6 @@
 		3249F2A11D599E3900ECF5B4 /* openscad */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = openscad; path = macOS/Resources/openscad; sourceTree = "<group>"; };
 		324C22E71CF429E7003A1AF5 /* eagle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = eagle; path = macOS/Resources/eagle; sourceTree = "<group>"; };
 		325B6C841DBBE3EC00421596 /* fuse */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = fuse; path = macOS/Resources/fuse; sourceTree = "<group>"; };
-		3274D25D1D3DF5C500573511 /* attiny */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = attiny; path = macOS/Resources/attiny; sourceTree = "<group>"; };
 		328002001D6AAA4A001C5E4E /* run */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = run; path = macOS/Resources/run; sourceTree = "<group>"; };
 		32D281AE1CF0066E00606B12 /* Huebner Inverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Huebner Inverter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		32D281B31CF0066E00606B12 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Application.swift; path = Sources/Application.swift; sourceTree = "<group>"; };
@@ -99,7 +97,6 @@
 				32D281F21CF00EF200606B12 /* xquartz */,
 				32EBDE5C1D6ADB6A00CF5BEC /* source */,
 				32FFA9FB1D18D6FB00E5BBF0 /* openocd */,
-				3274D25D1D3DF5C500573511 /* attiny */,
 				325B6C841DBBE3EC00421596 /* fuse */,
 				32D5A3421D6AD27C008F9EFB /* arm */,
 			);
@@ -171,7 +168,6 @@
 				328002011D6AAA4A001C5E4E /* run in Resources */,
 				32EBDE5D1D6ADB6A00CF5BEC /* source in Resources */,
 				3249F2A21D599E3900ECF5B4 /* openscad in Resources */,
-				3274D25E1D3DF5C500573511 /* attiny in Resources */,
 				32D281B61CF0066F00606B12 /* Assets.xcassets in Resources */,
 				32D5A3431D6AD27C008F9EFB /* arm in Resources */,
 				32D281B91CF0066F00606B12 /* Main.storyboard in Resources */,

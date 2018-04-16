@@ -1,7 +1,5 @@
 #!/bin/sh
 
-browser="Safari"
-
 myIP=$(ifconfig | grep "inet " | grep -v "127.0.0.1" | cut -f2 -d' '| awk 'NR==1{print $1}')
 
 if [ -z "$myIP" ]; then
@@ -13,7 +11,7 @@ checkUSB()
     shopt -s nocasematch
     for ((i = 0 ; i < 30 ; i++ )); do
         for serial in $(ls /dev/cu.*); do
-            if [[ $serial == *"usb"* ]]; then
+            if [ $serial == *"usb"* ] || [ $serial == *"ch34"* ] || [ $serial == *"pl23"* ] ; then
                 if grep -q $serial "$(dirname "$0")/Web/config.inc.php"; then
                     i=30
                 else
@@ -45,8 +43,10 @@ cd "$(dirname "$0")"
 
 if [ -d /Applications/Firefox.app ]; then
     browser="Firefox"
-else if[ -d /Applications/Chrome.app ]
+elif [ -d /Applications/Chrome.app ]; then
     browser="Chrome"
+else
+    browser="Safari"
 fi
 
 pkill -9 php

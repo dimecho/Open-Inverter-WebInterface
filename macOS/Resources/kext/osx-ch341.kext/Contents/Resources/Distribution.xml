@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<installer-gui-script minSpecVersion="1">
+    <pkg-ref id="Repleo.osx-ch341"/>
+    <options customize="never" require-scripts="false"/>
+    <choices-outline>
+        <line choice="default">
+            <line choice="Repleo.osx-ch341"/>
+        </line>
+    </choices-outline>
+    <choice id="default"/>
+    <choice id="Repleo.osx-ch341" visible="false">
+        <pkg-ref id="Repleo.osx-ch341"/>
+    </choice>
+    <pkg-ref id="Repleo.osx-ch341" version="__MODULE_VERSION__" onConclusion="none">osx-ch341.pkg</pkg-ref>
+    <title>CH341 USB to Serial Driver for OS X __MACOSX_DEPLOYMENT_TARGET__  (__MODULE_VERSION__)</title>
+    <license file="License.rtf"/>
+    <welcome file="Welcome.rtf"/>
+    <allowed-os-versions>
+        <os-version min="10.13" before="10.14" />
+    </allowed-os-versions>
+</installer-gui-script>
