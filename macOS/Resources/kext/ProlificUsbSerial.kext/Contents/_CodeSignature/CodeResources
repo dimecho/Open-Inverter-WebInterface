@@ -3,86 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>files</key>
-	<dict>
-		<key>Resources/Distribution.xml</key>
-		<data>
-		LRhHuFeRxSfocFE6tRQlRlWGzOc=
-		</data>
-		<key>Resources/License.rtf</key>
-		<data>
-		lrKNpgVWMmiP5Ukq1ccoRi/SvPo=
-		</data>
-		<key>Resources/Welcome.rtf</key>
-		<data>
-		UtL+3wpdemrp+0t9tiMWwKGplNI=
-		</data>
-		<key>Resources/postinstall</key>
-		<data>
-		B0Kopz5RYwf5Qlc8yuogu1YACG8=
-		</data>
-		<key>Resources/preinstall</key>
-		<data>
-		1vdnwXymTNKoTh+K64nVjCugeco=
-		</data>
-	</dict>
+	<dict/>
 	<key>files2</key>
-	<dict>
-		<key>Resources/Distribution.xml</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			LRhHuFeRxSfocFE6tRQlRlWGzOc=
-			</data>
-			<key>hash2</key>
-			<data>
-			cLXfdW3g6Mz58/7ILoEefXDzSGnRVjDUgfQWx3K5jhg=
-			</data>
-		</dict>
-		<key>Resources/License.rtf</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			lrKNpgVWMmiP5Ukq1ccoRi/SvPo=
-			</data>
-			<key>hash2</key>
-			<data>
-			ONrYYQA6oBolcr3LYH7Ty/APqW3rcvZNQbKfQAscR+w=
-			</data>
-		</dict>
-		<key>Resources/Welcome.rtf</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			UtL+3wpdemrp+0t9tiMWwKGplNI=
-			</data>
-			<key>hash2</key>
-			<data>
-			JzedhMt/P/0Dill21eWrna+sd2aDFKic7an1YX7cFnE=
-			</data>
-		</dict>
-		<key>Resources/postinstall</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			B0Kopz5RYwf5Qlc8yuogu1YACG8=
-			</data>
-			<key>hash2</key>
-			<data>
-			MktbrvZqxgDzTUsBc2FvipXsn3CcpV+EoK48uo4ELx4=
-			</data>
-		</dict>
-		<key>Resources/preinstall</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			1vdnwXymTNKoTh+K64nVjCugeco=
-			</data>
-			<key>hash2</key>
-			<data>
-			rptqTT/uEG1nnIguaRCnoTKB72F7qkur6/CuEzjxgeY=
-			</data>
-		</dict>
-	</dict>
+	<dict/>
 	<key>rules</key>
 	<dict>
 		<key>^Resources/</key>
@@ -100,11 +23,6 @@
 			<true/>
 			<key>weight</key>
 			<real>1100</real>
-		</dict>
-		<key>^Resources/Base\.lproj/</key>
-		<dict>
-			<key>weight</key>
-			<real>1010</real>
 		</dict>
 		<key>^version.plist$</key>
 		<true/>
@@ -164,11 +82,6 @@
 			<true/>
 			<key>weight</key>
 			<real>1100</real>
-		</dict>
-		<key>^Resources/Base\.lproj/</key>
-		<dict>
-			<key>weight</key>
-			<real>1010</real>
 		</dict>
 		<key>^[^/]+$</key>
 		<dict>

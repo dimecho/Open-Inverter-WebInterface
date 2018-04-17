@@ -137,24 +137,24 @@
     "eagle" : {
         "title" : "AutoCAD Eagle - PCB Design Software",
         "download" : {
-            "mac" : "https://eagle-updates.circuits.io/downloads/8_6_3/Autodesk_EAGLE_8.6.3_English_Mac_64bit.pkg",
-            "windows" : "https://eagle-updates.circuits.io/downloads/8_6_3/Autodesk_EAGLE_8.6.3_English_Win_64bit.exe",
-            "linux" : "https://eagle-updates.circuits.io/downloads/8_6_3/Autodesk_EAGLE_8.6.3_English_Linux_64bit.tar.gz",
+            "mac" : "https://eagle-updates.circuits.io/downloads/8_7_1/Autodesk_EAGLE_8.7.1_English_Mac_64bit.pkg",
+            "windows" : "https://eagle-updates.circuits.io/downloads/8_7_1/Autodesk_EAGLE_8.7.1_English_Win_64bit.exe",
+            "linux" : "https://eagle-updates.circuits.io/downloads/8_7_1/Autodesk_EAGLE_8.7.1_English_Linux_64bit.tar.gz",
             "size" : 120,
-            "version" : "8.6.3"
+            "version" : "8.7.1"
         },
         "path" : {
-            "mac" : "/Applications/EAGLE-8.6.3/Eagle.app/Contents/MacOS/Eagle",
-            "windows" : "C:\\EAGLE-8.6.3\\bin\\eagle.exe",
-            "linux" : "/opt/eagle-8.6.3/bin/eagle"
+            "mac" : "/Applications/EAGLE-8.7.1/Eagle.app/Contents/MacOS/Eagle",
+            "windows" : "C:\\EAGLE-8.7.1\\bin\\eagle.exe",
+            "linux" : "/opt/eagle-8.7.1/bin/eagle"
         }
     },
     "designsparkpcb" : {
         "title" : "DesignSpark - PCB Design Software",
         "download" : {
-            "mac" : "http://pcb.designspark.info/DesignSparkPCB_v8.1_Beta.exe",
-            "windows" : "http://pcb.designspark.info/DesignSparkPCB_v8.1_Beta.exe",
-            "linux" : "http://pcb.designspark.info/DesignSparkPCB_v8.1_Beta.exe",
+            "mac" : "http://pcb.designspark.info/DesignSparkPCB_v8.1.exe",
+            "windows" : "http://pcb.designspark.info/DesignSparkPCB_v8.1.exe",
+            "linux" : "http://pcb.designspark.info/DesignSparkPCB_v8.1.exe",
             "size" : 65,
             "version" : "8.1"
         },
