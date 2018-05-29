@@ -76,10 +76,11 @@ din_ocur,,,,,Over current detected
 din_bms,,,,,BMS over voltage/under voltage
 tm_meas,us,,,,Time taken to calculate new duty cycle in PWM service routine
 idlethrotlim,,,,,Depends on you gearing and motor
-syncmode,,,,,Experimental: Running synchronous motors
 syncofs,,,,,"Experimental: Configure a pin as an input for the north marker. When the interrupt fires, reset the angle"
 chargemode,,,,,"Charging mode. 0=Off, 3=Boost, 4=Buck"
 chargecur,A,,,,Hardware over current limit
 udcnom,V,,,,Scales fweak and boost as DC voltage changes
 fweakcalc,Hz,,,,Calculated value from udcnom
 boostcalc,V,,,,Calculated value from udcnom
+udcswbuck,V,,,,Precharge voltage in buck mode
+encmode,,,,,"Single=Async Motor, AB=Async Motor, ABZ=Sync Motor, SPI=Talk to AD2S chip via SPI ""Deprecated"" (Sync motor), Resolver=Needs ON state on pin PD2 and expects sin/cos signal on PA6/PA7 (Sync Motor)"
