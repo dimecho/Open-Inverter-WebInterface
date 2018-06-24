@@ -137,30 +137,30 @@
     "eagle" : {
         "title" : "AutoCAD Eagle - PCB Design Software",
         "download" : {
-            "mac" : "https://eagle-updates.circuits.io/downloads/8_7_1/Autodesk_EAGLE_8.7.1_English_Mac_64bit.pkg",
-            "windows" : "https://eagle-updates.circuits.io/downloads/8_7_1/Autodesk_EAGLE_8.7.1_English_Win_64bit.exe",
-            "linux" : "https://eagle-updates.circuits.io/downloads/8_7_1/Autodesk_EAGLE_8.7.1_English_Linux_64bit.tar.gz",
-            "size" : 120,
-            "version" : "8.7.1"
+            "mac" : "https://eagle-updates.circuits.io/downloads/9_0_1/Autodesk_EAGLE_9.0.1_English_Mac_64bit.pkg",
+            "windows" : "https://eagle-updates.circuits.io/downloads/9_0_1/Autodesk_EAGLE_9.0.1_English_Win_64bit.exe",
+            "linux" : "https://eagle-updates.circuits.io/downloads/9_0_1/Autodesk_EAGLE_9.0.1_English_Linux_64bit.tar.gz",
+            "size" : 140,
+            "version" : "9.0.1"
         },
         "path" : {
-            "mac" : "/Applications/EAGLE-8.7.1/Eagle.app/Contents/MacOS/Eagle",
-            "windows" : "C:\\EAGLE-8.7.1\\bin\\eagle.exe",
-            "linux" : "/opt/eagle-8.7.1/bin/eagle"
+            "mac" : "/Applications/EAGLE-9.0.1/Eagle.app/Contents/MacOS/Eagle",
+            "windows" : "C:\\EAGLE-9.0.1\\bin\\eagle.exe",
+            "linux" : "/opt/eagle-9.0.1/bin/eagle"
         }
     },
     "designsparkpcb" : {
         "title" : "DesignSpark - PCB Design Software",
         "download" : {
-            "mac" : "http://pcb.designspark.info/DesignSparkPCB_v8.1.exe",
-            "windows" : "http://pcb.designspark.info/DesignSparkPCB_v8.1.exe",
-            "linux" : "http://pcb.designspark.info/DesignSparkPCB_v8.1.exe",
+            "mac" : "http://pcb.designspark.info/DesignSparkPCB_v8.1.1.exe",
+            "windows" : "http://pcb.designspark.info/DesignSparkPCB_v8.1.1.exe",
+            "linux" : "http://pcb.designspark.info/DesignSparkPCB_v8.1.1.exe",
             "size" : 65,
-            "version" : "8.1"
+            "version" : "8.1.1"
         },
         "path" : {
             "mac" : "/Applications/DesignSparkPCB.app/Contents/MacOS/DesignSparkPCB",
-            "windows" : "C:\\Program Files (x86)\\DesignSpark\\DesignSpark PCB 8.1\\DesignSpark.exe",
+            "windows" : "C:\\Program Files (x86)\\DesignSpark\\DesignSpark PCB 8.1.1\\DesignSpark.exe",
             "linux" : ""
         }
     },
