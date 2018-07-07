@@ -146,7 +146,7 @@ class Application: NSViewController, NSApplicationDelegate
         repeat {
             serialService = IOIteratorNext(portIterator)
             if (serialService != 0) {
-                let key: CFString! = "IOCalloutDevice" as CFString!
+                let key: CFString? = "IOCalloutDevice" as CFString?
                 let bsdPathAsCFtring: AnyObject? =
                     IORegistryEntryCreateCFProperty(serialService, key, kCFAllocatorDefault, 0).takeUnretainedValue()
                 let bsdPath = bsdPathAsCFtring as! String?

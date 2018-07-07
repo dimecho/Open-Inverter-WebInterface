@@ -1,0 +1,7 @@
+Part,Value,Device,PDF
+IC1,,MLX91208/MLX91206/MLX91205,https://www.melexis.com/-/media/files/documents/datasheets/mlx91208-datasheet-melexis.pdf
+R1,1k2,,
+R2,3k3,,
+C1,1µF,,
+C2,1nF,,
+C3,1nF,,

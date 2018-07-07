@@ -7,7 +7,7 @@ C6,2,1µF*,C-EU025-024X044,
 C7,2,1µF*,C-EU025-024X044,
 IC1,32,,LM2902N,http://www.ti.com/lit/ds/symlink/lm2902.pdf
 IC2,47,*,ATTINY13DIP,http://www.atmel.com/images/doc2535.pdf
-PWS1,48,*,ROE-0505S,http://www.recom-power.com/pdf/Econoline/ROE.pdf
+PWS1,48,*,ROE-0505S/BO0505S,http://www.recom-power.com/pdf/Econoline/ROE.pdf
 OK1,49,*,PC817,http://www.futurlec.com/Datasheet/LED/PC817.pdf
 R1,23,680k,R-EU_0207/10,
 R3,23,680k,R-EU_0207/10,

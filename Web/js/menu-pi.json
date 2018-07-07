@@ -77,7 +77,7 @@
         }, {
             "id": "Components",
             "icon": "glyphicon-list-alt",
-            "onClick": "/components.php"
+            "onClick": "/pcb.php"
         }]
     }, {
         "id": "Info",

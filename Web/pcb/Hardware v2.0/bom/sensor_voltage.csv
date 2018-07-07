@@ -1,0 +1,16 @@
+Part,Value,Device,PDF
+IC1,,OPA344,http://www.ti.com/lit/ds/symlink/opa345.pdf
+IC2,,Si8920BC,https://www.silabs.com/documents/public/data-sheets/si8920-datasheet.pdf
+DC1,,ROE-0505S/BO0505S,http://www.recom-power.com/pdf/Econoline/ROE.pdf
+R1,470R,,
+R2,680k,,
+R3,680k,,
+R4,10k,,
+R5,10k,,
+R6,10k,,
+R7,10k,,
+R8,1k2,,
+R9,1k2,,
+C1,1µF,,pcb/Capacitor-Tags.pdf
+C2,1µF,,pcb/Capacitor-Tags.pdf
+C3,1µF,,pcb/Capacitor-Tags.pdf

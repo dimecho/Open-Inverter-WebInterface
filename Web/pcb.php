@@ -2,7 +2,7 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script type="text/javascript" src="js/components.js"></script>
+        <script type="text/javascript" src="js/pcb.js"></script>
         <script>
         $(document).ready(function () {
 
@@ -18,13 +18,21 @@
             ?>
                 pcb += "Hardware v1.0";
                 buildTable("Main Board v4", pcb + "/bom/base_board4.csv");
-                buildTable("Gate Driver v2", pcb + "/bom/gate_driver2.csv", "Note: DC-DC has changed. PCB \"gate_driver.brd\" contains different size (old) component RH0515D or IH0515S");
+                buildTable("Gate Driver v1", pcb + "/bom/gate_driver.csv");
                 buildTable("Sensor Board v3", pcb + "/bom/sensor_board3.csv", "Add C4 & C5 100nF when using LEM HTFS current sensors");
             <?php
                 }else if($_GET["hardware"] == "2"){
             ?>
                 pcb += "Hardware v2.0";
                 buildTable("Main Board v5", pcb + "/bom/base_board5.csv");
+                buildTable("Gate Driver v2", pcb + "/bom/gate_driver2.csv");
+                buildTable("Sensor Voltage", pcb + "/bom/sensor_voltage.csv");
+                buildTable("Sensor Current", pcb + "/bom/sensor_current.csv");
+            <?php
+                }else if($_GET["hardware"] == "3"){
+            ?>
+                pcb += "Hardware v3.0";
+                buildTable("Main Board v6", pcb + "/bom/base_board6.csv");
             <?php
                 }else if($_GET["hardware"] == "damien"){
             ?>
@@ -61,38 +69,44 @@
                         <tbody>
                             <tr align="center">
                                 <td>
-                                    <a href="/components.php?hardware=1">
-                                        <img src="/img/hardware_v1.jpg" class="img-thumbnail rounded" />
+                                    <a href="?hardware=1">
+                                        <img src="pcb/Hardware v1.0/bom/img/base_board4.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
                                     Hardware v1.0 (Johannes Huebner)
                                 </td>
                                 <td>
-                                    <a href="/components.php?hardware=2">
-                                        <img src="/img/hardware_v2.jpg" class="img-thumbnail rounded" />
+                                    <a href="?hardware=2">
+                                        <img src="pcb/Hardware v2.0/bom/img/base_board5.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
                                     Hardware v2.0 (Johannes Huebner)
                                 </td>
                             </tr>
                             <tr align="center">
+                                <!--
                                 <td>
-                                    <a href="/components.php?hardware=damien">
-                                        <img src="/img/hardware_v1_damien.jpg" class="img-thumbnail rounded" />
+                                    <a href="?hardware=3">
+                                        <img src="pcb/Hardware v3.0/bom/img/base_board6.jpg" class="img-thumbnail rounded" />
+                                    </a><br/><br/>
+                                    Hardware v3.0 (Johannes Huebner)
+                                </td>
+                                -->
+                                <td>
+                                    <a href="?hardware=damien">
+                                        <img src="pcb/Hardware v1.0 (Damien Mod)/bom/img/main_board_v2.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
                                     Hardware v1.0 (Damien Maguire)
-                                </td>
-                                <td>
                                 </td>
                             </tr>
                             <tr align="center">
                                 <td>
-                                    <a href="/components.php?hardware=tesla_rdu">
-                                        <img src="/img/hardware_v2_tesla_rdu.jpg" class="img-thumbnail rounded" />
+                                    <a href="?hardware=tesla_rdu">
+                                        <img src="pcb/Hardware v2.0 (Tesla Rear Drive)/bom/img/tesla_rdu_v3.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
                                     Hardware v2.0 (Tesla Rear Drive Unit)
                                 </td>
                                 <td>
-                                    <a href="/components.php?hardware=tesla_fdu">
-                                        <img src="/img/hardware_v2_tesla_fdu.jpg" class="img-thumbnail rounded" />
+                                    <a href="?hardware=tesla_fdu">
+                                        <img src="pcb/Hardware v2.0 (Tesla Front Drive)/bom/img/tesla_fdu_v2.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
                                     Hardware v2.0 (Tesla Front Drive Unit)
                                 </td>

@@ -110,7 +110,7 @@ function downloadComplete(app) {
 	if (app === "openscad") {
 		window.location.href = "/encoder.php";
     }else if (app === "eagle") {
-        window.location.href = "/components.php";
+        window.location.href = "/pcb.php";
         openExternalApp(app);
 	}else{
 		openExternalApp(app);
