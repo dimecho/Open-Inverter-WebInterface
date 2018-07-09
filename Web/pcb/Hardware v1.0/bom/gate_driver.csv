@@ -15,7 +15,7 @@ IC1,33,,HCPL3120/Si8261BBC,http://pdf.datasheetcatalog.com/datasheet/hp/HCPL-312
 IC2,33,,HCPL3120/Si8261BBC,http://pdf.datasheetcatalog.com/datasheet/hp/HCPL-3120.pdf
 R1,21,220R,R-EU_0207/10,
 R2,21,220R,R-EU_0207/10,
-R3,22,4.7R,R-EU_0309/12,
+R3,22,10R,R-EU_0309/12,
 R4,19,10k,R-EU_0207/10,
 R5,19,10k,R-EU_0207/10,
-R6,22,4.7R,R-EU_0309/12,
+R6,22,10R,R-EU_0309/12,

@@ -5502,7 +5502,6 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
 <part name="R6" library="rcl" deviceset="R-EU_" device="0309/12" value="10k"/>
 <part name="R9" library="rcl" deviceset="R-EU_" device="0309/12" value="1k2"/>
-<part name="P+4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="R8" library="rcl" deviceset="R-EU_" device="0309/12" value="1k2"/>
 <part name="R7" library="rcl" deviceset="R-EU_" device="0309/12" value="10k"/>
@@ -5511,7 +5510,6 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <part name="R2" library="rcl" deviceset="R-EU_" device="0309/12" value="680k"/>
 <part name="R3" library="rcl" deviceset="R-EU_" device="0309/12" value="680k"/>
 <part name="VCC2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCCIO" device=""/>
-<part name="GND2" library="supply1" deviceset="GND" device=""/>
 <part name="JP1" library="pinhead" deviceset="PINHD-1X2" device=""/>
 <part name="R5" library="rcl" deviceset="R-EU_" device="0309/12" value="10k"/>
 <part name="R4" library="rcl" deviceset="R-EU_" device="0309/12" value="10k"/>
@@ -5531,6 +5529,8 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <part name="SUPPLY5" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND1" device=""/>
 <part name="SUPPLY7" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND1" device=""/>
 <part name="SUPPLY10" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND1" device=""/>
+<part name="GND9" library="supply1" deviceset="GND" device=""/>
+<part name="P+4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -5551,7 +5551,6 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <instance part="GND6" gate="1" x="-66.04" y="7.62"/>
 <instance part="R6" gate="G$1" x="-71.12" y="0" rot="R180"/>
 <instance part="R9" gate="G$1" x="-53.34" y="-10.16" rot="MR90"/>
-<instance part="P+4" gate="VCC" x="-53.34" y="-2.54"/>
 <instance part="GND1" gate="1" x="-48.26" y="7.62"/>
 <instance part="R8" gate="G$1" x="-48.26" y="15.24" rot="MR90"/>
 <instance part="R7" gate="G$1" x="-48.26" y="25.4" rot="MR90"/>
@@ -5560,7 +5559,6 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <instance part="R2" gate="G$1" x="17.78" y="20.32" rot="R180"/>
 <instance part="R3" gate="G$1" x="30.48" y="20.32" rot="R180"/>
 <instance part="VCC2" gate="G$1" x="-5.08" y="25.4" rot="R270"/>
-<instance part="GND2" gate="1" x="-38.1" y="-25.4"/>
 <instance part="JP1" gate="G$1" x="-35.56" y="-17.78"/>
 <instance part="R5" gate="G$1" x="-38.1" y="15.24" rot="R180"/>
 <instance part="R4" gate="G$1" x="-38.1" y="20.32" rot="R180"/>
@@ -5584,6 +5582,8 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <instance part="SUPPLY5" gate="G$1" x="7.62" y="7.62"/>
 <instance part="SUPPLY7" gate="G$1" x="-5.08" y="15.24" rot="R90"/>
 <instance part="SUPPLY10" gate="G$1" x="-5.08" y="10.16" rot="R90"/>
+<instance part="GND9" gate="1" x="-53.34" y="-2.54" rot="R180"/>
+<instance part="P+4" gate="VCC" x="-38.1" y="-25.4" rot="MR180"/>
 </instances>
 <busses>
 </busses>
@@ -5606,11 +5606,6 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <pinref part="R8" gate="G$1" pin="1"/>
 </segment>
 <segment>
-<pinref part="GND2" gate="1" pin="GND"/>
-<pinref part="JP1" gate="G$1" pin="2"/>
-<wire x1="-38.1" y1="-22.86" x2="-38.1" y2="-17.78" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="GND7" gate="1" pin="GND"/>
 <pinref part="IC2" gate="G$1" pin="GND"/>
 </segment>
@@ -5621,6 +5616,10 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <segment>
 <pinref part="GND8" gate="1" pin="GND"/>
 <pinref part="J1" gate="-3" pin="S"/>
+</segment>
+<segment>
+<pinref part="R9" gate="G$1" pin="2"/>
+<pinref part="GND9" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="VCCIO" class="0">
@@ -5651,10 +5650,6 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <pinref part="P+3" gate="VCC" pin="VCC"/>
 </segment>
 <segment>
-<pinref part="R9" gate="G$1" pin="2"/>
-<pinref part="P+4" gate="VCC" pin="VCC"/>
-</segment>
-<segment>
 <pinref part="R7" gate="G$1" pin="2"/>
 <pinref part="P+5" gate="VCC" pin="VCC"/>
 </segment>
@@ -5669,6 +5664,11 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <segment>
 <pinref part="J1" gate="-4" pin="S"/>
 <pinref part="P+8" gate="VCC" pin="VCC"/>
+</segment>
+<segment>
+<pinref part="JP1" gate="G$1" pin="2"/>
+<pinref part="P+4" gate="VCC" pin="VCC"/>
+<wire x1="-38.1" y1="-22.86" x2="-38.1" y2="-17.78" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$2" class="0">
