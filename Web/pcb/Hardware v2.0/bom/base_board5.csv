@@ -62,8 +62,8 @@ R21,19,10k,R-EU_0207/10,
 RN1,25,4.7k,8R-N,
 RN2,26,1.2k,RN08,
 T1,11,,BC547,https://www.arduino.cc/documents/datasheets/BC547.pdf
-T2,12,,ZTX1049A,http://www.diodes.com/_files/datasheets/ZTX1049A.pdf
-T3,12,,ZTX1049A,http://www.diodes.com/_files/datasheets/ZTX1049A.pdf
-T4,12,,ZTX1049A,http://www.diodes.com/_files/datasheets/ZTX1049A.pdf
-T5,12,,ZTX1049A,http://www.diodes.com/_files/datasheets/ZTX1049A.pdf
+T2,12,,ZTX1049A/STX724,http://www.diodes.com/_files/datasheets/ZTX1049A.pdf
+T3,12,,ZTX1049A/STX724,http://www.diodes.com/_files/datasheets/ZTX1049A.pdf
+T4,12,,ZTX1049A/STX724,http://www.diodes.com/_files/datasheets/ZTX1049A.pdf
+T5,12,,ZTX1049A/STX724,http://www.diodes.com/_files/datasheets/ZTX1049A.pdf
 T6,11,,BC547,https://www.arduino.cc/documents/datasheets/BC547.pdf

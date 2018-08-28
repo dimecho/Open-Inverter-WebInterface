@@ -87,6 +87,10 @@ $(document).ready(function () {
     getJSONFloatValue("version", function(version) {
         if(version > 0) {
             $("#firmwareVersion").empty().append("Firmware v" + version);
+            if(version < 3.59)
+            {
+                $.notify({ message: 'Firmware Update Recommended!' }, { type: 'danger' });
+            }
         }
     });
 	

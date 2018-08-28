@@ -43,8 +43,9 @@ udcgain,dig/V,0,4095,6.15,Digits per V of DC link
 pwmfunc,,0,2,0,"Quantity that controls the PWM output. 0=tmpm, 1=tmphs, 2=speed"
 pwmgain,dig/C,0,65535,100,Gain of PWM output
 pwmofs,dig,-65535,65535,0,"Offset of PWM output, 4096=full on"
-snshs,,0,1,0,"Heatsink temperature sensor. 0=JCurve, 1=Semikron (Skiip82)"
-snsm,,2,3,2,"Motor temperature sensor. 2=KTY83-110, 3=KTY84-130"
+tripmodes,,,,,"Control of relay reaction to trip event. 0=AllOff, 1=dcswon, 2=prechargeon"
+snshs,,0,2,0,"Heatsink temperature sensor. 0=JCurve, 1=Semikron (Skiip82), 2=MBB600"
+snsm,,12,14,12,"Motor temperature sensor. 12=KTY83-110, 13=KTY84-130, 14=Leaf"
 fslipspnt,Hz,-100,100,0,Slip setpoint in mode 2. Written by software in mode 1
 ampnom,%,0,100,0,Nominal amplitude in mode 2. Written by software in mode 1
 version,,,,,Firmware version
@@ -82,5 +83,8 @@ chargecur,A,,,,Hardware over current limit
 udcnom,V,,,,Scales fweak and boost as DC voltage changes
 fweakcalc,Hz,,,,Calculated value from udcnom
 boostcalc,V,,,,Calculated value from udcnom
-udcswbuck,V,,,,Precharge voltage in buck mode
-encmode,,,,,"Single=Async Motor, AB=Async Motor, ABZ=Sync Motor, SPI=Talk to AD2S chip via SPI ""Deprecated"" (Sync motor), Resolver=Needs ON state on pin PD2 and expects sin/cos signal on PA6/PA7 (Sync Motor)"
+udcswbuck,V,0,1000,540,Precharge voltage in buck mode
+encmode,,0,4,0,"Single=Async Motor, AB=Async Motor, ABZ=Sync Motor, SPI=Talk to AD2S chip via SPI ""Deprecated"" (Sync motor), Resolver=Needs ON state on pin PD2 and expects sin/cos signal on PA6/PA7 (Sync Motor)"
+dirchrpm,rpm,0,2000,100,""
+throtramprpm,rpm,0,20000,20000,""
+speedgain,rpm/kHz,0,65535,6000,""

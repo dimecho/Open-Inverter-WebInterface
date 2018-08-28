@@ -53,7 +53,7 @@
         "amperage": 300,
         "image": "img/Tesla_FDU.jpg",
         "tune": [{
-            "file": "Tesla_FDU_hv1.txt"
+            "file": "Tesla_FDU_hv3.txt"
         },{
             "file": "Tesla_FDU_lv1.txt"
         }]
