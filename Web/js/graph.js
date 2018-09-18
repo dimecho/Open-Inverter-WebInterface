@@ -64,15 +64,13 @@ function buildGraphMenu() {
         $("head").append("<link rel=\"stylesheet\" type=\"text/css\" href=\"css/bootstrap-slider.css\" />");
 
         var s = $("#buildGraphSlider").empty();
-        var slow_img = "Slow  "; //$("<img>", { class: "svg-inject", src: "img/slow.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Slow"} );
+        var slow_img = "Slow  "; //$("<img>", { class: "iconic", src: "img/slow.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Slow"} );
         var input = $("<input>", { id: "speed", type: "text", "data-provide": "slider", "data-slider-value": syncronizedDelay} );
-        var fast_img = "  Fast"; //$("<img>", { class: "svg-inject", src: "img/fast.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Fast"} );
+        var fast_img = "  Fast"; //$("<img>", { class: "iconic", src: "img/fast.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Fast"} );
         
         s.append(slow_img);
         s.append(input);
         s.append(fast_img);
-
-        //new SVGInjector().inject(document.querySelectorAll('.svg-inject'));
 
         input.bootstrapSlider({
             min: 10,

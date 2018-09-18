@@ -40,8 +40,13 @@
 
             function setJTAGImage() {
                 var img = $("#jtag-interface").val().split("/").pop().slice(0, -4);
-                $("#jtag-image").attr("src", "/firmware/img/" + img + ".jpg");
-                $("#jtag-name").html(jtag_name[$("#jtag-interface option:selected").index()]);
+                if(img == "stlink-v2")
+                {
+                    window.location.href = "st-link.php";
+                }else{
+                    $("#jtag-image").attr("src", "/firmware/img/" + img + ".jpg");
+                    $("#jtag-name").html(jtag_name[$("#jtag-interface option:selected").index()]);
+                }
             }
 
             $(document).on('click', '.browse', function(){
@@ -70,10 +75,10 @@
                     <table class="table table-active table-bordered">
                         <tr>
                             <td align="center">
-                                <img class="svg-inject" src="img/chip.svg" style="vertical-align:middle" /> <a class="text-dark" href="firmware/bootloader_v1.zip">Version 1</a>
+                                <img class="iconic" src="img/chip.svg" style="vertical-align:middle" /> <a class="text-dark" href="firmware/bootloader_v1.zip">Version 1</a>
                             </td>
                             <td align="center">
-                               <img class="svg-inject" src="img/chip.svg" style="vertical-align:middle" /> <a class="text-dark" href="firmware/bootloader_v2.zip">Version 2</a>
+                               <img class="iconic" src="img/chip.svg" style="vertical-align:middle" /> <a class="text-dark" href="firmware/bootloader_v2.zip">Version 2</a>
                             </td>
                         </tr>
                     </table>
