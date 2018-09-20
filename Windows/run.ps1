@@ -13,14 +13,30 @@ function Elevate() {
 }
 
 function openBrowser($url) {
-	$firefox = "C:\Program Files\Mozilla Firefox\firefox.exe"
+	
+	$firefox = "$env:programfiles\Mozilla Firefox\firefox.exe"
+    $edge = "$env:windir\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe"
+
 	If (Test-Path $firefox){
-		Start-Process $firefox $url
+        # Open FireFox
+		$app = Get-Process firefox -ErrorAction SilentlyContinue
+		if (!$app) {
+			Start-Process $firefox $url
+		}
+    }Else If (Test-Path $edge){
+        # Open Edge
+        $app = Get-Process MicrosoftEdge -ErrorAction SilentlyContinue
+        if (!$app) {
+            Start-Process $edge $url
+        }
 	}Else{
 		# Open Internet Explorer
-		$ie = New-Object -com InternetExplorer.Application;
-		$ie.visible = $true;
-		$ie.navigate($url);
+		$app = Get-Process iexplore -ErrorAction SilentlyContinue
+		if (!$app) {
+			$ie = New-Object -com InternetExplorer.Application;
+			$ie.visible = $true;
+			$ie.navigate($url);
+		}
 	}
 }
 
@@ -63,6 +79,8 @@ function startPHP($page) {
 
         # Start PHP Webserver
         Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8080 -t ""$scriptPath\\Web"""
+		
+		Start-Sleep -s 2
 		
 		# Open Web Browser
 		openBrowser "http://127.0.0.1:8080/$page"

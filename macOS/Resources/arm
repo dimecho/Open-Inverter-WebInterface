@@ -1,9 +1,9 @@
 #!/bin/sh
 if [ "$1" = "uninstall" ] ; then
-    rm -rf "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-6-2017-q2-update"
+    rm -rf "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-7-2018-q2-update"
 else
-    if [ ! -d "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-6-2017-q2-update" ]; then
+    if [ ! -d "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-7-2018-q2-update" ]; then
         mkdir /usr/local/etc/gcc_arm
-        tar xzfv ~/Downloads/gcc-arm-none-eabi-6-2017-q2-update-mac.tar.bz2 -C /usr/local/etc/gcc_arm/
+        tar xzfv ~/Downloads/gcc-arm-none-eabi-7-2018-q2-update-mac.tar.bz2 -C /usr/local/etc/gcc_arm/
     fi
 fi

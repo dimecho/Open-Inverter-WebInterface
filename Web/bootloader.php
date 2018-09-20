@@ -72,7 +72,7 @@
             <br/>
             <div class="row">
                 <div class="col">
-                    <table class="table table-active table-bordered">
+                    <table class="table table-active bg-light table-bordered">
                         <tr>
                             <td align="center">
                                 <img class="iconic" src="img/chip.svg" style="vertical-align:middle" /> <a class="text-dark" href="firmware/bootloader_v1.zip">Version 1</a>
@@ -82,7 +82,7 @@
                             </td>
                         </tr>
                     </table>
-                    <table class="table table-active  table-bordered">
+                    <table class="table table-active bg-light table-bordered">
                         <?php if(isset($_FILES["firmware"])){ ?>
                             <tr>
                                 <td>

@@ -140,7 +140,7 @@
             <br/><br/>
             <div class="row">
                 <div class="col">
-                    <table class="table table-active bg-faded table-bordered">
+                    <table class="table table-active bg-light table-bordered">
                         <tr align="center">
                             <td>
                             <?php

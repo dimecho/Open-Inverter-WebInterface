@@ -2,5 +2,5 @@
 if [ "$1" = "uninstall" ] ; then
     osascript -e "do shell script \"rm -rf /Applications/Arduino.app\" with administrator privileges"
 else
-    tar xzfv ~/Downloads/arduino-1.8.5-macosx.zip -C /Applications
+    tar xzfv ~/Downloads/arduino-1.8.6-macosx.zip -C /Applications
 fi
