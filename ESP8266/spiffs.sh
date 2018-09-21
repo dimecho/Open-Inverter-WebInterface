@@ -6,8 +6,19 @@ if [ $yn = y ]; then
     echo " > Over The Air (OTA)? (y/n)"
     read yn
     if [ $yn = y ]; then
-        python ./tools/espota.py -i 192.168.4.1 -p 8266 -s -f flash-spiffs.bin
+        #================
+        #Download ESPOTA
+        #================
+        if [ ! -f tools/espota.py ]; then
+            curl -L -o tools/espota.py -k -C - https://raw.githubusercontent.com/esp8266/Arduino/master/tools/espota.py
+        fi
+
+        python tools/espota.py -i 192.168.4.1 -p 8266 -s -f flash-spiffs.bin
     else
+        #================
+        #Download ESPTool
+        #================
+
         # MacOS - /Library/Python/2.7/site-packages/
         sudo easy_install pip
 

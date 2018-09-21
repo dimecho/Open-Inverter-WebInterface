@@ -10,24 +10,24 @@ mkdir -p data/fonts
 mkdir -p data/firmware
 mkdir -p data/firmware/img
 
-array=( index.php header.php menu.php esp8266.php can.php graph.php firmware.php simple.php tips.php switch-check.php motor-class.php version.txt tips.csv description.csv favicon.ico)
+array=(index.php header.php menu.php esp8266.php can.php graph.php firmware.php simple.php tips.php switch-check.php motor-class.php version.txt tips.csv description.csv favicon.ico)
 for i in "${array[@]}"; do
     cp -rf ../Web/$i data
 done
 
-array=( alertify.css fancybox.css animate.css bootstrap.css bootstrap-slider.css glyphicons.css style.css)
+array=(alertify.css fancybox.css animate.css bootstrap.css bootstrap-slider.css glyphicons.css style.css)
 for i in "${array[@]}"; do
     cp -rf ../Web/css/$i data/css
 done
 
-array=( jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js bootstrap-slider.js bootstrap-notify.js firmware.js can.js graph.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js switch-check.js iconic.js mobile.js)
+array=(jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js bootstrap-slider.js bootstrap-notify.js firmware.js can.js graph.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js switch-check.js iconic.js mobile.js)
 for i in "${array[@]}"; do
     cp -rf ../Web/js/$i data/js
 done
 cp -rf ../Web/js/menu-esp8266.json data/js/menu.json
 cp -rf ../Web/js/menu-esp8266.json data/js/menu-mobile.json
 
-array=( background.png safety.png alert.svg battery.svg engine.svg idea.svg key.svg temperature.svg temp_indicator.png encoder_lowpass.png)
+array=(background.png safety.png alert.svg battery.svg engine.svg idea.svg key.svg temperature.svg temp_indicator.png encoder_lowpass.png)
 for i in "${array[@]}"; do
     cp -rf ../Web/img/$i data/img
 done
@@ -71,7 +71,7 @@ for f in $(find data -type f -name '*.*'); do
         #================
         #Find and replace
         #================
-        for ff in $(find data -type f -name '*.php' -o -name '*.js' -o -name '*.css'); do
+        for ff in $(find ./data -type f -name '*.php' -o -name '*.js' -o -name '*.css'); do
             sed -i '' 's/'"$o"'/'"$fe"'/g' "$ff"
             sed -i '' 's#\/\*\!#\/\*#' "$ff" #Remove required comments
         done
@@ -80,21 +80,39 @@ for f in $(find data -type f -name '*.*'); do
     fi
 done
 
+#====================
+#Download Compressors
+#====================
+
+if [ ! -f tools/yuicompressor-2.4.8.jar ]; then
+    curl -L -o tools/yuicompressor-2.4.8.zip -k -C - https://github.com/yui/yuicompressor/releases/download/v2.4.8/yuicompressor-2.4.8.zip
+    cd tools
+    unzip yuicompressor-2.4.8
+    cd ../
+fi
+
+if [ ! -f tools/yuicompressor-2.4.8.jar ]; then
+    curl -L -o tools/compiler-20180910.zip -k -C - https://dl.google.com/closure-compiler/compiler-20180910.zip
+    cd tools
+    unzip compiler-20180910
+    cd ../
+fi
+
 #==============
 #Compress Files
 #==============
 for f in $(find data -name '*.css'); do
-    java -jar ~/yuicompressor.jar --type css -o "$f" "$f"
+    java -jar tools/yuicompressor-2.4.8.jar --type css -o "$f" "$f"
 done
 #for f in $(find data -name '*.php'); do
-#    java -jar ~/htmlcompressor-1.5.3.jar --preserve-php --type html -o "$f" "$f"
+#    java -jar tools/htmlcompressor-1.5.3.jar --preserve-php --type html -o "$f" "$f"
 #done
 echo " > Compress Javascript? (y/n)"
 read yn
 if [ $yn = y ]; then
     for f in $(find data -name '*.js'); do
-        java -jar ~/closure-compiler.jar --language_in ECMASCRIPT5 --js_output_file "$f-min.js" --js "$f"
-        mv "$f-min.js" "$f"
+        java -jar tools/closure-compiler-v20180910.jar --language_in ECMASCRIPT5 --js_output_file "$f" --js "$f"
+        #mv "$f-min.js" "$f"
     done
 fi
 for f in $(find data -type f -name '*.*' ! -name '*.php' ! -name '.gitignore'); do
