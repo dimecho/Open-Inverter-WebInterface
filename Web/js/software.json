@@ -137,16 +137,16 @@
     "eagle" : {
         "title" : "AutoCAD Eagle - PCB Design Software",
         "download" : {
-            "mac" : "https://eagle-updates.circuits.io/downloads/9_1_0/Autodesk_EAGLE_9.1.3_English_Mac_64bit.pkg",
-            "windows" : "https://eagle-updates.circuits.io/downloads/9_1_0/Autodesk_EAGLE_9.1.3_English_Win_64bit.exe",
-            "linux" : "https://eagle-updates.circuits.io/downloads/9_1_0/Autodesk_EAGLE_9.1.3_English_Linux_64bit.tar.gz",
+            "mac" : "https://eagle-updates.circuits.io/downloads/9_2_0/Autodesk_EAGLE_9.2.0_English_Mac_64bit.pkg",
+            "windows" : "https://eagle-updates.circuits.io/downloads/9_2_0/Autodesk_EAGLE_9.2.0_English_Win_64bit.exe",
+            "linux" : "https://eagle-updates.circuits.io/downloads/9_2_0/Autodesk_EAGLE_9.2.0_English_Linux_64bit.tar.gz",
             "size" : 140,
-            "version" : "9.1.3"
+            "version" : "9.2.0"
         },
         "path" : {
-            "mac" : "/Applications/EAGLE-9.1.3/Eagle.app/Contents/MacOS/Eagle",
-            "windows" : "C:\\EAGLE-9.1.3\\bin\\eagle.exe",
-            "linux" : "/opt/eagle-9.1.3/bin/eagle"
+            "mac" : "/Applications/EAGLE-9.2.0/Eagle.app/Contents/MacOS/Eagle",
+            "windows" : "C:\\EAGLE-9.2.0\\bin\\eagle.exe",
+            "linux" : "/opt/eagle-9.2.0/bin/eagle"
         }
     },
     "designsparkpcb" : {
@@ -167,14 +167,15 @@
     "source" : {
         "title" : "Inverter Source Code",
         "download" : {
-            "all" : "https://github.com/tumanako/tumanako-inverter-fw-motorControl/archive/master.zip",
+            "all" : "https://github.com/jsphuebner/stm32-sine/archive/master.zip",
+            "file": "stm32-sine-master.zip",
             "size" : 1,
             "version" : "3.25"
         },
         "path" : {
-            "mac" : "~/Documents/tumanako-inverter-fw-motorControl-master/src/sine/sine_core.h",
-            "windows" : "%USERPROFILE%\\Documents\\tumanako-inverter-fw-motorControl-master\\src\\sine\\sine_core.h",
-            "linux" : "~/Documents/tumanako-inverter-fw-motorControl-master/src/sine/sine_core.h"
+            "mac" : "~/Documents/stm32-sine-master/src/sine/sine_core.h",
+            "windows" : "%USERPROFILE%\\Documents\\stm32-sine-master\\src\\sine\\sine_core.h",
+            "linux" : "~/Documents/stm32-sine-master/src/sine/sine_core.h"
         }
     },
     "php" : {

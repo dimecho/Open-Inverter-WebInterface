@@ -1,13 +1,13 @@
 <?php
     include_once("common.php");
     
-    detectOS();
+    $os = detectOS();
     
     if(isset($_GET["hw"])){
         
         set_time_limit(10000);
         
-        exec(runCommand("source",$_GET["hw"]), $output, $return);
+        exec(runCommand("source",$_GET["hw"],$os), $output, $return);
         
         foreach ($output as $line) {
             echo "$line\n";
@@ -18,7 +18,7 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script type="text/javascript" src="/js/sourcecode.js"></script>
+        <script type="text/javascript" src="js/sourcecode.js"></script>
     </head>
     <body>
         <div class="container">

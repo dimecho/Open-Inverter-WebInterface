@@ -20,7 +20,7 @@ $(document).ready(function() {
             //console.log(data);
             var s = data.split(',');
             for (var i = 0; i < s.length; i++) {
-                $("#serialList").append($("<option>",{value:s[i],selected:'selected'}).append(s[i]));
+                $("#serialList").append($("<option>",{value:s[i]}).append(s[i]));
             }
             $(".loader").hide();
             $(".input-group-addon").show();

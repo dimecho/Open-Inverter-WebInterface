@@ -41,19 +41,19 @@
         return $json;
     }
 
-    function commandOSCorrection($command,$args)
+    function commandOSCorrection($command,$args,$os)
     {
-        if ($GLOBALS["OS"] === "windows") {
+        if ($os === "windows") {
             $command = $command. ".ps1";
             //if(!empty($args))
             //   $command .= "\" -Arguments";
-        }else if ($GLOBALS["OS"] === "linux") {
+        }else if ($os === "linux") {
             $command = $command.".sh";
         }
 
         if(!empty($args)){
 
-            if ($GLOBALS["OS"] === "mac" || $GLOBALS["OS"] === "windows") {
+            if ($os === "mac" || $os === "windows") {
                 
                 $command = $command. "\"";
                 $split = explode(" ",$args);
@@ -70,13 +70,13 @@
         return $command;
     }
 
-    function runCommand($command,$args)
+    function runCommand($command,$args,$os)
     {
-        $command = commandOSCorrection($command,$args);
-
-        if ($GLOBALS["OS"] === "mac") {
+        $command = commandOSCorrection($command,$args,$os);
+		
+        if ($os === "mac") {
             return "\"" .$_SERVER["DOCUMENT_ROOT"]. "/../" .$command. " 2>&1 &";
-        }else if ($GLOBALS["OS"] === "windows") {
+        }else if ($os === "windows") {
             return "powershell.exe -ExecutionPolicy Bypass -File \"" .$_SERVER["DOCUMENT_ROOT"] . "\\..\\Windows\\" .$command. " 2>&1";
         }else if ($GLOBALS["OS"] === "linux") {
             if(is_file("/usr/bin/gnome-terminal")){

@@ -1,10 +1,10 @@
 #!/bin/sh
 if [ "$1" = "uninstall" ] ; then
-    rm -rf ~/Documents/tumanako-inverter-fw-motorControl-master
+    rm -rf ~/Documents/stm32-sine-master
 else
     cd ~/Documents/
-    if [ ! -d tumanako-inverter-fw-motorControl-master ]; then
-        tar xzfv ~/Downloads/tumanako-inverter-fw-motorControl-master.zip -C ~/Documents/
+    if [ ! -d stm32-sine-master ]; then
+        tar xzfv ~/Downloads/stm32-sine-master.zip -C ~/Documents/
     else
         #xcode-select --install
         #open /Applications/XCode.app
@@ -22,7 +22,7 @@ else
         #fi
         
         #--------- LIBOPENCM3 ------------
-        cd ~/Documents/tumanako-inverter-fw-motorControl-master/
+        cd ~/Documents/stm32-sine-master/
         if [ ! -d libopencm3 ]; then
             git clone https://github.com/libopencm3/libopencm3.git --quiet
             #cp examples/stm32/f1/Makefile.include ~/Documents/tumanako-inverter-fw-motorControl-master/src/
@@ -39,7 +39,7 @@ else
         fi
 
         #--------- BOOTLOADER ------------
-        cd ~/Documents/tumanako-inverter-fw-motorControl-master/
+        cd ~/Documents/stm32-sine-master/
         if [ ! -d ./src/bootloader ]; then
             tar xzfv "$(dirname "$0")/Web/firmware/bootloader_v2.zip" -C ./src/
         fi
@@ -53,7 +53,7 @@ else
         mv stm32_loader.hex ../../
 
         #--------- FIRMWARE --------------
-        cd ~/Documents/tumanako-inverter-fw-motorControl-master
+        cd ~/Documents/stm32-sine-master
         #if [ ! -d ./src/sine/include ]; then
         #    ln -s libopencm3/include/libopencm3 ./src/sine/include
         #fi
@@ -71,7 +71,7 @@ else
         #--------- ATtiny13 --------------
         export PATH="$PATH:/usr/local/etc/gcc_arm/avr/bin/"
 
-        cd ~/Documents/tumanako-inverter-fw-motorControl-master/
+        cd ~/Documents/stm32-sine-master/
         if [ ! -d ./src/attiny13 ]; then
             tar xzfv "$(dirname "$0")/Web/firmware/attiny13.zip" -C ./src/
         fi
@@ -83,6 +83,6 @@ else
         mv volt-pwm-attiny13.hex ../../
         #---------------------------------
 
-        open ~/Documents/tumanako-inverter-fw-motorControl-master
+        open ~/Documents/stm32-sine-master
     fi
 fi

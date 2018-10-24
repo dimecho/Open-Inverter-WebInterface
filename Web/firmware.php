@@ -154,11 +154,11 @@
                             }else{
                             ?>
                                 <div class="loader"></div>
-                                <div class="input-group">
-                                    <span class="input-group-addon hidden" style="width:80%">
-                                        <select name="serial" class="form-control" form="Aform" id="serialList" style="width:80%"></select>
+                                <div class="input-group w-100">
+                                    <span class="input-group-addon hidden w-75">
+                                        <select name="serial" class="form-control" form="Aform" id="serialList"></select>
                                     </span>
-                                    <span class="input-group-addon hidden">
+                                    <span class="input-group-addon hidden w-25">
                                         <button class="btn btn-primary" type="button" id="browseFirmware"><i class="glyphicon glyphicon-search"></i> Select stm32_sine.bin</button>
                                     </span>
                                 </div>

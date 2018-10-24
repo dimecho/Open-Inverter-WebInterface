@@ -1,13 +1,13 @@
 #!/bin/bash
 
-if [ ! -d "$HOME/Documents/tumanako-inverter-fw-motorControl-master" ]; then
+if [ ! -d "$HOME/Documents/stm32-sine-master" ]; then
     if [[ ! $(type -p unzip) ]]; then
         sudo apt-get install unzip
     fi
-    unzip "$HOME/Downloads/tumanako-inverter-fw-motorControl-master.zip" -d "$HOME/Documents/"
+    unzip "$HOME/Downloads/stm32-sine-master.zip" -d "$HOME/Documents/"
 else
     #--------- LIBOPENCM3 ------------
-    cd "$HOME/Documents/tumanako-inverter-fw-motorControl-master"
+    cd "$HOME/Documents/stm32-sine-master"
     if [ ! -d libopencm3 ]; then
         if [ ! -f "$HOME/Downloads/libopencm3-master.zip" ]; then
             wget "https://github.com/libopencm3/libopencm3/archive/master.zip" -O "$HOME/Downloads/libopencm3-master.zip"
@@ -25,7 +25,7 @@ else
     fi
 
     #--------- BOOTLOADER ------------
-    cd "$HOME/Documents/tumanako-inverter-fw-motorControl-master"
+    cd "$HOME/Documents/stm32-sine-master"
     if [ ! -d ./src/bootloader ]; then
         unzip "$(dirname "$0")/../Web/firmware/bootloader_v2.zip" -d ./src/
     fi
@@ -36,7 +36,7 @@ else
     mv stm32_loader.hex ../../
 
     #--------- FIRMWARE --------------
-    cd "$HOME/Documents/tumanako-inverter-fw-motorControl-master"
+    cd "$HOME/Documents/stm32-sine-master"
     cd ./src/sine
     make clean
     make "$1"
@@ -46,7 +46,7 @@ else
     #--------- ATtiny13 --------------
     export PATH="$PATH:/usr/local/etc/gcc_arm/avr/bin/"
 
-    cd "$HOME/Documents/tumanako-inverter-fw-motorControl-master"
+    cd "$HOME/Documents/stm32-sine-master"
     if [ ! -d ./src/attiny13 ]; then
         unzip "$(dirname "$0")/../Web/firmware/attiny13.zip" -d ./src/
     fi
@@ -58,5 +58,5 @@ else
     mv volt-pwm-attiny13.hex ../../
     #---------------------------------
 
-    su $SUDO_USER -c "xdg-open '$HOME/Documents/tumanako-inverter-fw-motorControl-master'"
+    su $SUDO_USER -c "xdg-open '$HOME/Documents/stm32-sine-master'"
 fi

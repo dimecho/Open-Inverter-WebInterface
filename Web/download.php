@@ -1,7 +1,7 @@
 <?php
     session_start();
 
-    include("common.php");
+    include_once("common.php");
     
     $os = detectOS();
     $osclient = detectClientOS();
@@ -28,8 +28,12 @@
             $destination = getenv("HOME"). "/Downloads/";
         }
 
-        $filename = basename($source);
-            
+        if(isset($id['download']['file'])){
+            $filename = $id['download']['file'];
+        }else{
+            $filename = basename($source);
+        }
+        
         $destination = $destination . $filename;
     }
 
@@ -166,10 +170,9 @@
             <?php include "menu.php" ?>
             <br/><br/>
             <div class="row">
-                <div class="col"></div>
                 <div class="col">
                     <center>
-                        <table class="table table-bordered">
+                        <table class="table table-active bg-light table-bordered">
                             <tbody>
                                 <tr>
                                     <td>
@@ -180,13 +183,13 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div class="input-group">
-                                            <span class = "input-group-addon" style="width:90%">
+                                        <div class="input-group w-100">
+                                            <span class = "input-group-addon w-75">
                                                 <div class="progress progress-striped active">
                                                   <div class="progress-bar" style="width:1%" id="progressBar"></div>
                                                 </div>
                                             </span>
-                                            <span class = "input-group-addon">
+                                            <span class = "input-group-addon w-25">
                                                 <button class="pause btn btn-primary" type="button">Pause</button>
                                             </span>
                                         </div>
@@ -202,7 +205,6 @@
                         </table>
                     </center>
                 </div>
-                <div class="col"></div>
             </div>
         </div>
     </body>

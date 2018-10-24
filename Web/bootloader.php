@@ -1,10 +1,10 @@
 <?php
-
+	 include_once("common.php");
+		
+    $os = detectOS();
+		
     if(isset($_GET["ajax"])){
-
-        include("common.php");
-        
-        $command = runCommand("openocd", urldecode($_GET["file"]). " " .urldecode($_GET["interface"]));
+        $command = runCommand("openocd", urldecode($_GET["file"]). " " .urldecode($_GET["interface"]),$os);
         exec($command, $output, $return);
         
         echo "$command\n";
@@ -97,7 +97,6 @@
                                                 url:
                                                 <?php
                                                     //$tmp_dir = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
-                                                    $os = detectOS();
                                                     echo "'";
                                                     echo "/bootloader.php?ajax=1";
                                                     if ($os === "mac") {
@@ -135,19 +134,22 @@
                                     setJTAGImage();
                                 });
                             </script>
-                            <tr align="center">
+                            <tr>
                                 <td>
-                                    <div class="input-group">
-                                        <span class = "input-group-addon" style="width:80%">
-                                            <select name="interface" class="form-control" form="Aform" onchange="setJTAGImage()" id="jtag-interface" style="width:80%"></select>
+                                    <div class="input-group w-100">
+                                        <span class = "input-group-addon w-75">
+                                            <select name="interface" class="form-control" form="Aform" onchange="setJTAGImage()" id="jtag-interface"></select>
                                         </span>
-                                        <span class = "input-group-addon">
+                                        <span class = "input-group-addon w-25">
                                             <button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select stm32_loader.bin</button>
                                         </span>
+										
                                     </div>
                                     <br/><br/>
+									<center>
                                     <h2 id="jtag-name"></h2>
                                     <img src="" id="jtag-image" class="rounded" />
+									</center>
                                 </td>
                             </tr>
                         <?php } ?>

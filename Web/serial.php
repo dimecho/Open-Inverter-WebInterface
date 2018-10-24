@@ -2,7 +2,7 @@
 
     require('config.inc.php');
     
-    set_time_limit(160);
+	set_time_limit(18);
 
     error_reporting(E_ERROR | E_PARSE);
     
@@ -16,7 +16,7 @@
         if (strpos($uname, "darwin") !== false) {
             $command = "ls /dev/cu.*";
         }else if (strpos($uname, "win") !== false) {
-            $command = "powershell.exe -ExecutionPolicy Bypass -Command \"Write-Host $([System.IO.Ports.SerialPort]::GetPortNames()) -join ' '\"";
+            $command = "powershell.exe -ExecutionPolicy Bypass -Command \"Write-Host $([System.IO.Ports.SerialPort]::GetPortNames())\"";
         }else if (strpos(php_uname('m'), "arm") !== false) {
             $command = "ls /dev/ttyAMA*";
         }else{

@@ -1,5 +1,5 @@
 <?php
-    include("common.php");
+    include_once("common.php");
 
     $os = detectOS();
     $osclient = detectClientOS();
@@ -32,11 +32,11 @@
             $command  = "arm";
         }else if($_GET["app"] == "openocd" || $_GET["app"] == "bootloader")
         {
-            $command = runCommand("openocd","");
+            $command = runCommand("openocd","",$os);
             header("Location:/bootloader.php");
         }else if($_GET["app"] == "source")
         {
-            $command = runCommand("source","");
+            $command = runCommand("source","",$os);
             header("Location:/sourcecode.php");
         }else if($_GET["app"] == "arduino")
         {

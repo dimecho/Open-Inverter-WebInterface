@@ -2,14 +2,14 @@
     
     set_time_limit(10000);
 
-    include("common.php");
+    include_once("common.php");
     
     $os = detectOS();
     $software = getSoftware();
 
     if(!isset($_GET["url"]) && isset($_GET["app"]))
     {
-        exec(runCommand($_GET["app"],""), $output, $return);
+        exec(runCommand($_GET["app"],"",$os), $output, $return);
         
         //echo "$command\n";
         
@@ -19,9 +19,9 @@
     }
     else if(isset($_GET["remove"]))
     {
-        exec(runCommand($_GET["remove"],"uninstall"));
+        exec(runCommand($_GET["remove"],"uninstall",$os));
         
-        //echo runCommand($_GET["remove"],"uninstall");
+        //echo runCommand($_GET["remove"],"uninstall",$os);
         echo $_GET["remove"];
     }
     else if(isset($_GET["check"]))

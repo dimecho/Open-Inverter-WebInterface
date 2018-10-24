@@ -73,13 +73,13 @@
                             <tr align="center">
                                 <td>
                                     <a href="/wiring.php?hardware=1">
-                                        <img src="/img/hardware_v1.jpg" class="img-thumbnail rounded" />
+                                        <img src="pcb/Hardware v1.0/bom/img/base_board4.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
                                     Hardware v1.0 (Johannes Huebner)
                                 </td>
                                 <td>
                                     <a href="/wiring.php?hardware=damien">
-                                        <img src="/img/hardware_v1_damien.jpg" class="img-thumbnail rounded" />
+                                        <img src="/pcb/Hardware v1.0 (Damien Mod)/bom/img/main_board_v2.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
                                     Hardware v1.0 (Damien Maguire)
                                 </td>
@@ -87,13 +87,13 @@
                             <tr align="center">
                                 <td>
                                     <a href="/wiring.php?hardware=tesla_rdu">
-                                        <img src="/img/hardware_v2_tesla_rdu.jpg" class="img-thumbnail rounded" />
+                                        <img src="pcb/Hardware v2.0 (Tesla Rear Drive)/bom/img/tesla_rdu_v3.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
                                     Hardware v2.0 (Tesla Rear Drive Unit)
                                 </td>
 								<td>
                                     <a href="/wiring.php?hardware=tesla_fdu">
-                                        <img src="/img/hardware_v2_tesla_fdu.jpg" class="img-thumbnail rounded" />
+                                        <img src="pcb/Hardware v2.0 (Tesla Front Drive)/bom/img/tesla_fdu_v2.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
                                     Hardware v2.0 (Tesla Front Drive Unit)
                                 </td>

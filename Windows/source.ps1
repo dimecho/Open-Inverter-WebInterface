@@ -1,5 +1,5 @@
 if($args[0] -eq "uninstall") {
-    Remove-Item -Recurse -Force "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master"
+    Remove-Item -Recurse -Force "$env:USERPROFILE\Documents\stm32-sine-master"
 }else{
     $console=$args[0]
     $shell = new-object -com Shell.Application
@@ -7,7 +7,7 @@ if($args[0] -eq "uninstall") {
     Set-Location "$env:USERPROFILE\Documents\"
     if (-Not (Test-Path tumanako-inverter-fw-motorControl-master)) {
         Write-Host "UnZipping Source Code" -ForegroundColor Yellow
-    	$zip = $shell.NameSpace("$env:USERPROFILE\Downloads\tumanako-inverter-fw-motorControl-master.zip")
+    	$zip = $shell.NameSpace("$env:USERPROFILE\Downloads\stm32-sine-master.zip")
     	foreach($item in $zip.items())
     	{
     		$shell.Namespace("$env:USERPROFILE\Documents\").copyhere($item)
@@ -34,7 +34,7 @@ if($args[0] -eq "uninstall") {
 			Remove-Item "$GCC_ARM\bin\make.exe" -ErrorAction SilentlyContinue
 			
             #--------- LIBOPENCM3 ------------
-            Set-Location "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master"
+            Set-Location "$env:USERPROFILE\Documents\stm32-sine-master"
             if (-Not (Test-Path "libopencm3")) {
                 if (-Not (Test-Path "$env:USERPROFILE\Downloads\libopencm3-master.zip")) {
                     Write-Host "Downloading Libopencm3" -ForegroundColor Green
@@ -44,7 +44,7 @@ if($args[0] -eq "uninstall") {
                 $zip = $shell.NameSpace("$env:USERPROFILE\Downloads\libopencm3-master.zip")
                 foreach($item in $zip.items())
                 {
-                    $shell.Namespace("$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master\").copyhere($item)
+                    $shell.Namespace("$env:USERPROFILE\Documents\stm32-sine-master\").copyhere($item)
                 }
                 Rename-Item libopencm3-master libopencm3
             }
@@ -65,7 +65,7 @@ if($args[0] -eq "uninstall") {
                 Copy-Item include "$GCC_ARM\arm-none-eabi\include\" -Recurse -ErrorAction SilentlyContinue
             }
             #--------- BOOTLOADER ------------
-            Set-Location "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master"
+            Set-Location "$env:USERPROFILE\Documents\stm32-sine-master"
             if (-Not (Test-Path src\bootloader)) {
                 $zip = $shell.NameSpace((Split-Path $PSScriptRoot -Parent) + "\Web\firmware\bootloader_v2.zip")
                 foreach($item in $zip.items())
@@ -80,7 +80,7 @@ if($args[0] -eq "uninstall") {
             Move-Item stm32_loader.hex (Split-Path (Split-Path (Get-Location) -Parent) -Parent) -ErrorAction SilentlyContinue
 
             #--------- FIRMWARE --------------
-            Set-Location "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master"
+            Set-Location "$env:USERPROFILE\Documents\stm32-sine-master"
             Set-Location src\sine
             make.exe clean
             make.exe
@@ -92,12 +92,12 @@ if($args[0] -eq "uninstall") {
 			$GCC_AVR = "C:\SysGCC\avr"
 			$env:Path += ";$GCC_AVR\bin"
 				
-            Set-Location "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master"
+            Set-Location "$env:USERPROFILE\Documents\stm32-sine-master"
             if (-Not (Test-Path src\attiny13)) {
                 $zip = $shell.NameSpace((Split-Path $PSScriptRoot -Parent) + "\Web\firmware\attiny13.zip")
                 foreach($item in $zip.items())
                 {
-                    $shell.Namespace("$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master\src\").copyhere($item)
+                    $shell.Namespace("$env:USERPROFILE\Documents\stm32-sine-master\src\").copyhere($item)
                 }
             }
             Set-Location src\attiny13
@@ -108,7 +108,7 @@ if($args[0] -eq "uninstall") {
             Move-Item volt-pwm-attiny13.hex (Split-Path (Split-Path (Get-Location) -Parent) -Parent) -ErrorAction SilentlyContinue
             #---------------------------------
 
-            Start-Process "explorer.exe" -ArgumentList "$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master\"
+            Start-Process "explorer.exe" -ArgumentList "$env:USERPROFILE\Documents\stm32-sine-master\"
 
         }else{
             Start-Process -FilePath "cmd.exe" -ArgumentList "/k ""powershell.exe -ExecutionPolicy Bypass -File ""$PSCommandPath"" 1"" 2>&1"
