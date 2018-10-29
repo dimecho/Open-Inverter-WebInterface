@@ -1,3 +1,17 @@
+var serialPort = "COM1";
+var serialWeb = 8080;
+var serialWDomain = "http://" + window.location.hostname;
+
+$.ajax({
+  url: "js/serial.json",
+  dataType: "json",
+  async: false,
+  success: function(data) {
+    serialPort = data.serial.port;
+    serialWeb = data.serial.web;
+  }
+});
+
 $(document).ready(function () {
 
     alertify.defaults.transition = "slide";
@@ -112,7 +126,7 @@ function isFloat(n){
 
 function checkSoftware(app){
 
-    $.ajax("/install.php?check=" + app, {
+    $.ajax("install.php?check=" + app, {
         success: function success(data) {
             console.log(data);
             eval(data);
@@ -211,9 +225,8 @@ function setParameter(cmd, value, save, notify) {
 
     var e = "";
 
-    $.ajax("/serial.php?pk=1&name=" + cmd + "&value=" + value, {
-        //async: false,
-        async: true,
+    $.ajax(serialWDomain + ":" + serialWeb + "/serial.php?pk=1&name=" + cmd + "&value=" + value, {
+        //async: true,
         success: function success(data) {
             e = data;
 
@@ -244,10 +257,10 @@ function sendCommand(cmd) {
 
     var e = ""
 
-    $.ajax("/serial.php?command=" + cmd, {
+    $.ajax(serialWDomain + ":" + serialWeb + "/serial.php?command=" + cmd, {
         async: false,
         cache: false,
-        timeout: 32000, // timeout 32 seconds
+        timeout: 12000,
         success: function success(data) {
             if(cmd == "json") {
                 try {
@@ -267,7 +280,7 @@ function sendCommand(cmd) {
 };
 
 function downloadSnapshot() {
-    window.location.href = "/snapshot.php";
+    window.location.href = "snapshot.php";
 };
 
 function uploadSnapshot() {
@@ -281,11 +294,11 @@ function openExternalApp(app) {
     if (app === "openscad") {
         $('.fileSVG').trigger('click');
     } else if (app === "openocd") {
-        window.location.href = "/bootloader.php";
+        window.location.href = "bootloader.php";
     } else if (app === "source") {
-        window.location.href = "/sourcecode.php";
+        window.location.href = "sourcecode.php";
     } else if (app === "attiny") {
-        window.location.href = "/attiny.php";
+        window.location.href = "attiny.php";
     } else {
         $.ajax("open.php?app=" + app);
     }
@@ -299,7 +312,7 @@ function getJSONFloatValue(value, callback) {
     if(callback)
         sync = true;
 
-    $.ajax("/serial.php?get=" + value, {
+    $.ajax(serialWDomain + ":" + serialWeb + "/serial.php?get=" + value, {
         async: sync,
         timeout: 10000,
         success: function success(data) {
@@ -318,7 +331,7 @@ function getJSONAverageFloatValue(value,c) {
     if(!c)
         c = "average"; //median
     var f = 0;
-    $.ajax("/serial.php?" + c + "=" + value, {
+    $.ajax(serialWDomain + ":" + serialWeb + "/serial.php?" + c + "=" + value, {
         async: false,
         success: function success(data) {
             f = parseFloat(data);
@@ -380,7 +393,7 @@ function setDefaults() {
     alertify.confirm('', 'Reset all settings back to default.', function () {
 
         sendCommand("can clear");
-        $.ajax("/can.php?clear=1");
+        $.ajax("can.php?clear=1");
 
         var data = sendCommand("defaults");
         //console.log(data);
@@ -397,7 +410,7 @@ function setDefaults() {
         }
 
         setTimeout(function () {
-            window.location.href = "/index.php";
+            window.location.href = "index.php";
         }, 2000);
 
     }, function () {});
@@ -456,10 +469,10 @@ function buildTips() {
 
 function buildMenu() {
 
-    var file = "/js/menu.json";
+    var file = "js/menu.json";
 
     if (os === "mobile") {
-        file = "/js/menu-mobile.json";
+        file = "js/menu-mobile.json";
     }
 
     $.ajax(file, {

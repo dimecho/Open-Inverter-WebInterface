@@ -6,12 +6,13 @@ checkUSB()
     for i in {0..30} ; do
         serial=$(ls /dev/ttyUSB* | tail -n 1) || echo ""
         if [[ $serial == *"usb"* ]]; then
-            if grep -q $serial "$(dirname "$0")/Web/config.inc.php"; then
-                i=30
-            else
-                cp -R "$(dirname "$0")/Web/config.inc" "$(dirname "$0")/Web/config.inc.php"
-                sed -i -e "s~/dev/cu.usbserial~$serial~g" "$(dirname "$0")/Web/config.inc.php"
-            fi
+echo "{
+    \"serial\": {
+        \"port\": \"$serial\",
+        \"web\": 8081
+    }
+}" > "$(dirname "$0")/Web/js/serial.json"
+            i=30
             /usr/bin/firefox http://localhost:8080;bash
             return
         fi
@@ -33,6 +34,7 @@ if [[ $(type -p php) ]]; then
     
     sudo killall php
     sudo php -S 0.0.0.0:8080 -t "$(dirname "$0")/Web/" &
+    sudo php -S 0.0.0.0:8081 -t "$(dirname "$0")/Web/" &
     sleep 4
     
     checkUSB

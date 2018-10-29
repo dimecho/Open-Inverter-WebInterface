@@ -134,7 +134,7 @@ function loadCANDB() {
 
     var json = [{}];
 
-    $.ajax("/db/database.can", {
+    $.ajax("db/database.can", {
         async: false,
         dataType: 'json',
         success: function success(data) {
@@ -257,7 +257,7 @@ function saveCANMapping() {
 
             if(data.indexOf("Parameters stored") != -1)
             {
-               $.ajax("/can.php", {
+               $.ajax("can.php", {
                     type: "POST",
                     async: false,
                     dataType: "json",
@@ -283,14 +283,14 @@ function setCANDefaults() {
         //console.log(data);
 
         if (data.indexOf("clear") != -1) {
-            $.ajax("/can.php?clear=1");
+            $.ajax("can.php?clear=1");
             $.notify({ message: "CAN reset to Default" }, { type: "success" });
         } else {
             $.notify({ icon: "glyphicon glyphicon-warning-sign", title: "Error", message: data }, { type: "danger" });
         }
 
         setTimeout(function () {
-            window.location.href = "/can.php";
+            window.location.href = "can.php";
         }, 2000);
 
     }, function () {});

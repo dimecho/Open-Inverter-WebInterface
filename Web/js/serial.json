@@ -1,0 +1,6 @@
+{
+    "serial": {
+        "port": "/dev/cu.usbserial",
+        "web": 8080
+    }
+}

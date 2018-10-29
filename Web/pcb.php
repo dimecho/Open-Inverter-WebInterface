@@ -6,7 +6,7 @@
         <script>
         $(document).ready(function () {
 
-            var pcb = "/pcb/";
+            var pcb = "pcb/";
 
             <?php
             if(isset($_GET["hardware"])){

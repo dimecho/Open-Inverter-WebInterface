@@ -74,11 +74,8 @@
                 <div class="col">
                     <table class="table table-active bg-light table-bordered">
                         <tr>
-                            <td align="center">
-                                <img class="iconic" src="img/chip.svg" style="vertical-align:middle" /> <a class="text-dark" href="firmware/bootloader_v1.zip">Version 1</a>
-                            </td>
-                            <td align="center">
-                               <img class="iconic" src="img/chip.svg" style="vertical-align:middle" /> <a class="text-dark" href="firmware/bootloader_v2.zip">Version 2</a>
+                            <td>
+                                <button type="button" class="btn btn-primary" onClick="window.open('https://github.com/jsphuebner/tumanako-inverter-fw-bootloader')"><i class="glyphicon glyphicon-circle-arrow-down"></i> Download Bootloader</button>
                             </td>
                         </tr>
                     </table>

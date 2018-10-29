@@ -12,7 +12,7 @@ function buildStatus(sync) {
 
     clearTimeout(statusRefreshTimer);
 
-    $.ajax("/serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
+    $.ajax(serialWDomain + ":" + serialWeb + "/serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
         async: sync,
         success: function success(data)
         {

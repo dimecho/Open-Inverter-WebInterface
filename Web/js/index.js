@@ -1,5 +1,9 @@
 var esp8266 = false;
 
+var xhr = new XMLHttpRequest();
+xhr.open("GET", serialWDomain + ":" + serialWeb + "/serial.php?init=1");
+xhr.send();
+
 $(document).ready(function()
 {
     $(".safety").fancybox({
@@ -14,59 +18,14 @@ $(document).ready(function()
         closeEffect : 'none'
     });
 
+    /*
     if(os !== "mobile") {
-        
         $.getScript("js/bootstrap-editable.js").done(function(script, textStatus) {
-
-            $("head").append("<link rel=\"stylesheet\" type=\"text/css\" href=\"css/bootstrap-editable.css\" />"); 
-
-            $('#parameters').editable({
-                selector: 'a',
-                url: '/serial.php',
-                mode: 'popup',
-                pk: '1',
-                showbuttons: true,
-                savenochange: false,
-                ajaxOptions: {
-                    type: 'get',
-                    async: true,
-                    //async: false,
-                    //type: 'put',
-                    //dataType: 'json'
-                },
-                validate: function(value) {
-
-                    validateInput(this.id, value, function(r) {
-                        if(r === true)
-                            return '-';
-                    });
-                },
-                success: function(response, newValue)
-                {
-                    //console.log("'" + response + "'");
-
-                    //if(response === "Set OK\n"){
-                        //var id = this.id;
-                        //console.log(this.id);
-                        
-                        var data = sendCommand("save");
-
-                        if(data.indexOf("Parameters stored") != -1)
-                        {
-                            //TODO: CRC32 check on entire params list
-
-                            $.notify({ message: data },{ type: 'success' });
-                        }else{
-                            $.notify({ icon: 'glyphicon glyphicon-warning-sign', title: 'Error', message: data },{ type: 'danger' });
-                        }
-                    //}
-                }
-            });
-
         }).fail(function( jqxhr, settings, exception ) {
             esp8266 = true;
         });
     }
+    */
 
     var safety = getCookie("safety");
     
@@ -122,16 +81,16 @@ function basicChecks(json)
 
 function buildParameters()
 {
-	var parameters = [];
-	var description = [];
-
     $(".loader").show();
 	
 	$.ajax("description.csv",{
-		async: false,
+		//async: false,
         dataType : 'text',
 		success: function(data)
 		{
+            var parameters = [];
+            var description = [];
+
 			var row = data.split("\n");
 
 			for (var i = 1; i < row.length; i++) {
@@ -152,132 +111,132 @@ function buildParameters()
 				parameters.push(split[0]);
 				description.push(d.replace(/"/g, ''));
 			}
+
+            var json = sendCommand("json");
+
+            if(Object.keys(json).length > 0)
+            {
+                var legend = $("#legend").empty();
+                var menu = $("#parameters").empty();
+                var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>")).append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("Type")));
+                var tbody = $("<tbody>");
+                menu.append(thead);
+                menu.append(tbody);
+
+                for(var key in json)
+                {
+                    //console.log(key);
+
+                    var tooltip = "";
+                    var x = parameters.indexOf(key);
+                    if(x !=-1)
+                        tooltip = description[x];
+
+                    var a = $("<a>");
+                    var tr = $("<tr>");
+
+                    //if(os === "mobile" || esp8266 === true) {
+                        var a = $("<input>", { type:"text", "id":key, class:"form-control", value:json[key].value });
+                        a.on('change paste', function() {
+                            var element = $(this);
+                            if(element.val() != "") {
+                                validateInput(element.attr("id"), element.val(), function(r) {
+                                    if(r === true) 
+                                        setParameter(element.attr("id"),element.val(),true,true);
+                                });
+                            }
+                        });
+                        if(os === "mobile") {
+                            tr.attr("style","font-size: 140%;");
+                            a.attr("style","font-size: 110%; width: 100%; height: 1.5em");
+                            a.attr("type","number");
+                        }
+                    //}else{
+                    //    var a = $("<a>", { href:"#", "id":key, "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":json[key].unit + " ("+ json[key].default + ")"});
+                    //    a.append(json[key].value);
+                    //}
+
+                    var category_icon = $("<i>", { class:"text-muted glyphicon" });
+
+                    if(json[key].category)
+                    {
+                        var category = json[key].category;
+                        
+                        category_icon.attr("data-toggle", "tooltip");
+                        category_icon.attr("data-html", true);
+                        category_icon.attr("title", "<h6>" + category + "</h6>");
+
+                        if(category == "Motor")
+                        {
+                            category_icon.addClass("glyphicon-cd");
+                        }
+                        else if(category == "Inverter")
+                        {
+                            category_icon.addClass("glyphicon-compressed");
+                        }
+                        else if(category == "Charger")
+                        {
+                            category_icon.addClass("glyphicon-flash");
+                        }
+                        else if(category == "Throttle")
+                        {
+                            category_icon.addClass("glyphicon-off");
+                        }
+                        else if(category == "Regen")
+                        {
+                            category_icon.addClass("glyphicon-retweet");
+                        }
+                        else if(category == "Automation")
+                        {
+                            category_icon.addClass("glyphicon-cog");
+                        }
+                        else if(category == "Derating")
+                        {
+                            category_icon.addClass("glyphicon-magnet");
+                        }
+                        else if(category == "Contactor Control")
+                        {
+                            category_icon.addClass("glyphicon-download-alt");
+                        }
+                        else if(category == "Aux PWM")
+                        {
+                            category_icon.addClass("glyphicon-barcode");
+                        }
+                        else if(category == "Testing")
+                        {
+                            category_icon.addClass("glyphicon-dashboard");
+                        }else{
+                            category_icon.addClass("glyphicon-info-sign");
+                        }
+                    }
+                    
+                    var td1 = $("<td>").append(category_icon);
+                    var td2 = $("<td>").append(key);
+                    var td3 = $("<td>").append(a);
+                    var td4 = $("<td>").append(json[key].unit.replace("","°"));
+
+                    if(tooltip != "")
+                    {
+                        td2.attr("data-toggle", "tooltip");
+                        td2.attr("data-html", true);
+                        td2.attr("title", "<h6>" + tooltip + "</h6>");
+                    }
+
+                    tr.append(td1).append(td2).append(td3).append(td4);
+                    tbody.append(tr);
+                };
+                menu.show();
+                
+                $('[data-toggle="tooltip"]').tooltip();
+
+                basicChecks(json);
+            }
+
+            $(".loader").hide();
 		},
 		error: function(xhr, textStatus, errorThrown){
 		}
 	});
-
-    var json = sendCommand("json");
-
-    if(Object.keys(json).length > 0)
-    {
-        var legend = $("#legend").empty();
-		var menu = $("#parameters").empty();
-		var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>")).append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("Type")));
-		var tbody = $("<tbody>");
-		menu.append(thead);
-		menu.append(tbody);
-
-		for(var key in json)
-		{
-			//console.log(key);
-
-			var tooltip = "";
-			var x = parameters.indexOf(key);
-			if(x !=-1)
-				tooltip = description[x];
-
-			var a = $("<a>");
-			var tr = $("<tr>");
-
-            if(os === "mobile" || esp8266 === true) {
-                var a = $("<input>", { type:"text", "id":key, class:"form-control", value:json[key].value });
-                a.on('change paste', function() {
-                    var element = $(this);
-                    if(element.val() != "") {
-                        validateInput(element.attr("id"), element.val(), function(r) {
-                            if(r === true) 
-                                setParameter(element.attr("id"),element.val(),true,true);
-                        });
-                    }
-                });
-                if(os === "mobile") {
-                    tr.attr("style","font-size: 140%;");
-                    a.attr("style","font-size: 110%; width: 100%; height: 1.5em");
-                    a.attr("type","number");
-                }
-            }else{
-                var a = $("<a>", { href:"#", "id":key, "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":json[key].unit + " ("+ json[key].default + ")"});
-                a.append(json[key].value);
-            }
-
-            var category_icon = $("<i>", { class:"text-muted glyphicon" });
-
-            if(json[key].category)
-            {
-                var category = json[key].category;
-                
-                category_icon.attr("data-toggle", "tooltip");
-                category_icon.attr("data-html", true);
-                category_icon.attr("title", "<h6>" + category + "</h6>");
-
-                if(category == "Motor")
-                {
-                    category_icon.addClass("glyphicon-cd");
-                }
-                else if(category == "Inverter")
-                {
-                    category_icon.addClass("glyphicon-compressed");
-                }
-                else if(category == "Charger")
-                {
-                    category_icon.addClass("glyphicon-flash");
-                }
-                else if(category == "Throttle")
-                {
-                    category_icon.addClass("glyphicon-off");
-                }
-                else if(category == "Regen")
-                {
-                    category_icon.addClass("glyphicon-retweet");
-                }
-                else if(category == "Automation")
-                {
-                    category_icon.addClass("glyphicon-cog");
-                }
-                else if(category == "Derating")
-                {
-                    category_icon.addClass("glyphicon-magnet");
-                }
-                else if(category == "Contactor Control")
-                {
-                    category_icon.addClass("glyphicon-download-alt");
-                }
-                else if(category == "Aux PWM")
-                {
-                    category_icon.addClass("glyphicon-barcode");
-                }
-                else if(category == "Testing")
-                {
-                    category_icon.addClass("glyphicon-dashboard");
-                }else{
-                    category_icon.addClass("glyphicon-info-sign");
-                }
-            }
-            
-            var td1 = $("<td>").append(category_icon);
-			var td2 = $("<td>").append(key);
-			var td3 = $("<td>").append(a);
-			var td4 = $("<td>").append(json[key].unit.replace("","°"));
-
-            if(tooltip != "")
-            {
-                td2.attr("data-toggle", "tooltip");
-                td2.attr("data-html", true);
-                td2.attr("title", "<h6>" + tooltip + "</h6>");
-            }
-
-            tr.append(td1).append(td2).append(td3).append(td4);
-			tbody.append(tr);
-		};
-		menu.show();
-		
-        $('[data-toggle="tooltip"]').tooltip();
-
-		basicChecks(json);
-    }
-
-    $(".loader").hide();
 
     checkUpdates();
 };

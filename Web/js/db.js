@@ -10,7 +10,7 @@ $(document).ready(function () {
 function setMotorImage()
 {
     var i = $("#motor").val();
-    $("#motorimage").attr("src", "/db/" + motorDB.motors[i].image);
+    $("#motorimage").attr("src", "db/" + motorDB.motors[i].image);
 
     var motorinfo = $("#motorinfo").empty();
     motorinfo.append("<li>Manufacturer: " + motorDB.motors[i].manufacturer + "</li>");
@@ -23,7 +23,7 @@ function setMotorImage()
 
     for(var t in motorDB.motors[i].tune)
     {
-        $.ajax("/db/" + motorDB.motors[i].tune[t].file,{
+        $.ajax("db/" + motorDB.motors[i].tune[t].file,{
             async: false,
             dataType: 'text',
             success: function(data)
@@ -43,11 +43,11 @@ function setMotorImage()
 
                     $(this).attr("disabled", true);
 
-                    $.ajax("/snapshot.php?db=" + $("#motor").val(),{
+                    $.ajax("snapshot.php?db=" + $("#motor").val(),{
                         async: false,
                         success: function(data){
                             console.log(data);
-                            window.location.href = "/index.php";
+                            window.location.href = "index.php";
                         }
                     });
 
@@ -85,7 +85,7 @@ function loadMotorDB() {
 
     var json = {};
 
-    $.ajax("/db/database.json", {
+    $.ajax("db/database.json", {
         async: false,
         dataType: 'json',
         success: function success(data) {

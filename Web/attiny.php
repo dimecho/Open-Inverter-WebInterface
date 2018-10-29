@@ -18,9 +18,10 @@
                     <table class="table table-active bg-faded table-bordered">
                             <tr>
                                 <td>
-                                    Version 1 inverter was using ATTiny13 chip to isolate high voltage detection from main controller.
+                                    <b>Version 1</b> inverter was using ATTiny13 chip to isolate high voltage detection from main controller.
                                     <br/><br/>
-                                    <img class="iconic" src="img/chip.svg" style="vertical-align:middle" /> <a class="text-dark" href="firmware/attiny13.zip">ATTiny13</a>
+                                    <button type="button" class="btn btn-primary" onClick="window.open('firmware/attiny13.zip')"><i class="glyphicon glyphicon-circle-arrow-down"></i> Download ATTiny13</button>
+                                    <br/><br/>
                                     <pre>
 <code>#include <avr/io.h>
 #include <util/delay.h>

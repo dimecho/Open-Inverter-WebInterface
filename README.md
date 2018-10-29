@@ -2,7 +2,7 @@
 
 # Huebner Inverter - Console Management
 
-Console Management for [Huebner Inverter Project](http://johanneshuebner.com/quickcms/index.html%3Fde_electric-car-conversion-site,14.html) controlling 3-phase AC Induction Motors.
+Console Management for [Huebner Inverter Project](https://github.com/jsphuebner/stm32-sine) controlling 3-phase AC Induction Motors.
 
 > **All-in-One**
 > * RS232-USB Drivers

@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script>
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', "serial.php?init=1");
-            xhr.send();
-        </script>
         <?php include "header.php" ?>
         <script type="text/javascript" src="/js/status.js"></script>
         <script type="text/javascript" src="/js/index.js"></script>

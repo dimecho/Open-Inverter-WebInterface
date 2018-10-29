@@ -11,13 +11,15 @@ checkUSB()
     shopt -s nocasematch
     for ((i = 0 ; i < 30 ; i++ )); do
         for serial in $(ls /dev/cu.*); do
-            if [ $serial == *"usb"* ] || [ $serial == *"ch34"* ] || [ $serial == *"pl23"* ] ; then
-                if grep -q $serial "$(dirname "$0")/Web/config.inc.php"; then
-                    i=30
-                else
-                    cp -R "$(dirname "$0")/Web/config.inc" "$(dirname "$0")/Web/config.inc.php"
-                    sed -i '' 's~/dev/cu.usbserial~'"$serial"'~g' "$(dirname "$0")/Web/config.inc.php"
-                fi
+            if [[ $serial == *usb* ]] || [[ $serial == *ch34* ]] || [[ $serial == *pl23* ]] ; then
+echo "{
+    \"serial\": {
+        \"port\": \"$serial\",
+        \"web\": 8081
+    }
+}" > "$(dirname "$0")/Web/js/serial.json"
+
+                i=30
                 open -a $browser http://$myIP:8080 &
                 return
             fi
@@ -51,6 +53,7 @@ fi
 
 pkill -9 php
 /usr/bin/php -S 0.0.0.0:8080 -t "$(dirname "$0")/Web/" &
+/usr/bin/php -S 0.0.0.0:8081 -t "$(dirname "$0")/Web/" &
 sleep 2
 
 for dir in `ls ./kext`; do

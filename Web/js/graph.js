@@ -1271,7 +1271,7 @@ function updateChart(value, autosize, accuracy) {
     var last = (value.length - 1);
     var i = 0;
     xhr = $.ajax({
-        url: "serial.php?stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay,
+        url: serialWDomain + ":" + serialWeb + "/serial.php?stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay,
         type: "GET",
         async: true,
         timeout: 4000,

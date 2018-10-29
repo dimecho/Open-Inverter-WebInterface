@@ -26,7 +26,7 @@ $(document).ready(function () {
 
 function dashboardCheck() {
 
-	$.ajax("/serial.php?get=" + din.join(','), {
+	$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?get=" + din.join(','), {
 		//async: false,
 		success: function success(data) {
 

@@ -25,13 +25,13 @@ rm "Huebner Inverter.sh"
 rm -r ./Web
 rm -r ./Linux
 
-echo "...Configuring Web Files (config.inc.php)"
+echo "...Configuring Web Files (serial.json)"
 echo " > Enter Serial (Example: /dev/ttyAMA0)"
 read dev_serial
 sudo rm /var/www/html/js/menu.json
 sudo cp -R /var/www/html/js/menu-pi.json /var/www/html/js/menu.json
-sudo cp -R /var/www/html/config.inc /var/www/html/config.inc.php
-sudo sed -i -e "s~/dev/cu.usbserial~$dev_serial~g" /var/www/html/config.inc.php
+sudo cp -R /var/www/html/js/serial.json /var/www/html/js/serial.json
+sudo sed -i -e "s~/dev/cu.usbserial~$dev_serial~g" /var/www/html/js/serial.json
 
 echo "...Configuring PHP Autostart"
 rclocal="/etc/rc.local"

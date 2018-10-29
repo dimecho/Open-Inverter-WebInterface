@@ -152,7 +152,7 @@ function fill3DTable() {
     var tr = $("<tr>");
     var td = $("<td>",{align:"center"});
 
-    $.ajax("3d//index.json", {
+    $.ajax("3d/index.json", {
         contentType: "application/json",
         dataType: "json",
         success: function success(data) {

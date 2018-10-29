@@ -1,8 +1,7 @@
 <?php
-
-    require('config.inc.php');
+    header("Access-Control-Allow-Origin: *");
     
-	set_time_limit(18);
+	set_time_limit(12);
 
     error_reporting(E_ERROR | E_PARSE);
     
@@ -35,49 +34,103 @@
             echo serialDevice(null);
         }
 		*/
-    }else{
-	
-        if(isset($_GET["pk"]) && isset($_GET["name"]) && isset($_GET["value"]))
+    }
+    else if(isset($_GET["pk"]) && isset($_GET["name"]) && isset($_GET["value"]))
+    {
+        echo readSerial("set " .$_GET["name"]. " " .$_GET["value"]);
+    }
+    else if(isset($_GET["get"]))
+    {
+        $uname = strtolower(php_uname('s'));
+
+        if (strpos($uname, "darwin") !== false && strpos($_GET["get"],",") !== false) //Multi-value support for Mac
         {
-            echo readSerial("set " .$_GET["name"]. " " .$_GET["value"]);
+            $split = explode(",",$_GET["get"]);
+            for ($x = 0; $x < count($split); $x++)
+                echo readSerial("get " .$split[$x]). "\n";
+        }else{
+            echo readSerial("get " .$_GET["get"]);
         }
-        else if(isset($_GET["get"]))
-        {
+    }
+    else if(isset($_GET["stream"]))
+    {
+        $l = 1; //loop
+        $t = 0; //delay
+
+        if(isset($_GET["loop"]))
+            $l = intval($_GET["loop"]);
+        if(isset($_GET["delay"]))
+            $t = intval($_GET["delay"]) * 1000;
+
+        streamSerial("get " .$_GET["stream"], $l, $t);
+    }
+    else if(isset($_GET["command"]))
+    {
+        echo readSerial($_GET["command"]);
+    }
+    else if(isset($_GET["average"]))
+    {
+		echo calculateAverage(readArray($_GET["average"],6));
+    }
+    else if(isset($_GET["median"]))
+    {
+        echo calculateMedian(readArray($_GET["median"],3));
+    }
+
+    function serialDevice($init)
+    {
+        $errors = "";
+        $json = json_decode(file_get_contents("js/serial.json"), true);
+        $com = $json['serial']['port'];
+        
+        if(isset($init)) {
+
             $uname = strtolower(php_uname('s'));
 
-            if (strpos($uname, "darwin") !== false && strpos($_GET["get"],",") !== false) //Multi-value support for Mac
-            {
-                $split = explode(",",$_GET["get"]);
-                for ($x = 0; $x < count($split); $x++)
-                    echo readSerial("get " .$split[$x]). "\n";
+            if (strpos($uname, "windows") !== false) {
+                $errors = shell_exec("mode " .$com. ": BAUD=115200 PARITY=n DATA=8 STOP=2 to=on xon=off octs=off rts=on");
+                
+                if(strpos($errors ,"Invalid") === false)
+                    $errors = "";
+
+            }else if (strpos($uname, "darwin") !== false) {
+                //exec("screen " .$com. " 115200 &");
+                //stty -f $serial 115200 parodd cs8 cstopb -crtscts -echo & cat $serial &
+                //stty -f $serial 115200 & screen $serial 115200 &
+
             }else{
-                echo readSerial("get " .$_GET["get"]);
+                #Raspberry Pi Fix
+                if (strpos(php_uname('m'), "arm") !== false) {
+                    exec("minicom -b 115200 -o -D " .$com. " &");
+                    exec("killall minicom");
+                }
+                
+                #Linux set TTY speed
+                $errors = shell_exec("stty -F " .$com. " 115200 -parenb cs8 cstopb");
+                #$errors .= shell_exec("stty -F " .$com. " clocal -crtscts -ixon -ixoff");
+            }
+
+            if($errors != "")
+                return "Error: " . $errors;
+
+            $uart = fopen($com, "r+");
+            $read = "";
+            
+            if($uart) {
+                //Unknown command sequence
+                //--------------------
+                fwrite($uart, "hello\n");
+                echo fgets($uart);
+                echo fgets($uart);
+                fclose($uart);
+                //--------------------
+
+            }else{
+                return "Error: Cannot open ". $com;
             }
         }
-        else if(isset($_GET["stream"]))
-        {
-            $l = 1; //loop
-            $t = 0; //delay
-    
-            if(isset($_GET["loop"]))
-                $l = intval($_GET["loop"]);
-            if(isset($_GET["delay"]))
-                $t = intval($_GET["delay"]) * 1000;
-    
-            streamSerial("get " .$_GET["stream"], $l, $t);
-        }
-        else if(isset($_GET["command"]))
-        {
-            echo readSerial($_GET["command"]);
-        }
-        else if(isset($_GET["average"]))
-        {
-			echo calculateAverage(readArray($_GET["average"],6));
-        }
-        else if(isset($_GET["median"]))
-        {
-            echo calculateMedian(readArray($_GET["median"],3));
-        }
+
+        return $com;
     }
 	
 	function readArray($cmd,$n)

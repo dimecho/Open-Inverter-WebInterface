@@ -1,5 +1,5 @@
 <?php
-    require('serial.php');
+    require("serial.php");
 
 	if(isset($_GET["db"])){
 		

@@ -2,20 +2,19 @@ $(document).ready(function() {
 
     //ESP8266 Detected
     $.ajax({
-        url: "/config.inc.php",
+        url: "serial.php",
         success: function() {
             $("#f_c_txt").append("Caution: Main board Olimex is powered with 3.3V - Double check your TTL-USB adapter.");
-            $("#f_c_img").attr("src","/firmware/img/usb_ttl.jpg");
+            $("#f_c_img").attr("src","firmware/img/usb_ttl.jpg");
         },
         error: function () {
             $("#f_c_txt").append("Solder <b>GPIO-0</b> to <b>1</b> and boot ESP8266 from flash. Inverter firmware will flash using ESP8266 UART internally.");
-            $("#f_c_img").attr("src","/firmware/img/esp8266.jpg");
+            $("#f_c_img").attr("src","firmware/img/esp8266.jpg");
         }
     });
 
     $.ajax({
-        url: "/serial.php?com=list",
-        timeout: 4000,
+        url: serialWDomain + ":" + serialWeb + "/serial.php?com=list",
         success: function(data) {
             //console.log(data);
             var s = data.split(',');
@@ -47,14 +46,14 @@ function firmwareFlash() {
     }
     $.ajax({
         type: "GET",
-        url: "/firmware.php?ajax=1",
+        url: "firmware.php?ajax=1",
         success: function(data){
             deleteCookie("version");
             //console.log(data);
             progressBar.css("width","100%");
             $("#output").append($("<pre>").append(data));
             setTimeout( function (){
-                window.location.href = "/index.php";
+                window.location.href = "index.php";
             },6400);
         }
     });

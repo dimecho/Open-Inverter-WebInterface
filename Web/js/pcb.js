@@ -25,6 +25,9 @@ function buildTable(title, csv, notes) {
             var bom = csv.substring(0, csv.lastIndexOf("/"));
             var row = data.split("\n");
 
+            console.log(csv);
+            console.log(bom);
+
             for (var i = 1; i < row.length; ++i) {
                 var split = row[i].split(",");
 
@@ -72,7 +75,7 @@ function buildTable(title, csv, notes) {
                             }
                             if (split[0].indexOf("RN") != -1) img = "RN_" + img;
 
-                            var span = $("<span>", { "data-toggle": "tooltip", "data-html": "true", "title": "<img src='" + bom + "/img/" + img + ".jpg' />"});
+                            var span = $("<span>", { "data-toggle": "tooltip", "title": "<img src='" + bom + "/img/" + img + ".jpg'>"});
                             span.append(value);
                             td2.append(span);
                             tbody.append(tr.append(td1.append(split[0])).append(td2).append(td3.append(a)));
@@ -80,13 +83,18 @@ function buildTable(title, csv, notes) {
                     }
                 }
             }
+
             table.append(thead);
             table.append(tbody);
             div.append(header);
             if (notes) div.append(label);
             div.append(table);
 
-            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-toggle="tooltip"]').tooltip({
+                animated: 'fade',
+                //placement: 'bottom',
+                html: true
+            });
         },
         error: function error(xhr, textStatus, errorThrown) {}
     });

@@ -52,33 +52,37 @@ function startPHP($page) {
         $scriptPath = Split-Path $PSScriptRoot -Parent
 
 		# COM Port Configure
-		$config_inc = "$scriptPath\Web\config.inc"
+
 		$comPort = findPort
+
 		if ($comPort)
 		{
-			Copy-Item "$config_inc" "$config_inc.php" -force
-			(Get-Content $config_inc).replace("/dev/cu.usbserial", "$comPort") | Set-Content "$config_inc.php"
+			$serial_json = "$scriptPath\Web\js\serial.json"
+			$json = Get-Content "$serial_json" -Raw | ConvertFrom-Json
+			$json.serial.port = $comPort
+			$json | ConvertTo-Json  | Set-Content "$serial_json"
+
 			Write-Host "===================================="  -ForegroundColor Green
-			Write-Host "COM port '$comPort' set in config.inc.php"  -ForegroundColor Green
+			Write-Host "COM port '$comPort' set in serial.json"  -ForegroundColor Green
 			Write-Host "===================================="  -ForegroundColor Green
 			
 			#================================================
 			#Quick Fix [give it a kick] - Prolific Driver Bug or Windows?
 			#================================================
-			
 			$process = Start-Process -FilePath "$PSScriptRoot\puttytel.exe" -ArgumentList "-serial $comPort" -PassThru -WindowStyle Hidden
 			try{
 				$process | Wait-Process -Timeout 5 -ErrorAction Stop
 			}catch{
 				$process | Stop-Process -Force
 			}
-			
 			#Somehow Putty fix sets maximum buffer size
 			#================================================
 		}
 
         # Start PHP Webserver
+        Start-Process -FilePath "killall.exe" -ArgumentList "/F /IM php.exe /T"
         Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8080 -t ""$scriptPath\\Web"""
+        Start-Process -WindowStyle Hidden -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8081 -t ""$scriptPath\\Web"""
 		
 		Start-Sleep -s 2
 		
