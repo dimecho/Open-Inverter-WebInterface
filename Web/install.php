@@ -32,7 +32,13 @@
     function checkSoftware($software,$os,$app,$quite)
     {
         $path = $software[$app]["path"][$os];
-        
+		
+		if ($os === "windows") {
+			$path = str_replace("~",getenv("USERPROFILE"),$path);
+        }/*else if ($os === "mac" || $os === "linux") {
+            $path = str_replace("~",getenv("HOME"),$path);
+        }*/
+		
         if($app == "arm"){
             checkARMCompiler($software,$os,$path,false);
 			return false;

@@ -19,7 +19,7 @@
                 exec($killXQuartz);
                 $command = $software["xquartz"]["path"]["mac"]. " \"/Applications/Inkscape.app/Contents/Resources/bin/inkscape" .$args. "\" > /dev/null 2>&1 &";
             }else if ($os === "windows") {
-                $command = "cmd.exe /c \"\"C:\\Program Files (x86)\\Inkscape\\inkscape.com\"\" " .$args. "";
+                $command = "cmd.exe /c \"\"C:\\Program Files\\Inkscape\\inkscape.com\"\" " .$args. "";
             }else if ($os === "linux") {
                 $command = "su \$SUDO_USER -c \"inkscape " .$args. "\"";
             }

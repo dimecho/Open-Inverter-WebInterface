@@ -21,12 +21,12 @@ if($args[0] -eq "uninstall") {
         
         Start-Process "mingw64-gcc4.7.1.exe" -Wait
 		
-        if (-Not (Test-Path "msys2-x86_64-20170918.exe")) {
+        if (-Not (Test-Path "msys2-x86_64-20180531.exe")) {
             Write-Host "Downloading MinGW - GNU for Windows"  -ForegroundColor Yellow
-            Invoke-WebRequest -Uri "https://sourceforge.mirrorservice.org/m/ms/msys2/Base/x86_64/msys2-x86_64-20170918.exe" -OutFile "msys2-x86_64-20170918.exe"
+            Invoke-WebRequest -Uri "https://sourceforge.mirrorservice.org/m/ms/msys2/Base/x86_64/msys2-x86_64-20180531.exe" -OutFile "msys2-x86_64-20180531.exe"
         }
         Write-Host "Installing MinGW - GNU for Windows" -ForegroundColor Green
-        Start-Process "msys2-x86_64-20170918.exe" -Wait
+        Start-Process "msys2-x86_64-20180531.exe" -Wait
         
         Stop-Process -ProcessName cmd
     }else{

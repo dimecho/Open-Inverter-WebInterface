@@ -23,7 +23,7 @@ function openBrowser($url) {
 		if (!$app) {
 			Start-Process $firefox $url
 		}
-    }Else If (Test-Path $edge){
+    }ElseIf (Test-Path $edge){
         # Open Edge
         $app = Get-Process MicrosoftEdge -ErrorAction SilentlyContinue
         if (!$app) {
@@ -60,6 +60,7 @@ function startPHP($page) {
 			$serial_json = "$scriptPath\Web\js\serial.json"
 			$json = Get-Content "$serial_json" -Raw | ConvertFrom-Json
 			$json.serial.port = $comPort
+			$json.serial.web = 8081
 			$json | ConvertTo-Json  | Set-Content "$serial_json"
 
 			Write-Host "===================================="  -ForegroundColor Green
@@ -80,9 +81,9 @@ function startPHP($page) {
 		}
 
         # Start PHP Webserver
-        Start-Process -FilePath "killall.exe" -ArgumentList "/F /IM php.exe /T"
-        Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8080 -t ""$scriptPath\\Web"""
-        Start-Process -WindowStyle Hidden -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8081 -t ""$scriptPath\\Web"""
+        Start-Process -FilePath "taskkill.exe" -ArgumentList "/F /IM php.exe /T" -NoNewWindow -Wait
+        Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8080 -t ""$scriptPath\\Web""" -NoNewWindow
+        Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8081 -t ""$scriptPath\\Web""" -NoNewWindow
 		
 		Start-Sleep -s 2
 		

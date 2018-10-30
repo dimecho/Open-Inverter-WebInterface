@@ -58,9 +58,7 @@ int __attribute__((OS_main)) main(void)
 }</code>
                                     </pre>
                                     <center>
-                                        You can buy a proper AVR programmer.<br/><br/>
-                                        <img src="firmware/img/avr_programmer.jpg" /><br/><br/>
-                                        Or use Raspberry Pi to flash ATTiny13.<br/><br/>
+                                        Use Raspberry Pi to flash ATTiny13.<br/><br/>
                                         <img src="firmware/img/avr_programmer_pi.png" /><br/><br/>
                                         ATTiny13 Pinout.<br/><br/>
                                         <img src="/firmware/img/attiny13.png" /><br/><br/>

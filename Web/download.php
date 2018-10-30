@@ -185,12 +185,14 @@
                                     <td>
                                         <div class="input-group w-100">
                                             <span class = "input-group-addon w-75">
-                                                <div class="progress progress-striped active">
-                                                  <div class="progress-bar" style="width:1%" id="progressBar"></div>
+                                                <div class="progress progress-striped active" style="margin-top:10px;">
+                                                  <div class="progress-bar" style="width:0%" id="progressBar"></div>
                                                 </div>
                                             </span>
                                             <span class = "input-group-addon w-25">
-                                                <button class="pause btn btn-primary" type="button">Pause</button>
+												<center>
+													<button class="pause btn btn-primary" type="button">Pause</button>
+												</center>
                                             </span>
                                         </div>
                                         <div id="output" style="display:none"></div>

@@ -5,7 +5,7 @@ if($args[0] -eq "uninstall") {
     $shell = new-object -com Shell.Application
     
     Set-Location "$env:USERPROFILE\Documents\"
-    if (-Not (Test-Path tumanako-inverter-fw-motorControl-master)) {
+    if (-Not (Test-Path stm32-sine-master)) {
         Write-Host "UnZipping Source Code" -ForegroundColor Yellow
     	$zip = $shell.NameSpace("$env:USERPROFILE\Downloads\stm32-sine-master.zip")
     	foreach($item in $zip.items())
@@ -38,7 +38,8 @@ if($args[0] -eq "uninstall") {
             if (-Not (Test-Path "libopencm3")) {
                 if (-Not (Test-Path "$env:USERPROFILE\Downloads\libopencm3-master.zip")) {
                     Write-Host "Downloading Libopencm3" -ForegroundColor Green
-                    Invoke-WebRequest -Uri "https://github.com/libopencm3/libopencm3/archive/master.zip" -OutFile "$env:USERPROFILE\Downloads\libopencm3-master.zip"
+					Invoke-WebRequest -Uri "https://github.com/jsphuebner/libopencm3/archive/master.zip" -OutFile "$env:USERPROFILE\Downloads\libopencm3-master.zip"
+                    #Invoke-WebRequest -Uri "https://github.com/libopencm3/libopencm3/archive/master.zip" -OutFile "$env:USERPROFILE\Downloads\libopencm3-master.zip"
                 }
                 Write-Host "UnZipping Libopencm3" -ForegroundColor Yellow
                 $zip = $shell.NameSpace("$env:USERPROFILE\Downloads\libopencm3-master.zip")
@@ -52,8 +53,8 @@ if($args[0] -eq "uninstall") {
             if (-Not (Test-Path libopencm3\li\libopencm3_stm32f1.a)) {
                 Write-Host "Building Libopencm3" -ForegroundColor Green
     			
-                $env:Path += ";$env:USERPROFILE\AppData\Local\Programs\Python\Python36-32\"
-                $env:Path += ";$env:USERPROFILE\AppData\Local\Programs\Python\Python36-32\Scripts\"
+                $env:Path += ";$env:USERPROFILE\AppData\Local\Programs\Python\Python37\"
+                $env:Path += ";$env:USERPROFILE\AppData\Local\Programs\Python\Python37\Scripts\"
                 ##!c:/Python27/python.exe
     			
                 Set-Location libopencm3
@@ -70,7 +71,7 @@ if($args[0] -eq "uninstall") {
                 $zip = $shell.NameSpace((Split-Path $PSScriptRoot -Parent) + "\Web\firmware\bootloader_v2.zip")
                 foreach($item in $zip.items())
                 {
-                    $shell.Namespace("$env:USERPROFILE\Documents\tumanako-inverter-fw-motorControl-master\src\").copyhere($item)
+                    $shell.Namespace("$env:USERPROFILE\Documents\stm32-sine-master\src\").copyhere($item)
                 }
             }
             Set-Location src\bootloader
