@@ -3,29 +3,33 @@
         "title": "XQuartz - Window X System",
         "download": {
             "mac": "https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.11.dmg",
-            "windows": "",
-            "linux": "",
             "size": 75,
             "version" : "2.7.11"
         },
+		"checksum" : {
+            "mac" : ""
+        },
         "path": {
-            "mac" : "/Applications/Utilities/XQuartz.app/Contents/MacOS/X11",
-            "windows" : "",
-            "linux" : ""
+            "mac" : "/Applications/Utilities/XQuartz.app/Contents/MacOS/X11"
         }
     },
     "gcc" : {
         "title" : "GCC Compiler",
         "download" : {
             "mac" : "",
-            "windows" : "http://sysprogs.com/files/gnutoolchains/mingw64/mingw64-gcc4.7.1.exe",
+            "windows" : "http://sysprogs.com/files/gnutoolchains/mingw32/mingw32-gcc4.8.1.exe",
             "linux" : "",
             "size" : 25,
             "version" : ""
         },
+		"checksum" : {
+            "mac" : "",
+            "windows" : "6d45f084ca11925609039185b8844f2b",
+            "linux" : ""
+        },
         "path" : {
             "mac" : "/usr/bin/gcc",
-            "windows" : "C:\\SysGCC\\MinGW64\\bin\\gcc.exe",
+            "windows" : "C:\\SysGCC\\MinGW32\\bin\\gcc.exe",
             "linux" : "/usr/bin/gcc"
         }
     },
@@ -33,14 +37,19 @@
         "title" : "ARM Embedded Compiler",
         "download" : {
             "mac" : "https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/7-2018q2/gcc-arm-none-eabi-7-2018-q2-update-mac.tar.bz2",
-            "windows" : "https://sysprogs.com/files/gnutoolchains/arm-eabi/arm-eabi-gcc7.2.0-r3.exe",
+            "windows" : "https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/7-2018q2/gcc-arm-none-eabi-7-2018-q2-update-win32.exe",
             "linux" : "",
             "size" : 100,
             "version" : "7.2"
         },
+		"checksum" : {
+            "mac" : "",
+            "windows" : "70cdeac126e308bf030c747a879094fa",
+            "linux" : ""
+        },
         "path" : {
             "mac" : "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-gcc",
-            "windows" : "C:\\SysGCC\\arm-eabi\\bin\\arm-eabi-gcc.exe",
+            "windows" : "C:\\SysGCC\\ARM\\bin\\arm-none-eabi-gcc.exe",
             "linux" : "/usr/share/gcc-arm-embedded/bin/gcc-arm-none-eabi"
         }
     },
@@ -53,6 +62,11 @@
             "size" : 40,
             "version" : "20131216"
         },
+		"checksum" : {
+            "mac" : "",
+            "windows" : "bc4400e56f5cda5e2dea3bd7bf5fd48a",
+            "linux" : ""
+        },
         "path" : {
             "mac" : "/usr/local/etc/gcc_arm/avr/bin/avrdude",
             "windows" : "C:\\SysGCC\\avr\\bin\\avrdude.exe",
@@ -62,11 +76,16 @@
     "arduino" : {
         "title" : "Arduino IDE",
         "download" : {
-            "mac" : "https://downloads.arduino.cc/arduino-1.8.6-macosx.zip",
-            "windows" : "https://downloads.arduino.cc/arduino-1.8.6-windows.exe",
+            "mac" : "https://downloads.arduino.cc/arduino-1.8.7-macosx.zip",
+            "windows" : "https://downloads.arduino.cc/arduino-1.8.7-windows.exe",
             "linux" : "",
             "size" : 150,
-            "version" : "1.8.6"
+            "version" : "1.8.7"
+        },
+		"checksum" : {
+            "mac" : "",
+            "windows" : "",
+            "linux" : ""
         },
         "path" : {
             "mac" : "/Applications/Arduino.app/Contents/MacOS/Arduino",
@@ -81,8 +100,12 @@
             "windows" : "https://www.python.org/ftp/python/3.7.1/python-3.7.1-amd64.exe",
             "linux" : "",
             "size" : 26,
-            "version" : "",
-			"checksum" : "4c9fd65b437ad393532e57f15ce832bc"
+            "version" : ""
+        },
+		"checksum" : {
+            "mac" : "",
+            "windows" : "4c9fd65b437ad393532e57f15ce832bc",
+            "linux" : ""
         },
         "path" : {
             "mac" : "/usr/bin/python",
@@ -93,11 +116,16 @@
     "openscad" : {
         "title" : "OpenSCAD - 3D CAD",
         "download" : {
-            "mac" : "http://files.openscad.org/snapshots/OpenSCAD-2017.12.23.dmg",
-            "windows" : "http://files.openscad.org/OpenSCAD-2015.03-x86-64-Installer.exe",
+            "mac" : "http://files.openscad.org/snapshots/OpenSCAD-2018.03.17.dmg",
+            "windows" : "http://files.openscad.org/snapshots/OpenSCAD-2018.10.13.ci145-x86-64-Installer.exe",
             "linux" : "",
             "size" : 25,
-            "version" : "2015.03"
+            "version" : "2018"
+        },
+		"checksum" : {
+            "mac" : "",
+            "windows" : "8a949834145d88bb1d91450094ab6b92",
+            "linux" : ""
         },
         "path" : {
             "mac" : "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD",
@@ -114,6 +142,11 @@
             "size" : 70,
             "version" : "0.92.2"
         },
+		"checksum" : {
+            "mac" : "",
+            "windows" : "78c8be4a470f40f2f6e38d3792fdecef",
+            "linux" : ""
+        },
         "path" : {
             "mac" : "/Applications/Inkscape.app/Contents/MacOS/Inkscape",
             "windows" : "C:\\Program Files\\Inkscape\\inkscape.exe",
@@ -128,6 +161,11 @@
             "linux" : "",
             "size" : 2.5,
             "version" : "0.10.0-8-20180512"
+        },
+		"checksum" : {
+            "mac" : "",
+            "windows" : "",
+            "linux" : ""
         },
         "path" : {
             "mac" : "/usr/local/etc/gcc_arm/openocd/bin/openocd",
@@ -144,6 +182,11 @@
             "size" : 140,
             "version" : "9.2.2"
         },
+		"checksum" : {
+            "mac" : "",
+            "windows" : "2e4a181561199b139410b43a0fc7129d",
+            "linux" : ""
+        },
         "path" : {
             "mac" : "/Applications/EAGLE-9.2.2/Eagle.app/Contents/MacOS/Eagle",
             "windows" : "C:\\EAGLE 9.2.2\\eagle.exe",
@@ -158,6 +201,11 @@
             "linux" : "http://pcb.designspark.info/DesignSparkPCB_v8.1.1.exe",
             "size" : 65,
             "version" : "8.1.1"
+        },
+		"checksum" : {
+            "mac" : "c6a6b952be6843a8f3dc0ab97b29bd70",
+            "windows" : "c6a6b952be6843a8f3dc0ab97b29bd70",
+            "linux" : "c6a6b952be6843a8f3dc0ab97b29bd70"
         },
         "path" : {
             "mac" : "/Applications/DesignSparkPCB.app/Contents/MacOS/DesignSparkPCB",
@@ -174,9 +222,9 @@
             "version" : "4.5"
         },
         "path" : {
-            "mac" : "~/Documents/stm32-sine-master/src/sine/sine_core.h",
-            "windows" : "~\\Documents\\stm32-sine-master\\src\\sine\\sine_core.h",
-            "linux" : "~/Documents/stm32-sine-master/src/sine/sine_core.h"
+            "mac" : "~/Documents/stm32-sine-master/src/generic/sine_core.cpp",
+            "windows" : "~\\Documents\\stm32-sine-master\\src\\generic\\sine_core.cpp",
+            "linux" : "~/Documents/stm32-sine-master/src/generic/sine_core.cpp"
         }
     },
     "php" : {

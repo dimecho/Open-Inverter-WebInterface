@@ -1,10 +1,15 @@
 <?php
-    header("Access-Control-Allow-Origin: *");
-    
-	set_time_limit(12);
+	error_reporting(E_ERROR | E_PARSE);
 
-    error_reporting(E_ERROR | E_PARSE);
-    
+    header("Access-Control-Allow-Origin: *");
+	
+    if(isset($_SESSION["timeout"]))
+	{
+		set_time_limit($_SESSION["timeout"]);
+	}else{
+		set_time_limit(12);
+	}
+
     if(isset($_GET["init"]))
     {
        serialDevice(true);
@@ -80,10 +85,13 @@
     function serialDevice($init)
     {
         $errors = "";
-        $json = json_decode(file_get_contents("js/serial.json"), true);
+		$json = json_decode(file_get_contents("js/serial.json"), true);
         $com = $json['serial']['port'];
-        
+		$_SESSION["timeout"] = $json['serial']['timeout'];
+		
         if(isset($init)) {
+			
+			set_time_limit(5);
 
             $uname = strtolower(php_uname('s'));
 

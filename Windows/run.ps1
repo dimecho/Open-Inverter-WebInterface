@@ -135,13 +135,13 @@ function checkProlificDriver {
 
 function checkCP2102Driver {
 	
-	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "CP2102"}
+	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "CP210"}
 	if ($Driver)
 	{
 		Elevate
 		Write-Host "...Installing Driver"
-		pnputil -a ""$PSScriptRoot\..\Windows\driver\CP210x\slabvcp.inf""
-		InfDefaultInstall ""$PSScriptRoot\..\Windows\driver\CP210x\slabvcp.inf""
+		pnputil -a ""$PSScriptRoot\..\Windows\driver\CP210x\silabser.inf""
+		InfDefaultInstall ""$PSScriptRoot\..\Windows\driver\CP210x\silabser.inf""
 	}
 }
 
@@ -162,6 +162,13 @@ function checkDrivers {
     checkProlificDriver
     checkCP2102Driver
     checkFTDIDriver
+	
+	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "USB"}
+	if ($Driver)
+	{
+		Write-Host "`nThere are still Errors with USB driver ...Check Manually`n" -ForegroundColor Red
+		devmgmt.msc
+	}
 }
 
 startPHP "index.php"

@@ -1,4 +1,4 @@
-var camera, scene, renderer;
+var canvas, camera, scene, renderer;
 var explodeValue;
 var explodeDirection = [];
 
@@ -6,9 +6,6 @@ function initialize3D(id) {
 
     scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0xE0E0E0, 0.02);
-
-    camera = new THREE.PerspectiveCamera(20, window.innerWidth*0.7 / window.innerHeight*0.9, 0.1, 50);
-    scene.add(camera);
 
     //var ambient = new THREE.AmbientLight( 0xE0E0E0 );
     var ambient = new THREE.AmbientLight( 0xC1C1C1);
@@ -37,17 +34,24 @@ function initialize3D(id) {
     var pointLight = new THREE.PointLight( 0xffaa00 );
     pointLight.position.set( 0, 0, 0 );
     //scene.add( pointLight );
+	
+	canvas = document.getElementById('canvas');
+	
+    renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true});
+	canvas.width  = canvas.clientWidth;
+	canvas.height = canvas.clientHeight;
+	renderer.setViewport(0, 0, canvas.clientWidth, canvas.clientHeight);
 
-    renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize( window.innerWidth*0.7, window.innerHeight*0.9);
-    //renderer.setClearColor(scene.fog.color);
-    renderer.setClearColor( scene.fog.color, 1 );
-    document.getElementById('container').appendChild(renderer.domElement);
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    renderer.setClearColor(scene.fog.color, 1);
 
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
-
+	
+	camera = new THREE.PerspectiveCamera(20, canvas.clientWidth/canvas.clientHeight, 0.1, 50);
+    scene.add(camera);
+	
     var controls = new THREE.OrbitControls( camera, renderer.domElement );
     controls.zoomSpeed = 0.5;
 
@@ -109,8 +113,14 @@ function initialize3D(id) {
         });
     });
     
-    window.addEventListener( 'resize', onWindowResize, false );
-
+	onResize(canvas, function () {
+          canvas.width  = canvas.clientWidth;
+          canvas.height = canvas.clientHeight;
+          renderer.setViewport(0, 0, canvas.clientWidth, canvas.clientHeight);
+          camera.aspect = canvas.clientWidth / canvas.clientHeight;
+          camera.updateProjectionMatrix();
+    });
+	
     animate();
 
     $("#explode").slider({
@@ -143,6 +153,19 @@ function initialize3D(id) {
         }
         explodeValue = value;
     });
+};
+
+function onResize(element, callback) {
+	var height = element.clientHeight;
+	var width  = element.clientWidth;
+	
+	return setInterval(function() {
+		if (element.clientHeight != height || element.clientWidth != width) {
+		  height = element.clientHeight;
+		  width  = element.clientWidth;
+		  callback();
+		}
+	}, 500);
 };
 
 function fill3DTable() {
@@ -187,13 +210,6 @@ function explode(outwards, value) {
             i++;
         }
     });
-};
-
-function onWindowResize() {
-
-    camera.aspect = window.innerWidth*0.7 / window.innerHeight*0.9;
-    camera.updateProjectionMatrix();
-    renderer.setSize( window.innerWidth*0.7, window.innerHeight*0.9);
 };
 
 function animate() {

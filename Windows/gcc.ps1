@@ -19,7 +19,7 @@ if($args[0] -eq "uninstall") {
     if ($console -eq 1){
 		Set-Location "$env:USERPROFILE\Downloads\"
         
-        Start-Process "mingw64-gcc4.7.1.exe" -Wait
+		Start-Process "mingw32-gcc4.8.1.exe" -Wait
 		
         if (-Not (Test-Path "msys2-x86_64-20180531.exe")) {
             Write-Host "Downloading MinGW - GNU for Windows"  -ForegroundColor Yellow

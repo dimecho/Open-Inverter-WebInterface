@@ -1,5 +1,6 @@
 var serialPort = "COM1";
 var serialWeb = 8080;
+var serialTimeout = 12000;
 var serialWDomain = "http://" + window.location.hostname;
 
 $.ajax({
@@ -9,6 +10,7 @@ $.ajax({
   success: function(data) {
     serialPort = data.serial.port;
     serialWeb = data.serial.web;
+	serialTimeout = data.serial.timeout * 1100;
   }
 });
 
@@ -227,6 +229,7 @@ function setParameter(cmd, value, save, notify) {
 
     $.ajax(serialWDomain + ":" + serialWeb + "/serial.php?pk=1&name=" + cmd + "&value=" + value, {
         //async: true,
+		timeout: serialTimeout,
         success: function success(data) {
             e = data;
 
@@ -260,7 +263,7 @@ function sendCommand(cmd) {
     $.ajax(serialWDomain + ":" + serialWeb + "/serial.php?command=" + cmd, {
         async: false,
         cache: false,
-        timeout: 12000,
+        timeout: serialTimeout,
         success: function success(data) {
             if(cmd == "json") {
                 try {
@@ -314,7 +317,7 @@ function getJSONFloatValue(value, callback) {
 
     $.ajax(serialWDomain + ":" + serialWeb + "/serial.php?get=" + value, {
         async: sync,
-        timeout: 10000,
+        timeout: serialTimeout,
         success: function success(data) {
             f = parseFloat(data);
             if(isNaN(f))
@@ -333,6 +336,7 @@ function getJSONAverageFloatValue(value,c) {
     var f = 0;
     $.ajax(serialWDomain + ":" + serialWeb + "/serial.php?" + c + "=" + value, {
         async: false,
+		timeout: serialTimeout,
         success: function success(data) {
             f = parseFloat(data);
         }

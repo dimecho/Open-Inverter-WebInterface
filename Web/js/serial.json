@@ -1,6 +1,7 @@
 {
     "serial": {
         "port": "/dev/cu.usbserial",
-        "web": 8080
+        "web": 8080,
+        "timeout":  12
     }
 }

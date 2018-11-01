@@ -9,7 +9,8 @@ checkUSB()
 echo "{
     \"serial\": {
         \"port\": \"$serial\",
-        \"web\": 8081
+        \"web\": 8081,
+		\"timeout\": 12
     }
 }" > "$(dirname "$0")/Web/js/serial.json"
             i=30

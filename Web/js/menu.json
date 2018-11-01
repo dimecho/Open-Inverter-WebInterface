@@ -114,7 +114,7 @@
         }, {
             "id": "Arduino LCD",
             "icon": "glyphicon-phone",
-            "onClick": "/dashboard/arduino.php"
+            "onClick": "/dashboard.php?i=arduino"
         }, {
             "id": "Power Stage",
             "icon": "glyphicon-flash",

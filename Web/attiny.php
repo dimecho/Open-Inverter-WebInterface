@@ -20,7 +20,14 @@
                                 <td>
                                     <b>Version 1</b> inverter was using ATTiny13 chip to isolate high voltage detection from main controller.
                                     <br/><br/>
-                                    <button type="button" class="btn btn-primary" onClick="window.open('firmware/attiny13.zip')"><i class="glyphicon glyphicon-circle-arrow-down"></i> Download ATTiny13</button>
+									<div class="row">
+										<div class="col">
+											<button type="button" class="btn btn-primary" onClick="checkSoftware('attiny')"><i class="glyphicon glyphicon-cog"></i> Install AVRDude</button>
+										</div>
+										<div class="col">
+											<button type="button" class="btn btn-primary" onClick="window.open('firmware/attiny13.zip')"><i class="glyphicon glyphicon-circle-arrow-down"></i> Download ATTiny13 Code</button>
+										</div>
+									</div>
                                     <br/><br/>
                                     <pre>
 <code>#include <avr/io.h>
