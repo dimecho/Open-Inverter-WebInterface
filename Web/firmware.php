@@ -1,183 +1,240 @@
 <?php
-
-    require("serial.php");
-
+	include_once("common.php");
     error_reporting(E_ERROR | E_PARSE);
+	$os = detectOS();
 
     if(isset($_GET["ajax"]))
     {
-        $os = detectOS();
-        if ($os === "mac") {
-            $file = "/tmp/firmware.bin";
-        }else{
-            $file = sys_get_temp_dir(). "/firmware.bin";
-        }
-        //TODO: dynamic - $_GET["serial"]
-        
-        $uart = fopen(serialDevice(null), "r+"); //Read & Write
-        //stream_set_blocking($uart, 1); //O_NONBLOCK
-        //stream_set_timeout($uart, 30);
-        
-        $PAGE_SIZE_BYTES = 1024;
-        $len = filesize($file);
-        
-        if ($len < 1) {
-            print "File is empty\n";
-            exit;
-        }
-        
-        $handle = fopen($file, "rb");
-        $read = fread($handle, $len);
-        $data = bytearray($read);
-        fclose($handle);
-        
-        $pages = round(($len + $PAGE_SIZE_BYTES - 1) / $PAGE_SIZE_BYTES);
-        
-        while((count($data) % $PAGE_SIZE_BYTES) > 0) //Fill ramaining bytes with zeros, prevents corrupted endings
-            array_push($data, 0);
+		$file = urldecode($_GET["file"]);
+		$interface = urldecode($_GET["interface"]);
+		
+		if (strpos($file, "interface") !== false) {
+			$command = runCommand("openocd", $file. " " .$interface. " ram", $os);
+			exec($command, $output, $return);
+			echo sys_get_temp_dir();
+			echo "\n$command\n";
+			foreach ($output as $line) {
+				echo "$line\n";
+			}
+		}else{
+			$uart = fopen(serialDevice(null), "r+"); //Read & Write
+			//stream_set_blocking($uart, 1); //O_NONBLOCK
+			//stream_set_timeout($uart, 30);
+			
+			$PAGE_SIZE_BYTES = 1024;
+			$len = filesize($file);
+			
+			if ($len < 1) {
+				print "File is empty\n";
+				exit;
+			}
+			
+			$handle = fopen($file, "rb");
+			$read = fread($handle, $len);
+			$data = bytearray($read);
+			fclose($handle);
+			
+			$pages = round(($len + $PAGE_SIZE_BYTES - 1) / $PAGE_SIZE_BYTES);
+			
+			while((count($data) % $PAGE_SIZE_BYTES) > 0) //Fill ramaining bytes with zeros, prevents corrupted endings
+				array_push($data, 0);
 
-        print "File length is " .$len. " bytes/" .$pages. " pages\n";
-        
-        print "Resetting device...\n";
-        
-        fwrite($uart, "reset\r");
-        
-        $c = wait_for_char($uart,array('S','2')); //Wait for size request
+			print "File length is " .$len. " bytes/" .$pages. " pages\n";
+			
+			print "Resetting device...\n";
+			
+			fwrite($uart, "reset\r");
+			
+			$c = wait_for_char($uart,array('S','2')); //Wait for size request
 
-        if($c == '2') //version 2 bootloader
-        {
-            fwrite($uart, 0xAA); //Send magic
-            wait_for_char($uart,array('S'));
-        }
-        
-        print "Sending number of pages.." .$pages. "\n";
-        
-        fwrite($uart, chr($pages)); //Use 'chr', sending 'int' will cause Transmission Error
-        //fputs($uart,$pages);
-        
-        wait_for_char($uart,array('P')); //Wait for page request
-        
-        ob_flush();
-        
-        $page = 0;
-        $done = false;
-        $idx = 0;
-        
-        while($done != true)
-        {
-            print "Sending page " .$page. " ...\n";
-            
-            $crc = calcStmCrc($data, $idx, $PAGE_SIZE_BYTES);
-            $c = "";
-            
-            while ($c != "C")
-            {
-                $idx = $page * $PAGE_SIZE_BYTES;
-                $cnt = 0;
-                
-                while ($cnt < $PAGE_SIZE_BYTES)
-                {
-                    fwrite($uart, chr($data[$idx]));
-                    //print chr($data[$idx]);
-                    $idx++;
-                    $cnt++;
-                }
-                
-                $c = fread($uart,1);
+			if($c == '2') //version 2 bootloader
+			{
+				fwrite($uart, 0xAA); //Send magic
+				wait_for_char($uart,array('S'));
+			}
+			
+			print "Sending number of pages.." .$pages. "\n";
+			
+			fwrite($uart, chr($pages)); //Use 'chr', sending 'int' will cause Transmission Error
+			//fputs($uart,$pages);
+			
+			wait_for_char($uart,array('P')); //Wait for page request
+			
+			ob_flush();
+			
+			$page = 0;
+			$done = false;
+			$idx = 0;
+			
+			while($done != true)
+			{
+				print "Sending page " .$page. " ...\n";
+				
+				$crc = calcStmCrc($data, $idx, $PAGE_SIZE_BYTES);
+				$c = "";
+				
+				while ($c != "C")
+				{
+					$idx = $page * $PAGE_SIZE_BYTES;
+					$cnt = 0;
+					
+					while ($cnt < $PAGE_SIZE_BYTES)
+					{
+						fwrite($uart, chr($data[$idx]));
+						//print chr($data[$idx]);
+						$idx++;
+						$cnt++;
+					}
+					
+					$c = fread($uart,1);
 
-                if ($c == "T")
-                    print "Transmission Error\n";
-            }
-          
-            print "Sending CRC...\n";
-            
-            fwrite($uart, chr($crc & 0xFF));
-            fwrite($uart, chr(($crc >> 8) & 0xFF));
-            fwrite($uart, chr(($crc >> 16) & 0xFF));
-            fwrite($uart, chr(($crc >> 24) & 0xFF));
-            
-            $c = fread($uart,1);
-            
-            if ('D' == $c) {
-                print "CRC correct!\n";
-                print "Update done!\n";
-                $done = true;
-            }else if ('E' == $c) {
-                print "CRC error!\n";
-            }else if ('P' == $c) {
-                print "CRC correct!\n";
-                $page = $page + 1;
-            }
-        }
-        fclose($uart);
+					if ($c == "T")
+						print "Transmission Error\n";
+				}
+			  
+				print "Sending CRC...\n";
+				
+				fwrite($uart, chr($crc & 0xFF));
+				fwrite($uart, chr(($crc >> 8) & 0xFF));
+				fwrite($uart, chr(($crc >> 16) & 0xFF));
+				fwrite($uart, chr(($crc >> 24) & 0xFF));
+				
+				$c = fread($uart,1);
+				
+				if ('D' == $c) {
+					print "CRC correct!\n";
+					print "Update done!\n";
+					$done = true;
+				}else if ('E' == $c) {
+					print "CRC error!\n";
+				}else if ('P' == $c) {
+					print "CRC correct!\n";
+					$page = $page + 1;
+				}
+			}
+			fclose($uart);
+		}
     }else{
+		require("serial.php");
 ?>
 <!DOCTYPE html>
 <html>
     <head>
         <?php include "header.php"; ?>
-        <script type="text/javascript" src="/js/firmware.js"></script>
-        <?php
-            if(isset($_FILES["firmware"]))
-            {
-                $os = detectOS();
-                if ($os === "mac") {
-                    $file = "/tmp/firmware.bin";
-                }else{
-                    $file = sys_get_temp_dir(). "/firmware.bin";
-                }
-                if(file_exists($file)) {
-                    unlink($file);
-                }
-                move_uploaded_file($_FILES['firmware']['tmp_name'], $file);
-                echo "<script>$(document).ready(function() { firmwareFlash() });</script>";
-            }
-        ?>
+        <script type="text/javascript" src="js/firmware.js"></script>
     </head>
     <body>
         <div class="container">
             <?php include "menu.php"; ?>
-            <br/><br/>
+            <br/>
             <div class="row">
                 <div class="col">
-                    <table class="table table-active bg-light table-bordered">
-                        <tr align="center">
+					<table class="table table-active bg-light table-bordered">
+                        <tr>
                             <td>
-                            <?php
-                            if(isset($_FILES["firmware"])){
-                                echo "<div class=\"progress progress-striped active\">";
-                                echo "<div class=\"progress-bar\" style=\"width:1%\" id=\"progressBar\"></div>";
-                                echo "</div>";
-                                echo "<span class=\"badge badge-lg badge-warning\">Tip: If Olimex is bricked, try pressing \"reset\" button while flashing</span>";
-                                echo "<br/><br/>";
-                                echo "<div id=\"output\"></div>";
-                            }else{
-                            ?>
+                                <button type="button" class="btn btn-primary" onClick="window.open('https://github.com/jsphuebner/stm32-sine')"><i class="glyphicon glyphicon-circle-arrow-down"></i> Download Firmware</button>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="table table-active bg-light table-bordered">
+						<?php if(isset($_FILES["firmware"])){ ?>
+                        <tr>
+                            <td>
+								<script>
+									$(document).ready(function() {
+										var progressBar = $("#progressBar");
+										for (i = 0; i < 100; i++) {
+											setTimeout(function(){ progressBar.css("width", i + "%"); }, i*2000);
+										}
+										$.ajax({
+											type: "GET",
+											url:
+											<?php
+												//$tmp_dir = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
+												echo "'";
+												echo "firmware.php?ajax=1";
+												$ocd_interface = $_POST["interface"];
+												if ($os === "mac") {
+													$ocd_file = "/tmp/" .$_FILES['firmware']["name"];
+												}elseif ($os === "windows") {
+													$ocd_file = sys_get_temp_dir(). "\\" .$_FILES['firmware']["name"];
+													$ocd_interface = str_replace("/","\\",$ocd_interface);
+												}else{
+													$ocd_file = sys_get_temp_dir(). "/" .$_FILES['firmware']["name"];
+												}
+												move_uploaded_file($_FILES['firmware']['tmp_name'], $ocd_file);
+												echo "&file=" .urlencode($ocd_file);
+												echo "&interface=" .urlencode($ocd_interface);
+												echo "'";
+											?>,
+											success: function(data){
+												//console.log(data);
+												progressBar.css("width","100%");
+												$("#output").append($("<pre>").append(data));
+											}
+										});
+									});
+								</script>
+								<div class="progress progress-striped active">
+                                    <div class="progress-bar" style="width:1%" id="progressBar"></div>
+                                </div>
+								<span class="badge badge-lg badge-warning">Tip: If Olimex is bricked, try pressing "reset" button while flashing</span>
+								<br/><br/>
+                                <div id="output"></div>
+							</td>
+                        </tr>
+						<?php }else{ ?>
+						<script>
+                                $(document).ready(function() {
+									$.ajax({
+										url: serialWDomain + ":" + serialWeb + "/serial.php?com=list",
+										success: function(data) {
+											//console.log(data);
+											var s = data.split(',');
+											for (var i = 0; i < s.length; i++) {
+												if(s[i] != "")
+													$("#firmware-interface").append($("<option>",{value:s[i]}).append(s[i]));
+											}
+										}
+									});
+				
+                                    for (var i = 0; i < jtag_interface.length; i++) {
+                                        $("#firmware-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_interface[i]));
+                                    }
+                                    $("#firmware-interface").prop('selectedIndex', 0);
+									$(".loader").hide();
+									$(".input-group-addon").show();
+                                    setInterfaceImage();
+                                });
+                        </script>
+						<tr>
+                            <td>
+								<center>
                                 <div class="loader"></div>
                                 <div class="input-group w-100">
                                     <span class="input-group-addon hidden w-75">
-                                        <select name="serial" class="form-control" form="Aform" id="serialList"></select>
+                                        <select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage()" id="firmware-interface"></select>
                                     </span>
                                     <span class="input-group-addon hidden w-25">
-                                        <button class="btn btn-primary" type="button" id="browseFirmware"><i class="glyphicon glyphicon-search"></i> Select stm32_sine.bin</button>
-                                    </span>
+										<center>
+											<button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select stm32_sine.bin</button>
+										</center>
+									</span>
                                 </div>
                                 <br/><br/>
-                                <span class="badge badge-lg badge-warning" id="f_c_txt" ></span>
-                                <br/><br/>
-                                <img class="rounded" id="f_c_img" />
-                            <?php
-                            }
-                            ?>
+                                <h2 id="jtag-name"></h2>
+                                <span class="badge badge-lg badge-warning" id="jtag-txt"></span><br/>
+                                <img src="" id="jtag-image" class="rounded" />
+								</center>
                             </td>
                         </tr>
+						<?php } ?>
                     </table>
                 </div>
             </div>
         </div>
-        <form method="POST" action="/firmware.php" enctype="multipart/form-data" id="firmwareForm">
-            <input type="file" name="firmware" id="firmwareFile" hidden />
-            <input type="submit" hidden />
+        <form enctype="multipart/form-data" action="firmware.php" method="POST" id="firmwareForm">
+            <input name="firmware" type="file" class="file" hidden onchange="firmwareUpload()" />
         </form>
     </body>
 </html>

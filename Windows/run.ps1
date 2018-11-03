@@ -59,7 +59,7 @@ function startPHP($page) {
 		{
 			$serial_json = "$scriptPath\Web\js\serial.json"
 			$json = Get-Content "$serial_json" -Raw | ConvertFrom-Json
-			$json.serial.port = $comPort
+			$json.serial.port = $comPort #+ ":"
 			$json.serial.web = 8081
 			$json | ConvertTo-Json  | Set-Content "$serial_json"
 
@@ -70,7 +70,7 @@ function startPHP($page) {
 			#================================================
 			#Quick Fix [give it a kick] - Prolific Driver Bug or Windows?
 			#================================================
-			$process = Start-Process -FilePath "$PSScriptRoot\puttytel.exe" -ArgumentList "-serial $comPort" -PassThru -WindowStyle Hidden
+			$process = Start-Process -FilePath "$PSScriptRoot\puttytel.exe" -ArgumentList "-serial $($comPort)" -PassThru -WindowStyle Hidden
 			try{
 				$process | Wait-Process -Timeout 5 -ErrorAction Stop
 			}catch{
@@ -78,6 +78,7 @@ function startPHP($page) {
 			}
 			#Somehow Putty fix sets maximum buffer size
 			#================================================
+			Start-Process -FilePath "cmd.exe" -ArgumentList "/c mode $($comPort): BAUD=115200 PARITY=n DATA=8 STOP=2 to=on xon=off octs=off rts=on" -NoNewWindow -Wait
 		}
 
         # Start PHP Webserver
@@ -108,6 +109,13 @@ function findPort {
 		
 		$timeout++
 	} While ($timeout -le 4)
+	
+	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "USB"}
+	if ($Driver)
+	{
+		Write-Host "`nThere are still Errors with USB driver ...Check Manually`n" -ForegroundColor Red
+		devmgmt.msc
+	}
 }
 
 function checkProlificDriver {
@@ -127,8 +135,8 @@ function checkProlificDriver {
 				}
 			}
 			Write-Host "...Installing Driver"
-			pnputil -a ""$PSScriptRoot\..\Windows\driver\ProlificUsbSerial\ser2pl.inf""
-			InfDefaultInstall ""$PSScriptRoot\..\Windows\driver\ProlificUsbSerial\ser2pl.inf""
+			pnputil -a ""$PSScriptRoot\driver\ProlificUsbSerial\ser2pl.inf""
+			InfDefaultInstall ""$PSScriptRoot\driver\ProlificUsbSerial\ser2pl.inf""
 		}
 	}
 }
@@ -140,8 +148,8 @@ function checkCP2102Driver {
 	{
 		Elevate
 		Write-Host "...Installing Driver"
-		pnputil -a ""$PSScriptRoot\..\Windows\driver\CP210x\silabser.inf""
-		InfDefaultInstall ""$PSScriptRoot\..\Windows\driver\CP210x\silabser.inf""
+		pnputil -a ""$PSScriptRoot\driver\CP210x\silabser.inf""
+		InfDefaultInstall ""$PSScriptRoot\driver\CP210x\silabser.inf""
 	}
 }
 
@@ -152,23 +160,34 @@ function checkFTDIDriver {
 	{
 		Elevate
 		Write-Host "...Installing Driver"
-		pnputil -a ""$PSScriptRoot\..\Windows\driver\FTDIUsbSerial\ftdiport.inf""
-		InfDefaultInstall ""$PSScriptRoot\..\Windows\driver\FTDIUsbSerial\ftdiport.inf""
+		pnputil -a "$($PSScriptRoot)\driver\FTDIUsbSerial\ftdibus.inf"
+		InfDefaultInstall "$($PSScriptRoot)\driver\FTDIUsbSerial\ftdibus.inf"
+		pnputil -a "$($PSScriptRoot)\driver\FTDIUsbSerial\ftdiport.inf"
+		InfDefaultInstall "$($PSScriptRoot)\driver\FTDIUsbSerial\ftdiport.inf"
 	}
 }
+
+function checkOlimexDriver {
+	
+	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "Olimex"}
+	if ($Driver)
+	{
+		Elevate
+		Write-Host "...Installing Driver"
+		pnputil -a "$($PSScriptRoot)\driver\Olimex\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_0).inf"
+		InfDefaultInstall "$($PSScriptRoot)\driver\Olimex\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_0).inf"
+		pnputil -a "$($PSScriptRoot)\driver\Olimex\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_1).inf"
+		InfDefaultInstall "$($PSScriptRoot)\driver\Olimex\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_1).inf"
+	}
+}
+
 
 function checkDrivers {
 
     checkProlificDriver
     checkCP2102Driver
     checkFTDIDriver
-	
-	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "USB"}
-	if ($Driver)
-	{
-		Write-Host "`nThere are still Errors with USB driver ...Check Manually`n" -ForegroundColor Red
-		devmgmt.msc
-	}
+	checkOlimexDriver
 }
 
 startPHP "index.php"

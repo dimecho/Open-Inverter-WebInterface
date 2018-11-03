@@ -96,11 +96,11 @@
             $uname = strtolower(php_uname('s'));
 
             if (strpos($uname, "windows") !== false) {
-                $errors = shell_exec("mode " .$com. ": BAUD=115200 PARITY=n DATA=8 STOP=2 to=on xon=off octs=off rts=on");
-                
+                $errors = exec("mode " .$com. ": BAUD=115200 PARITY=n DATA=8 STOP=2 to=on xon=off octs=off rts=on");
+				
                 if(strpos($errors ,"Invalid") === false)
                     $errors = "";
-
+				
             }else if (strpos($uname, "darwin") !== false) {
                 //exec("screen " .$com. " 115200 &");
                 //stty -f $serial 115200 parodd cs8 cstopb -crtscts -echo & cat $serial &
@@ -114,7 +114,7 @@
                 }
                 
                 #Linux set TTY speed
-                $errors = shell_exec("stty -F " .$com. " 115200 -parenb cs8 cstopb");
+                $errors = exec("stty -F " .$com. " 115200 -parenb cs8 cstopb");
                 #$errors .= shell_exec("stty -F " .$com. " clocal -crtscts -ixon -ixoff");
             }
 
@@ -183,6 +183,7 @@
         $read = fgets($uart); //echo
 
         //DEBUG
+		//echo $uart;
         //echo $cmd;
         //echo $read;
 

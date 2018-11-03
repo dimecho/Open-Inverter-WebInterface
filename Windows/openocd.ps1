@@ -26,11 +26,12 @@ if($args[0] -eq "uninstall") {
 		}
 	}else{
         Set-Location "$openocd\OpenOCD\0.10.0-8-20180512-1921\bin"
-
+		$FILE = $($args[0]).Replace("\","\\")
         $ADDRESS=" 0x08000000"
 
-        if ("$1" -like '*.hex') { $ADDRESS="" }
-
-        Start-Process "openocd.exe" -ArgumentList "-f ./scripts/$1 -f ./scripts/board/olimex_stm32_h103.cfg  -c ""init"" -c ""reset halt"" -c ""flash write_image erase unlock $0$ADDRESS"" -c ""reset"" -c ""shutdown"""
-    }
+        if ($args[2] -eq 'ram') { $ADDRESS=" 0x20000000" }
+        if ($args[0] -like '*.hex') { $ADDRESS="" }
+        
+		Start-Process ".\openocd.exe" -ArgumentList "-f ..\scripts\$($args[1]) -f ..\scripts\board\olimex_stm32_h103.cfg  -c ""init"" -c ""reset halt"" -c ""flash write_image erase unlock $($FILE)$($ADDRESS)"" -c ""reset"" -c ""shutdown""" -NoNewWindow -Wait
+	}
 }

@@ -1,9 +1,10 @@
 ; FTDIPORT.INF
 ; 
-; Copyright © 2000-2016 Future Technology Devices International Limited
+; Copyright © 2000-2017 Future Technology Devices International Limited
 ;
-; USB serial port driver installation file for Windows 2000, XP, Server 2003, Vista, Server 2008,
-; Windows 7, Server 2008 R2, Windows 8, Windows 8.1, Server 2012 R2 and Windows 10.
+; USB serial port driver installation file for Windows 7, Windows 8, Windows 8.1, Windows 10,
+; Server 2008 R2, Server 2012 R2 and Server 2016.
+
 ; 
 ; 
 ; IMPORTANT NOTICE: PLEASE READ CAREFULLY BEFORE INSTALLING THE RELEVANT 
@@ -224,7 +225,7 @@ Class=Ports
 ClassGUID={4d36e978-e325-11ce-bfc1-08002be10318}
 Provider=%FTDI%
 CatalogFile=ftdiport.cat
-DriverVer=09/28/2016,2.12.24
+DriverVer=08/16/2017,2.12.28
 
 [SourceDisksNames]
 1=%DriversDisk%,,,

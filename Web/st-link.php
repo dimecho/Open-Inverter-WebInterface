@@ -98,6 +98,18 @@
                                 </ol>
                             </td>
                         </tr>
+						<tr>
+                            <td>
+                                <center>
+                                    <b>Android Phone + ST Link V2</b><br/>
+                                    <b><a href="https://play.google.com/store/apps/details?id=ru.zdevs.zflasherstm32&hl=en_US" target="_blank">ZFlasher STM32</a></b><br/>
+                                </center>
+								<ol><li>For flashing with Android use USB-OTG cable.</li></ol><br/><br/>
+								<a data-fancybox="gallery" href="firmware/img/st-link-zflasher.jpg">
+                                    <img src="firmware/img/st-link-zflasher.jpg" class="img-thumbnail rounded" />
+                                </a><br/><br/>
+							</td>
+						</tr>
                     </table>
                 </div>
             </div>

@@ -50,9 +50,6 @@ if($args[0] -eq "uninstall") {
     Rename-Item "$env:programfiles\PHP\php.ini-development" php.ini -ErrorAction SilentlyContinue
     Add-Content "$env:programfiles\PHP\php.ini" "
 [HuebnerInverter]
-error_log=C:\WINDOWS\Temp\PHP7_errors.log
-upload_tmp_dir=C:\WINDOWS\Temp
-session.save_path=C:\WINDOWS\Temp
 allow_url_fopen=1
 cgi.force_redirect=0
 cgi.fix_pathinfo=1

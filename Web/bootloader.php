@@ -1,13 +1,13 @@
 <?php
-	 include_once("common.php");
-		
+	include_once("common.php");
+	error_reporting(E_ERROR | E_PARSE);
     $os = detectOS();
-		
+	
     if(isset($_GET["ajax"])){
-        $command = runCommand("openocd", urldecode($_GET["file"]). " " .urldecode($_GET["interface"]),$os);
+		$command = runCommand("openocd", urldecode($_GET["file"]). " " .urldecode($_GET["interface"]),$os);
         exec($command, $output, $return);
-        
-        echo "$command\n";
+		echo sys_get_temp_dir();
+        echo "\n$command\n";
         foreach ($output as $line) {
             echo "$line\n";
         }
@@ -17,54 +17,7 @@
 <html>
     <head>
         <?php include "header.php"; ?>
-        <script>
-            var jtag_interface = [
-                "interface/ftdi/olimex-arm-usb-ocd-h.cfg",
-                "interface/ftdi/olimex-arm-usb-tiny-h.cfg",
-				"interface/ftdi/olimex-arm-jtag-swd.cfg",
-                "interface/ftdi/jtag-lock-pick_tiny_2.cfg",
-                "interface/stlink-v2.cfg",
-                "interface/jlink.cfg",
-                "interface/cmsis-dap.cfg"
-            ];
-
-            var jtag_name = [
-                "Olimex OCD-H",
-                "Olimex Tiny-H",
-				"Olimex CooCox",
-                "Lock-Pick Tiny v2.0",
-                "STlink v2.0",
-                "J-Link",
-                "CoLinkEx v1.2"
-            ];
-
-            function setJTAGImage() {
-                var img = $("#jtag-interface").val().split("/").pop().slice(0, -4);
-                if(img == "stlink-v2")
-                {
-                    window.location.href = "st-link.php";
-                }else{
-                    $("#jtag-image").attr("src", "/firmware/img/" + img + ".jpg");
-                    $("#jtag-name").html(jtag_name[$("#jtag-interface option:selected").index()]);
-                }
-            }
-
-            $(document).on('click', '.browse', function(){
-                var file = $('.file');
-                file.trigger('click');
-            });
-
-            function bootloaderUpload() {
-                
-                var file = $('.file').get(0).files[0].name;
-
-                if (file.toUpperCase().indexOf(".BIN") !=-1 || file.toUpperCase().indexOf(".HEX") !=-1) {
-                    $('#Aform').submit();
-                }else{
-                    $.notify({ message: "Bootloader file must be .bin or .hex format" }, { type: "danger" });
-                }
-            }
-        </script>
+		<script type="text/javascript" src="js/firmware.js"></script>
     </head>
     <body>
         <div class="container">
@@ -83,8 +36,8 @@
                         <?php if(isset($_FILES["firmware"])){ ?>
                             <tr>
                                 <td>
-                                 <script>
-                                        $(document).ready(function() {
+									<script>
+										$(document).ready(function() {
                                             var progressBar = $("#progressBar");
                                             for (i = 0; i < 100; i++) {
                                                 setTimeout(function(){ progressBar.css("width", i + "%"); }, i*2000);
@@ -95,16 +48,19 @@
                                                 <?php
                                                     //$tmp_dir = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
                                                     echo "'";
-                                                    echo "/bootloader.php?ajax=1";
+                                                    echo "bootloader.php?ajax=1";
+													$ocd_interface = $_POST["interface"];
                                                     if ($os === "mac") {
-                                                        $tmp_name = "/tmp/" .$_FILES['firmware']["name"];
+                                                        $ocd_file = "/tmp/" .$_FILES['firmware']["name"];
+													}elseif ($os === "windows") {
+														$ocd_file = sys_get_temp_dir(). "\\" .$_FILES['firmware']["name"];
+														$ocd_interface = str_replace("/","\\",$ocd_interface);
                                                     }else{
-                                                        $tmp_name = sys_get_temp_dir(). "/" .$_FILES['firmware']["name"];
+                                                        $ocd_file = sys_get_temp_dir(). "/" .$_FILES['firmware']["name"];
                                                     }
-                                                    move_uploaded_file($_FILES['firmware']['tmp_name'], $tmp_name);
-                                                    echo "&file=" .urlencode($tmp_name);
-                                                    echo "&format=" .$_GET['firmware'];
-                                                    echo "&interface=" .urlencode($_POST["interface"]);
+                                                    move_uploaded_file($_FILES['firmware']['tmp_name'], $ocd_file);
+                                                    echo "&file=" .urlencode($ocd_file);
+                                                    echo "&interface=" .urlencode($ocd_interface);
                                                     echo "'";
                                                 ?>,
                                                 success: function(data){
@@ -125,26 +81,30 @@
                            <script>
                                 $(document).ready(function() {
                                     for (var i = 0; i < jtag_interface.length; i++) {
-                                        $("#jtag-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_interface[i]));
+                                        $("#firmware-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_interface[i]));
                                     }
-                                    $("#jtag-interface").prop('selectedIndex', 0);
-                                    setJTAGImage();
+                                    $("#firmware-interface").prop('selectedIndex', 0);
+									$(".loader").hide();
+									$(".input-group-addon").show();
+                                    setInterfaceImage();
                                 });
                             </script>
                             <tr>
                                 <td>
+									<center>
+									<div class="loader"></div>
                                     <div class="input-group w-100">
-                                        <span class = "input-group-addon w-75">
-                                            <select name="interface" class="form-control" form="Aform" onchange="setJTAGImage()" id="jtag-interface"></select>
+                                        <span class = "input-group-addon hidden w-75">
+                                            <select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage()" id="firmware-interface"></select>
                                         </span>
-                                        <span class = "input-group-addon w-25">
-                                            <button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select stm32_loader.bin</button>
-                                        </span>
-										
+                                        <span class = "input-group-addon hidden w-25">
+											<center>
+												<button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select stm32_loader.bin</button>
+											</center>
+										</span>
                                     </div>
                                     <br/><br/>
-									<center>
-                                    <h2 id="jtag-name"></h2>
+                                    <h2 id="jtag-name"></h2><br/>
                                     <img src="" id="jtag-image" class="rounded" />
 									</center>
                                 </td>
@@ -154,8 +114,8 @@
                 </div>
             </div>
         </div>
-        <form enctype="multipart/form-data" action="/bootloader.php" method="POST" id="Aform">
-            <input name="firmware" type="file" class="file" hidden onchange="bootloaderUpload()"/>
+        <form enctype="multipart/form-data" action="bootloader.php" method="POST" id="firmwareForm">
+            <input name="firmware" type="file" class="file" hidden onchange="firmwareUpload()" />
         </form>
     </body>
 </html>
