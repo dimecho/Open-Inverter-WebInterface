@@ -5,6 +5,10 @@ if [[ $(type -p openocd) ]]; then
 
     ADDRESS=" 0x08000000"
 
+    if [[ "$3" == "ram" ]]; then
+        ADDRESS="0x08001000"
+    fi
+
     if [[ "$1" == *".hex" ]]; then
         ADDRESS=""
     fi

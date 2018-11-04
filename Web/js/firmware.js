@@ -19,30 +19,35 @@ var jtag_name = [
 ];
 
 $(document).on('click', '.browse', function(){
-		var file = $('.file');
-		file.trigger('click');
+	var file = $('.file');
+	file.trigger('click');
 });
 
 function setInterfaceImage() {
-	try{
-		var img = $("#firmware-interface").val().split("/").pop().slice(0, -4);
-		if(img == "stlink-v2")
+
+    var v = $("#firmware-interface").val();
+
+	if(v.indexOf("interface") != -1)
+    {
+		if(v.indexOf("stlink-v2") != -1)
 		{
 			window.location.href = "st-link.php";
 		}else{
+            var img = v.split("/").pop().slice(0, -4);
 			$("#jtag-image").attr("src", "firmware/img/" + img + ".jpg");
 			$("#jtag-name").html(jtag_name[$("#firmware-interface option:selected").index()]);
+            $("#jtag-txt").html("");
 		}
-	}catch{
+	}else{
 		//ESP8266 Detected
 		$.ajax({
 			url: "serial.php",
 			success: function() {
-				$("#jtag-txt").append("Caution: Main board Olimex is powered with 3.3V - Double check your TTL-USB adapter.");
+				$("#jtag-txt").html("Caution: Main board Olimex is powered with 3.3V - Double check your TTL-USB adapter.");
 				$("#jtag-image").attr("src","firmware/img/usb_ttl.jpg");
 			},
 			error: function () {
-				$("#jtag-txt").append("Solder <b>GPIO-0</b> to <b>1</b> and boot ESP8266 from flash. Inverter firmware will flash using ESP8266 UART internally.");
+				$("#jtag-txt").html("Solder <b>GPIO-0</b> to <b>1</b> and boot ESP8266 from flash. Inverter firmware will flash using ESP8266 UART internally.");
 				$("#jtag-image").attr("src","firmware/img/esp8266.jpg");
 			}
 		});
@@ -57,24 +62,4 @@ function firmwareUpload() {
 	}else{
 		$.notify({ message: "File must be .bin or .hex format" }, { type: "danger" });
 	}
-};
-
-function firmwareFlash() {
-    var progressBar = $("#progressBar");
-    for (var i = 0; i < 100; i++) {
-        setTimeout(function(){ progressBar.css("width", i + "%"); }, i*2000);
-    }
-    $.ajax({
-        type: "GET",
-        url: "firmware.php?ajax=1",
-        success: function(data){
-            deleteCookie("version");
-            //console.log(data);
-            progressBar.css("width","100%");
-            $("#output").append($("<pre>").append(data));
-            setTimeout( function (){
-                window.location.href = "index.php";
-            },6400);
-        }
-    });
 };

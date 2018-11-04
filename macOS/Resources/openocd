@@ -1,18 +1,12 @@
 #!/bin/sh
 if [ "$1" = "uninstall" ]; then
-    rm -rf "/usr/local/etc/gcc_arm/openocd"
+    rm -rf "/usr/local/share/gnu-mcu-eclipse"
 else
-    if [ ! -f "/usr/local/etc/gcc_arm/openocd/bin/openocd" ]; then
-        mkdir /usr/local/etc/gcc_arm
-        pkgutil --expand ~/Downloads/gnu-mcu-eclipse-openocd-0.10.0-4-20171004-0812-dev-osx.pkg /usr/local/etc/gcc_arm/openocd/
-        cd /usr/local/etc/gcc_arm/openocd/
-        cat Payload | gzip -d | cpio -id
-        rm Bom
-        rm PackageInfo
-        rm Payload
+    if [ ! -f "/usr/local/share/gnu-mcu-eclipse/openocd/0.10.0-10-20181020-0522/bin/openocd" ]; then
+        tar xzfv ~/Downloads/gnu-mcu-eclipse-openocd-0.10.0-10-20181020-0522-macos.tgz -C /usr/local/share
     else
-        export PATH="$PATH:/usr/local/etc/gcc_arm/openocd/bin/"
-        cd /usr/local/etc/gcc_arm/openocd/scripts/
+        export PATH="$PATH:/usr/local/share/gnu-mcu-eclipse/openocd/0.10.0-10-20181020-0522/bin/"
+        cd /usr/local/share/gnu-mcu-eclipse/openocd/0.10.0-10-20181020-0522/scripts/
         
         #halt
         #flash erase_sector 0 0 last
@@ -28,7 +22,7 @@ else
         esac
 
         if [ "$3" = "ram" ]; then
-            ADDRESS=" 0x20000000"
+            ADDRESS=" 0x08001000"
         fi
 
         openocd -f ./$2 -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset halt" -c "flash write_image erase unlock $1$ADDRESS" -c "reset" -c "shutdown" 

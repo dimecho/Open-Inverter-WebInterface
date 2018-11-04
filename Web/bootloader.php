@@ -72,7 +72,7 @@
                                         });
                                     </script>
                                     <div class="progress progress-striped active">
-                                        <div class="progress-bar" style="width:1%" id="progressBar"></div>
+                                        <div class="progress-bar" style="width:0%" id="progressBar"></div>
                                     </div>
                                     <div id="output"></div>
                                 </td>

@@ -135,8 +135,8 @@ function checkProlificDriver {
 				}
 			}
 			Write-Host "...Installing Driver"
-			pnputil -a ""$PSScriptRoot\driver\ProlificUsbSerial\ser2pl.inf""
-			InfDefaultInstall ""$PSScriptRoot\driver\ProlificUsbSerial\ser2pl.inf""
+			pnputil -a "$($PSScriptRoot)\driver\ProlificUsbSerial\ser2pl.inf"
+			InfDefaultInstall "$($PSScriptRoot)\driver\ProlificUsbSerial\ser2pl.inf"
 		}
 	}
 }
@@ -148,8 +148,8 @@ function checkCP2102Driver {
 	{
 		Elevate
 		Write-Host "...Installing Driver"
-		pnputil -a ""$PSScriptRoot\driver\CP210x\silabser.inf""
-		InfDefaultInstall ""$PSScriptRoot\driver\CP210x\silabser.inf""
+		pnputil -a "$($PSScriptRoot)\driver\CP210x\silabser.inf"
+		InfDefaultInstall "$($PSScriptRoot)\driver\CP210x\silabser.inf"
 	}
 }
 
@@ -169,18 +169,29 @@ function checkFTDIDriver {
 
 function checkOlimexDriver {
 	
-	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "Olimex"}
+	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "Olimex" }
 	if ($Driver)
 	{
 		Elevate
 		Write-Host "...Installing Driver"
-		pnputil -a "$($PSScriptRoot)\driver\Olimex\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_0).inf"
-		InfDefaultInstall "$($PSScriptRoot)\driver\Olimex\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_0).inf"
-		pnputil -a "$($PSScriptRoot)\driver\Olimex\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_1).inf"
-		InfDefaultInstall "$($PSScriptRoot)\driver\Olimex\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_1).inf"
+		pnputil -a "$($PSScriptRoot)\driver\WinUSB\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_0).inf"
+		InfDefaultInstall "$($PSScriptRoot)\driver\WinUSB\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_0).inf"
+		pnputil -a "$($PSScriptRoot)\driver\WinUSB\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_1).inf"
+		InfDefaultInstall "$($PSScriptRoot)\driver\WinUSB\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_1).inf"
 	}
 }
 
+function checkSTLinkDriver {
+    
+    $Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "STLink"}
+    if ($Driver)
+    {
+        Elevate
+        Write-Host "...Installing Driver"
+        pnputil -a "$($PSScriptRoot)\driver\WinUSB\STM32_STLink.inf"
+        InfDefaultInstall "$($PSScriptRoot)\driver\WinUSB\STM32_STLink.inf"
+    }
+}
 
 function checkDrivers {
 
@@ -188,6 +199,7 @@ function checkDrivers {
     checkCP2102Driver
     checkFTDIDriver
 	checkOlimexDriver
+    checkSTLinkDriver
 }
 
 startPHP "index.php"

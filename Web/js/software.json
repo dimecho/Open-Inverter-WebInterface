@@ -48,7 +48,7 @@
             "linux" : ""
         },
         "path" : {
-            "mac" : "/usr/local/etc/gcc_arm/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-gcc",
+            "mac" : "/usr/local/share/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-gcc",
             "windows" : "C:\\SysGCC\\ARM\\bin\\arm-none-eabi-gcc.exe",
             "linux" : "/usr/share/gcc-arm-embedded/bin/gcc-arm-none-eabi"
         }
@@ -156,20 +156,20 @@
     "openocd" : {
         "title" : "OpenOCD Debugger",
         "download" : {
-            "mac" : "https://github.com/gnu-mcu-eclipse/openocd/releases/download/v0.10.0-8-20180512/gnu-mcu-eclipse-openocd-0.10.0-8-20180512-1921-macos.tgz",
-            "windows" : "https://github.com/gnu-mcu-eclipse/openocd/releases/download/v0.10.0-8-20180512/gnu-mcu-eclipse-openocd-0.10.0-8-20180512-1921-win64.zip",
+            "mac" : "https://github.com/gnu-mcu-eclipse/openocd/releases/download/v0.10.0-10-20181020/gnu-mcu-eclipse-openocd-0.10.0-10-20181020-0522-macos.tgz",
+            "windows" : "https://github.com/gnu-mcu-eclipse/openocd/releases/download/v0.10.0-10-20181020/gnu-mcu-eclipse-openocd-0.10.0-10-20181020-0522-win64.zip",
             "linux" : "",
             "size" : 2.5,
-            "version" : "0.10.0-8-20180512"
+            "version" : "0.10.0-10-20181020"
         },
 		"checksum" : {
-            "mac" : "",
+            "mac" : "988356079905f1d1c3945c366e4d3812",
             "windows" : "",
             "linux" : ""
         },
         "path" : {
-            "mac" : "/usr/local/etc/gcc_arm/openocd/bin/openocd",
-            "windows" : "C:\\Program Files\\GNU MCU Eclipse\\OpenOCD\\0.10.0-8-20180512-1921\\bin\\openocd.exe",
+            "mac" : "/usr/local/share/gnu-mcu-eclipse/openocd/0.10.0-10-20181020-0522/bin/openocd",
+            "windows" : "C:\\Program Files\\GNU MCU Eclipse\\OpenOCD\\0.10.0-10-20181020-0522\\bin\\openocd.exe",
             "linux" : "/usr/share/openocd/bin/openocd"
         }
     },

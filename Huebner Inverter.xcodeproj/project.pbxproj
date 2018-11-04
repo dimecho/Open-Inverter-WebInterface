@@ -349,7 +349,7 @@
 				32D281D21CF0066F00606B12 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		32D281D31CF0066F00606B12 /* Build configuration list for PBXNativeTarget "Huebner Inverter" */ = {
 			isa = XCConfigurationList;
@@ -358,7 +358,7 @@
 				32D281D51CF0066F00606B12 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

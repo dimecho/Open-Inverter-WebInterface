@@ -8,7 +8,7 @@
 		$file = urldecode($_GET["file"]);
 		$interface = urldecode($_GET["interface"]);
 		
-		if (strpos($file, "interface") !== false) {
+		if (strpos($interface, "interface") !== false) {
 			$command = runCommand("openocd", $file. " " .$interface. " ram", $os);
 			exec($command, $output, $return);
 			echo sys_get_temp_dir();
@@ -144,7 +144,7 @@
 									$(document).ready(function() {
 										var progressBar = $("#progressBar");
 										for (i = 0; i < 100; i++) {
-											setTimeout(function(){ progressBar.css("width", i + "%"); }, i*2000);
+											setTimeout(function(){ progressBar.css("width", i + "%"); }, i*1000);
 										}
 										$.ajax({
 											type: "GET",
@@ -169,17 +169,22 @@
 											?>,
 											success: function(data){
 												//console.log(data);
+                                                deleteCookie("version");
 												progressBar.css("width","100%");
 												$("#output").append($("<pre>").append(data));
+                                                /*
+                                                setTimeout( function (){
+                                                    window.location.href = "index.php";
+                                                },6400);
+                                                */
 											}
 										});
 									});
 								</script>
 								<div class="progress progress-striped active">
-                                    <div class="progress-bar" style="width:1%" id="progressBar"></div>
+                                    <div class="progress-bar" style="width:0%" id="progressBar"></div>
                                 </div>
-								<span class="badge badge-lg badge-warning">Tip: If Olimex is bricked, try pressing "reset" button while flashing</span>
-								<br/><br/>
+                                <br/><span class="badge badge-lg badge-warning">Tip: If Olimex is bricked, try pressing "reset" button while flashing</span><br/><br/>
                                 <div id="output"></div>
 							</td>
                         </tr>
@@ -197,7 +202,6 @@
 											}
 										}
 									});
-				
                                     for (var i = 0; i < jtag_interface.length; i++) {
                                         $("#firmware-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_interface[i]));
                                     }

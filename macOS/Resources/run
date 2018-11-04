@@ -1,5 +1,9 @@
 #!/bin/sh
 
+cd "$(dirname "$0")"
+
+shopt -s nocasematch
+
 myIP=$(ifconfig | grep "inet " | grep -v "127.0.0.1" | cut -f2 -d' '| awk 'NR==1{print $1}')
 
 if [ -z "$myIP" ]; then
@@ -8,7 +12,6 @@ fi
 
 checkUSB()
 {
-    shopt -s nocasematch
     for ((i = 0 ; i < 30 ; i++ )); do
         for serial in $(ls /dev/cu.*); do
             if [[ $serial == *usb* ]] || [[ $serial == *ch34* ]] || [[ $serial == *pl23* ]] ; then
@@ -20,37 +23,43 @@ echo "{
     }
 }" > "$(dirname "$0")/Web/js/serial.json"
 
-                i=30
-                open -a $browser http://$myIP:8080 &
+                openBrowser http://$myIP:8080 &
                 return
             fi
         done
         echo "... Waiting for RS232-USB"
         if [[ $i -eq 1 ]]; then
-            open -a $browser http://$myIP:8080/connect.html &
+            openBrowser http://$myIP:8080/connect.html
         fi
         sleep 2
     done
 }
 
+openBrowser()
+{
+    if [ -d /Applications/Firefox.app ]; then
+        browser="Firefox"
+    elif [ -d /Applications/Chrome.app ]; then
+        browser="Chrome"
+    else
+        browser="Safari"
+    fi
+
+    pid=$(ps aux | grep $browser | wc -l)
+
+    if [[ $pid -eq 1 ]] ; then
+       open -a $browser $1 &
+    fi
+}
+
 checkDrivers()
 {
-    open -a $browser http://$myIP:8080/drivers.html &
+    openBrowser http://$myIP:8080/drivers.html &
     echo "============================"
     echo "Installing RS232-USB Drivers"
     echo "============================"
     osascript -e "do shell script \"./driver\" with administrator privileges"
 }
-
-cd "$(dirname "$0")"
-
-if [ -d /Applications/Firefox.app ]; then
-    browser="Firefox"
-elif [ -d /Applications/Chrome.app ]; then
-    browser="Chrome"
-else
-    browser="Safari"
-fi
 
 pkill -9 php
 /usr/bin/php -S 0.0.0.0:8080 -t "$(dirname "$0")/Web/" &
