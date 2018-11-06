@@ -107,20 +107,19 @@ if($args[0] -eq "uninstall") {
 			$GCC_AVR = "C:\SysGCC\avr"
 			$env:Path += ";$GCC_AVR\bin"
 				
-            Set-Location "$env:USERPROFILE\Documents\stm32-sine-master"
-            if (-Not (Test-Path src\attiny13)) {
+            Set-Location "$env:USERPROFILE\Documents\stm32-sine-master\src"
+            if (-Not (Test-Path attiny13)) {
                 $zip = $shell.NameSpace((Split-Path $PSScriptRoot -Parent) + "\Web\firmware\attiny13.zip")
                 foreach($item in $zip.items())
                 {
                     $shell.Namespace("$env:USERPROFILE\Documents\stm32-sine-master\src\").copyhere($item)
                 }
             }
-            Set-Location src\attiny13
             avr-gcc.exe -g -mmcu=attiny13 -Os -Os -o volt-pwm-attiny13.o volt-pwm-attiny13.c -DF_CPU=96000000
             avr-objcopy.exe -R .eeprom -O binary volt-pwm-attiny13.o volt-pwm-attiny13.bin
             avr-objcopy.exe -R .eeprom -O ihex volt-pwm-attiny13.o volt-pwm-attiny13.hex
-            Move-Item volt-pwm-attiny13.bin (Split-Path (Split-Path (Get-Location) -Parent) -Parent) -ErrorAction SilentlyContinue
-            Move-Item volt-pwm-attiny13.hex (Split-Path (Split-Path (Get-Location) -Parent) -Parent) -ErrorAction SilentlyContinue
+            Move-Item volt-pwm-attiny13.bin (Split-Path (Get-Location) -Parent) -ErrorAction SilentlyContinue
+            Move-Item volt-pwm-attiny13.hex (Split-Path (Get-Location) -Parent) -ErrorAction SilentlyContinue
             #---------------------------------
 
             Start-Process "explorer.exe" -ArgumentList "$env:USERPROFILE\Documents\stm32-sine-master\"

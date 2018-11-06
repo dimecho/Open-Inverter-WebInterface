@@ -35,9 +35,9 @@
 		
 		if ($os === "windows") {
 			$path = str_replace("~",getenv("USERPROFILE"),$path);
-        }/*else if ($os === "mac" || $os === "linux") {
+        }else if ($os === "mac" || $os === "linux") {
             $path = str_replace("~",getenv("HOME"),$path);
-        }*/
+        }
 		
         if($app == "arm"){
             checkARMCompiler($software,$os,$path,false);

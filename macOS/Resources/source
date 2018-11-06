@@ -1,88 +1,75 @@
 #!/bin/sh
+
 if [ "$1" = "uninstall" ] ; then
     rm -rf ~/Documents/stm32-sine-master
 else
+    console="$1"
+
     cd ~/Documents/
     if [ ! -d stm32-sine-master ]; then
         tar xzfv ~/Downloads/stm32-sine-master.zip -C ~/Documents/
     else
-        #xcode-select --install
-        #open /Applications/XCode.app
+        if [ "$console" = "1" ] ; then
 
-        # NOTE: You should also add this line to ~/.bashrc or ~/.bash_profile (in your home directory)
-        # so you don't have to remember to do this every time you want to compile firmware.
-        GCC_ARM="/usr/local/share/gcc-arm-none-eabi-6-2017-q1-update"
-        export PATH="$PATH:$GCC_ARM/bin/"
-        
-        #--------- SOURCECODE ------------
-        #if [ ! -d src ]; then
-        #    git clone -b sync_motor https://github.com/tumanako/tumanako-inverter-fw-motorControl.git
-        #    ditto ./tumanako-inverter-fw-motorControl/src/sine ./src
-        #    rm -rf ./tumanako-inverter-fw-motorControl
-        #fi
-        
-        #--------- LIBOPENCM3 ------------
-        cd ~/Documents/stm32-sine-master/
-        if [ ! -d libopencm3 ]; then
-            git clone https://github.com/libopencm3/libopencm3.git --quiet
-            #cp examples/stm32/f1/Makefile.include ~/Documents/tumanako-inverter-fw-motorControl-master/src/
-            #cp examples/stm32/f1/stm32-h103/stm32-h103.ld ~/Documents/tumanako-inverter-fw-motorControl-master/src/
-        fi
+            if [ ! -f /usr/bin/gcc ]; then
+                xcode-select --install
+                #open /Applications/XCode.app
+            fi
 
-        if [ ! -f ./libopencm3/lib/libopencm3_stm32f1.a ]; then
-            cd ./libopencm3
-            make TARGETS=stm32/f1
+            GCC_ARM="/usr/local/share/gcc-arm-none-eabi-7-2018-q2-update"
+            export PATH="$PATH:$GCC_ARM/bin/"
             
-            #Overwrite existing with new version
-            ditto ./lib "$GCC_ARM/arm-none-eabi/lib"
-            ditto ./include "$GCC_ARM/arm-none-eabi/include"
+            #--------- LIBOPENCM3 ------------
+            cd ~/Documents/stm32-sine-master/
+            if [ ! -d libopencm3 ]; then
+                git clone https://github.com/jsphuebner/libopencm3.git --quiet
+                #git clone https://github.com/libopencm3/libopencm3.git --quiet
+            fi
+            cd libopencm3
+            if [ ! -f lib/libopencm3_stm32f1.a ]; then
+
+                make clean
+                make TARGETS=stm32/f1
+                
+                #Overwrite existing with new version
+                ditto lib "$GCC_ARM/arm-none-eabi/lib"
+                ditto include "$GCC_ARM/arm-none-eabi/include"
+                #A Fix
+                cp "$GCC_ARM/arm-none-eabi/lib/cortex-m-generic.ld" "$GCC_ARM/arm-none-eabi/lib/libopencm3_stm32f1.ld"
+            fi
+            #--------- BOOTLOADER ------------
+            cd ~/Documents/stm32-sine-master/src/
+            if [ ! -d bootloader ]; then
+                git clone https://github.com/jsphuebner/tumanako-inverter-fw-bootloader.git --quiet
+                mv tumanako-inverter-fw-bootloader bootloader
+            fi
+            cd bootloader
+            make clean
+            make
+            cd bootupdater
+            make clean
+            make
+            #--------- FIRMWARE --------------
+            cd ~/Documents/stm32-sine-master
+            make clean
+            make
+            #--------- ATtiny13 --------------
+            export PATH="$PATH:/usr/local/etc/gcc_arm/avr/bin/"
+
+            cd ~/Documents/stm32-sine-master/src/
+            if [ ! -d attiny13 ]; then
+                tar xzfv "$(dirname "$0")/Web/firmware/attiny13.zip" -C ./
+            fi
+            avr-gcc -g -mmcu=attiny13 -Os -Os -o volt-pwm-attiny13.o volt-pwm-attiny13.c -DF_CPU=96000000
+            avr-objcopy -R .eeprom -O binary volt-pwm-attiny13.o volt-pwm-attiny13.bin
+            avr-objcopy -R .eeprom -O ihex volt-pwm-attiny13.o volt-pwm-attiny13.hex
+            mv volt-pwm-attiny13.bin ../
+            mv volt-pwm-attiny13.hex ../
+            #---------------------------------
+
+            open ~/Documents/stm32-sine-master
+        else
+            open -a Terminal "`\"$(dirname "$0")/source\" 1`"
         fi
-
-        #--------- BOOTLOADER ------------
-        cd ~/Documents/stm32-sine-master/
-        if [ ! -d ./src/bootloader ]; then
-            tar xzfv "$(dirname "$0")/Web/firmware/bootloader_v2.zip" -C ./src/
-        fi
-        #if [ ! -d ./src/bootloader/libopencm3 ]; then
-        #    ln -s libopencm3/include/libopencm3 ./src/bootloader/libopencm3
-        #fi
-        cd ./src/bootloader
-        make clean
-        make
-        mv stm32_loader.bin ../../
-        mv stm32_loader.hex ../../
-
-        #--------- FIRMWARE --------------
-        cd ~/Documents/stm32-sine-master
-        #if [ ! -d ./src/sine/include ]; then
-        #    ln -s libopencm3/include/libopencm3 ./src/sine/include
-        #fi
-        #if [ ! -d ./src/sine/libopencm3 ]; then
-        #    ln -s libopencm3/include/libopencm3 ./src/sine/libopencm3
-        #fi
-        cd ./src/sine
-        #arm-none-eabi-objcopy -O binary stm32_loader ../firmware/stm32_loader.bin
-        #arm-none-eabi-objcopy -O ihex stm32_loader ../firmware/stm32_loader.hex
-        make clean
-        make "$1"
-        mv *.bin ../../
-        mv *.hex ../../
-
-        #--------- ATtiny13 --------------
-        export PATH="$PATH:/usr/local/etc/gcc_arm/avr/bin/"
-
-        cd ~/Documents/stm32-sine-master/
-        if [ ! -d ./src/attiny13 ]; then
-            tar xzfv "$(dirname "$0")/Web/firmware/attiny13.zip" -C ./src/
-        fi
-        cd ./src/attiny13
-        avr-gcc -g -mmcu=attiny13 -Os -Os -o volt-pwm-attiny13.o volt-pwm-attiny13.c -DF_CPU=96000000
-        avr-objcopy -R .eeprom -O binary volt-pwm-attiny13.o volt-pwm-attiny13.bin
-        avr-objcopy -R .eeprom -O ihex volt-pwm-attiny13.o volt-pwm-attiny13.hex
-        mv volt-pwm-attiny13.bin ../../
-        mv volt-pwm-attiny13.hex ../../
-        #---------------------------------
-
-        open ~/Documents/stm32-sine-master
     fi
 fi

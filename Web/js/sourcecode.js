@@ -1,5 +1,5 @@
 $(document).ready(function() {
-
+    /*
     alertify.dialog('compileSourceCode', function () {
         return {
             setup: function setup() {
@@ -46,41 +46,39 @@ $(document).ready(function() {
                 }else if(closeEvent.index === 2) {
                     HWCONFIG = "HWCONFIG_TESLA";
                 }
-
-                $.ajax({
-                    /*
-                    xhr: function()
-                    {
-                        var xhr = new window.XMLHttpRequest();
-                        xhr.addEventListener("progress", function(e){
-                            console.log(e.target.responseText);
-                        }, false);
-                        return xhr;
-                    },
-                    */
-                    //async: false,
-                    type: "GET",
-                    url: "/sourcecode.php?hw=" + HWCONFIG,
-                    data: {},
-                    success: function(data){
-                        //console.log(data);
-                        notify.update({'type': 'success', 'allow_dismiss': true, 'message': 'Compiled'});
-                        progressBar.css("width","100%");
-                        $("#output").append($("<pre>").append(data));
-                    }
-                });
-            },
-            /*
-            hooks: {
-                onshow: function() {
-                    //console.log(this);
-                    this.elements.dialog.style.maxWidth = 'none';
-                    this.elements.dialog.style.width = '640px';
-                }
+                buildSourceCode(HWCONFIG);
             }
-            */
         };
     }, false, 'confirm');
 
     alertify.compileSourceCode("<i class='glyphicon glyphicon-modal-window'></i> Compile for the following Hardware:");
+    */
+
+    buildSourceCode("all");
 });
+
+function buildSourceCode(HWCONFIG) {
+
+    $.ajax({
+        /*
+        xhr: function()
+        {
+            var xhr = new window.XMLHttpRequest();
+            xhr.addEventListener("progress", function(e){
+                console.log(e.target.responseText);
+            }, false);
+            return xhr;
+        },
+        */
+        //async: false,
+        type: "GET",
+        url: "sourcecode.php?hw=" + HWCONFIG,
+        data: {},
+        success: function(data){
+            //console.log(data);
+            notify.update({'type': 'success', 'allow_dismiss': true, 'message': 'Compiled'});
+            progressBar.css("width","100%");
+            $("#output").append($("<pre>").append(data));
+        }
+    });
+};

@@ -172,11 +172,15 @@
                                                 deleteCookie("version");
 												progressBar.css("width","100%");
 												$("#output").append($("<pre>").append(data));
-                                                /*
+                                                if(data.indexOf("shutdown command invoked") !=-1)
+                                                {
+                                                    $.notify({ message: "Flash Complete" },{ type: 'success' });
+                                                    $.notify({ message: "Use USB-RS232" },{ type: 'warning' });
+                                                    $.notify({ message: "Unlug JTAG Programmer" },{ type: 'danger' });
+                                                }
                                                 setTimeout( function (){
                                                     window.location.href = "index.php";
-                                                },6400);
-                                                */
+                                                },12000);
 											}
 										});
 									});

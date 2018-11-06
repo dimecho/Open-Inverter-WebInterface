@@ -67,6 +67,14 @@
                                                     //console.log(data);
                                                     progressBar.css("width","100%");
                                                     $("#output").append($("<pre>").append(data));
+                                                    if(data.indexOf("shutdown command invoked") !=-1)
+                                                    {
+                                                        $.notify({ message: "Bootloader Complete" },{ type: 'success' });
+                                                        $.notify({ message: "...Next Flash Firmware" },{ type: 'warning' });
+                                                        setTimeout( function (){
+                                                            window.location.href = "firmware.php";
+                                                        },8000);
+                                                    }
                                                 }
                                             });
                                         });

@@ -4,6 +4,13 @@ var serialTimeout = 12000;
 var serialWDomain = "http://" + window.location.hostname;
 
 $.ajax({
+  url: "version.txt",
+  success: function(data) {
+    document.title = "Inverter Console (Build " + data + ")"
+  }
+});
+
+$.ajax({
   url: "js/serial.json",
   dataType: "json",
   async: false,

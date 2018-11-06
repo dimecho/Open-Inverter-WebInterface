@@ -13,6 +13,20 @@
             "mac" : "/Applications/Utilities/XQuartz.app/Contents/MacOS/X11"
         }
     },
+    "xcode": {
+        "title": "XCode",
+        "download": {
+            "mac": "https://itunes.apple.com/us/app/xcode/id497799835?ls=1&mt=12",
+            "size": 5600,
+            "version" : "10.1"
+        },
+        "checksum" : {
+            "mac" : ""
+        },
+        "path": {
+            "mac" : "/Applications/Xcode.app/Contents/MacOS/Xcode"
+        }
+    },
     "gcc" : {
         "title" : "GCC Compiler",
         "download" : {

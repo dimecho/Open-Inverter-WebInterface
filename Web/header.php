@@ -1,6 +1,4 @@
 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-<title>Huebner Inverter</title>
-
 <link rel="stylesheet" type="text/css" href="/css/style.css" />
 <link rel="stylesheet" type="text/css" href="/css/alertify.css">
 <link rel="stylesheet" type="text/css" href="/css/animate.css" />
