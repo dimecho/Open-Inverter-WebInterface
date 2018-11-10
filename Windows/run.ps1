@@ -59,7 +59,7 @@ function startPHP($page) {
 		{
 			$serial_json = "$scriptPath\Web\js\serial.json"
 			$json = Get-Content "$serial_json" -Raw | ConvertFrom-Json
-			$json.serial.port = $comPort #+ ":"
+			$json.serial.port = $comPort + ":"
 			$json.serial.web = 8081
 			$json | ConvertTo-Json  | Set-Content "$serial_json"
 
@@ -70,7 +70,7 @@ function startPHP($page) {
 			#================================================
 			#Quick Fix [give it a kick] - Prolific Driver Bug or Windows?
 			#================================================
-			$process = Start-Process -FilePath "$PSScriptRoot\puttytel.exe" -ArgumentList "-serial $($comPort)" -PassThru -WindowStyle Hidden
+			$process = Start-Process -FilePath "$PSScriptRoot\puttytel.exe" -ArgumentList "-serial $($comPort) -sercfg 115200,8,n,2,N" -PassThru -WindowStyle Hidden
 			try{
 				$process | Wait-Process -Timeout 5 -ErrorAction Stop
 			}catch{
@@ -78,7 +78,8 @@ function startPHP($page) {
 			}
 			#Somehow Putty fix sets maximum buffer size
 			#================================================
-			Start-Process -FilePath "cmd.exe" -ArgumentList "/c mode $($comPort): BAUD=115200 PARITY=n DATA=8 STOP=2 to=on xon=off octs=off rts=on" -NoNewWindow -Wait
+			#Start-Process -FilePath "cmd.exe" -ArgumentList "/c mode $($comPort): BAUD=115200 PARITY=n DATA=8 STOP=2" -NoNewWindow -Wait
+			Start-Process -FilePath "cmd.exe" -ArgumentList "/c mode $($comPort):/status" -NoNewWindow -Wait
 		}
 
         # Start PHP Webserver
@@ -123,7 +124,7 @@ function checkProlificDriver {
 	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "Prolific"}
 	if ($Driver)
 	{
-		if ([System.Diagnostics.FileVersionInfo]::GetVersionInfo("C:\Windows\System32\drivers\ser2pl64.sys").FileVersion -ne "3.3.2.105")
+		if ([System.Diagnostics.FileVersionInfo]::GetVersionInfo("C:\Windows\System32\drivers\ser2pl64.sys").FileVersion -ne "3.3.2.102")
 		{
 			Elevate
 			$oeminflist = gci "$env:windir\inf\*.*" -Include oem*.inf;

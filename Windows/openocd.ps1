@@ -1,4 +1,4 @@
-$openocd = "$env:programfiles\GNU MCU Eclipse"
+$openocd = "$env:programfiles\GNU MCU Eclipse\OpenOCD\0.10.0-10-20181020-0522"
 
 function Elevate() {
     # Get the ID and security principal of the current user account
@@ -14,7 +14,7 @@ function Elevate() {
 
 if($args[0] -eq "uninstall") {
 	Elevate
-	Remove-Item -Recurse -Force $openocd
+	Remove-Item -Recurse -Force (Split-Path ($openocd) -Parent)
 }else{
     if (-Not (Test-Path $openocd)){
 		Elevate
@@ -25,7 +25,7 @@ if($args[0] -eq "uninstall") {
 			$shell.Namespace($env:programfiles).copyhere($item)
 		}
 	}else{
-        Set-Location "$openocd\OpenOCD\0.10.0-10-20181020-0522\bin"
+        Set-Location "$openocd\bin"
 		$FILE = $($args[0]).Replace("\","\\")
         $ADDRESS=" 0x08000000"
 

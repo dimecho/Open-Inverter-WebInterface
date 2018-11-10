@@ -153,7 +153,7 @@ void setup()
   server.on("/serial.php", HTTP_GET, []() {
     if (server.hasArg("init"))
     {
-      server.send(200, "text/plain", readSerial("hello"));
+  		server.send(200, "text/plain", readSerial("fastuart " + server.arg("init")));
     }
     else if (server.hasArg("com"))
     {

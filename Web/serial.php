@@ -1,4 +1,6 @@
 <?php
+    session_start();
+
 	error_reporting(E_ERROR | E_PARSE);
 
     header("Access-Control-Allow-Origin: *");
@@ -12,7 +14,15 @@
 
     if(isset($_GET["init"]))
     {
-       serialDevice(true);
+       echo serialDevice($_GET["init"]);
+    }
+    else if(isset($_GET["serial"]))
+    {
+        echo $_GET["serial"];
+        $json = json_decode(file_get_contents("js/serial.json"), true);
+        $json['serial']['port'] = $_GET["serial"];
+        file_put_contents("js/serial.json", json_encode($json));
+        unset($_SESSION["serial"]);
     }
     else if(isset($_GET["com"]))
     {
@@ -36,7 +46,7 @@
         /*
         if(strpos($com,"Error") === true)
         {
-            echo serialDevice(null);
+            echo serialDevice();
         }
 		*/
     }
@@ -82,60 +92,55 @@
         echo calculateMedian(readArray($_GET["median"],3));
     }
 
-    function serialDevice($init)
+    function serialDevice($speed)
     {
-        $errors = "";
-		$json = json_decode(file_get_contents("js/serial.json"), true);
-        $com = $json['serial']['port'];
-		$_SESSION["timeout"] = $json['serial']['timeout'];
+		$errors = "";
 		
-        if(isset($init)) {
+		$com = $_SESSION["serial"];
+		if(!isset($com)) {
+			$json = json_decode(file_get_contents("js/serial.json"), true);
+			$_SESSION["serial"] = $json['serial']['port'];
+			$_SESSION["timeout"] = $json['serial']['timeout'];
+			$com = $json['serial']['port'];
+		}
+		
+		$uname = strtolower(php_uname('s'));
+	
+		if (strpos($uname, "windows") !== false) {
+			$errors = exec("mode " .$com. ": BAUD=" . $speed. " PARITY=n DATA=8 STOP=2");
+			if(strpos($errors ,"Invalid") === false)
+				$errors = "";
+		}else if (strpos($uname, "darwin") !== false) {
+			//exec("screen " .$com. " " .$speed. " &");
+			//stty -f $serial 115200 parodd cs8 cstopb -crtscts -echo & cat $serial &
+			//stty -f $serial 115200 & screen $serial 115200 &
+
+		}else{
+			#Raspberry Pi Fix
+			if (strpos(php_uname('m'), "arm") !== false) {
+				exec("minicom -b " .$speed. " -o -D " .$com. " &");
+				exec("killall minicom");
+			}
 			
-			set_time_limit(5);
+			#Linux set TTY speed
+			$errors = exec("stty -F " .$com. " " .$speed. " -parenb cs8 cstopb");
+			#$errors .= shell_exec("stty -F " .$com. " clocal -crtscts -ixon -ixoff");
+		}
 
-            $uname = strtolower(php_uname('s'));
-
-            if (strpos($uname, "windows") !== false) {
-                $errors = exec("mode " .$com. ": BAUD=115200 PARITY=n DATA=8 STOP=2 to=on xon=off octs=off rts=on");
-				
-                if(strpos($errors ,"Invalid") === false)
-                    $errors = "";
-				
-            }else if (strpos($uname, "darwin") !== false) {
-                //exec("screen " .$com. " 115200 &");
-                //stty -f $serial 115200 parodd cs8 cstopb -crtscts -echo & cat $serial &
-                //stty -f $serial 115200 & screen $serial 115200 &
-
-            }else{
-                #Raspberry Pi Fix
-                if (strpos(php_uname('m'), "arm") !== false) {
-                    exec("minicom -b 115200 -o -D " .$com. " &");
-                    exec("killall minicom");
-                }
-                
-                #Linux set TTY speed
-                $errors = exec("stty -F " .$com. " 115200 -parenb cs8 cstopb");
-                #$errors .= shell_exec("stty -F " .$com. " clocal -crtscts -ixon -ixoff");
-            }
-
-            if($errors != "")
-                return "Error: " . $errors;
-
-            $uart = fopen($com, "r+");
-            $read = "";
-            
-            if($uart) {
-                //Unknown command sequence
-                //--------------------
-                fwrite($uart, "hello\n");
-                echo fgets($uart);
-                echo fgets($uart);
-                fclose($uart);
-                //--------------------
-
-            }else{
-                return "Error: Cannot open ". $com;
-            }
+		if($errors != "")
+			return "Error: " . $errors;
+		
+		$uart = fopen($com, "r+");
+		
+		if($uart)
+		{
+			fwrite($uart, "fastuart " .$speed. "\n");
+			echo fgets($uart);
+			echo fgets($uart);
+			fclose($uart);
+			
+		}else{
+            return "Error: Cannot open ". $com;
         }
 
         return $com;
@@ -143,7 +148,7 @@
 	
 	function readArray($cmd,$n)
     {
-        $com = serialDevice(null);
+        $com = $_SESSION["serial"];
         if(strpos($com,"Error") !== false)
             return $com;
 
@@ -170,16 +175,17 @@
 	
     function readSerial($cmd)
     {
-        $com = serialDevice(null);
+        $com = $_SESSION["serial"];
+
         if(strpos($com,"Error") !== false)
             return $com;
 
 		$cmd = $cmd. "\n";
 		$uart = fopen($com, "r+"); //Read & Write
-        //stream_set_blocking($uart, 1); //O_NONBLOCK
+        //stream_set_blocking($uart, 0); //O_NONBLOCK
         //stream_set_timeout($uart, 8);
         
-        fwrite($uart, $cmd);
+        fwrite($uart, $cmd); //fputs($uart, $cmd);
         $read = fgets($uart); //echo
 
         //DEBUG
@@ -187,43 +193,51 @@
         //echo $cmd;
         //echo $read;
 
-        if($cmd === "json\n"){
-            $read = fread($uart,9500);
-            while (substr($read, -4) !== "}\r\n}")
-                $read .= fread($uart,1);
-        }else if($cmd === "all\n"){
-            $read = fread($uart,1000);
-            while (substr($read, -7) !== "tm_meas")
-                $read .= fread($uart,1);
-            $read .= "\t\t59652322";
-        }else{
-            if(strpos($cmd,",") !== false) //Multi-value support
-            {
-                $read = "";
-                $streamCount = 0;
-                $streamLength = substr_count($cmd, ',');
+		//if ($cmd === $read){ //echo OK
+			if($cmd === "json\n"){
+				$read = fread($uart,9500);
+				while (substr($read, -4) !== "}\r\n}")
+					$read .= fread($uart,1);
+			}else if($cmd === "all\n"){
+				$read = fread($uart,1000);
+				while (substr($read, -7) !== "tm_meas")
+					$read .= fread($uart,1);
+				$read .= "\t\t59652322";
+			}else{
+				if(strpos($cmd,",") !== false) //Multi-value support
+				{
+					$read = "";
+					$streamCount = 0;
+					$streamLength = substr_count($cmd, ',');
 
-                while($streamCount <= $streamLength)
-                {
-                    $read .= fgets($uart);
-                    $streamCount++;
-                }
+					while($streamCount <= $streamLength)
+					{
+						$read .= fgets($uart);
+						$streamCount++;
+					}
 
-            }else{
-                $read = fgets($uart);
-            }
-        }
-        fclose($uart);
-
-        $read = str_replace("\r", "", $read);
-        $read = rtrim($read, "\n");
+				}else{
+					$read = fgets($uart);
+					/*
+					while(!feof($uart)){
+						$read.=stream_get_contents($uart, 2);	
+					}
+					*/
+				}
+			}
+			$read = str_replace("\r", "", $read);
+			$read = rtrim($read, "\n");
+		//}else{
+		//	$read = "Error: Received corrupted echo ...check cables";
+		//}
+		fclose($uart);
         
         return $read;
     }
 
     function streamSerial($cmd,$loop,$delay)
     {
-        $com = serialDevice(null);
+        $com = $_SESSION["serial"];
         $streamLength = substr_count($cmd, ',');
         $cmd = $cmd. "\n";
         $uart = fopen($com, "r+"); //Read & Write

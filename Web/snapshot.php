@@ -1,5 +1,4 @@
 <?php
-    require("serial.php");
 
 	if(isset($_GET["db"])){
 		
@@ -41,7 +40,7 @@
 		$string = file_get_contents($file);
 		$params = (array)json_decode($string);
 		
-		$uart = fopen(serialDevice(null), "r+"); //Read & Write
+		$uart = fopen($_SESSION["serial"], "r+"); //Read & Write
 		//stream_set_blocking($uart, 1); //O_NONBLOCK
         //stream_set_timeout($uart, 30);
 		

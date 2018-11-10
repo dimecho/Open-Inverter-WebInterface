@@ -13,7 +13,6 @@ echo "{
 		\"timeout\": 12
     }
 }" > "$(dirname "$0")/Web/js/serial.json"
-            i=30
             /usr/bin/firefox http://localhost:8080;bash
             return
         fi

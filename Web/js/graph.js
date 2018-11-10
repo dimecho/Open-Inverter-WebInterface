@@ -13,6 +13,16 @@ var xhr;
 
 $(document).ready(function () {
 
+	$.ajax({
+		url: serialWDomain + ":" + serialWeb + "/serial.php?init=921600",
+		success: function(data) {
+			console.log(data);
+			if (data.indexOf("921600") != -1) {
+				$.notify({ message: 'UART set to 921600 (1Mbps)' }, { type: 'sucess' });
+			}
+		}
+	});
+	
     /*
     $(document).click(function (e) {
         if(xhr)

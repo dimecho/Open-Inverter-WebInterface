@@ -1,9 +1,5 @@
 var esp8266 = false;
 
-var xhr = new XMLHttpRequest();
-xhr.open("GET", serialWDomain + ":" + serialWeb + "/serial.php?init=1");
-xhr.send();
-
 $(document).ready(function()
 {
     $(".safety").fancybox({
@@ -32,9 +28,54 @@ $(document).ready(function()
     if (safety === undefined) {
         $(".safety").trigger('click');
     }else{
-        buildParameters();
+        $.ajax({
+            url: serialWDomain + ":" + serialWeb + "/serial.php?init=115200",
+            success: function(data) {
+                //console.log(data);
+                if(data.indexOf("Error") != -1)
+                {
+                    $.ajax({
+                        url: serialWDomain + ":" + serialWeb + "/serial.php?com=list",
+                        success: function(d) {
+                           //console.log(d);
+                            var s = d.split(',');
+                            for (var i = 0; i < s.length; i++) {
+                                if(s[i] != "")
+                                    $("#serial-interface").append($("<option>",{value:s[i]}).append(s[i]));
+                            }
+                            $(".serial").trigger('click');
+                        }
+                    });
+                    $(".serial").fancybox({
+                        maxWidth    : 800,
+                        maxHeight   : 640,
+                        fitToView   : false,
+                        width       : '80%',
+                        height      : '80%',
+                        autoSize    : false,
+                        closeClick  : false,
+                        openEffect  : 'none',
+                        closeEffect : 'none'
+                    });
+                }else{
+                    buildParameters();
+                }
+            }
+        });
     }
 });
+
+function selectSerial()
+{
+    $.ajax({
+        url: serialWDomain + ":" + serialWeb + "/serial.php?serial=" + $("#serial-interface").val(),
+        async: false,
+        success: function(data) {
+            console.log(data);
+            location.reload();
+        }
+    });
+}
 
 function inputText(id)
 {

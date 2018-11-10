@@ -1,5 +1,5 @@
 <?php
-	include_once("common.php");
+    include_once("common.php");
     error_reporting(E_ERROR | E_PARSE);
 	$os = detectOS();
 
@@ -17,7 +17,7 @@
 				echo "$line\n";
 			}
 		}else{
-			$uart = fopen(serialDevice(null), "r+"); //Read & Write
+			$uart = fopen($_SESSION["serial"], "r+"); //Read & Write
 			//stream_set_blocking($uart, 1); //O_NONBLOCK
 			//stream_set_timeout($uart, 30);
 			
@@ -115,7 +115,6 @@
 			fclose($uart);
 		}
     }else{
-		require("serial.php");
 ?>
 <!DOCTYPE html>
 <html>
