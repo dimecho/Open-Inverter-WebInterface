@@ -59,7 +59,7 @@ function startPHP($page) {
 		{
 			$serial_json = "$scriptPath\Web\js\serial.json"
 			$json = Get-Content "$serial_json" -Raw | ConvertFrom-Json
-			$json.serial.port = $comPort + ":"
+			$json.serial.port = $comPort #+ ":"
 			$json.serial.web = 8081
 			$json | ConvertTo-Json  | Set-Content "$serial_json"
 
@@ -85,7 +85,7 @@ function startPHP($page) {
         # Start PHP Webserver
         Start-Process -FilePath "taskkill.exe" -ArgumentList "/F /IM php.exe /T" -NoNewWindow -Wait
         Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8080 -t ""$scriptPath\\Web""" -NoNewWindow
-        Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8081 -t ""$scriptPath\\Web""" -NoNewWindow
+        #Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8081 -t ""$scriptPath\\Web""" -NoNewWindow
 		
 		Start-Sleep -s 2
 		

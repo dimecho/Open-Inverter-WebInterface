@@ -1,9 +1,12 @@
 <?php
+    //header("Access-Control-Allow-Origin: *");
+    header("Content-Type: text/plain");
+    header("Cache-Control: no-cache");
+
     session_start();
 
 	error_reporting(E_ERROR | E_PARSE);
 
-    header("Access-Control-Allow-Origin: *");
 	
     if(isset($_SESSION["timeout"]))
 	{
@@ -14,15 +17,22 @@
 
     if(isset($_GET["init"]))
     {
-       echo serialDevice($_GET["init"]);
+        PHPSESSID_destroy();
+        echo serialDevice($_GET["init"]);
     }
     else if(isset($_GET["serial"]))
     {
-        echo $_GET["serial"];
         $json = json_decode(file_get_contents("js/serial.json"), true);
         $json['serial']['port'] = $_GET["serial"];
         file_put_contents("js/serial.json", json_encode($json));
-        unset($_SESSION["serial"]);
+        //PHPSESSID_destroy();
+        $uname = strtolower(php_uname('s'));
+        if (strpos($uname, "darwin") !== false) {
+            echo dirname(dirname(dirname(__DIR__)));
+            //exec("pkill \"Huebner Inverter\"");
+            exec("\"../../MacOS/Huebner Inverter\" reload > /dev/null 2>&1 &");
+            //exec("open -g -a \"" . dirname(dirname(dirname(__DIR__))). "\" reload");
+        }
     }
     else if(isset($_GET["com"]))
     {
@@ -56,16 +66,17 @@
     }
     else if(isset($_GET["get"]))
     {
-        $uname = strtolower(php_uname('s'));
-
-        if (strpos($uname, "darwin") !== false && strpos($_GET["get"],",") !== false) //Multi-value support for Mac
+        /*
+        if (strpos($_GET["get"],",") !== false) //Multi-value support for Mac
         {
             $split = explode(",",$_GET["get"]);
             for ($x = 0; $x < count($split); $x++)
+            {
                 echo readSerial("get " .$split[$x]). "\n";
-        }else{
-            echo readSerial("get " .$_GET["get"]);
+            }
         }
+        */
+        echo readSerial("get " .$_GET["get"]);
     }
     else if(isset($_GET["stream"]))
     {
@@ -92,6 +103,17 @@
         echo calculateMedian(readArray($_GET["median"],3));
     }
 
+    function PHPSESSID_destroy()
+    {
+        //remove PHPSESSID from browser
+        if (isset($_COOKIE[session_name()]))
+        setcookie(session_name(), “”, time()-3600, “/”);
+        //clear session from globals
+        $_SESSION = array();
+        //clear session from disk
+        //session_destroy();
+    }
+
     function serialDevice($speed)
     {
 		$errors = "";
@@ -101,30 +123,37 @@
 			$json = json_decode(file_get_contents("js/serial.json"), true);
 			$_SESSION["serial"] = $json['serial']['port'];
 			$_SESSION["timeout"] = $json['serial']['timeout'];
-			$com = $json['serial']['port'];
+			$com = $_SESSION["serial"];
 		}
 		
 		$uname = strtolower(php_uname('s'));
-	
+
 		if (strpos($uname, "windows") !== false) {
 			$errors = exec("mode " .$com. ": BAUD=" . $speed. " PARITY=n DATA=8 STOP=2");
-			if(strpos($errors ,"Invalid") === false)
+			if(strpos($errors ,"Invalid") === false) {
 				$errors = "";
+            }else{
+                exec("mode " .$com. ":/status", $mode);
+                print_r($mode);
+            }
 		}else if (strpos($uname, "darwin") !== false) {
-			//exec("screen " .$com. " " .$speed. " &");
-			//stty -f $serial 115200 parodd cs8 cstopb -crtscts -echo & cat $serial &
-			//stty -f $serial 115200 & screen $serial 115200 &
-
+            /*
+            exec("minicom -D " .$com. " -b " .$speed. " -t vt100", $output);
+            print_r($output);
+            exec("killall minicom");
+            */
+            exec("stty -f " .$com, $stty);
+            print_r($stty);
 		}else{
 			#Raspberry Pi Fix
 			if (strpos(php_uname('m'), "arm") !== false) {
-				exec("minicom -b " .$speed. " -o -D " .$com. " &");
+				exec("minicom -D " .$com. " -b " .$speed. " &");
 				exec("killall minicom");
 			}
-			
 			#Linux set TTY speed
-			$errors = exec("stty -F " .$com. " " .$speed. " -parenb cs8 cstopb");
-			#$errors .= shell_exec("stty -F " .$com. " clocal -crtscts -ixon -ixoff");
+			exec("stty -F " .$com. " " .$speed. " -parenb cs8 cstopb");
+            exec("stty -F " .$com, $stty);
+            print_r($stty);
 		}
 
 		if($errors != "")
@@ -134,11 +163,16 @@
 		
 		if($uart)
 		{
-			fwrite($uart, "fastuart " .$speed. "\n");
-			echo fgets($uart);
-			echo fgets($uart);
+            fwrite($uart, "hello\n");
+            echo fgets($uart); //echo
+            echo fgets($uart); //ok
+            /*
+            fwrite($uart, "fastuart " .$speed. "\n");
+            echo fgets($uart); //echo
+            echo fgets($uart); //ok
+            echo fgets($uart); //confirm
+            */
 			fclose($uart);
-			
 		}else{
             return "Error: Cannot open ". $com;
         }
@@ -148,13 +182,12 @@
 	
 	function readArray($cmd,$n)
     {
-        $com = $_SESSION["serial"];
-        if(strpos($com,"Error") !== false)
-            return $com;
-
         $arr = array();
+        $com = $_SESSION["serial"];
 		$cmd = "get " .$cmd. "\n";
 		$uart = fopen($com, "r+"); //Read & Write
+        if(!$uart)
+            return $com;
         
         fwrite($uart, $cmd);
         $read = fgets($uart); //echo
@@ -172,37 +205,46 @@
         
 		return $arr;
     }
+
+    function readEcho($uart)
+    {
+        $read = fgets($uart);
+        if ($read == "\r\n")
+            $read = fgets($uart);
+        return $read;
+    }
 	
     function readSerial($cmd)
     {
         $com = $_SESSION["serial"];
-
-        if(strpos($com,"Error") !== false)
-            return $com;
-
 		$cmd = $cmd. "\n";
 		$uart = fopen($com, "r+"); //Read & Write
         //stream_set_blocking($uart, 0); //O_NONBLOCK
         //stream_set_timeout($uart, 8);
-        
+        if(!$uart)
+            return $com;
+
         fwrite($uart, $cmd); //fputs($uart, $cmd);
-        $read = fgets($uart); //echo
+        $read = fgets($uart);
 
         //DEBUG
+        //echo $com;
 		//echo $uart;
-        //echo $cmd;
-        //echo $read;
+        //echo "\"" .$cmd. "\"";
+        //echo "\"" .$read. "\"";
 
 		//if ($cmd === $read){ //echo OK
 			if($cmd === "json\n"){
-				$read = fread($uart,9500);
-				while (substr($read, -4) !== "}\r\n}")
+                $read = fread($uart,1024);
+                for ($i = 0; $i < 10; $i++)
+                    $read .= fread($uart,1024);
+				while (substr($read, -6) !== "}\r\n}\r\n")
 					$read .= fread($uart,1);
 			}else if($cmd === "all\n"){
-				$read = fread($uart,1000);
-				while (substr($read, -7) !== "tm_meas")
+				$read = fread($uart,1024);
+				while (substr($read, -7) !== "cpuload")
 					$read .= fread($uart,1);
-				$read .= "\t\t59652322";
+				$read .= fread($uart,6);
 			}else{
 				if(strpos($cmd,",") !== false) //Multi-value support
 				{
@@ -215,16 +257,11 @@
 						$read .= fgets($uart);
 						$streamCount++;
 					}
-
 				}else{
 					$read = fgets($uart);
-					/*
-					while(!feof($uart)){
-						$read.=stream_get_contents($uart, 2);	
-					}
-					*/
 				}
 			}
+            
 			$read = str_replace("\r", "", $read);
 			$read = rtrim($read, "\n");
 		//}else{
@@ -241,7 +278,7 @@
         $streamLength = substr_count($cmd, ',');
         $cmd = $cmd. "\n";
         $uart = fopen($com, "r+"); //Read & Write
-
+        
         fwrite($uart, $cmd);
         $read = fgets($uart); //echo
 

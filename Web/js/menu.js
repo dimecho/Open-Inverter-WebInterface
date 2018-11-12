@@ -3,26 +3,25 @@ var serialWeb = 8080;
 var serialTimeout = 12000;
 var serialWDomain = "http://" + window.location.hostname;
 
-$.ajax({
-  url: "version.txt",
+$.ajax("version.txt", {
   success: function(data) {
     document.title = "Inverter Console (Build " + data + ")"
   }
 });
 
-$.ajax({
-  url: "js/serial.json",
+$.ajax("js/serial.json", {
   dataType: "json",
-  async: false,
   success: function(data) {
     serialPort = data.serial.port;
     serialWeb = data.serial.web;
-	serialTimeout = data.serial.timeout * 1100;
+	serialTimeout = data.serial.timeout * 1000;
   }
 });
 
 $(document).ready(function () {
 
+    buildMenu();
+    
     alertify.defaults.transition = "slide";
     alertify.defaults.theme.ok = "btn btn-primary";
     alertify.defaults.theme.cancel = "btn btn-danger";
@@ -105,8 +104,81 @@ $(document).ready(function () {
         };
     }, false, 'confirm');
 
-    buildMenu();
+    $(".safety").fancybox({
+        maxWidth    : 800,
+        maxHeight   : 640,
+        fitToView   : false,
+        width       : '80%',
+        height      : '80%',
+        autoSize    : false,
+        closeClick  : false,
+        openEffect  : 'none',
+        closeEffect : 'none'
+    });
 
+    var safety = getCookie("safety");
+    
+    if (safety === undefined) {
+        $(".safety").trigger('click');
+    }else{
+        //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?init=115200", {
+        $.ajax("serial.php?init=115200", {
+            async: false,
+            success: function(data) {
+                console.log(data);
+                if(data.indexOf("Error") != -1)
+                {
+                    //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
+                    $.ajax("serial.php?com=list", {
+                        async: false,
+                        success: function(d) {
+                           //console.log(d);
+                           $(".serial").fancybox({
+                                maxWidth    : 800,
+                                maxHeight   : 640,
+                                fitToView   : false,
+                                width       : '80%',
+                                height      : '80%',
+                                autoSize    : false,
+                                closeClick  : false,
+                                openEffect  : 'none',
+                                closeEffect : 'none'
+                            });
+                            var s = d.split(',');
+                            for (var i = 0; i < s.length; i++) {
+                                if(s[i] != "")
+                                    $("#serial-interface").append($("<option>",{value:s[i]}).append(s[i]));
+                            }
+                            $(".serial").trigger('click');
+                        }
+                    });
+                    
+                }else{
+                    if(data.indexOf("9600") != -1) {
+                        $.notify({ message: 'Serial speed is 9600 baud' }, { type: 'danger' });
+                    }
+                    
+                    var path = window.location.pathname;
+                    var page = path.split("/").pop();
+                    if(page == "" || page == "index.php")
+                        buildParameters();
+                    buildStatus(true);
+                    displayVersion();
+                }
+            }
+        });
+    }
+
+	/*
+    TipRefreshTimer=setTimeout(function () {
+		clearTimeout(TipRefreshTimer);
+        buildTips();
+    }, 1000);
+	*/
+});
+
+function displayVersion()
+{
     getJSONFloatValue("version", function(version) {
         if(version > 0) {
             $("#firmwareVersion").empty().append("Firmware v" + version);
@@ -116,14 +188,18 @@ $(document).ready(function () {
             }
         }
     });
-	
-	/*
-    TipRefreshTimer=setTimeout(function () {
-		clearTimeout(TipRefreshTimer);
-        buildTips();
-    }, 1000);
-	*/
-});
+};
+
+function selectSerial()
+{
+    //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?serial=" + $("#serial-interface").val(), {
+    $.ajax("serial.php?serial=" + $("#serial-interface").val(), {
+        success: function(data) {
+            console.log(data);
+            location.reload();
+        }
+    });
+};
 
 function isInt(n){
     return Number(n) === n && n % 1 === 0;
@@ -234,8 +310,9 @@ function setParameter(cmd, value, save, notify) {
 
     var e = "";
 
-    $.ajax(serialWDomain + ":" + serialWeb + "/serial.php?pk=1&name=" + cmd + "&value=" + value, {
-        //async: true,
+    //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?pk=1&name=" + cmd + "&value=" + value, {
+    $.ajax("serial.php?pk=1&name=" + cmd + "&value=" + value, {
+        async: true,
 		timeout: serialTimeout,
         success: function success(data) {
             e = data;
@@ -266,12 +343,14 @@ function setParameter(cmd, value, save, notify) {
 function sendCommand(cmd) {
 
     var e = ""
-
-    $.ajax(serialWDomain + ":" + serialWeb + "/serial.php?command=" + cmd, {
-        async: false,
+  
+    //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?command=" + cmd, {
+    $.ajax("serial.php?command=" + cmd, {
+        async: true,
         cache: false,
         timeout: serialTimeout,
         success: function success(data) {
+            console.log(data);
             if(cmd == "json") {
                 try {
                     e = JSON.parse(data);
@@ -319,13 +398,15 @@ function getJSONFloatValue(value, callback) {
     var f = 0;
     var sync = false;
 
-    if(callback)
-        sync = true;
+    //if(callback)
+    //    sync = true;
 
-    $.ajax(serialWDomain + ":" + serialWeb + "/serial.php?get=" + value, {
+    //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?get=" + value, {
+    $.ajax("serial.php?get=" + value, {
         async: sync,
         timeout: serialTimeout,
         success: function success(data) {
+            console.log(data);
             f = parseFloat(data);
             if(isNaN(f))
                 f = 0;
@@ -341,7 +422,8 @@ function getJSONAverageFloatValue(value,c) {
     if(!c)
         c = "average"; //median
     var f = 0;
-    $.ajax(serialWDomain + ":" + serialWeb + "/serial.php?" + c + "=" + value, {
+    //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?" + c + "=" + value, {
+    $.ajax("serial.php?" + c + "=" + value, {
         async: false,
 		timeout: serialTimeout,
         success: function success(data) {

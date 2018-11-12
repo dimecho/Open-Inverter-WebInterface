@@ -13,8 +13,9 @@ var xhr;
 
 $(document).ready(function () {
 
-	$.ajax({
-		url: serialWDomain + ":" + serialWeb + "/serial.php?init=921600",
+	//$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?init=921600", {
+        /*
+    $.ajax("serial.php?init=921600", {
 		success: function(data) {
 			console.log(data);
 			if (data.indexOf("921600") != -1) {
@@ -22,7 +23,7 @@ $(document).ready(function () {
 			}
 		}
 	});
-	
+	*/
     /*
     $(document).click(function (e) {
         if(xhr)
@@ -1280,8 +1281,8 @@ function updateChart(value, autosize, accuracy) {
     var last_response_len = false;
     var last = (value.length - 1);
     var i = 0;
-    xhr = $.ajax({
-        url: serialWDomain + ":" + serialWeb + "/serial.php?stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay,
+    //xhr = $.ajax(serialWDomain + ":" + serialWeb + "/serial.php?stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay, {
+    xhr = $.ajax("serial.php?stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay, {
         type: "GET",
         async: true,
         timeout: 4000,

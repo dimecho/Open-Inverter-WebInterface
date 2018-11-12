@@ -72,7 +72,7 @@ verlt() {
 
 pkill -9 php
 /usr/bin/php -S 0.0.0.0:8080 -t "$(dirname "$0")/Web/" &
-/usr/bin/php -S 0.0.0.0:8081 -t "$(dirname "$0")/Web/" &
+#/usr/bin/php -S 0.0.0.0:8081 -t "$(dirname "$0")/Web/" &
 sleep 2
 
 for dir in `ls ./kext`; do

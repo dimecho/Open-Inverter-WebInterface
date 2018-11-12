@@ -194,8 +194,8 @@
 						<?php }else{ ?>
 						<script>
                                 $(document).ready(function() {
-									$.ajax({
-										url: serialWDomain + ":" + serialWeb + "/serial.php?com=list",
+									//$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
+                                    $.ajax("serial.php?com=list", {
 										success: function(data) {
 											//console.log(data);
 											var s = data.split(',');

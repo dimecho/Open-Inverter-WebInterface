@@ -34,7 +34,7 @@ if [[ $(type -p php) ]]; then
     
     sudo killall php
     sudo php -S 0.0.0.0:8080 -t "$(dirname "$0")/Web/" &
-    sudo php -S 0.0.0.0:8081 -t "$(dirname "$0")/Web/" &
+    #sudo php -S 0.0.0.0:8081 -t "$(dirname "$0")/Web/" &
     sleep 4
     
     checkUSB

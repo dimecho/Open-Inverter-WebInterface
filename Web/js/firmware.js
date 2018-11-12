@@ -40,8 +40,7 @@ function setInterfaceImage() {
 		}
 	}else{
 		//ESP8266 Detected
-		$.ajax({
-			url: "serial.php",
+		$.ajax("serial.php", {
 			success: function() {
 				$("#jtag-txt").html("Caution: Main board Olimex is powered with 3.3V - Double check your TTL-USB adapter.");
 				$("#jtag-image").attr("src","firmware/img/usb_ttl.jpg");

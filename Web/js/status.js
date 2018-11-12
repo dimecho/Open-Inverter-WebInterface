@@ -4,15 +4,15 @@ var iconic;
 $(document).ready(function () {
 
     iconic = IconicJS();
-    
-    buildStatus(true);
+    //buildStatus(true);
 });
 
 function buildStatus(sync) {
 
     clearTimeout(statusRefreshTimer);
 
-    $.ajax(serialWDomain + ":" + serialWeb + "/serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
+    //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
+    $.ajax("serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
         async: sync,
         success: function success(data)
         {
@@ -132,10 +132,11 @@ function buildStatus(sync) {
             //iconic.inject('img.iconic');
 			
             $('[data-toggle="tooltip"]').tooltip();
-
+            /*
             statusRefreshTimer = setTimeout(function () {
                 buildStatus(true);
             }, 12000);
+            */
         }
     });
 }

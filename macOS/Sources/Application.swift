@@ -1,28 +1,42 @@
 import Foundation
 import Cocoa
 import IOKit
-import IOKit.serial
-import Darwin.POSIX.termios
 
 @NSApplicationMain
 class Application: NSViewController, NSApplicationDelegate
 {
 	var serial:CInt = -1
     var serialPath = String()
-    var serialPathArray = [String]()
 	
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
+		if !ProcessInfo.processInfo.arguments.contains("reload") {
+			let task = Process()
+			task.launchPath = Bundle.main.path(forResource: "run", ofType:nil)
+			task.arguments =  ["reload"]
+			task.launch()
+			task.waitUntilExit()
+		}
+		//system("open -a Terminal \"" + NSBundle.mainBundle().pathForResource("run", ofType:nil)! + "\"")
+		
 		DispatchQueue.main.async
 		{
-			self.checkConnection();
+			if let path = Bundle.main.path(forResource: "serial", ofType: "json", inDirectory: "Web/js") {
+				do {
+					let jsonString = try String(contentsOfFile: path)
+					let jsonData = jsonString.data(using: .utf8)
+					let json = try? JSONSerialization.jsonObject(with: jsonData!, options: [])
+					if let dictionary = json as? [String: Any] {
+						let d = dictionary["serial"]
+						if let p = d as? [String: Any] {
+							self.serialPath = p["port"] as! String
+							self.openSerial()
+						}
+					}
+				} catch {
+				}
+			}
 		}
-
-		let task = Process()
-		task.launchPath = Bundle.main.path(forResource: "run", ofType:nil)
-		task.launch()
-		//task.waitUntilExit()
-		//system("open -a Terminal \"" + NSBundle.mainBundle().pathForResource("run", ofType:nil)! + "\"")
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool
@@ -39,44 +53,10 @@ class Application: NSViewController, NSApplicationDelegate
 		
 		closeSerial()
     }
-    
-    func checkConnection()
-    {
-		var timeout = 20
-        repeat {
-            var portIterator: io_iterator_t = 0
-            let kernResult = findSerialDevices(kIOSerialBSDAllTypes, serialPortIterator: &portIterator)
-            if kernResult == KERN_SUCCESS {
-                printSerialPath(portIterator)
-            }
-			
-            for i in 0...(serialPathArray.count-1)
-            {
-                //print(serialPathArray[i])
-				
-				let usb = serialPathArray[i].uppercased()
-                
-                if (usb.range(of: "USB") != nil || usb.range(of: "CH34") != nil || usb.range(of: "PL23") != nil)
-                {
-					timeout = 0;
-                    serialPath = serialPathArray[i]
-                    openSerial()
-					break;
-                }
-            }
-			
-            sleep(5)
-			timeout -= 1
-        }while timeout > 0
-    }
-    
+	
     func openSerial()
     {
-		//Close old connection (if app was closed not properly)
-		//let defaults:UserDefaults = UserDefaults.standard
-		//serial = defaults.value(forKey: "serial") as? CInt ?? -1
-		
-		if(serial != -1){
+		if(serial != -1) {
 			return
 		}
 		
@@ -84,7 +64,7 @@ class Application: NSViewController, NSApplicationDelegate
 		
         var raw = Darwin.termios()
         let path = String(serialPath)
-		let fd = open(path, O_RDWR | O_NOCTTY | O_NDELAY ) //| O_NONBLOCK
+		let fd = open(path, O_RDWR | O_NOCTTY) // | O_NDELAY | O_NONBLOCK
 		/*
 		- The O_NOCTTY flag tells UNIX that this program doesn't want to be the "controlling terminal" for that port. If you don't specify this then any input (such as keyboard abort signals and so forth) will affect your process. Programs like getty(1M/8) use this feature when starting the login process, but normally a user program does not want this behavior.
 		
@@ -101,26 +81,17 @@ class Application: NSViewController, NSApplicationDelegate
 			//raw.c_cc.16 = 1 //raw.c_cc[VMIN] = 1
 			//raw.c_cc[VTIME] = 10
 			//------------------
-			//cfsetspeed(&raw, 115200)    // set speed
-			cfsetispeed(&raw, speed_t(B115200))     // set input speed
-			cfsetospeed(&raw, speed_t(B115200))     // set output speed
+			cfsetspeed(&raw, 115200)    // set speed
+			//cfsetispeed(&raw, speed_t(B115200))     // set input speed
+			//cfsetospeed(&raw, speed_t(B115200))     // set output speed
 			//------------------
-			
-			//let CRTSCTS = 020000000000 // flow control
-			//let CMSPAR = 0o10000000000 // "stick" (mark/space) parity
-			
 			var cflag:tcflag_t = 0
             cflag |= UInt(CS8)            // 8-bit
             cflag |= UInt(CSTOPB)         // stop 2
-			//cflag |= (UInt(CLOCAL) | UInt(CREAD)) //set up raw mode / no echo / binary
-			
-			raw.c_cflag &= ~(UInt(FNDELAY))		// clear fcntl, otherwise VMIN/VTIME are ignored
+			//raw.c_cflag &= ~(UInt(FNDELAY))		// clear fcntl, otherwise VMIN/VTIME are ignored
 			//raw.c_cflag &= ~(UInt(CRTSCTS))	// clear rtscts
             raw.c_cflag &= ~(UInt(CSIZE))		// clear all bits
-            raw.c_cflag &= ~(UInt(IXON) | UInt(IXOFF) | UInt(IXANY))		// shut off xon/xoff ctrl
-			raw.c_cflag &= ~(UInt(PARENB) | UInt(PARODD)); // | UInt(CMSPAR));	// shut off parity
-            raw.c_cflag |= cflag				// set flags
-			
+            raw.c_cflag |= cflag				// set cflags
             //------------------
             if (tcsetattr (fd, TCSANOW, &raw) != 0) // set termios
             {
@@ -140,31 +111,4 @@ class Application: NSViewController, NSApplicationDelegate
             serial = -1 ;
         }
     }
-    //================= C Wrapper ======================
-    func printSerialPath(_ portIterator: io_iterator_t) {
-        var serialService: io_object_t
-        repeat {
-            serialService = IOIteratorNext(portIterator)
-            if (serialService != 0) {
-                let key: CFString? = "IOCalloutDevice" as CFString?
-                let bsdPathAsCFtring: AnyObject? =
-                    IORegistryEntryCreateCFProperty(serialService, key, kCFAllocatorDefault, 0).takeUnretainedValue()
-                let bsdPath = bsdPathAsCFtring as! String?
-                if let path = bsdPath {
-                    serialPathArray.append(path)
-                    //print(path)
-                }
-            }
-        } while serialService != 0
-    }
-    func findSerialDevices(_ deviceType: String, serialPortIterator: inout io_iterator_t ) -> kern_return_t {
-        var result: kern_return_t = KERN_FAILURE
-        let classesToMatch = IOServiceMatching(kIOSerialBSDServiceValue)//.takeUnretainedValue()
-        var classesToMatchDict = (classesToMatch! as NSDictionary) as! Dictionary<String, AnyObject>
-        classesToMatchDict[kIOSerialBSDTypeKey] = deviceType as AnyObject?
-        let classesToMatchCFDictRef = (classesToMatchDict as NSDictionary) as CFDictionary
-        result = IOServiceGetMatchingServices(kIOMasterPortDefault, classesToMatchCFDictRef, &serialPortIterator);
-        return result
-    }
-    //=================================================
 }
