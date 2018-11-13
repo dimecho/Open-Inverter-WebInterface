@@ -2,13 +2,13 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <link rel="stylesheet" type="text/css" href="/css/bootstrap-slider.css" />
-        <script type="text/javascript" src="/js/bootstrap-slider.js"></script>
-        <script type="text/javascript" src="/js/potentiometer.js"></script>
-        <script type="text/javascript" src="/js/jquery.knob.js"></script>
-        <script type="text/javascript" src="/js/chart.js"></script>
-        <script type="text/javascript" src="/js/chartjs-plugin-datalabels.js"></script>
-        <script type="text/javascript" src="/js/graph.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-slider.css" />
+        <script type="text/javascript" src="js/bootstrap-slider.js"></script>
+        <script type="text/javascript" src="js/potentiometer.js"></script>
+        <script type="text/javascript" src="js/jquery.knob.js"></script>
+        <script type="text/javascript" src="js/chart.js"></script>
+        <script type="text/javascript" src="js/chartjs-plugin-datalabels.js"></script>
+        <script type="text/javascript" src="js/graph.js"></script>
     </head>
     <body>
         <div class="container">

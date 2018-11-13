@@ -1,4 +1,72 @@
 var esp8266 = false;
+var driverIssues = "";
+
+$(document).ready(function () {
+
+    $(".safety").fancybox({
+        maxWidth    : 800,
+        maxHeight   : 640,
+        fitToView   : false,
+        width       : '80%',
+        height      : '80%',
+        autoSize    : false,
+        closeClick  : false,
+        openEffect  : 'none',
+        closeEffect : 'none'
+    });
+
+    var safety = getCookie("safety");
+    
+    if (safety === undefined) {
+        $(".safety").trigger('click');
+    }else{
+        var path = window.location.pathname;
+        var page = path.split("/").pop();
+
+        //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?init=115200", {
+        $.ajax("serial.php?init=115200", {
+            async: false,
+            success: function(data) {
+                console.log(data);
+                if(data.indexOf("Error") != -1)
+                {
+                    //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
+                    $.ajax("serial.php?com=list", {
+                        async: false,
+                        success: function(d) {
+                           //console.log(d);
+                           $(".serial").fancybox({
+                                maxWidth    : 800,
+                                maxHeight   : 640,
+                                fitToView   : false,
+                                width       : '80%',
+                                height      : '80%',
+                                autoSize    : false,
+                                closeClick  : false,
+                                openEffect  : 'none',
+                                closeEffect : 'none'
+                            });
+                            var s = d.split(',');
+                            for (var i = 0; i < s.length; i++) {
+                                if(s[i] != "")
+                                    $("#serial-interface").append($("<option>",{value:s[i]}).append(s[i]));
+                            }
+                            $(".serial").trigger('click');
+                        }
+                    });
+                    
+                }else{
+                    driverIssues = data;
+                    if(data.indexOf("9600") != -1) {
+                        $.notify({ message: 'Serial speed is 9600 baud' }, { type: 'danger' });
+                    }
+
+                    buildParameters();
+                }
+            }
+        });
+    }
+});
 
 function inputText(id)
 {
@@ -81,6 +149,20 @@ function buildParameters()
 
             if(Object.keys(json).length == 0)
             {
+                if (os === "mac") {
+                    $(".macdrivers").fancybox({
+                        maxWidth    : 800,
+                        maxHeight   : 640,
+                        fitToView   : false,
+                        width       : '80%',
+                        height      : '80%',
+                        autoSize    : false,
+                        closeClick  : false,
+                        openEffect  : 'none',
+                        closeEffect : 'none'
+                    });
+                    $(".macdrivers").trigger('click');
+                }
                 $.ajax("js/parameters.json", {
                   async: false,
                   dataType: "json",
@@ -90,6 +172,10 @@ function buildParameters()
                     inputDisabled = true;
                   }
                 });
+            }else{
+                buildStatus();
+                displayVersion();
+                basicChecks(json);
             }
 
             var legend = $("#legend").empty();
@@ -204,8 +290,6 @@ function buildParameters()
             menu.show();
             
             $('[data-toggle="tooltip"]').tooltip();
-
-            basicChecks(json);
 
             $(".loader").hide();
 		},

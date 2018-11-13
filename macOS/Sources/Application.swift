@@ -64,7 +64,7 @@ class Application: NSViewController, NSApplicationDelegate
 		
         var raw = Darwin.termios()
         let path = String(serialPath)
-		let fd = open(path, O_RDWR | O_NOCTTY) // | O_NDELAY | O_NONBLOCK
+		let fd = open(path, O_RDWR) //| O_NOCTTY) | O_NDELAY | O_NONBLOCK
 		/*
 		- The O_NOCTTY flag tells UNIX that this program doesn't want to be the "controlling terminal" for that port. If you don't specify this then any input (such as keyboard abort signals and so forth) will affect your process. Programs like getty(1M/8) use this feature when starting the login process, but normally a user program does not want this behavior.
 		

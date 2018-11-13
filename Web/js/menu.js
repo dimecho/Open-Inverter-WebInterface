@@ -1,7 +1,10 @@
+var iconic;
 var serialPort = "COM1";
 var serialWeb = 8080;
 var serialTimeout = 12000;
 var serialWDomain = "http://" + window.location.hostname;
+var statusRefreshTimer;
+var os;
 
 $.ajax("version.txt", {
   success: function(data) {
@@ -20,7 +23,24 @@ $.ajax("js/serial.json", {
 
 $(document).ready(function () {
 
+    if (navigator.userAgent.match(/Android|webOS|iPhone|iPod|Blackberry/i)) {
+        os = "mobile";
+        $.getScript("js/mobile.js", function() {
+            optimizeMobile();
+        });
+    }else if (navigator.userAgent.match(/Mac/i)) {
+        os = "mac";
+    }else if (navigator.userAgent.match(/Win/i)) {
+        os = "windows";
+    }else{
+        os = "linux";
+    }
+    //DEBUG
+    //os = "mobile";
+
     buildMenu();
+
+    iconic = IconicJS();
     
     alertify.defaults.transition = "slide";
     alertify.defaults.theme.ok = "btn btn-primary";
@@ -104,71 +124,6 @@ $(document).ready(function () {
         };
     }, false, 'confirm');
 
-    $(".safety").fancybox({
-        maxWidth    : 800,
-        maxHeight   : 640,
-        fitToView   : false,
-        width       : '80%',
-        height      : '80%',
-        autoSize    : false,
-        closeClick  : false,
-        openEffect  : 'none',
-        closeEffect : 'none'
-    });
-
-    var safety = getCookie("safety");
-    
-    if (safety === undefined) {
-        $(".safety").trigger('click');
-    }else{
-        //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?init=115200", {
-        $.ajax("serial.php?init=115200", {
-            async: false,
-            success: function(data) {
-                console.log(data);
-                if(data.indexOf("Error") != -1)
-                {
-                    //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
-                    $.ajax("serial.php?com=list", {
-                        async: false,
-                        success: function(d) {
-                           //console.log(d);
-                           $(".serial").fancybox({
-                                maxWidth    : 800,
-                                maxHeight   : 640,
-                                fitToView   : false,
-                                width       : '80%',
-                                height      : '80%',
-                                autoSize    : false,
-                                closeClick  : false,
-                                openEffect  : 'none',
-                                closeEffect : 'none'
-                            });
-                            var s = d.split(',');
-                            for (var i = 0; i < s.length; i++) {
-                                if(s[i] != "")
-                                    $("#serial-interface").append($("<option>",{value:s[i]}).append(s[i]));
-                            }
-                            $(".serial").trigger('click');
-                        }
-                    });
-                    
-                }else{
-                    if(data.indexOf("9600") != -1) {
-                        $.notify({ message: 'Serial speed is 9600 baud' }, { type: 'danger' });
-                    }
-                    
-                    var path = window.location.pathname;
-                    var page = path.split("/").pop();
-                    if(page == "" || page == "index.php")
-                        buildParameters();
-                    buildStatus(true);
-                    displayVersion();
-                }
-            }
-        });
-    }
-
 	/*
     TipRefreshTimer=setTimeout(function () {
 		clearTimeout(TipRefreshTimer);
@@ -194,6 +149,7 @@ function selectSerial()
 {
     //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?serial=" + $("#serial-interface").val(), {
     $.ajax("serial.php?serial=" + $("#serial-interface").val(), {
+        async: false,
         success: function(data) {
             console.log(data);
             location.reload();
@@ -323,7 +279,7 @@ function setParameter(cmd, value, save, notify) {
             
                 if(notify) {
 
-                    if(data.indexOf("Parameters stored") != -1)
+                    if(data.indexOf("stored") != -1 || data.indexOf("OK") != -1)
                     {
                         //TODO: CRC32 check on entire params list
 
@@ -346,10 +302,11 @@ function sendCommand(cmd) {
   
     //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?command=" + cmd, {
     $.ajax("serial.php?command=" + cmd, {
-        async: true,
+        async: false,
         cache: false,
         timeout: serialTimeout,
         success: function success(data) {
+            console.log(cmd);
             console.log(data);
             if(cmd == "json") {
                 try {
@@ -364,7 +321,6 @@ function sendCommand(cmd) {
         },
         error: function error(xhr, textStatus, errorThrown) {}
     });
-    //console.log(e);
     return e;
 };
 
@@ -398,8 +354,8 @@ function getJSONFloatValue(value, callback) {
     var f = 0;
     var sync = false;
 
-    //if(callback)
-    //    sync = true;
+    if(callback)
+        sync = true;
 
     //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?get=" + value, {
     $.ajax("serial.php?get=" + value, {
@@ -683,6 +639,138 @@ function buildMenu() {
             if(os === "mobile") {
                 span.attr("style","font-size: 125%;");
             }
+        }
+    });
+};
+
+function buildStatus() {
+
+    clearTimeout(statusRefreshTimer);
+
+    //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
+    $.ajax("serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
+        //async: sync,
+        success: function success(data)
+        {
+            data = data.replace("\n\n", "\n");
+            data = data.split(/\n/);
+
+            var errors = "No Errors"; //sendCommand("errors");
+
+            //console.log(data);
+
+            $('.tooltip').remove();
+
+            var opStatus = $("<span>");
+            var img = $("<img>", { class: "iconic", "data-src": "img/key.svg", "data-toggle": "tooltip", "data-html": "true" });
+
+            if(data[0] !== "") {
+
+                //$("#potentiometer").hide();
+
+                if (parseFloat(data[15]) === 3) {
+                    img.attr("title", "<h6>Boost Mode</h6>");
+                    img.addClass("svg-yellow");
+                } else if (parseFloat(data[15]) === 4) {
+                    img.attr("title", "<h6>Buck Mode</h6>");
+                    img.addClass("svg-yellow");
+                }else if (parseFloat(data[0]) === 0) {
+                    img.attr("title", "<h6>Off</h6>");
+                    img.addClass("svg-red");
+                } else if (parseFloat(data[0]) === 1) {
+                    if (parseFloat(data[6]) === 1) {
+                        img.attr("title", "<h6>Pulse Only - Do not leave ON</h6>");
+                        img.addClass("svg-yellow");
+                    } else {
+                        img.attr("title", "<h6>Running</h6>");
+                        img.addClass("svg-green");
+                    }
+                } else if (parseFloat(data[0]) === 2) {
+                    img.attr("title", "<h6>Manual Mode</h6>");
+                    img.addClass("svg-green");
+                    $("#potentiometer").show();
+                }
+                opStatus.append(img);
+                iconic.inject(img);
+                //========================
+                /*
+                if(json.ocurlim.value > 0){
+                    div.append($("<img>", {"data-src":"img/amperage.svg"}));
+                }
+                opStatus.append(div);
+                */
+                //========================
+                img = $("<img>", { class: "iconic", "data-src": "img/battery.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[1] + "V</h6>" });
+                if (parseFloat(data[1]) > parseFloat(data[2]) && parseFloat(data[1]) > 10 && parseFloat(data[1]) < 520) { // && parseFloat(data[15]) !== 0) {
+                    img.addClass("svg-green");
+                } else {
+                    img.addClass("svg-red");
+                }
+                opStatus.append(img);
+                iconic.inject(img);
+                //========================
+                img = $("<img>", { class: "iconic", "data-src": "img/temperature.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[3] + "°C</h6>"});
+                if (parseFloat(data[3]) > 150 || parseFloat(data[4]) > 150) {
+                    img.addClass("svg-red");
+                    opStatus.append(img);
+                    iconic.inject(img);
+                } else if (parseFloat(data[3]) < 0 || parseFloat(data[4]) < 0 || parseFloat(data[3]) > 100 || parseFloat(data[4]) > 100) {
+                    img.addClass("svg-yellow");
+                    opStatus.append(img);
+                    iconic.inject(img);
+                }
+                //========================
+                img = $("<img>", { class: "iconic", "data-src": "img/magnet.svg","data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[5] + "ms</h6>" });
+                if(parseFloat(data[5]) < 22){
+                    img.addClass("svg-red");
+                    opStatus.append(img);
+                    iconic.inject(img);
+                }
+                //========================
+                /*
+                img = $("<img>", { class: "iconic", src: "img/speedometer.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + speed + "RPM</h6>" });
+                if (speed > 6000) {
+                    img.addClass("svg-red");
+                    opStatus.append(img);
+                } else if (speed > 3000) {
+                    img.addClass("svg-yellow");
+                    opStatus.append(img);
+                }
+                */
+                //========================
+                if (parseFloat(data[7]) != 1 && parseFloat(data[15]) === 0) {
+                    img = $("<img>", { class: "iconic", "data-src": "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Probably forgot PIN 11 to 12V</h6>" });
+                    opStatus.append(img);
+                    iconic.inject(img);
+                }
+                //========================
+                if (errors.indexOf("No Errors") === -1) {
+                    img = $("<img>", { class: "iconic", "data-src": "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + errors + "</h6>" });
+                    opStatus.append(img);
+                    iconic.inject(img);
+                }
+            }else{
+                img = $("<img>", { class: "iconic", "data-src": "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Inverter Disconnected</h6>" });
+                opStatus.append(img);
+                iconic.inject(img);
+            }
+            
+            $("#opStatus").empty().append(opStatus);
+
+            //buildTips();
+
+            if(os === "mobile")
+            {
+                $(".iconic").attr("style","width:80px; height:80px;");
+            }
+            
+            //iconic.inject('img.iconic');
+            
+            $('[data-toggle="tooltip"]').tooltip();
+            
+            statusRefreshTimer = setTimeout(function () {
+                buildStatus();
+            }, 12000);
         }
     });
 };

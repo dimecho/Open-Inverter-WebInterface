@@ -236,7 +236,7 @@
 		//if ($cmd === $read){ //echo OK
 			if($cmd === "json\n"){
                 $read = fread($uart,1024);
-                for ($i = 0; $i < 10; $i++)
+                for ($i = 0; $i < 9; $i++)
                     $read .= fread($uart,1024);
 				while (substr($read, -6) !== "}\r\n}\r\n")
 					$read .= fread($uart,1);

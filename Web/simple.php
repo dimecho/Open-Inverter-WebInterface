@@ -4,7 +4,6 @@
         <?php include "header.php" ?>
         <link rel="stylesheet" type="text/css" href="css/bootstrap-slider.css" />
         <script type="text/javascript" src="js/bootstrap-slider.js"></script>
-        <script type="text/javascript" src="js/status.js"></script>
         <script type="text/javascript" src="js/simple.js"></script>
         <style>
             .tooltip-inner {

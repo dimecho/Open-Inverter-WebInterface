@@ -6,6 +6,7 @@ $(document).ready(function () {
     canDB = loadCANDB();
 
     buildCANParameters();
+    buildStatus(false);
 });
 
 function buildCANParameters() {

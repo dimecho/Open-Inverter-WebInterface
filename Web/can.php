@@ -16,8 +16,7 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script type="text/javascript" src="/js/status.js"></script>
-        <script type="text/javascript" src="/js/can.js"></script>
+        <script type="text/javascript" src="js/can.js"></script>
     </head>
     <body>
         <div class="container">
