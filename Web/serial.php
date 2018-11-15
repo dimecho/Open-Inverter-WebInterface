@@ -129,13 +129,10 @@
 		$uname = strtolower(php_uname('s'));
 
 		if (strpos($uname, "windows") !== false) {
-			$errors = exec("mode " .$com. ": BAUD=" . $speed. " PARITY=n DATA=8 STOP=2");
-			if(strpos($errors ,"Invalid") === false) {
-				$errors = "";
-            }else{
-                exec("mode " .$com. ":/status", $mode);
-                print_r($mode);
-            }
+			exec("mode " .$com. ": BAUD=" . $speed. " PARITY=n DATA=8 STOP=2", $mode);
+            print_r($mode);
+			if(strpos($errors ,"Invalid") !== false)
+                $errors = "Error:";
 		}else if (strpos($uname, "darwin") !== false) {
             /*
             exec("minicom -D " .$com. " -b " .$speed. " -t vt100", $output);
@@ -205,14 +202,6 @@
         
 		return $arr;
     }
-
-    function readEcho($uart)
-    {
-        $read = fgets($uart);
-        if ($read == "\r\n")
-            $read = fgets($uart);
-        return $read;
-    }
 	
     function readSerial($cmd)
     {
@@ -240,11 +229,12 @@
                     $read .= fread($uart,1024);
 				while (substr($read, -6) !== "}\r\n}\r\n")
 					$read .= fread($uart,1);
-			}else if($cmd === "all\n"){
-				$read = fread($uart,1024);
-				while (substr($read, -7) !== "cpuload")
-					$read .= fread($uart,1);
-				$read .= fread($uart,6);
+			}else if($cmd === "errors\n"){
+				$read = fgets($uart);
+				//TODO: read until end
+			}else if($cmd === "save\n"){
+				$read = fgets($uart); //CRC
+				$read .= fgets($uart); //CAN
 			}else{
 				if(strpos($cmd,",") !== false) //Multi-value support
 				{

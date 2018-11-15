@@ -3,7 +3,14 @@ var json = {};
 
 $(document).ready(function () {
 
-    canDB = loadCANDB();
+	$.ajax("db/database.can", {
+		async: false,
+        dataType: 'json',
+        success: function success(data) {
+            //console.log(data);
+            canDB = data;
+        }
+    });
 
     buildCANParameters();
     buildStatus(false);
@@ -32,7 +39,7 @@ function buildCANParameters() {
             var db_canid = "";
             var db_canpos = 0;
             var db_cangain = 1;
-
+			/*
             for (var k in canDB[0][key])
             {
                 if(canDB[0][key][k].com == "tx"){
@@ -44,7 +51,7 @@ function buildCANParameters() {
                 db_canpos = canDB[0][key][k].position;
                 db_cangain = canDB[0][key][k].gain;
             }
-          
+			*/
             //console.log(key);
             var cantx = $("<button>", { class:"btn " + db_cantx + " btn-sm mx-1", id:key + "-cantx" }).append("TX");
             var canrx = $("<button>", { class:"btn " + db_canrx + " btn-sm mx-1", id:key + "-canrx" }).append("RX");
@@ -131,24 +138,11 @@ function buildCANParameters() {
     $(".loader").hide();
 };
 
-function loadCANDB() {
-
-    var json = [{}];
-
-    $.ajax("db/database.can", {
-        async: false,
-        dataType: 'json',
-        success: function success(data) {
-            //console.log(data);
-            json = data;
-        }
-    });
-
-    return json;
-};
-
 function saveCANMapping() {
 
+	var v = $("#can-speed").val();
+	setParameter("canspeed", v, true, true);
+	
     if(json)
     {
         var i = 0;
@@ -256,7 +250,7 @@ function saveCANMapping() {
 
             data = sendCommand("save");
 
-            if(data.indexOf("Parameters stored") != -1)
+            if(data.indexOf("stored") != -1)
             {
                $.ajax("can.php", {
                     type: "POST",

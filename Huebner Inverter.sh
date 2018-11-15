@@ -26,15 +26,23 @@ echo "{
 
 if [[ $(type -p php) ]]; then
     
+    if id -nG "$USER" | grep -qw "dialout"; then
+        echo "Permissions OK"
+    else
+        echo "... Fixing dialout permissions"
+        sudo usermod -a -G dialout $USER
+        sudo usermod -a -G tty $USER
+    fi
+
     for file in ./Linux/*; do
         chmod +x "$file"
     done
 
     echo "Running as sudo ..."
     
-    sudo killall php
-    sudo php -S 0.0.0.0:8080 -t "$(dirname "$0")/Web/" &
-    #sudo php -S 0.0.0.0:8081 -t "$(dirname "$0")/Web/" &
+    killall php
+    php -S 0.0.0.0:8080 -t "$(dirname "$0")/Web/" &
+    #php -S 0.0.0.0:8081 -t "$(dirname "$0")/Web/" &
     sleep 4
     
     checkUSB

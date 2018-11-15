@@ -1,4 +1,6 @@
 <?php
+	session_start();
+	
     include_once("common.php");
 
     $os = detectOS();
@@ -59,18 +61,30 @@
             }
         }
         
+		echo $command;
+		
         exec($command,$op);
         
         //Timeout
         //exec("timeout ". $timeout_in_sec. "s ". $cmd);
         //$pid = (int)$op[0];
         //echo $pid;
-        
-        echo $command;
 
+	}else if(isset($_GET["console"])) {
+		
+		if ($os === "windows") {
+			$command = "..\\Windows\\puttytel.exe -serial " .$_SESSION["serial"]. " -sercfg 115200,8,n,2,N";
+		}else if ($os === "mac") {
+			$command = "open -n -a Terminal ../minicom --args -D " .$_SESSION["serial"]. " -b 115200";
+		}
+		
+		echo $command;
+		
+		exec($command);
+		
     }else if(isset($_FILES["file"])) {
 		
-		 if ($os === "mac") {
+		if ($os === "mac") {
 			$tmp_name = "/tmp/" .basename($_FILES['file']['tmp_name']). ".svg";
 		}else{
 			$tmp_name = sys_get_temp_dir(). "/" .basename($_FILES['file']['tmp_name']). ".svg";

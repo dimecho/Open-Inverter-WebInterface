@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3235CA8D219BA856009022D0 /* minicom in Resources */ = {isa = PBXBuildFile; fileRef = 3235CA8C219BA856009022D0 /* minicom */; };
 		3249F2A21D599E3900ECF5B4 /* openscad in Resources */ = {isa = PBXBuildFile; fileRef = 3249F2A11D599E3900ECF5B4 /* openscad */; };
 		324C22E81CF429E7003A1AF5 /* eagle in Resources */ = {isa = PBXBuildFile; fileRef = 324C22E71CF429E7003A1AF5 /* eagle */; };
 		325B6C851DBBE3EC00421596 /* fuse in Resources */ = {isa = PBXBuildFile; fileRef = 325B6C841DBBE3EC00421596 /* fuse */; };
@@ -25,6 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3235CA8C219BA856009022D0 /* minicom */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = minicom; path = macOS/Resources/minicom; sourceTree = "<group>"; };
 		3249F2A11D599E3900ECF5B4 /* openscad */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = openscad; path = macOS/Resources/openscad; sourceTree = "<group>"; };
 		324C22E71CF429E7003A1AF5 /* eagle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = eagle; path = macOS/Resources/eagle; sourceTree = "<group>"; };
 		325B6C841DBBE3EC00421596 /* fuse */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = fuse; path = macOS/Resources/fuse; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 			children = (
 				32F25DD01CF2499F00494B1C /* kext */,
 				32DE5F901CF0D03000113FCF /* Web */,
+				3235CA8C219BA856009022D0 /* minicom */,
 				328002001D6AAA4A001C5E4E /* run */,
 				32F25DD21CF24A2600494B1C /* driver */,
 				324C22E71CF429E7003A1AF5 /* eagle */,
@@ -174,6 +177,7 @@
 				325B6C851DBBE3EC00421596 /* fuse in Resources */,
 				32D281F51CF00EF200606B12 /* inkscape in Resources */,
 				32FFA9FC1D18D6FB00E5BBF0 /* openocd in Resources */,
+				3235CA8D219BA856009022D0 /* minicom in Resources */,
 				32D281F81CF00EF200606B12 /* xquartz in Resources */,
 				32F25DD11CF2499F00494B1C /* kext in Resources */,
 			);

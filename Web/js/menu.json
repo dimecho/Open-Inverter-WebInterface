@@ -96,6 +96,10 @@
             "onClick": "/pcb.php"
         }]
     }, {
+        "id": "Console",
+        "icon": "glyphicon-console",
+        "onClick": "javascript:openConsole()"
+    }, {
         "id": "Info",
         "icon": "glyphicon-info-sign",
         "onClick": "",

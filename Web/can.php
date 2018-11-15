@@ -27,8 +27,13 @@
                     <table class="table table-active bg-light table-bordered">
                         <tr>
                             <td>
-                                <span class="badge badge-lg badge-warning">CAN bus speed is fixed to 250kbps</span><br/><br/>
-                                <span class="text-muted glyphicon glyphicon-warning-sign"></span> <a href="http://johanneshuebner.com/quickcms/index.html%3Fen_can-communication,31.html" target="_blank">CAN Details and Limitations</a><br/>
+                                <p>CAN Bus Speed:</p>
+								<select name="canspeed" class="form-control" id="can-speed">
+									<option value="0">250kbps</option>
+									<option value="1">500kbps</option>
+									<option value="2">800kbps</option>
+									<option value="3">1000kbps</option>
+								</select>
                             </td>
                         </tr>
                     </table>

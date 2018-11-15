@@ -1,5 +1,6 @@
 <?php
-
+	require "serial.php";
+	
 	if(isset($_GET["db"])){
 		
 		setParameters(getcwd() ."/db/" .$_GET["db"]. ".txt");
@@ -19,17 +20,11 @@
 		header ("Content-Type: text/json");
 		header ("Content-Disposition: attachment; filename=\"snapshot " .date("F-j-Y g-ia"). ".txt\"");
 
-		$read = readSerial("all");
-		$split = explode("\n", $read);
+		$read = readSerial("json");
+		$array = json_decode($read, true);
 		$values = array();
-		
-		for ($i = 0; $i < count($split); $i++)
-		{
-			$s = explode("\t", $split[$i]);
-			if (trim($s[0]) != "")
-			{
-				$values[$s[0]] = str_replace("\r", "", $s[2]);
-			}
+		foreach ($array as $key => $value) {
+			$values[$key] = $value["value"];
 		}
 
 		echo json_encode($values, JSON_PRETTY_PRINT);

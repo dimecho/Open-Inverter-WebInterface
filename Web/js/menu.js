@@ -175,6 +175,15 @@ function checkSoftware(app){
     });
 };
 
+function openConsole(){
+
+    $.ajax("open.php?console=1", {
+        success: function success(data) {
+            console.log(data);
+        }
+    });
+};
+
 function validateInput(id, value, callback)
 {
     getJSONFloatValue('opmode', function(opmode) {
@@ -279,7 +288,7 @@ function setParameter(cmd, value, save, notify) {
             
                 if(notify) {
 
-                    if(data.indexOf("stored") != -1 || data.indexOf("OK") != -1)
+                    if(data.indexOf("stored") != -1)
                     {
                         //TODO: CRC32 check on entire params list
 

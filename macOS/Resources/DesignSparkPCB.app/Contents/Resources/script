@@ -1,20 +1,20 @@
 #!/bin/sh
 
-if [ ! -d "/Applications/Wine Devel.app" ]; then
+if [ ! -d "/Applications/Wine Staging.app" ]; then
     cd ~/Downloads
-    echo "Downloading Wine 3.10 for Mac ..."
-    curl -k -L -O -C - https://dl.winehq.org/wine-builds/macosx/pool/winehq-devel-3.10.pkg
-    osascript -e "do shell script \"installer -pkg ~/Downloads/winehq-devel-3.10.pkg -target /\" with administrator privileges"
+    echo "Downloading Wine 3.20 for Mac ..."
+    curl -k -L -O -C - https://dl.winehq.org/wine-builds/macosx/pool/winehq-staging-3.20.pkg
+    osascript -e "do shell script \"installer -pkg ~/Downloads/winehq-staging-3.20.pkg -target /\" with administrator privileges"
 fi
 export DISPLAY=:0.0
-export PATH=$PATH:/Applications/Wine\ Devel.app/Contents/Resources/wine/bin/
+export PATH=$PATH:/Applications/Wine\ Staging.app/Contents/Resources/wine/bin/
 export LANG="en_US"
 export WINEARCH=win32
 export WINEPREFIX="$HOME/.wine"
 export DYLD_FALLBACK_LIBRARY_PATH=/usr/X11/lib
 export FREETYPE_PROPERTIES="truetype:interpreter-version=35"
 
-if [ ! -d "$HOME/.wine/drive_c/Program Files/DesignSpark/DesignSpark PCB 8.1.1" ]; then
+if [ ! -d "$HOME/.wine/drive_c/Program Files/DesignSpark/DesignSpark PCB 8.1" ]; then
 
     export PATH=$PATH:"$(dirname "$0")"
 
@@ -51,8 +51,8 @@ if [ ! -d "$HOME/.wine/drive_c/Program Files/DesignSpark/DesignSpark PCB 8.1.1" 
         curl -k -L -O -C - https://pcb.designspark.info/DesignSparkPCB_v8.1.1.exe
     fi
 
-    cd "/Applications/Wine Devel.app/Contents/Resources/wine/bin/"
+    cd "/Applications/Wine Staging.app/Contents/Resources/wine/bin/"
     ./wine ~/Downloads/DesignSparkPCB_v8.1.1.exe
 else
-    open -a "Wine Devel" --args "$HOME/.wine/drive_c/Program Files/DesignSpark/DesignSpark PCB 8.1.1/DesignSpark.exe" "$1"
+    open -a "Wine Staging" --args "$HOME/.wine/drive_c/Program Files/DesignSpark/DesignSpark PCB 8.1/DesignSpark.exe" "$1"
 fi

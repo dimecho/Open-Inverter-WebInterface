@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>16G1114</string>
+	<string>17G65</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
 	<string>SiLabsUSBDriver</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Version 5.0.4</string>
+	<string>Version 5.0.6</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.silabs.driver.CP210xVCPDriver</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -25,21 +25,21 @@
 		<string>MacOSX</string>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>5.0.4</string>
+	<string>5.0.6</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
-	<string>9C40b</string>
+	<string>9F2000</string>
 	<key>DTPlatformVersion</key>
 	<string>GM</string>
 	<key>DTSDKBuild</key>
-	<string>17C76</string>
+	<string>17E189</string>
 	<key>DTSDKName</key>
 	<string>macosx10.13</string>
 	<key>DTXcode</key>
-	<string>0920</string>
+	<string>0941</string>
 	<key>DTXcodeBuild</key>
-	<string>9C40b</string>
+	<string>9F2000</string>
 	<key>IOKitPersonalities</key>
 	<dict>
 		<key> Cadex Electronics Inc.</key>
@@ -817,6 +817,31 @@
 			<key>idVendor</key>
 			<integer>4292</integer>
 		</dict>
+		<key>CP210x USB to UART Bridge (Enhanced Port) - Alt</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>CP210x USB to UART Bridge Controller (Enhanced Port)</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>60026</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
 		<key>CP210x USB to UART Bridge (Interface 0)</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
@@ -839,6 +864,31 @@
 			<integer>0</integer>
 			<key>idProduct</key>
 			<integer>60017</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
+		<key>CP210x USB to UART Bridge (Interface 0) - Alt</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>CP210x USB to UART Bridge (Interface 0)</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>60027</integer>
 			<key>idVendor</key>
 			<integer>4292</integer>
 		</dict>
@@ -867,6 +917,31 @@
 			<key>idVendor</key>
 			<integer>4292</integer>
 		</dict>
+		<key>CP210x USB to UART Bridge (Interface 1) - Alt</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>CP210x USB to UART Bridge (Interface 1)</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>1</integer>
+			<key>idProduct</key>
+			<integer>60027</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
 		<key>CP210x USB to UART Bridge (Interface 2)</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
@@ -889,6 +964,31 @@
 			<integer>2</integer>
 			<key>idProduct</key>
 			<integer>60017</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
+		<key>CP210x USB to UART Bridge (Interface 2) - Alt</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>CP210x USB to UART Bridge (Interface 2)</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>2</integer>
+			<key>idProduct</key>
+			<integer>60027</integer>
 			<key>idVendor</key>
 			<integer>4292</integer>
 		</dict>
@@ -917,6 +1017,31 @@
 			<key>idVendor</key>
 			<integer>4292</integer>
 		</dict>
+		<key>CP210x USB to UART Bridge (Interface 3) - Alt</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>CP210x USB to UART Bridge (Interface 3)</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>3</integer>
+			<key>idProduct</key>
+			<integer>60027</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
 		<key>CP210x USB to UART Bridge (Standard Port)</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
@@ -942,6 +1067,31 @@
 			<key>idVendor</key>
 			<integer>4292</integer>
 		</dict>
+		<key>CP210x USB to UART Bridge (Standard Port) - Alt</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>CP210x USB to UART Bridge Controller (Standard Port)</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>1</integer>
+			<key>idProduct</key>
+			<integer>60026</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
 		<key>CP210x USB to UART Bridge (USBXpress VCP mode)</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
@@ -964,6 +1114,31 @@
 			<integer>0</integer>
 			<key>idProduct</key>
 			<integer>60001</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
+		<key>CP210x USB to UART Bridge - Alt</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>CP210x USB to UART Bridge Controller</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>60003</integer>
 			<key>idVendor</key>
 			<integer>4292</integer>
 		</dict>
@@ -2764,6 +2939,31 @@
 			<integer>0</integer>
 			<key>idProduct</key>
 			<integer>32881</integer>
+			<key>idVendor</key>
+			<integer>4292</integer>
+		</dict>
+		<key>RS DYNAMICS</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.silabs.driver.CP210xVCPDriver</string>
+			<key>IOClass</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOKitDebug</key>
+			<integer>0</integer>
+			<key>IOMatchCategory</key>
+			<string>com_silabs_driver_CP210xVCPDriver</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBHostInterface</string>
+			<key>New Interface Detected Action</key>
+			<string>None</string>
+			<key>USB Product Name</key>
+			<string>RS DYNAMICS - miniEXPLONIX</string>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+			<key>idProduct</key>
+			<integer>34396</integer>
 			<key>idVendor</key>
 			<integer>4292</integer>
 		</dict>

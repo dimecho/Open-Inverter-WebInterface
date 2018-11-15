@@ -69,7 +69,7 @@ else
 
             open ~/Documents/stm32-sine-master
         else
-            open -a Terminal "`\"$(dirname "$0")/source\" 1`"
+            open -n -a Terminal "$(dirname "$0")/source" --args 1
         fi
     fi
 fi

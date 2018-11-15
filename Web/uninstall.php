@@ -19,33 +19,34 @@
                     </table>
                     <table class="table table-active bg-light table-bordered table-striped table-hover" width="100%">
                         <?php
-                            //include("common.php");
-                            
                             $os = detectOS();
                             $software = getSoftware();
                             $found = false;
 
                             foreach($software as $id => $item)
                             {
-                                if(is_file($item["path"][$os])) //Filter only installed software
-                                {
-                                    $disabled = "";
-                                    $builtin = "";
+								if(isset($item["path"][$os]))
+								{
+									if(is_file($item["path"][$os])) //Filter only installed software
+									{
+										$disabled = "";
+										$builtin = "";
 
-                                    if($os == "mac" && strpos($item["path"]["mac"], "/usr/bin") !== false) //Cannot remove OSX built-in
-                                    {
-                                        $disabled = "disabled='disabled'";
-                                        $builtin = "<span style='color:red;'> (built-in)</span>";
-                                    }
+										if($os == "mac" && strpos($item["path"]["mac"], "/usr/bin") !== false) //Cannot remove OSX built-in
+										{
+											$disabled = "disabled='disabled'";
+											$builtin = "<span style='color:red;'> (built-in)</span>";
+										}
 
-                                    if($found == false)
-                                    {
-                                        $found = true;
-                                        echo "<tr><td><input type='checkbox' onclick='UninstallEverything();' class='everything' /> <span><b>Everything</b></span></td></tr>";
-                                    }
+										if($found == false)
+										{
+											$found = true;
+											echo "<tr><td><input type='checkbox' onclick='UninstallEverything();' class='everything' /> <span><b>Everything</b></span></td></tr>";
+										}
 
-                                    echo "<tr><td><input id='" .$id. "' type='checkbox' " . $disabled. " /> <span>" .$item["title"]. " " .$item["download"]["version"]. "</span>" .$builtin." <img src='/img/loading.gif' id='" .$id. "_progress' style='display:none;'></td></tr>";
-                                }
+										echo "<tr><td><input id='" .$id. "' type='checkbox' " . $disabled. " /> <span>" .$item["title"]. " " .$item["download"]["version"]. "</span>" .$builtin." <img src='/img/loading.gif' id='" .$id. "_progress' style='display:none;'></td></tr>";
+									}
+								}
                             }
                         ?>
                     </table>
