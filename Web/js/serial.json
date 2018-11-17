@@ -2,6 +2,7 @@
     "serial": {
         "port": "/dev/cu.usbserial",
         "web": 8080,
-        "timeout":  12
+        "timeout":  12,
+        "speed":  115200
     }
 }

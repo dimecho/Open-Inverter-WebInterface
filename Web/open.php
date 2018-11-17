@@ -28,18 +28,18 @@
 
         }else if($_GET["app"] == "gcc")
         {
-            header("Location:/sourcecode.php");
+            header("Location:sourcecode.php");
         }else if($_GET["app"] == "arm")
         {
             $command  = "arm";
         }else if($_GET["app"] == "openocd" || $_GET["app"] == "bootloader")
         {
             $command = runCommand("openocd","",$os);
-            header("Location:/bootloader.php");
+            header("Location:bootloader.php");
         }else if($_GET["app"] == "source")
         {
             $command = runCommand("source","",$os);
-            header("Location:/sourcecode.php");
+            header("Location:sourcecode.php");
         }else if($_GET["app"] == "arduino")
         {
             $args = $_SERVER["DOCUMENT_ROOT"]. "/dashboard/arduino/lcd_display/lcd_display.ino";
@@ -76,7 +76,9 @@
 			$command = "..\\Windows\\puttytel.exe -serial " .$_SESSION["serial"]. " -sercfg 115200,8,n,2,N";
 		}else if ($os === "mac") {
 			$command = "open -n -a Terminal ../minicom --args -D " .$_SESSION["serial"]. " -b 115200";
-		}
+		}else{
+            $command = "minicom --args -D " .$_SESSION["serial"]. " -b 115200";
+        }
 		
 		echo $command;
 		
@@ -100,11 +102,11 @@
         }else if ($os === "linux") {
             $command = "su \$SUDO_USER -c \"inkscape" .$args. "\"";
         }
-		header("Location:/encoder.php");
+		header("Location:encoder.php");
 		
         exec($command);
 		
     }else{
-        echo "/open.php?app=";
+        echo "open.php?app=";
     }
 ?>

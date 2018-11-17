@@ -23,7 +23,7 @@ if($args[0] -eq "uninstall") {
     [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
     
     # Download PHP
-    $phpFile = "php-7.2.11-nts-Win32-VC15-x64.zip"
+    $phpFile = "php-7.2.11-Win32-VC15-x64.zip"
     if (-Not (Test-Path "$env:userprofile\Downloads\$phpFile")) {
     	Write-Host "Downloading PHP 7.2"  -ForegroundColor Green
         Write-Host "$env:userprofile\Downloads\$phpFile"
@@ -31,11 +31,14 @@ if($args[0] -eq "uninstall") {
     }
 
     # Visual C++ Redistributable for Visual Studio 2015
-    if (-Not (Test-Path 'HKLM:\SOFTWARE\Classes\Installer\Dependencies\{d992c12e-cab2-426f-bde3-fb8c53950b0d}')) {
-    	Write-Host "Downloading C++ Redistributable for Visual Studio 2015"  -ForegroundColor Green
-        Write-Host ""
-        Invoke-WebRequest -Uri "https://download.microsoft.com/download/6/A/A/6AA4EDFF-645B-48C5-81CC-ED5963AEAD48/vc_redist.x64.exe" -OutFile "$env:userprofile\Downloads\vc_redist.x64.exe" -Debug
-		Start-Process "$env:userprofile\Downloads\vc_redist.x64.exe" /q:a -Wait
+	$vcFile = "vc_redist.x64.exe"
+    if (-Not (Test-Path "HKLM:\SOFTWARE\Classes\Installer\Dependencies\{d992c12e-cab2-426f-bde3-fb8c53950b0d}")) {
+    	if (-Not (Test-Path "$env:userprofile\Downloads\$vcFile")) {
+			Write-Host "Downloading C++ Redistributable for Visual Studio 2015"  -ForegroundColor Green
+			Write-Host "$env:userprofile\Downloads\$vcFile"
+			Invoke-WebRequest -Uri "https://download.microsoft.com/download/6/A/A/6AA4EDFF-645B-48C5-81CC-ED5963AEAD48/$vcFile" -OutFile "$env:userprofile\Downloads\$vcFile" -Debug
+		}
+		Start-Process "$env:userprofile\Downloads\$vcFile" /q:a -Wait
     }
 
     New-Item "$env:programfiles\PHP" -ItemType directory -ErrorAction SilentlyContinue

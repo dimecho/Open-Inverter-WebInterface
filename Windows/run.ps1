@@ -61,6 +61,7 @@ function startPHP($page) {
 			$json = Get-Content "$serial_json" -Raw | ConvertFrom-Json
 			$json.serial.port = $comPort #+ ":"
 			$json.serial.web = 8081
+			$json.serial.speed = 115200
 			$json | ConvertTo-Json  | Set-Content "$serial_json"
 
 			Write-Host "===================================="  -ForegroundColor Green
@@ -78,7 +79,6 @@ function startPHP($page) {
 			}
 			#Somehow Putty fix sets maximum buffer size
 			#================================================
-			#Start-Process -FilePath "cmd.exe" -ArgumentList "/c mode $($comPort): BAUD=115200 PARITY=n DATA=8 STOP=2" -NoNewWindow -Wait
 			Start-Process -FilePath "cmd.exe" -ArgumentList "/c mode $($comPort):/status" -NoNewWindow -Wait
 		}
 
@@ -154,53 +154,28 @@ function checkCP2102Driver {
 	}
 }
 
-function checkFTDIDriver {
+function checkLibUSBDriver {
 	
-	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "FTDI"}
+	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and ($_.Name -match "Olimex" -or $_.Name -match "STLink") }
 	if ($Driver)
 	{
-		Elevate
-		Write-Host "...Installing Driver"
-		pnputil -a "$($PSScriptRoot)\driver\FTDIUsbSerial\ftdibus.inf"
-		InfDefaultInstall "$($PSScriptRoot)\driver\FTDIUsbSerial\ftdibus.inf"
-		pnputil -a "$($PSScriptRoot)\driver\FTDIUsbSerial\ftdiport.inf"
-		InfDefaultInstall "$($PSScriptRoot)\driver\FTDIUsbSerial\ftdiport.inf"
+		Write-Host "...Correcting Drivers"
+		
+		$zadig = "zadig-2.4.exe"
+		if (-Not (Test-Path "$env:userprofile\Downloads\$zadig")) {
+			Write-Host "Downloading Utility"  -ForegroundColor Green
+			Write-Host "$env:userprofile\Downloads\$zadig"
+			Invoke-WebRequest -Uri "https://zadig.akeo.ie/downloads/$zadig" -OutFile "$env:userprofile\Downloads\$zadig" -Debug
+		}
+		Start-Process "$env:userprofile\Downloads\$zadig" /q:a -Wait
 	}
-}
-
-function checkOlimexDriver {
-	
-	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "Olimex" }
-	if ($Driver)
-	{
-		Elevate
-		Write-Host "...Installing Driver"
-		pnputil -a "$($PSScriptRoot)\driver\WinUSB\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_0).inf"
-		InfDefaultInstall "$($PSScriptRoot)\driver\WinUSB\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_0).inf"
-		pnputil -a "$($PSScriptRoot)\driver\WinUSB\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_1).inf"
-		InfDefaultInstall "$($PSScriptRoot)\driver\WinUSB\Olimex_OpenOCD_JTAG_ARM-USB-OCD-H_(Interface_1).inf"
-	}
-}
-
-function checkSTLinkDriver {
-    
-    $Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "STLink"}
-    if ($Driver)
-    {
-        Elevate
-        Write-Host "...Installing Driver"
-        pnputil -a "$($PSScriptRoot)\driver\WinUSB\STM32_STLink.inf"
-        InfDefaultInstall "$($PSScriptRoot)\driver\WinUSB\STM32_STLink.inf"
-    }
 }
 
 function checkDrivers {
 
     checkProlificDriver
     checkCP2102Driver
-    checkFTDIDriver
-	checkOlimexDriver
-    checkSTLinkDriver
+    checkLibUSBDriver
 }
 
 startPHP "index.php"

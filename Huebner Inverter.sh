@@ -10,7 +10,8 @@ echo "{
     \"serial\": {
         \"port\": \"$serial\",
         \"web\": 8081,
-		\"timeout\": 12
+		\"timeout\": 12,
+		\"speed\": 115200
     }
 }" > "$(dirname "$0")/Web/js/serial.json"
             /usr/bin/firefox http://localhost:8080;bash

@@ -1,14 +1,24 @@
-var canDB = [{}];
+var canDB = {};
+var canMap = {};
 var json = {};
 
 $(document).ready(function () {
 
-	$.ajax("db/database.can", {
+	$.ajax("js/can.json", {
 		async: false,
         dataType: 'json',
         success: function success(data) {
             //console.log(data);
             canDB = data;
+        }
+    });
+	
+	$.ajax("js/canmap.json", {
+		async: false,
+        dataType: 'json',
+        success: function success(data) {
+            //console.log(data);
+            canMap = data;
         }
     });
 
@@ -30,8 +40,6 @@ function buildCANParameters() {
         menu.append(thead);
         menu.append(tbody);
 
-        var i = 0;
-
         for(var key in json)
         {
             var db_cantx = "btn-secondary";
@@ -52,77 +60,80 @@ function buildCANParameters() {
                 db_cangain = canDB[0][key][k].gain;
             }
 			*/
-            //console.log(key);
-            var cantx = $("<button>", { class:"btn " + db_cantx + " btn-sm mx-1", id:key + "-cantx" }).append("TX");
-            var canrx = $("<button>", { class:"btn " + db_canrx + " btn-sm mx-1", id:key + "-canrx" }).append("RX");
-            var canid = $("<input>", { type:"number", class:"text-center", value:db_canid, id:key + "-cantxid" }).css({width:120});
-            if(db_cantx == "btn-secondary")
-                canid.prop('disabled', true);
-            var canpos = $("<input>", { type:"number", class:"text-center", value:db_canpos, id:key }).css({width:120});
+			var canrxid = canMap[key];
 
-            var div = $("<div>", { class:"input-group" });
-            var cangain = $("<input>", { type:"number", class:"form-control text-center", value:db_cangain, id:key + "-cangain" }).css({width:40});
-            
-            if(os === "mobile") {
-                div.append(cangain);
-            }else{
-                var cangain_sub = $("<button>", { class:"input-group-addon btn btn-secondary btn-sm" }).append("-");
-                var cangain_add = $("<button>", { class:"input-group-addon btn btn-secondary btn-sm" }).append("+");
-                div.append(cangain_sub).append(cangain).append(cangain_add);
+			if(canrxid > 0)
+			{
+				//console.log(key);
+				var cantx = $("<button>", { class:"btn " + db_cantx + " btn-sm mx-1", id:key + "-cantx" }).append("TX");
+				var canrx = $("<button>", { class:"btn " + db_canrx + " btn-sm mx-1", id:key + "-canrx" }).append("RX");
+				var cantxid = $("<input>", { type:"number", class:"text-center", value:db_canid, id:key + "-cantxid" }).css({width:120});
+				if(db_cantx == "btn-secondary")
+					cantxid.prop('disabled', true);
+				var canpos = $("<input>", { type:"number", class:"text-center", value:db_canpos, id:key }).css({width:120});
 
-                cangain_sub.click(function(){
-                    //console.log($(this).parent().find("input").val());
-                    var value = parseInt($(this).parent().find("input").val());
-                    if(value > 1){
-                        value--;
-                        $(this).parent().find("input").val(value);
-                    }
-                });
+				var div = $("<div>", { class:"input-group" });
+				var cangain = $("<input>", { type:"number", class:"form-control text-center", value:db_cangain, id:key + "-cangain" }).css({width:40});
+				
+				if(os === "mobile") {
+					div.append(cangain);
+				}else{
+					var cangain_sub = $("<button>", { class:"input-group-addon btn btn-secondary btn-sm" }).append("-");
+					var cangain_add = $("<button>", { class:"input-group-addon btn btn-secondary btn-sm" }).append("+");
+					div.append(cangain_sub).append(cangain).append(cangain_add);
 
-                cangain_add.click(function(){
-                    //console.log($(this).parent().find("input").val());
-                    var value = parseInt($(this).parent().find("input").val());
-                    if(value < 10){
-                        value++;
-                        $(this).parent().find("input").val(value);
-                    }
-                });
-            }
-           
-            var tr = $("<tr>");
-            var td1 = $("<td>").append(key);
-            var td2 = $("<td>").append(cantx).append(canrx);
-            var td3 = $("<td>").append(i);
-            var td4 = $("<td>").append(canid);
-            var td5 = $("<td>").append(canpos);
-            var td6 = $("<td>").append(div);
-            tbody.append(tr.append(td1).append(td2).append(td3).append(td4).append(td5).append(td6));
+					cangain_sub.click(function(){
+						//console.log($(this).parent().find("input").val());
+						var value = parseInt($(this).parent().find("input").val());
+						if(value > 1){
+							value--;
+							$(this).parent().find("input").val(value);
+						}
+					});
 
-            cantx.click(function(){
-                //console.log(this.id);
-                if ($(this).hasClass("btn-secondary")) {
-                    $(this).removeClass("btn-secondary");
-                    $(this).addClass("btn-primary");
-                    $("#" + this.id + "id").prop('disabled', false);
-                }else{
-                    $(this).removeClass("btn-primary");
-                    $(this).addClass("btn-secondary");
-                    $("#" + this.id + "id").prop('disabled', true);
-                }
-            });
+					cangain_add.click(function(){
+						//console.log($(this).parent().find("input").val());
+						var value = parseInt($(this).parent().find("input").val());
+						if(value < 10){
+							value++;
+							$(this).parent().find("input").val(value);
+						}
+					});
+				}
+			   
+				var tr = $("<tr>");
+				var td1 = $("<td>").append(key);
+				var td2 = $("<td>").append(cantx).append(canrx);
+				var td3 = $("<td>").append(canrxid);
+				var td4 = $("<td>").append(cantxid);
+				var td5 = $("<td>").append(canpos);
+				var td6 = $("<td>").append(div);
+				tbody.append(tr.append(td1).append(td2).append(td3).append(td4).append(td5).append(td6));
 
-            canrx.click(function(){
-                //console.log(this.id);
-                if ($(this).hasClass("btn-secondary")) {
-                    $(this).removeClass("btn-secondary");
-                    $(this).addClass("btn-primary");
-                }else{
-                    $(this).removeClass("btn-primary");
-                    $(this).addClass("btn-secondary");
-                }
-            });
+				cantx.click(function(){
+					//console.log(this.id);
+					if ($(this).hasClass("btn-secondary")) {
+						$(this).removeClass("btn-secondary");
+						$(this).addClass("btn-primary");
+						$("#" + this.id + "id").prop('disabled', false);
+					}else{
+						$(this).removeClass("btn-primary");
+						$(this).addClass("btn-secondary");
+						$("#" + this.id + "id").prop('disabled', true);
+					}
+				});
 
-            i++;
+				canrx.click(function(){
+					//console.log(this.id);
+					if ($(this).hasClass("btn-secondary")) {
+						$(this).removeClass("btn-secondary");
+						$(this).addClass("btn-primary");
+					}else{
+						$(this).removeClass("btn-primary");
+						$(this).addClass("btn-secondary");
+					}
+				});
+			}
         };
         menu.show();
 

@@ -2,7 +2,7 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script type="text/javascript" src="/js/jspdf.js"></script>
+        <script type="text/javascript" src="js/jspdf.js"></script>
         <script>
         $(document).ready(function () {
             <?php
@@ -11,16 +11,20 @@
             $wiring = "";
 
             if(isset($_GET["hardware"])){
+                 echo '$("#johannes").show();';
                 if($_GET["hardware"] == "1"){
-                    $pinout = rawurlencode("/pcb/Hardware v1.0/wiring.csv");
-                    $wiring = rawurlencode("/pcb/Hardware v1.0/wiring.png");
-                    echo '$("#johannes").show();';
+                    $pinout = rawurlencode("pcb/Hardware v1.0/wiring.csv");
+                    $wiring = rawurlencode("pcb/Hardware v1.0/wiring.png");
                 }else if($_GET["hardware"] == "damien"){
-                    $pinout = rawurlencode("/pcb/Hardware v1.0 (Damien Mod)/wiring.csv");
-                    $wiring = rawurlencode("/pcb/Hardware v1.0 (Damien Mod)/wiring.png");
-                }else if($_GET["hardware"] == "tesla_rdu"){
-                    $pinout = rawurlencode("/pcb/Hardware v2.0 (Tesla Rear Drive)/wiring.csv");
-                    $wiring = rawurlencode("/pcb/Hardware v2.0 (Tesla Rear Drive)/wiring.png");
+                    $pinout = rawurlencode("pcb/Hardware v1.0 (Damien Mod)/wiring.csv");
+                    $wiring = rawurlencode("pcb/Hardware v1.0 (Damien Mod)/wiring.png");
+                    echo '$("#johannes").hide();';
+                }else if($_GET["hardware"] == "2"){
+                    $pinout = rawurlencode("pcb/Hardware v2.0/wiring.csv");
+                    $wiring = rawurlencode("pcb/Hardware v2.0/wiring.png");
+                }else if($_GET["hardware"] == "3"){
+                    $pinout = rawurlencode("pcb/Hardware v3.0/wiring.csv");
+                    $wiring = rawurlencode("pcb/Hardware v3.0/wiring.png");
                 }
                 echo '$("#wiring").show();';
             ?>
@@ -72,30 +76,30 @@
                         <tbody>
                             <tr align="center">
                                 <td>
-                                    <a href="/wiring.php?hardware=1">
+                                    <a href="wiring.php?hardware=1">
                                         <img src="pcb/Hardware v1.0/bom/img/base_board4.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
-                                    Hardware v1.0 (Johannes Huebner)
+                                    Hardware v1.0
                                 </td>
                                 <td>
-                                    <a href="/wiring.php?hardware=damien">
-                                        <img src="/pcb/Hardware v1.0 (Damien Mod)/bom/img/main_board_v2.jpg" class="img-thumbnail rounded" />
+                                    <a href="wiring.php?hardware=damien">
+                                        <img src="pcb/Hardware v1.0 (Damien Mod)/bom/img/main_board_v2.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
                                     Hardware v1.0 (Damien Maguire)
                                 </td>
                             </tr>
                             <tr align="center">
                                 <td>
-                                    <a href="/wiring.php?hardware=tesla_rdu">
-                                        <img src="pcb/Hardware v2.0 (Tesla Rear Drive)/bom/img/tesla_rdu_v3.jpg" class="img-thumbnail rounded" />
+                                    <a href="wiring.php?hardware=2">
+                                        <img src="pcb/Hardware v2.0/bom/img/base_board6.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
-                                    Hardware v2.0 (Tesla Rear Drive Unit)
+                                    Hardware v2.0
                                 </td>
 								<td>
-                                    <a href="/wiring.php?hardware=tesla_fdu">
-                                        <img src="pcb/Hardware v2.0 (Tesla Front Drive)/bom/img/tesla_fdu_v2.jpg" class="img-thumbnail rounded" />
+                                    <a href="wiring.php?hardware=3">
+                                        <img src="pcb/Hardware v3.0/bom/img/base_board7.jpg" class="img-thumbnail rounded" />
                                     </a><br/><br/>
-                                    Hardware v2.0 (Tesla Front Drive Unit)
+                                    Hardware v3.0
                                 </td>
                             </tr>
                         </tbody>
@@ -125,9 +129,11 @@
                         <tbody>
                             <tr>
                                 <td colspan="3">
+									<center>
                                     <a data-fancybox href="<?php echo $wiring; ?>">
                                         <img src="<?php echo $wiring; ?>" class="img-thumbnail rounded" />
                                     </a>
+									</center>
                                 </td>
                             </tr>
                             <tr>

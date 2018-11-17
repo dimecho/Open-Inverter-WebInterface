@@ -1,4 +1,5 @@
 <?php
+	
     include_once("common.php");
     error_reporting(E_ERROR | E_PARSE);
 	$os = detectOS();
@@ -17,9 +18,13 @@
 				echo "$line\n";
 			}
 		}else{
-			$uart = fopen($_SESSION["serial"], "r+"); //Read & Write
+		
+			$uart = fopen($interface, "r+"); //Read & Write
 			//stream_set_blocking($uart, 1); //O_NONBLOCK
 			//stream_set_timeout($uart, 30);
+			
+			if(!$uart)
+				return $interface;
 			
 			$PAGE_SIZE_BYTES = 1024;
 			$len = filesize($file);
@@ -36,20 +41,29 @@
 			
 			$pages = round(($len + $PAGE_SIZE_BYTES - 1) / $PAGE_SIZE_BYTES);
 			
-			while((count($data) % $PAGE_SIZE_BYTES) > 0) //Fill ramaining bytes with zeros, prevents corrupted endings
+			while((count($data) % $PAGE_SIZE_BYTES) > 0) //Fill remaining bytes with zeros, prevents corrupted endings
 				array_push($data, 0);
 
 			print "File length is " .$len. " bytes/" .$pages. " pages\n";
 			
 			print "Resetting device...\n";
 			
-			fwrite($uart, "reset\r");
+			# Clear the initialization Bug
+			#-----------------------------
+			fwrite($uart, "hello\n");
+            fgets($uart); //echo
+            fgets($uart); //ok
+			#-----------------------------
+			fwrite($uart, "reset\n");
 			
 			$c = wait_for_char($uart,array('S','2')); //Wait for size request
-
+			
+			print "Ready " .$c. "\n";
+			
 			if($c == '2') //version 2 bootloader
 			{
-				fwrite($uart, 0xAA); //Send magic
+				fwrite($uart, chr(0xAA)); //Send magic
+				print "Sending *magic* 0xAA\n";
 				wait_for_char($uart,array('S'));
 			}
 			
@@ -177,9 +191,11 @@
                                                     $.notify({ message: "Use USB-RS232" },{ type: 'warning' });
                                                     $.notify({ message: "Unlug JTAG Programmer" },{ type: 'danger' });
                                                 }
+												/*
                                                 setTimeout( function (){
                                                     window.location.href = "index.php";
                                                 },12000);
+												*/
 											}
 										});
 									});
@@ -283,10 +299,11 @@
     {
         while($recv_char = fread($uart,1))
         {
-            //print $recv_char. "\n";
-            foreach($c as $item)
+			//print ">" . $recv_char. "\n";
+            foreach($c as $item){
                 if($recv_char == $item)
                     return $recv_char;
+			}
         }
         return -1;
     }

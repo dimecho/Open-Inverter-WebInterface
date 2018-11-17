@@ -17,7 +17,9 @@
 
     if(isset($_GET["init"]))
     {
-        PHPSESSID_destroy();
+        $_SESSION = array();
+		session_start();
+		
         echo serialDevice($_GET["init"]);
     }
     else if(isset($_GET["serial"]))
@@ -25,7 +27,10 @@
         $json = json_decode(file_get_contents("js/serial.json"), true);
         $json['serial']['port'] = $_GET["serial"];
         file_put_contents("js/serial.json", json_encode($json));
-        //PHPSESSID_destroy();
+        
+		//$_SESSION = array();
+		//session_start();
+		
         $uname = strtolower(php_uname('s'));
         if (strpos($uname, "darwin") !== false) {
             echo dirname(dirname(dirname(__DIR__)));
@@ -103,17 +108,6 @@
         echo calculateMedian(readArray($_GET["median"],3));
     }
 
-    function PHPSESSID_destroy()
-    {
-        //remove PHPSESSID from browser
-        if (isset($_COOKIE[session_name()]))
-        setcookie(session_name(), “”, time()-3600, “/”);
-        //clear session from globals
-        $_SESSION = array();
-        //clear session from disk
-        //session_destroy();
-    }
-
     function serialDevice($speed)
     {
 		$errors = "";
@@ -123,8 +117,12 @@
 			$json = json_decode(file_get_contents("js/serial.json"), true);
 			$_SESSION["serial"] = $json['serial']['port'];
 			$_SESSION["timeout"] = $json['serial']['timeout'];
+			$_SESSION["speed"] = $json['serial']['speed'];
 			$com = $_SESSION["serial"];
 		}
+		
+		if($speed != $_SESSION["speed"])
+			fastUART($com,$speed);
 		
 		$uname = strtolower(php_uname('s'));
 
@@ -163,12 +161,6 @@
             fwrite($uart, "hello\n");
             echo fgets($uart); //echo
             echo fgets($uart); //ok
-            /*
-            fwrite($uart, "fastuart " .$speed. "\n");
-            echo fgets($uart); //echo
-            echo fgets($uart); //ok
-            echo fgets($uart); //confirm
-            */
 			fclose($uart);
 		}else{
             return "Error: Cannot open ". $com;
@@ -176,6 +168,28 @@
 
         return $com;
     }
+	
+	function fastUART($com,$speed)
+    {
+		$uart = fopen($com, "r+");
+		
+		if($uart)
+		{
+			if($speed != "921600")
+					$speed = "0";
+			fwrite($uart, "fastuart " .$speed. "\n");
+			echo fgets($uart); //echo
+			$read = fgets($uart); //ok
+			if(strpos($read, "OK") !== false)
+			{
+				echo fgets($uart); //confirm
+				$_SESSION["speed"] = $speed;
+			}
+			fclose($uart);
+		}else{
+			echo "Error: Cannot open ". $com;
+		}
+	}
 	
 	function readArray($cmd,$n)
     {
@@ -212,7 +226,12 @@
         //stream_set_timeout($uart, 8);
         if(!$uart)
             return $com;
-
+		
+		/*
+		while(!feof($uart))
+			fread($uart, 1); //stream_get_contents($uart, 1);
+		*/
+		
         fwrite($uart, $cmd); //fputs($uart, $cmd);
         $read = fgets($uart);
 
@@ -221,7 +240,7 @@
 		//echo $uart;
         //echo "\"" .$cmd. "\"";
         //echo "\"" .$read. "\"";
-
+		
 		//if ($cmd === $read){ //echo OK
 			if($cmd === "json\n"){
                 $read = fread($uart,1024);

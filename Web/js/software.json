@@ -233,7 +233,7 @@
             "all" : "https://github.com/jsphuebner/stm32-sine/archive/master.zip",
             "file": "stm32-sine-master.zip",
             "size" : 1,
-            "version" : "4.5"
+            "version" : "4.7"
         },
         "path" : {
             "mac" : "~/Documents/stm32-sine-master/src/generic/sine_core.cpp",
