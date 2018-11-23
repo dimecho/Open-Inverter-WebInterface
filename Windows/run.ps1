@@ -167,6 +167,7 @@ function checkLibUSBDriver {
 			Write-Host "$env:userprofile\Downloads\$zadig"
 			Invoke-WebRequest -Uri "https://zadig.akeo.ie/downloads/$zadig" -OutFile "$env:userprofile\Downloads\$zadig" -Debug
 		}
+		Write-Host "Recommended WinUSB - libusb drivers do not work well with Olimex"  -ForegroundColor Green
 		Start-Process "$env:userprofile\Downloads\$zadig" /q:a -Wait
 	}
 }

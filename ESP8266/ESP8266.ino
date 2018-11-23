@@ -153,7 +153,12 @@ void setup()
   server.on("/serial.php", HTTP_GET, []() {
     if (server.hasArg("init"))
     {
-  		server.send(200, "text/plain", readSerial("fastuart " + server.arg("init")));
+      String speed = server.arg("init");
+      if (speed != "921600")
+        speed = "0";
+      server.send(200, "text/plain", readSerial("fastuart " + speed));
+      Serial.end();
+      Serial.begin(server.arg("init").toInt());
     }
     else if (server.hasArg("com"))
     {
@@ -644,7 +649,7 @@ void STM32Upload()
 
           while (c != 'C')
           {
-            Serial.write(data, sizeof(data));
+            Serial.write(data);
             while (!Serial.available());
             c = Serial.read();
 
@@ -656,7 +661,7 @@ void STM32Upload()
 
           server.sendContent("Sending CRC...\n");
 
-          Serial.write((char*)&crc, sizeof(uint32_t));
+          Serial.write(crc);
           while (!Serial.available());
           c = Serial.read();
 

@@ -191,11 +191,9 @@
                                                     $.notify({ message: "Use USB-RS232" },{ type: 'warning' });
                                                     $.notify({ message: "Unlug JTAG Programmer" },{ type: 'danger' });
                                                 }
-												/*
                                                 setTimeout( function (){
                                                     window.location.href = "index.php";
                                                 },12000);
-												*/
 											}
 										});
 									});

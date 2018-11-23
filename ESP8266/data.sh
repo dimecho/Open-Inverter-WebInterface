@@ -35,8 +35,6 @@ done
 #cp -rf ../Web/fonts/glyphicons-halflings-regular.ttf data/fonts
 #cp -rf ../Web/fonts/glyphicons-halflings-regular.woff data/fonts
 cp -rf ../Web/fonts/glyphicons-halflings-regular.woff2 data/fonts
-
-cp -rf ../Web/firmware/attiny13.zip data/firmware
 cp -rf ../Web/firmware/img/esp8266.jpg data/firmware/img
 
 #======================

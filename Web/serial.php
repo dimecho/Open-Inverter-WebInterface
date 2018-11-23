@@ -121,8 +121,7 @@
 			$com = $_SESSION["serial"];
 		}
 		
-		if($speed != $_SESSION["speed"])
-			fastUART($com,$speed);
+		fastUART($com,$speed);
 		
 		$uname = strtolower(php_uname('s'));
 
@@ -182,7 +181,7 @@
 			$read = fgets($uart); //ok
 			if(strpos($read, "OK") !== false)
 			{
-				echo fgets($uart); //confirm
+				//echo fgets($uart); //confirm
 				$_SESSION["speed"] = $speed;
 			}
 			fclose($uart);

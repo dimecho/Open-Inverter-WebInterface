@@ -23,6 +23,9 @@ body {
   font-size:13px !important;
   font-weight:normal !important;
 }
+.btn-space {
+    margin-right: 6px;
+}
 .iconic {
   width:32px;
   height:32px;

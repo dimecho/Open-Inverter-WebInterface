@@ -1,3 +1,103 @@
+var chart_motor_datasets = [{
+	type: 'line',
+	label: "Motor RPM",
+	backgroundColor: "rgba(255,99,132,0.2)",
+	borderColor: "rgba(255,99,132,1)",
+	borderWidth: 2,
+	hoverBackgroundColor: "rgba(255,99,132,0.4)",
+	hoverBorderColor: "rgba(255,99,132,1)",
+	data: [0],
+	datalabels: {
+		display: false
+	}
+}, {
+	type: 'line',
+	label: "Throttle",
+	backgroundColor: "rgba(102, 255, 51, 0.2)",
+	borderColor: "rgba(0,0,0,0.2)",
+	borderWidth: 2,
+	hoverBackgroundColor: "rgba(102, 255, 51, 0.4)",
+	hoverBorderColor: "rgba(0,0,0,0.5)",
+	data: [0],
+	datalabels: {
+		display: false
+	}
+}];
+var chart_temp_datasets = [{
+	type: 'line',
+	label: "Motor",
+	backgroundColor: "rgba(51, 153, 255,0.2)",
+	borderColor: "rgba(0,0,0,0.2)",
+	borderWidth: 2,
+	hoverBackgroundColor: "rgba(51, 153, 255,0.4)",
+	hoverBorderColor: "rgba(0,0,0,0.5)",
+	data: [0],
+	datalabels: {
+		display: false
+	}
+}, {
+	type: 'line',
+	label: "Inverter",
+	backgroundColor: "rgba(102, 255, 51,0.2)",
+	borderColor: "rgba(0,0,0,0.2)",
+	borderWidth: 2,
+	hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
+	hoverBorderColor: "rgba(0,0,0,0.5)",
+	data: [0],
+	datalabels: {
+		display: false
+	}
+}];
+var chart_battery_datasets = [{
+	type: 'line',
+	label: "Battery",
+	backgroundColor: "rgba(102, 255, 51,0.2)",
+	borderColor: "rgba(0,0,0,0.2)",
+	borderWidth: 2,
+	hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
+	hoverBorderColor: "rgba(0,0,0,0.5)",
+	data: [0],
+	datalabels: {
+		display: false
+	}
+}, {
+	type: 'line',
+	label: "Inverter",
+	backgroundColor: "rgba(255,99,132,0.2)",
+	borderColor: "rgba(255,99,132,1)",
+	borderWidth: 2,
+	hoverBackgroundColor: "rgba(255,99,132,0.4)",
+	hoverBorderColor: "rgba(255,99,132,1)",
+	data: [0],
+	datalabels: {
+		display: false
+	}
+}];
+var chart_sensor_datasets = [{
+	type: 'line',
+	label: "AC Current",
+	backgroundColor: "rgba(51, 153, 255, 0.2)",
+	borderColor: "rgba(0,0,0,0.2)",
+	borderWidth: 2,
+	hoverBackgroundColor: "rgba(51, 153, 255, 0.4)",
+	hoverBorderColor: "rgba(0,0,0,0.5)",
+	data: [0],
+	datalabels: {
+		display: false
+	}
+}, {
+	type: 'line',
+	label: "DC Current",
+	backgroundColor: "rgba(102, 255, 51, 0.2)",
+	borderColor: "rgba(0,0,0,0.2)",
+	borderWidth: 2,
+	hoverBackgroundColor: "rgba(102, 255, 51, 0.4)",
+	hoverBorderColor: "rgba(0,0,0,0.5)",
+	data: [0],
+	datalabels: {
+		display: false
+	}
+}];
 var activeTab = "";
 var activeTabText = "";
 var syncronizedDelay = 600;
@@ -14,16 +114,15 @@ var xhr;
 $(document).ready(function () {
 
 	//$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?init=921600", {
-        /*
     $.ajax("serial.php?init=921600", {
 		success: function(data) {
 			console.log(data);
 			if (data.indexOf("921600") != -1) {
-				$.notify({ message: 'UART set to 921600 (1Mbps)' }, { type: 'sucess' });
+				$.notify({ message: 'UART set to 921600 (1Mbps)' }, { type: 'success' });
 			}
 		}
 	});
-	*/
+	
     /*
     $(document).click(function (e) {
         if(xhr)
@@ -57,18 +156,83 @@ $(document).ready(function () {
     initChart();
 });
 
+function buildPointsMenu() {
+	
+	var menu = $("#buildPointsMenu").empty();
+	
+	var json = {}; //sendCommand("json");
+	
+	if(Object.keys(json).length == 0)
+	{
+		$.ajax("js/parameters.json", {
+		  async: false,
+		  dataType: "json",
+		  success: function(data) {
+			json = data;
+		  }
+		});
+	}
+	
+	var div = $("<div>", { class: "container" });
+
+	for(var key in json)
+	{
+		//console.log(key);
+		
+		var row = $("<div>", { class: "row" });
+		var col = $("<div>", { class: "col" });
+		
+		var c = $("<input>", { class: "form-control", type:"checkbox", "id":key, class:"form-control" });
+		col.append(c);
+		row.append(col);
+		
+		var l = $("<label>", { for: key }).append(key);
+		col = $("<div>", { class: "col" });
+		col.append(l);
+		row.append(col);
+
+		var cl = $("<input>", {class: "jscolor form-control", value: "000000" });
+		col = $("<div>", { class: "col" });
+		col.append(cl);
+		row.append(col);
+		/*
+		cl.on('click', function () {
+			var obj = $(this)[0];
+			console.log(obj);
+			if (!obj.hasPicker) {
+				var picker = new jscolor(obj);  //
+				obj.hasPicker = true;
+				picker.show();
+			}
+		});
+		*/
+		div.append(row);
+	}
+
+	menu.append(div);
+	
+	jscolor.installByClassName("jscolor");
+	/*
+	$(".jscolor").each(function (i, obj) {
+        var picker = new jscolor(obj);
+    });
+	*/
+};
+
 function buildGraphMenu() {
     //os = "mobile";
 
     var tabs = ["Motor", "Temperature", "Battery", "Sensors", "Frequencies", "PWM"];
 
     var menu = $("#buildGraphMenu").empty();
-    var footer = $("#buildGraphFooter").empty();
+    var menu_buttons = $("#buildGraphButtons").empty();
 
-    var btn_start = $("<button>", { class: "btn btn-success", onClick: "startChart()" }).append("Start Graph");
-    var btn_stop = $("<button>", { class: "btn btn-danger", onClick: "stopChart()" }).append("Stop Graph");
-    var btn_pdf = $("<button>", { class: "btn btn-warning", onClick: "exportPDF(true)" }).append("Export PDF");
-    var btn_img = $("<button>", { class: "btn btn-info", onClick: "exportPDF()" }).append("Export Image");
+	var btn_points_i = $("<i>", { class: "glyphicon glyphicon-ok" });
+	var btn_points = $("<button>", { class: "btn btn-primary btn-space", onClick: "buildPointsMenu();$('.graphPoints').trigger('click');" }).append(btn_points_i).append(" Select Points");
+    var btn_start = $("<button>", { class: "btn btn-success btn-space", onClick: "startChart()" }).append("Start Graph");
+    var btn_stop = $("<button>", { class: "btn btn-danger btn-space", onClick: "stopChart()" }).append("Stop Graph");
+    var btn_pdf = $("<button>", { class: "btn btn-warning btn-space", onClick: "exportPDF(true)" }).append("Export PDF");
+    var btn_img = $("<button>", { class: "btn btn-info btn-space", onClick: "exportPDF()" }).append("Export Image");
 
     $.getScript("js/bootstrap-slider.js").done(function(script, textStatus) {
 
@@ -107,9 +271,10 @@ function buildGraphMenu() {
 
     activeTab = "#graph0";
     activeTabText = tabs[0];
-
-    footer.append(btn_start);
-    footer.append(btn_stop);
+	
+	menu_buttons.append(btn_points);
+    menu_buttons.append(btn_start);
+    menu_buttons.append(btn_stop);
 
     if (os === "mobile") {
 
@@ -200,9 +365,9 @@ function buildGraphMenu() {
         });
 
         $.getScript("js/jspdf.js").done(function(script, textStatus) {
-            footer.append(btn_pdf);
+            menu_buttons.append(btn_pdf);
         });
-        footer.append(btn_img);
+        menu_buttons.append(btn_img);
     }
 };
 
@@ -299,7 +464,7 @@ function initChart() {
     } else if (activeTab === "#graph2") {
         initBatteryChart(duration);
     } else if (activeTab === "#graph3") {
-        initAmperageChart(duration);
+        initSensorChart(duration);
     } else if (activeTab === "#graph4") {
         initFrequenciesChart(duration);
     } else if (activeTab === "#graph5") {
@@ -852,36 +1017,12 @@ function initFrequenciesChart(duration) {
     };
 };
 
-function initAmperageChart(duration) {
+function initSensorChart(duration) {
 
     //RMS = LOCKED-ROTOR CURRENT
     data = {
         labels: initTimeAxis(graphDivision),
-        datasets: [{
-            type: 'line',
-            label: "AC Current",
-            backgroundColor: "rgba(51, 153, 255, 0.2)",
-            borderColor: "rgba(0,0,0,0.2)",
-            borderWidth: 2,
-            hoverBackgroundColor: "rgba(51, 153, 255, 0.4)",
-            hoverBorderColor: "rgba(0,0,0,0.5)",
-            data: [0],
-            datalabels: {
-                display: false
-            }
-        }, {
-            type: 'line',
-            label: "DC Current",
-            backgroundColor: "rgba(102, 255, 51, 0.2)",
-            borderColor: "rgba(0,0,0,0.2)",
-            borderWidth: 2,
-            hoverBackgroundColor: "rgba(102, 255, 51, 0.4)",
-            hoverBorderColor: "rgba(0,0,0,0.5)",
-            data: [0],
-            datalabels: {
-                display: false
-            }
-        }]
+        datasets: chart_sensor_datasets
     };
 
     var ocurlim = getJSONFloatValue("ocurlim");
@@ -972,31 +1113,7 @@ function initMotorChart(duration) {
 
     data = {
         labels: initTimeAxis(graphDivision),
-        datasets: [{
-            type: 'line',
-            label: "Motor RPM",
-            backgroundColor: "rgba(255,99,132,0.2)",
-            borderColor: "rgba(255,99,132,1)",
-            borderWidth: 2,
-            hoverBackgroundColor: "rgba(255,99,132,0.4)",
-            hoverBorderColor: "rgba(255,99,132,1)",
-            data: [0],
-            datalabels: {
-                display: false
-            }
-        }, {
-            type: 'line',
-            label: "Throttle",
-            backgroundColor: "rgba(102, 255, 51, 0.2)",
-            borderColor: "rgba(0,0,0,0.2)",
-            borderWidth: 2,
-            hoverBackgroundColor: "rgba(102, 255, 51, 0.4)",
-            hoverBorderColor: "rgba(0,0,0,0.5)",
-            data: [0],
-            datalabels: {
-                display: false
-            }
-        }]
+        datasets: chart_motor_datasets
     };
 
     options = {
@@ -1073,31 +1190,7 @@ function initTemperatureChart(duration) {
 
     data = {
         labels: initTimeAxis(graphDivision),
-        datasets: [{
-            type: 'line',
-            label: "Motor",
-            backgroundColor: "rgba(51, 153, 255,0.2)",
-            borderColor: "rgba(0,0,0,0.2)",
-            borderWidth: 2,
-            hoverBackgroundColor: "rgba(51, 153, 255,0.4)",
-            hoverBorderColor: "rgba(0,0,0,0.5)",
-            data: [0],
-            datalabels: {
-                display: false
-            }
-        }, {
-            type: 'line',
-            label: "Inverter",
-            backgroundColor: "rgba(102, 255, 51,0.2)",
-            borderColor: "rgba(0,0,0,0.2)",
-            borderWidth: 2,
-            hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
-            hoverBorderColor: "rgba(0,0,0,0.5)",
-            data: [0],
-            datalabels: {
-                display: false
-            }
-        }]
+        datasets: chart_temp_datasets
     };
 
     options = {
@@ -1174,25 +1267,7 @@ function initBatteryChart(duration) {
 
     data = {
         labels: initTimeAxis(graphDivision),
-        datasets: [{
-            type: 'line',
-            label: "Battery",
-            backgroundColor: "rgba(102, 255, 51,0.2)",
-            borderColor: "rgba(0,0,0,0.2)",
-            borderWidth: 2,
-            hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
-            hoverBorderColor: "rgba(0,0,0,0.5)",
-            data: [0]
-        }, {
-            type: 'line',
-            label: "Inverter",
-            backgroundColor: "rgba(255,99,132,0.2)",
-            borderColor: "rgba(255,99,132,1)",
-            borderWidth: 2,
-            hoverBackgroundColor: "rgba(255,99,132,0.4)",
-            hoverBorderColor: "rgba(255,99,132,1)",
-            data: [0]
-        }]
+        datasets: chart_battery_datasets
     };
 
     var udclim = getJSONFloatValue("udclim");
@@ -1285,7 +1360,7 @@ function updateChart(value, autosize, accuracy) {
     xhr = $.ajax("serial.php?stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay, {
         type: "GET",
         async: true,
-        timeout: 4000,
+        timeout: 2000,
         //crossDomain: true,
         xhrFields: {
             onprogress: function onprogress(e)
@@ -1303,11 +1378,12 @@ function updateChart(value, autosize, accuracy) {
                 //console.log(this_response);
 
                 var split = this_response.slice(0, -1).split("\n");
+				var v = value[i];
 
                 for (var d = 0; d < split.length; d++)
                 {
-                    //console.log(value[i]);
-                    if (value[i] === "pwmfrq")
+                    //console.log(v);
+                    if (v === "pwmfrq")
                     {
                         var pwmfrq = parseFloat(split[d]);
                         var deadtime = parseFloat(split[d+1]);
@@ -1322,15 +1398,17 @@ function updateChart(value, autosize, accuracy) {
                         //data.datasets[5].data = sineWave(4,1,0,waveGraphRatio); //blue
                         
                         break;
-                    }else if (value[i] !== "fweak") {
+                    }else if (v !== "fweak") {
                         var point = parseFloat(split[d]);
                         //console.log(point);
 
-                        if (value[i] === "ampnom") {
+                        if (v === "ampnom") {
                             var max = Math.max.apply(Math, data.datasets[i].data);
                             data.datasets[i + 1].data = sineWave(2,(max * point / 100),0,0.1);
                         } else {
 
+							l = data.datasets[i].data.length;
+							
                             if (accuracy) {
                                 var p = data.datasets[i].data[l - 1];
                                 var c = p * accuracy;
@@ -1346,9 +1424,7 @@ function updateChart(value, autosize, accuracy) {
 
                             if(i == 0)
                             {
-                                l = data.datasets[i].data.length;
-
-                                //Scroller
+                                //Scroll
                                 if (l == data.labels.length) {
 
                                     initTimeAxis(graphDivision, data.labels);
@@ -1363,7 +1439,7 @@ function updateChart(value, autosize, accuracy) {
                                     $('.chartAreaWrapper2').width($('.chartAreaWrapper').width());
                                 }
 
-                                //Timestamp
+                                //Time-stamp
                                 if (l / 10 % 1 == 0)
                                 {
                                     var d = new Date();
