@@ -3,7 +3,7 @@ body {
   Background by Harry
   http://www.freepik.com/free-vector/technological-background-with-full-color-circuits_951748.htm
   */
-  background-image: url("../img/background.png");
+  background: url("../img/background.png"), linear-gradient(-180deg, rgba(255,255,255,0.50) 0%, rgba(0,0,0,0.50) 100%);
   background-attachment: fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;

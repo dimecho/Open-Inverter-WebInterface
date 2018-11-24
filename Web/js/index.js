@@ -1,4 +1,3 @@
-var esp8266 = false;
 var driverIssues = "";
 
 $(document).ready(function () {

@@ -65,9 +65,5 @@
             "icon": "glyphicon-dashboard",
             "onClick": "/switch-check.php"
         }]
-    }, {
-        "id": "Tips",
-        "icon": "glyphicon-question-sign",
-        "onClick": "/tips.php"
     }]
 }

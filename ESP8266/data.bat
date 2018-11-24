@@ -13,7 +13,7 @@ mkdir data\fonts
 mkdir data\firmware
 mkdir data\firmware\img
 
-set array=index.php header.php menu.php esp8266.php can.php graph.php firmware.php simple.php tips.php switch-check.php motor-class.php version.txt tips.csv description.csv favicon.ico
+set array=index.php header.php menu.php esp8266.php can.php graph.php firmware.php simple.php switch-check.php motor-class.php version.txt description.csv
 for %%a in (%array%) do (
   copy ..\Web\%%a data
 )
@@ -23,14 +23,13 @@ for %%a in (%array%) do (
   copy ..\Web\css\%%a data\css
 )
 
-set array=jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js bootstrap-slider.js bootstrap-notify.js firmware.js can.js graph.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js switch-check.js iconic.js mobile.js
+set array=jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js bootstrap-slider.js bootstrap-notify.js firmware.js can.js canmap.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js switch-check.js iconic.js mobile.js
 for %%a in (%array%) do (
   copy ..\Web\js\%%a data\js
 )
 copy ..\Web\js\menu-esp8266.json data\js\menu.json
-copy ..\Web\js\menu-esp8266.json data\js\menu-mobile.json
 
-set array=background.png safety.png alert.svg battery.svg engine.svg idea.svg key.svg temperature.svg temp_indicator.png encoder_lowpass.png
+set array=background.png safety.png alert.svg battery.svg engine.svg idea.svg key.svg temperature.svg
 for %%a in (%array%) do (
   copy ..\Web\img\%%a data\img
 )
@@ -38,7 +37,7 @@ for %%a in (%array%) do (
 ::copy ../Web/fonts/glyphicons-halflings-regular.ttf data/fonts
 ::copy ../Web/fonts/glyphicons-halflings-regular.woff data/fonts
 copy ..\Web\fonts\glyphicons-halflings-regular.woff2 data\fonts
-copy ..\Web\firmware\img\esp8266.jpg data\firmware\img
+copy ..\Web\firmware\img\esp8266.png data\firmware\img
 
 ::======================
 ::Correct long filenames
@@ -106,7 +105,8 @@ for /R "%~dp0\data" %%F in (*.*) do (
 move /y "%%F.gz" "%%F"
 )
 
-"%~dp0\tools\mkspiffs.exe" -c .\data\  -b 8192 -p 256 -s 1028096 flash-spiffs.bin
+"%~dp0\tools\mkspiffs.exe" -c .\data\  -b 8192 -p 256 -s 514048 flash-spiffs.bin
+::"%~dp0\tools\mkspiffs.exe" -c .\data\  -b 8192 -p 256 -s 1028096 flash-spiffs.bin
 ::"%~dp0\tools\mkspiffs.exe" -i flash-spiffs.bin
 pause
 

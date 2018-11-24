@@ -47,7 +47,7 @@ function setInterfaceImage() {
 			},
 			error: function () {
 				$("#jtag-txt").html("Solder <b>GPIO-0</b> to <b>1</b> and boot ESP8266 from flash. Inverter firmware will flash using ESP8266 UART internally.");
-				$("#jtag-image").attr("src","firmware/img/esp8266.jpg");
+				$("#jtag-image").attr("src","firmware/img/esp8266.png");
 			}
 		});
 	}

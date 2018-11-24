@@ -1,4 +1,3 @@
-#define VERSION 1.0
 #define DEBUG Serial
 #include <FS.h>
 #include <EEPROM.h>
@@ -158,7 +157,7 @@ void setup()
         speed = "0";
       server.send(200, "text/plain", readSerial("fastuart " + speed));
       Serial.end();
-      Serial.begin(server.arg("init").toInt());
+      Serial.begin(speed.toInt());
     }
     else if (server.hasArg("com"))
     {
@@ -208,6 +207,9 @@ void setup()
   server.on("/firmware.php", HTTP_POST, []() {
     server.send(200);
   }, STM32Upload );
+  server.on("/js/menu-mobile.json", HTTP_GET, []() {
+    HTTPServer("/js/menu.json");
+  });
   server.on("/", []() {
     if (SPIFFS.exists("/index.php")) {
       server.sendHeader("Location", "/index.php");
@@ -357,6 +359,7 @@ String PHP(String line, int i)
         f.close();
       }
 
+      line.replace("include_once", "");
       line.replace("include", "");
       line.replace("\"" + include + "\"", "");
       if (line.indexOf("?>") != -1) {

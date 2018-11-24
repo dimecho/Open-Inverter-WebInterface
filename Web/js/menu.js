@@ -8,7 +8,7 @@ var os;
 
 $.ajax("version.txt", {
   success: function(data) {
-    document.title = "Inverter Console (Build " + data + ")"
+    document.title = "Inverter Console (" + data + ")"
   }
 });
 
@@ -35,8 +35,25 @@ $(document).ready(function () {
     }else{
         os = "linux";
     }
+    
+    //ESP8266 Detect
+    $.ajax("connect.html", {
+        error: function () {
+            os = "esp8266";
+            document.title += " ESP8266";
+        }
+    });
+
     //DEBUG
     //os = "mobile";
+
+    $.ajax("version.txt", {
+      success: function(data) {
+        document.title = "Inverter Console (" + data + ")"
+        if(os == "esp8266")
+            document.title += " ESP8266";
+      }
+    });
 
     buildMenu();
 

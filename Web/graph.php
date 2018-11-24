@@ -1,3 +1,12 @@
+<?php
+    if(isset($_GET["debug"])){
+		header("Content-Type: text/plain");
+		for ($i = 0; $i < intval($_GET["loop"]); $i++)
+			for ($x = 0; $x <= substr_count($_GET["stream"], ","); $x++)
+				echo (rand(50, 100). "\n");
+		usleep(intval($_GET["delay"]) * 1000);
+    }else{
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -16,8 +25,8 @@
             <?php include "menu.php" ?>
             <br/>
             <div class="row">
-                <div class="col" align="center">
-                    <table class="table table-active bg-light" id="render">
+                <div class="col">
+                    <table class="table table-active bg-light">
                         <tr>
                             <td>
 								<center>
@@ -30,22 +39,24 @@
 								</center>
 							</td>
 						</tr>
-						<tr>
+                    </table>
+					<!-- http://jsfiddle.net/jmpxgufu/100/ -->
+					<div class="chartWrapper bg-light">
+						<div class="chartAreaWrapper">
+							<div class="chartAreaWrapper2">
+								<canvas id="canvas"></canvas>
+							</div>
+						</div>
+						<canvas id="chartAxis" width="0"></canvas>
+					</div>
+					<table class="table table-active bg-light">
+                        <tr>
                             <td>
-								<div class="chartWrapper bg-light">
-									<div class="chartAreaWrapper">
-										<div class="chartAreaWrapper2">
-											<canvas id="canvas"></canvas>
-										</div>
-									</div>
-								</div>
-                            </td>
-                        </tr>
-						<tr>
-                            <td>
-								<div class="mx-auto" id="buildGraphSlider"></div>
+								<center>
+									<div class="mx-auto" id="buildGraphSlider"></div>
+								</center>
 							</td>
-                        </tr>
+						</tr>
                     </table>
                 </div>
             </div>
@@ -61,3 +72,4 @@
         </div>
     </body>
 </html>
+<?php } ?>
