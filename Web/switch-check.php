@@ -2,14 +2,14 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script type="text/javascript" src="js/potentiometer.js"></script>
-        <script type="text/javascript" src="js/jquery.knob.js"></script>
-        <script type="text/javascript" src="js/switch-check.js"></script>
+        <script src="js/potentiometer.js"></script>
+        <script src="js/jquery.knob.js"></script>
+        <script src="js/switch-check.js"></script>
     </head>
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/>
+            <br>
              <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered">
@@ -56,9 +56,9 @@
                         <tr align="center">
                             <td colspan="7">
                                 Potentiometer
-                                <br/><br/>
+                                <br><br>
                                 <input class="knob" data-displayinput="true" data-min="0" data-max="100" data-fgcolor="#222222" data-bgcolor="#FFFFFF" value="0">
-                                <br/><br/>
+                                <br><br>
                             </td>
                         </tr>
                     </table>

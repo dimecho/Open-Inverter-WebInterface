@@ -12,14 +12,14 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/>
+            <br>
             <div class="row">
                 <div class="col">
                     <table class="table table-active bg-faded table-bordered">
                             <tr>
                                 <td>
                                     <b>Version 1</b> inverter was using ATTiny13 chip to isolate high voltage detection from main controller.
-                                    <br/><br/>
+                                    <br><br>
 									<div class="row">
 										<div class="col">
 											<button type="button" class="btn btn-primary" onClick="checkSoftware('attiny')"><i class="glyphicon glyphicon-cog"></i> Install AVRDude</button>
@@ -28,8 +28,8 @@
 											<button type="button" class="btn btn-primary" onClick="window.open('firmware/attiny13.zip')"><i class="glyphicon glyphicon-circle-arrow-down"></i> Download ATTiny13 Code</button>
 										</div>
 									</div>
-                                    <br/><br/>
-                                    <pre>
+                  <br><br>
+                  <pre>
 <code>#include <avr/io.h>
 #include <util/delay.h>
 
@@ -65,10 +65,10 @@ int __attribute__((OS_main)) main(void)
 }</code>
                                     </pre>
                                     <center>
-                                        Use Raspberry Pi to flash ATTiny13.<br/><br/>
-                                        <img src="firmware/img/avr_programmer_pi.png" /><br/><br/>
-                                        ATTiny13 Pinout.<br/><br/>
-                                        <img src="/firmware/img/attiny13.png" /><br/><br/>
+                                        Use Raspberry Pi to flash ATTiny13.<br><br>
+                                        <img src="firmware/img/avr_programmer_pi.png" /><br><br>
+                                        ATTiny13 Pinout.<br><br>
+                                        <img src="/firmware/img/attiny13.png" /><br><br>
                                     </center>
                                     SSH to Pi and run AVRDude installation.
                                     <pre>

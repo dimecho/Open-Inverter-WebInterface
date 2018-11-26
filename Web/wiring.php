@@ -2,7 +2,7 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script type="text/javascript" src="js/jspdf.js"></script>
+        <script src="js/jspdf.js"></script>
         <script>
         $(document).ready(function () {
             <?php
@@ -69,7 +69,7 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/>
+            <br>
              <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered" id="hardware" style="display:none">
@@ -78,13 +78,13 @@
                                 <td>
                                     <a href="wiring.php?hardware=1">
                                         <img src="pcb/Hardware v1.0/bom/img/base_board4.jpg" class="img-thumbnail rounded" />
-                                    </a><br/><br/>
+                                    </a><br><br>
                                     Hardware v1.0
                                 </td>
                                 <td>
                                     <a href="wiring.php?hardware=damien">
                                         <img src="pcb/Hardware v1.0 (Damien Mod)/bom/img/main_board_v2.jpg" class="img-thumbnail rounded" />
-                                    </a><br/><br/>
+                                    </a><br><br>
                                     Hardware v1.0 (Damien Maguire)
                                 </td>
                             </tr>
@@ -92,13 +92,13 @@
                                 <td>
                                     <a href="wiring.php?hardware=2">
                                         <img src="pcb/Hardware v2.0/bom/img/base_board6.jpg" class="img-thumbnail rounded" />
-                                    </a><br/><br/>
+                                    </a><br><br>
                                     Hardware v2.0
                                 </td>
 								<td>
                                     <a href="wiring.php?hardware=3">
                                         <img src="pcb/Hardware v3.0/bom/img/base_board7.jpg" class="img-thumbnail rounded" />
-                                    </a><br/><br/>
+                                    </a><br><br>
                                     Hardware v3.0
                                 </td>
                             </tr>

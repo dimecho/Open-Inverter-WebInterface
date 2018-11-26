@@ -22,6 +22,19 @@
 		
         echo serialDevice($_GET["init"]);
     }
+    else if(isset($_GET["os"]))
+    {
+        $uname = strtolower(php_uname('s'));
+        if (strpos($uname, "darwin") !== false) {
+            echo "osx";
+        }else if (strpos($uname, "win") !== false) {
+            echo "windows";
+        }else if (strpos(php_uname('m'), "arm") !== false) {
+            echo "linux"; //"pi";
+        }else{
+            echo "linux";
+        }
+    }
     else if(isset($_GET["serial"]))
     {
         $json = json_decode(file_get_contents("js/serial.json"), true);

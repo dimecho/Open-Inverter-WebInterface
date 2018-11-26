@@ -17,12 +17,12 @@
 <html>
     <head>
         <?php include "header.php"; ?>
-		<script type="text/javascript" src="js/firmware.js"></script>
+		<script src="js/firmware.js"></script>
     </head>
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/>
+            <br>
             <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered">
@@ -111,8 +111,7 @@
 											</center>
 										</span>
                                     </div>
-                                    <br/><br/>
-                                    <h2 id="jtag-name"></h2><br/>
+                                    <br><br><h2 id="jtag-name"></h2><br>
                                     <img src="" id="jtag-image" class="rounded" />
 									</center>
                                 </td>

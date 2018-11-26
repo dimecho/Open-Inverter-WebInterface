@@ -11,30 +11,30 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/>
+            <br>
              <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered">
                         <tr>
                             <td>
                                 <center>
-                                    <b>INSTRUCTIONS FOR PROGRAMMING OF OLIMEX CHIP WITH JOHANNES CODE</b><br/>
-                                    <b>V1.1</b><br/>
+                                    <b>INSTRUCTIONS FOR PROGRAMMING OF OLIMEX CHIP WITH JOHANNES CODE</b><br>
+                                    <b>V1.1</b><br>
                                 </center>
                                  <ol>
-                                    <li>Buy a programming dongle<br/>
+                                    <li>Buy a programming dongle<br>
                                     <a data-fancybox="gallery" href="firmware/img/st-linkv2.jpg">
                                         <img src="firmware/img/st-linkv2.jpg" class="img-thumbnail rounded" />
-                                    </a><br/><br/>
+                                    </a><br><br>
                                     </li>
                                     <li>Load software for Windows, probably have to register with ST
                                         <ul>
                                             <li><a href="http://www.st.com/en/development-tools/stsw-link004.html" target="_blank">http://www.st.com/en/development-tools/stsw-link004.html</a></li>
-                                            <li><a href="http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-utilities/stsw-link009.html" target="_blank">http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-utilities/stsw-link009.html</a><br/><br/>
+                                            <li><a href="http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-utilities/stsw-link009.html" target="_blank">http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-utilities/stsw-link009.html</a><br><br>
                                             </li>
                                         </ul>
                                     </li>
-                                    <li>STlink and Olimex chip are connected according to table and picture - observe cable colour<br/><br/>
+                                    <li>STlink and Olimex chip are connected according to table and picture - observe cable colour<br><br>
                                         <b>JTAG CONNECTOR PIN DESCRIPTION</b>
                                         <table class="table table-active table-bordered">
                                             <tr>
@@ -73,26 +73,26 @@
                                         </table>
                                         <a data-fancybox="gallery" href="firmware/img/st-linkv2-jtag.jpg">
                                             <img src="firmware/img/st-linkv2-jtag.jpg" class="img-thumbnail rounded" />
-                                        </a><br/><br/>
+                                        </a><br><br>
                                     </li>
                                     <li>Run the program and select Connect in menu. Also select SWD port.
                                         <a data-fancybox="gallery" href="firmware/img/st-link-utility1.png">
                                             <img src="firmware/img/st-link-utility1.png" class="img-thumbnail rounded" />
-                                        </a><br/><br/>
+                                        </a><br><br>
                                         <a data-fancybox="gallery" href="firmware/img/st-link-utility2.png">
                                             <img src="firmware/img/st-link-utility2.png" class="img-thumbnail rounded" />
-                                        </a><br/><br/>
+                                        </a><br><br>
                                     </li>
-                                    <li>We erase flash by selecting option »Erase chip«!<br/><br/></li>
+                                    <li>We erase flash by selecting option »Erase chip«!<br><br></li>
                                     <li>We select Bootloader program to load. Best is to select .hex files. Run Start
                                          <a data-fancybox="gallery" href="firmware/img/st-link-utility3.png">
                                             <img src="firmware/img/st-link-utility3.png" class="img-thumbnail rounded" />
-                                        </a><br/><br/>
+                                        </a><br><br>
                                     </li>
                                     <li>We now select our software to load and run program.
                                         <a data-fancybox="gallery" href="firmware/img/st-link-utility4.png">
                                             <img src="firmware/img/st-link-utility4.png" class="img-thumbnail rounded" />
-                                        </a><br/><br/>
+                                        </a><br><br>
                                     </li>
                                     <li>After a successfull flash Olimex LED starts to pulse.</li>
                                 </ol>
@@ -101,13 +101,13 @@
 						<tr>
                             <td>
                                 <center>
-                                    <b>Android Phone + ST Link V2</b><br/>
-                                    <b><a href="https://play.google.com/store/apps/details?id=ru.zdevs.zflasherstm32&hl=en_US" target="_blank">ZFlasher STM32</a></b><br/>
+                                    <b>Android Phone + ST Link V2</b><br>
+                                    <b><a href="https://play.google.com/store/apps/details?id=ru.zdevs.zflasherstm32&hl=en_US" target="_blank">ZFlasher STM32</a></b><br>
                                 </center>
-								<ol><li>For flashing with Android use USB-OTG cable.</li></ol><br/><br/>
+								<ol><li>For flashing with Android use USB-OTG cable.</li></ol><br><br>
 								<a data-fancybox="gallery" href="firmware/img/st-link-zflasher.jpg">
                                     <img src="firmware/img/st-link-zflasher.jpg" class="img-thumbnail rounded" />
-                                </a><br/><br/>
+                                </a><br><br>
 							</td>
 						</tr>
                     </table>

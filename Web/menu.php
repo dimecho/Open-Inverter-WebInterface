@@ -13,9 +13,9 @@
         <div class="hidden" id="macdrivers" style="width:60%;border-radius:5px">
             <center>
                 <img src="img/majove-logo.png" />
-                <br/><br/>
+                <br><br>
                 <p>Recommended Mac Drivers: <a href="#">mac-usb-serial.com</a></p>
-                <br/>
+                <br>
                 <button class="browse btn btn-primary" type="button" onClick="$.fancybox.close();window.open('https://www.mac-usb-serial.com','_blank');"><i class="glyphicon glyphicon-search"></i> Download</button>
             </center>
         </div>
@@ -23,7 +23,7 @@
         <div class="hidden" id="serial" style="width:60%;border-radius:5px">
             <p>Select Serial Interface:</p>
             <select name="interface" class="form-control" form="serialForm" id="serial-interface"></select>
-            <br/>
+            <br>
             <button class="browse btn btn-primary" type="button" onClick="$.fancybox.close();selectSerial();"><i class="glyphicon glyphicon-search"></i> Save</button>
         </div>
         <a class="safety" data-fancybox data-src="#warning" href="javascript:;"></a>

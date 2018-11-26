@@ -81,7 +81,7 @@
  <body>
 	<div class="container">
 		<?php include "menu.php" ?>
-		<br/><br/>
+		<br>
 		<div class="row">
 			<div class="col">
 			    <table class="table table-active table-bordered">
@@ -103,7 +103,7 @@
 									        WiFi Client
 									    </label>
 									</div>
-									<br/>
+									<br>
 									<div class="form-check">
 									  <label class="form-check-label">
 									  	<input type="hidden" id="WiFiHidden" name="WiFiHidden" value="0">

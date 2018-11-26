@@ -39,17 +39,13 @@ function setInterfaceImage() {
             $("#jtag-txt").html("");
 		}
 	}else{
-		//ESP8266 Detected
-		$.ajax("serial.php", {
-			success: function() {
-				$("#jtag-txt").html("Caution: Main board Olimex is powered with 3.3V - Double check your TTL-USB adapter.");
-				$("#jtag-image").attr("src","firmware/img/usb_ttl.jpg");
-			},
-			error: function () {
-				$("#jtag-txt").html("Solder <b>GPIO-0</b> to <b>1</b> and boot ESP8266 from flash. Inverter firmware will flash using ESP8266 UART internally.");
-				$("#jtag-image").attr("src","firmware/img/esp8266.png");
-			}
-		});
+		if(os == "esp8266") {
+			$("#jtag-txt").html("Solder <b>GPIO-0</b> to <b>1</b> and boot ESP8266 from flash. Inverter firmware will flash using ESP8266 UART internally.");
+			$("#jtag-image").attr("src","firmware/img/esp8266.png");
+		}else{
+			$("#jtag-txt").html("Caution: Main board Olimex is powered with 3.3V - Double check your TTL-USB adapter.");
+			$("#jtag-image").attr("src","firmware/img/usb_ttl.jpg");
+		}
 	}
 };
 

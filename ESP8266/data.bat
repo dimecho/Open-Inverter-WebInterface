@@ -23,7 +23,7 @@ for %%a in (%array%) do (
   copy ..\Web\css\%%a data\css
 )
 
-set array=jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js bootstrap-slider.js bootstrap-notify.js firmware.js can.js canmap.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js switch-check.js iconic.js mobile.js
+set array=jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js bootstrap-slider.js bootstrap-notify.js firmware.js can.js canmap.json parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js switch-check.js iconic.js mobile.js
 for %%a in (%array%) do (
   copy ..\Web\js\%%a data\js
 )

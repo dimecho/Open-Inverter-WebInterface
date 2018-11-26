@@ -168,7 +168,7 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/><br/>
+            <br><br>
             <div class="row">
                 <div class="col">
                     <center>

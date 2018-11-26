@@ -57,6 +57,13 @@ function startPHP($page) {
 
 		if ($comPort)
 		{
+			[int]$comID = 1
+			[int]::TryParse($comPort.Replace("COM",""),[ref]$comID)
+			if ($comID -ge 10)
+			{
+				Write-Host "`nCOM10 and above do not work with Windows ...Change COM# Manually`n" -ForegroundColor Red
+				devmgmt.msc
+			}
 			$serial_json = "$scriptPath\Web\js\serial.json"
 			$json = Get-Content "$serial_json" -Raw | ConvertFrom-Json
 			$json.serial.port = $comPort #+ ":"

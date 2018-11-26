@@ -3,8 +3,8 @@
     <head>
         <?php include "header.php" ?>
         <link rel="stylesheet" type="text/css" href="css/bootstrap-slider.css" />
-        <script type="text/javascript" src="js/bootstrap-slider.js"></script>
-        <script type="text/javascript" src="js/simple.js"></script>
+        <script src="js/bootstrap-slider.js"></script>
+        <script src="js/simple.js"></script>
         <style>
             .tooltip-inner {
                 user-select: none;
@@ -18,7 +18,7 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/>
+            <br>
             <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered"><tr><td><h4>Auto Tuning</h4></td></tr></table>

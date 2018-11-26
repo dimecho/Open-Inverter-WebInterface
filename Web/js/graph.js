@@ -382,7 +382,7 @@ function buildPointsMenu() {
 	var menu = $("#buildPointsMenu"); //.empty();
 	if (isEmpty(menu))
 	{
-		var json = sendCommand("json");
+		var json = {}; //sendCommand("json");
 		if(Object.keys(json).length == 0)
 		{
 			$.ajax("js/parameters.json", {
@@ -1448,9 +1448,9 @@ function updateChart(value, autosize, accuracy) {
     var last = (value.length - 1);
     var i = 0;
     //DEBUG
-	xhr = $.ajax("graph.php?debug=1&stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay, {
+	//xhr = $.ajax("graph.php?debug=1&stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay, {
     //LIVE
-	//xhr = $.ajax("serial.php?stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay, {
+	xhr = $.ajax("serial.php?stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay, {
         type: "GET",
         async: true,
         timeout: 2000,

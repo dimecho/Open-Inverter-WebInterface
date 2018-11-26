@@ -5,14 +5,14 @@
 <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
 <link rel="stylesheet" type="text/css" href="css/glyphicons.css">
 <link rel="stylesheet" type="text/css" href="css/fancybox.css" media="screen"/>
-<script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/iconic.js"></script>
-<script type="text/javascript" src="js/alertify.js"></script>
-<script type="text/javascript" src="js/download.js"></script>
-<script type="text/javascript" src="js/fancybox.js"></script>
-<script type="text/javascript" src="js/bootstrap.js"></script>
-<script type="text/javascript" src="js/bootstrap-notify.js"></script>
-<script type="text/javascript" src="js/menu.js"></script>
+<script src="js/jquery.js"></script>
+<script src="js/iconic.js"></script>
+<script src="js/alertify.js"></script>
+<script src="js/download.js"></script>
+<script src="js/fancybox.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/bootstrap-notify.js"></script>
+<script src="js/menu.js"></script>
 
 <?php
     include("install.php");

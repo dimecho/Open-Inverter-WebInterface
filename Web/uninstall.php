@@ -2,12 +2,12 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script type="text/javascript" src="/js/uninstall.js"></script>
+        <script src="js/uninstall.js"></script>
     </head>
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/>
+            <br>
              <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered">
@@ -54,6 +54,6 @@
                 </div>
             </div>
         </div>
-        <br/>
+        <br>
     </body>
 </html>

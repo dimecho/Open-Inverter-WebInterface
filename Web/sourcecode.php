@@ -18,12 +18,12 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script type="text/javascript" src="js/sourcecode.js"></script>
+        <script src="js/sourcecode.js"></script>
     </head>
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/><br/>
+            <br><br>
             <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered">

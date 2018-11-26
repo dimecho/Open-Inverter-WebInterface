@@ -1,59 +1,54 @@
 var iconic;
-var serialPort = "COM1";
-var serialWeb = 8080;
-var serialTimeout = 12000;
+/*
+var serialPort = getCookie("serial");
+var serialWeb = getCookie("serial_web");
+var serialTimeout = getCookie("serial_timeout");
 var serialWDomain = "http://" + window.location.hostname;
+*/
 var statusRefreshTimer;
-var os;
-
-$.ajax("version.txt", {
-  success: function(data) {
-    document.title = "Inverter Console (" + data + ")"
-  }
-});
-
-$.ajax("js/serial.json", {
-  dataType: "json",
-  success: function(data) {
-    serialPort = data.serial.port;
-    serialWeb = data.serial.web;
-	serialTimeout = data.serial.timeout * 1000;
-  }
-});
+var os = getCookie("os");
 
 $(document).ready(function () {
 
-    if (navigator.userAgent.match(/Android|webOS|iPhone|iPod|Blackberry/i)) {
-        os = "mobile";
-        $.getScript("js/mobile.js", function() {
-            optimizeMobile();
+    if (os === undefined) {
+        $.ajax("serial.php?os=1", {
+            async: false,
+            success: function(data) {
+                os = data;
+                setCookie("os", data, 1); 
+            }
         });
-    }else if (navigator.userAgent.match(/Mac/i)) {
-        os = "mac";
-    }else if (navigator.userAgent.match(/Win/i)) {
-        os = "windows";
-    }else{
-        os = "linux";
     }
-    
-    //ESP8266 Detect
-    $.ajax("connect.html", {
-        error: function () {
-            os = "esp8266";
-            document.title += " ESP8266";
-        }
-    });
+
+    /*
+    if (serialPort === undefined) {
+        $.ajax("js/serial.json", {
+            dataType: "json",
+            success: function(data) {
+                serialPort = data.serial.port;
+                serialWeb = data.serial.web;
+                serialTimeout = data.serial.timeout * 1000;
+                setCookie("serial", serialPort, 1);
+                setCookie("serial_web", serialWeb, 1);
+                setCookie("serial_timeout", serialTimeout, 1);
+            }
+        });
+    }
+    */
+
+    var version = getCookie("version");
+    if (version === undefined) {
+        $.ajax("version.txt", {
+            success: function(version) {
+                setCookie("version", version, 1);
+                titleVersion(version);
+            }
+        });
+    }
+    titleVersion(version);
 
     //DEBUG
     //os = "mobile";
-
-    $.ajax("version.txt", {
-      success: function(data) {
-        document.title = "Inverter Console (" + data + ")"
-        if(os == "esp8266")
-            document.title += " ESP8266";
-      }
-    });
 
     buildMenu();
 
@@ -148,6 +143,13 @@ $(document).ready(function () {
     }, 1000);
 	*/
 });
+
+function titleVersion(version)
+{
+    document.title = "Inverter Console (" + version + ")"
+    if(os == "esp8266")
+        document.title += " ESP8266";
+};
 
 function displayVersion()
 {
@@ -332,8 +334,8 @@ function sendCommand(cmd) {
         cache: false,
         timeout: serialTimeout,
         success: function success(data) {
-            console.log(cmd);
-            console.log(data);
+            //console.log(cmd);
+            //console.log(data);
             if(cmd == "json") {
                 try {
                     e = JSON.parse(data);
@@ -501,7 +503,7 @@ function giveCredit(csv) {
             if (data.indexOf(",") != -1) {
                 var s = data.split(",");
                 name = s[0];
-                url = "<br/><a href='" + s[1] + "' target=_blank>Project Website</a>";
+                url = "<br><a href='" + s[1] + "' target=_blank>Project Website</a>";
             }else{
                 name = data;
             }

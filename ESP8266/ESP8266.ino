@@ -12,6 +12,7 @@ ESP8266WebServer server(80);
 ESP8266HTTPUpdateServer updater;
 File fsUpload;
 
+int LED_Pin = 1;
 int ACCESS_POINT_MODE = 0;
 char ACCESS_POINT_SSID[] = "Inverter";
 char ACCESS_POINT_PASSWORD[] = "inverter123";
@@ -29,6 +30,7 @@ void setup()
     timeout--;
   }
 
+  pinMode(LED_Pin, OUTPUT);
   //======================
   //NVRAM type of Settings
   //======================
@@ -157,7 +159,11 @@ void setup()
         speed = "0";
       server.send(200, "text/plain", readSerial("fastuart " + speed));
       Serial.end();
-      Serial.begin(speed.toInt());
+      Serial.begin(server.arg("init").toInt());
+    }
+    else if (server.hasArg("os"))
+    {
+      server.send(200, "text/plain", "esp8266");
     }
     else if (server.hasArg("com"))
     {
@@ -385,6 +391,7 @@ bool HTTPServer(String file)
     File f = SPIFFS.open(file, "r");
     if (f)
     {
+      digitalWrite(LED_Pin, HIGH);
       //DEBUG.println(f.size());
 
       String contentType = getContentType(file);
@@ -408,6 +415,8 @@ bool HTTPServer(String file)
         server.streamFile(f, contentType);
       }
       f.close();
+
+      digitalWrite(LED_Pin, LOW);
 
       return true;
     } else {
@@ -540,12 +549,19 @@ String readStream(String cmd, int _loop, int _delay)
   size_t len = 0;
   String output;
 
-  server.send(200, "text/plain; charset=utf-8", "" );
+  while (Serial.available())
+    Serial.read(); //flush all previous output
 
   Serial.print(cmd);
   Serial.print("\n");
   Serial.readBytes(b, cmd.length() + 1); //consume echo
 
+  //server.sendHeader("Cache-Control", "no-cache");
+  server.setContentLength(CONTENT_LENGTH_UNKNOWN);
+  server.send(200, "text/plain", "" );
+  
+  WiFiClient client = server.client();
+  
   for (int i = 0; i < _loop; i++) {
     output = "";
     if (i != 0)
@@ -553,17 +569,18 @@ String readStream(String cmd, int _loop, int _delay)
       Serial.print("!");
       Serial.readBytes(b, 1); //consume "!"
     }
-
     do {
       memset(b, 0, sizeof(b));
       len = Serial.readBytes(b, sizeof(b) - 1);
       output += b;
     } while (len > 0);
 
+    delay(_delay);
+
     server.sendContent(output);
-    server.client().flush();
+    client.flush();
   }
-  server.client().stop();
+  client.stop();
 }
 
 //==================

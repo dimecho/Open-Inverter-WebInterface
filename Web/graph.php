@@ -23,7 +23,7 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/>
+            <br>
             <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light">
@@ -34,7 +34,7 @@
 									<div id="potentiometer" style="display:none">
 										<input class="knob" data-displayinput="true" data-min="0" data-max="100" data-fgcolor="#222222" data-bgcolor="#FFFFFF" value="0">
 									</div>
-									<br/>
+									<br>
 									<div id="buildGraphButtons"></div>
 								</center>
 							</td>
@@ -61,12 +61,12 @@
                 </div>
             </div>
         </div>
-        <br/>
+        <br>
 		<a class="graphPoints" data-fancybox data-src="#graphPoints" href="javascript:;"></a>
         <div class="hidden" id="graphPoints" style="width:60%;border-radius:5px">
             <center>
                 <div id="buildPointsMenu"></div>
-                <br/>
+                <br>
                 <button class="browse btn btn-primary" type="button" onClick="$.fancybox.close();"><i class="glyphicon glyphicon-search"></i> OK</button>
             </center>
         </div>

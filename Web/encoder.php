@@ -6,7 +6,7 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/>
+            <br>
              <div class="row">
                 <div class="col">
                     <table class="table table-active table-bordered">
@@ -32,13 +32,13 @@
                     <table class="table table-active table-bordered">
                         <tr>
                             <td>
-                                <a data-fancybox="gallery" href="/encoder/img/encoder_2d.png">
-                                    <img src="/encoder/img/encoder_2d.png" class="img-thumbnail rounded" />
+                                <a data-fancybox="gallery" href="encoder/img/encoder_2d.png">
+                                    <img src="encoder/img/encoder_2d.png" class="img-thumbnail rounded" />
                                 </a>
                             </td>
                             <td>
-                                <a data-fancybox="gallery" href="/encoder/img/encoder_3d.png">
-                                    <img src="/encoder/img/encoder_3d.png" class="img-thumbnail rounded" />
+                                <a data-fancybox="gallery" href="encoder/img/encoder_3d.png">
+                                    <img src="encoder/img/encoder_3d.png" class="img-thumbnail rounded" />
                                 </a>
                             </td>
                         </tr>
@@ -50,7 +50,7 @@
                                     <li>TCST2103 is connected with an output at D+</li>
                                     <li>All required resistors are built into the main board.</li>
                                 </ul>
-                                There are two types of encoders, transmissive (gap type) as TCST2103 and reflective.<br/>
+                                There are two types of encoders, transmissive (gap type) as TCST2103 and reflective.<br>
                                 The larger the gap of encoder wheel the more problems will occur with ambient light.
                                 <a href="http://heliosoph.mit-links.info/make-your-own-rotary-encoder/" target="_blank">More Info</a>
                             </td>
@@ -59,10 +59,10 @@
                     <table class="table table-active table-bordered">
                         <tr align="center">
                             <td>
-                                <img src="/encoder/img/TCST2103x1.png" class="img-thumbnail rounded" />
+                                <img src="encoder/img/TCST2103x1.png" class="img-thumbnail rounded" />
                             </td>
                             <td>
-                                <img src="/encoder/img/TCST2103.jpg" class="img-thumbnail rounded" />
+                                <img src="encoder/img/TCST2103.jpg" class="img-thumbnail rounded" />
                             </td>
                         </tr>
                     </table>

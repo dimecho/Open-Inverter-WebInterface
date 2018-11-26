@@ -6,14 +6,14 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/>
+            <br>
             <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered">
                         <tr>
                             <td>
                                 <h2>IGBT Finger Test</h2>
-                                Perform both tests for C1 and E2<br/>
+                                Perform both tests for C1 and E2<br>
                                 <ul>
                                     <li>C1-Collector (Positive) Test</li>
                                     <ol> 
@@ -33,13 +33,13 @@
                     <table class="table table-active table-bordered">
                         <tr>
                             <td>
-                                <a data-fancybox="gallery" href="/img/igbt-test-c1.png">
-                                    <img src="/img/igbt-test-c1.png" class="img-thumbnail rounded" />
+                                <a data-fancybox="gallery" href="img/igbt-test-c1.png">
+                                    <img src="img/igbt-test-c1.png" class="img-thumbnail rounded" />
                                 </a>
                             </td>
                             <td>
-                                <a data-fancybox="gallery" href="/img/igbt-test-e2.png">
-                                    <img src="/img/igbt-test-e2.png" class="img-thumbnail rounded" />
+                                <a data-fancybox="gallery" href="img/igbt-test-e2.png">
+                                    <img src="img/igbt-test-e2.png" class="img-thumbnail rounded" />
                                 </a>
                             </td>
                         </tr>

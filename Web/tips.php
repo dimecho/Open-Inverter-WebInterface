@@ -22,7 +22,7 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/>
+            <br>
              <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered table-striped" width="100%">

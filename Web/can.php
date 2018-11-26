@@ -16,12 +16,12 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script type="text/javascript" src="js/can.js"></script>
+        <script src="js/can.js"></script>
     </head>
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br/>
+            <br>
             <div class="row">
                 <div class="col" align="center">
                     <table class="table table-active bg-light table-bordered">

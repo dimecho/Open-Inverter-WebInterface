@@ -134,12 +134,12 @@
 <html>
     <head>
         <?php include "header.php"; ?>
-        <script type="text/javascript" src="js/firmware.js"></script>
+        <script src="js/firmware.js"></script>
     </head>
     <body>
         <div class="container">
             <?php include "menu.php"; ?>
-            <br/>
+            <br>
             <div class="row">
                 <div class="col">
 					<table class="table table-active bg-light table-bordered">
@@ -150,7 +150,9 @@
                         </tr>
                     </table>
                     <table class="table table-active bg-light table-bordered">
-						<?php if(isset($_FILES["firmware"])){ ?>
+						<?php
+                        if(isset($_FILES["firmware"])){
+                        echo '
                         <tr>
                             <td>
 								<script>
@@ -161,10 +163,9 @@
 										}
 										$.ajax({
 											type: "GET",
-											url:
-											<?php
+											url:';
+                                                echo "'";
 												//$tmp_dir = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
-												echo "'";
 												echo "firmware.php?ajax=1";
 												$ocd_interface = $_POST["interface"];
 												if ($os === "mac") {
@@ -178,18 +179,17 @@
 												move_uploaded_file($_FILES['firmware']['tmp_name'], $ocd_file);
 												echo "&file=" .urlencode($ocd_file);
 												echo "&interface=" .urlencode($ocd_interface);
-												echo "'";
-											?>,
-											success: function(data){
+                                                echo "'";
+                                                echo ',success: function(data){
 												//console.log(data);
                                                 deleteCookie("version");
 												progressBar.css("width","100%");
 												$("#output").append($("<pre>").append(data));
                                                 if(data.indexOf("shutdown command invoked") !=-1)
                                                 {
-                                                    $.notify({ message: "Flash Complete" },{ type: 'success' });
-                                                    $.notify({ message: "Use USB-RS232" },{ type: 'warning' });
-                                                    $.notify({ message: "Unlug JTAG Programmer" },{ type: 'danger' });
+                                                    $.notify({ message: "Flash Complete" },{ type: "success" });
+                                                    $.notify({ message: "Use USB-RS232" },{ type: "warning" });
+                                                    $.notify({ message: "Unlug JTAG Programmer" },{ type: "danger" });
                                                 }
                                                 setTimeout( function (){
                                                     window.location.href = "index.php";
@@ -201,27 +201,32 @@
 								<div class="progress progress-striped active">
                                     <div class="progress-bar" style="width:0%" id="progressBar"></div>
                                 </div>
-                                <br/><span class="badge badge-lg badge-warning">Tip: If Olimex is bricked, try pressing "reset" button while flashing</span><br/><br/>
+                                <br><span class="badge badge-lg badge-warning">Tip: If Olimex is bricked, try pressing "reset" button while flashing</span><br><br>
                                 <div id="output"></div>
 							</td>
-                        </tr>
-						<?php }else{ ?>
+                        </tr>';
+                        }else{
+                        ?>
 						<script>
                                 $(document).ready(function() {
+                                    if(os != "esp8266") {
+                                        for (var i = 0; i < jtag_interface.length; i++) {
+                                            $("#firmware-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_interface[i]));
+                                        }
+                                    }
 									//$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
                                     $.ajax("serial.php?com=list", {
+                                        async: false,
 										success: function(data) {
 											//console.log(data);
 											var s = data.split(',');
 											for (var i = 0; i < s.length; i++) {
 												if(s[i] != "")
 													$("#firmware-interface").append($("<option>",{value:s[i]}).append(s[i]));
-											}
+											}  
 										}
 									});
-                                    for (var i = 0; i < jtag_interface.length; i++) {
-                                        $("#firmware-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_interface[i]));
-                                    }
+
                                     $("#firmware-interface").prop('selectedIndex', 0);
 									$(".loader").hide();
 									$(".input-group-addon").show();
@@ -242,14 +247,15 @@
 										</center>
 									</span>
                                 </div>
-                                <br/><br/>
-                                <h2 id="jtag-name"></h2>
-                                <span class="badge badge-lg badge-warning" id="jtag-txt"></span><br/>
+                                <br><br><h2 id="jtag-name"></h2>
+                                <span class="badge badge-lg badge-warning" id="jtag-txt"></span><br><br>
                                 <img src="" id="jtag-image" class="rounded" />
 								</center>
                             </td>
                         </tr>
-						<?php } ?>
+						<?php
+                            } 
+                        ?>
                     </table>
                 </div>
             </div>
