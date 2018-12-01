@@ -52,7 +52,7 @@ function get_filesize(url, callback) {
     xhr.send();
 };
 
-function download(app)
+function download(app, crc)
 {
     var notify = $.notify({
             message: 'Downloading...',
@@ -75,10 +75,14 @@ function download(app)
         },
         //async: false,
         type: "GET",
-        url: "download.php?download=" + app,
+        url: "download.php?download=" + app + "&crc=" + crc ,
         data: {},
         success: function(data){
-            
+
+            //console.log(data);
+            if(data.indexOf("Error") != -1) {
+                notify.update({'type': 'warning', 'message':'Checksum Mismatch'});
+            }
             notify.update({'type': 'success', 'allow_dismiss': false, 'message':'Installing ...'});
             
             $.ajax("install.php?app=" + app,{

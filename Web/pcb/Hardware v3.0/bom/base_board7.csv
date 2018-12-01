@@ -1,13 +1,13 @@
 Part,Value,Device,PDF
 IC1,LM2596S (5V),TO-263,http://www.ti.com/lit/ds/symlink/lm2596.pdf
-IC2,REG1117 (3.3V),SOT-223,http://www.ti.com/lit/ds/symlink/reg1117.pdf
+IC2,LM1117/TC2117 (3.3V),SOT-223,http://www.ti.com/lit/ds/symlink/lm1117.pdf
 IC3,TCAN4420DR,SOIC-8,http://www.ti.com/lit/ds/symlink/tcan4420.pdf
 IC4,STM32F103RBT6,LQFP48,https://www.st.com/resource/en/datasheet/cd00161566.pdf
-IC5,,,
+IC5,MAX6326_R22-T (EHAA),SOT-23,https://datasheets.maximintegrated.com/en/ds/MAX6326-MAX6348.pdf
 IC6,ULN2003AD,SOIC,http://www.ti.com/lit/ds/symlink/uln2003a.pdf
 IC7,LM2901,SOIC,http://www.ti.com/lit/ds/symlink/lm2901.pdf
 IC8,TD2822D/LM386,SOIC,https://www.st.com/resource/en/datasheet/cd00000134.pdf
-IC9,MAX6326_R22-T (EHAA),SOT23,https://datasheets.maximintegrated.com/en/ds/MAX6326-MAX6348.pdf
+IC9,SN74LVC1G10,SOT-23,http://www.ti.com/lit/ds/symlink/sn74lvc1g10.pdf
 Q1,8Mhz,FS8.000P,https://media.digikey.com/pdf/Data%20Sheets/Fox%20Electronics%20PDFs/FOXSDLF_080R-20.pdf
 LED_ALIVE,green,'0603,
 LED_PWR,red,'0603,
@@ -83,7 +83,7 @@ C16,1u,'0603,
 C17,1u,'0603,
 C18,1nF,'0603,
 C19,1u,'0603,
-C20,470u (6.3v),1206,
+C20,470u (35v),1206,
 C21,1u,'0603,
 C22,10u,'0603,
 C23,1u,'0603,
@@ -108,12 +108,12 @@ C41,1nF,'0603,
 C42,1nF,'0603,
 C43,1u,'0603,
 C44,22n,'0603,
-C45,470u (6.3v),1206,
+C45,470u (35v),1206,
 C46,10u,'0603,
 C47,22n,'0603,
 D1,SS24FL,SOD-123F,
 D2,SS24FL,SOD-123F,
-D3,SBR1A40S3-7,SOD-323,https://www.diodes.com/assets/Datasheets/SBR1A40S3.pdf
+D3,SBR1A40S3-7,'0603,https://www.diodes.com/assets/Datasheets/SBR1A40S3.pdf
 JP1,10pin,,
 JP2,26pin,,
 JP3,14pin,,

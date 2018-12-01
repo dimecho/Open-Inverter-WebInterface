@@ -105,10 +105,24 @@ for /R "%~dp0\data" %%F in (*.*) do (
 move /y "%%F.gz" "%%F"
 )
 
-"%~dp0\tools\mkspiffs.exe" -c .\data\  -b 8192 -p 256 -s 514048 flash-spiffs.bin
+::================
+::Find Folder Size
+::================
+set /a value=0
+set /a fs=0
+FOR /R .\data %%I IN (*) DO (
+	set /a value=%%~zI
+	set /a fs_ondisk+="((!value!-1)/4096+1)*4096"
+	set /a fs+=%%~zI
+)
+echo Size: %fs%
+echo Size on disk: %fs_ondisk%
+
+"%~dp0\tools\mkspiffs.exe" -c .\data\  -b 8192 -p 256 -s %fs_ondisk% flash-spiffs.bin
 ::"%~dp0\tools\mkspiffs.exe" -c .\data\  -b 8192 -p 256 -s 1028096 flash-spiffs.bin
 ::"%~dp0\tools\mkspiffs.exe" -i flash-spiffs.bin
 pause
+GOTO:EOF
 
 :UnZipFile <ExtractTo> <newzipfile>
 set vbs="%temp%\_.vbs"

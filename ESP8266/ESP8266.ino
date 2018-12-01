@@ -556,11 +556,11 @@ String readStream(String cmd, int _loop, int _delay)
   Serial.print("\n");
   Serial.readBytes(b, cmd.length() + 1); //consume echo
 
-  //server.sendHeader("Cache-Control", "no-cache");
   server.setContentLength(CONTENT_LENGTH_UNKNOWN);
+  server.sendHeader("Cache-Control", "no-cache");
   server.send(200, "text/plain", "" );
   
-  WiFiClient client = server.client();
+  //WiFiClient client = server.client();
   
   for (int i = 0; i < _loop; i++) {
     output = "";
@@ -572,15 +572,18 @@ String readStream(String cmd, int _loop, int _delay)
     do {
       memset(b, 0, sizeof(b));
       len = Serial.readBytes(b, sizeof(b) - 1);
+      server.client().write((const char*)b, len);
       output += b;
     } while (len > 0);
 
-    delay(_delay);
+    //server.sendContent(output);
+    //client.print(output);
+    //client.flush();
 
-    server.sendContent(output);
-    client.flush();
+    delay(_delay);
   }
-  client.stop();
+  //server.sendContent(""); //end the connection
+  //client.stop();
 }
 
 //==================

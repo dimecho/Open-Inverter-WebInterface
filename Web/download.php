@@ -142,15 +142,24 @@
 
 
             //$data = curl_exec($curl);
-            $error = curl_error($curl);
+            //$error = curl_error($curl);
             curl_exec($curl);
             curl_close($curl);
             fclose($handle);
 
             ob_flush();
             flush();
-            
-            echo $error;
+
+            $md5 = md5_file($destination);
+            if(isset($_GET['crc'])) {
+                if($_GET['crc'] == $md5) {
+                    echo $md5. " OK";
+                }else{
+                    echo $md5. " Error";
+                }
+            }else{
+                echo $md5;
+            }
         }
 
     }else{
