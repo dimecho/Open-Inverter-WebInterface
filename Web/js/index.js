@@ -325,7 +325,7 @@ function checkUpdates() {
 
                             if(version > _version || build > _build)
                             {
-                                var url = Base64.decode("aHR0cHM6Ly9naXRodWIuY29tL3Bvb2Zpay9IdWVibmVyLUludmVydGVyL3JlbGVhc2VzL2Rvd25sb2FkLw==");
+                                var url = Base64.decode("aHR0cHM6Ly9naXRodWIuY29tL2RpbWVjaG8vSHVlYm5lci1JbnZlcnRlci9yZWxlYXNlcy9kb3dubG9hZC8=");
                                 if(os === "mac"){
                                     url += version + "/Huebner.Inverter.dmg";
                                 }else if(os === "windows"){

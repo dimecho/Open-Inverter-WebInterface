@@ -17,7 +17,7 @@ sudo mkdir -p /var/www/html
 
 echo "...Installing Web Files /var/www/html"
 cd /tmp
-wget -N https://github.com/poofik/Huebner-Inverter/releases/download/1.0/Huebner.Inverter.Linux.tgz
+wget -N https://github.com/dimecho/Huebner-Inverter/releases/download/1.0/Huebner.Inverter.Linux.tgz
 tar -xvzf Huebner.Inverter.Linux.tgz
 rm Huebner.Inverter.Linux.tgz
 sudo cp -rf ./Web/* /var/www/html
