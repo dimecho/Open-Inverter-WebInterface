@@ -23,12 +23,13 @@ int timeout = 10;
 
 void setup()
 {
-  Serial.begin(115200);
-
-  while (!Serial && timeout > 0) {
+  /*
+    Serial.begin(115200);
+    while (!Serial && timeout > 0) {
     delay(500);
     timeout--;
-  }
+    }
+  */
 
   pinMode(LED_Pin, OUTPUT);
   //======================
@@ -154,12 +155,21 @@ void setup()
   server.on("/serial.php", HTTP_GET, []() {
     if (server.hasArg("init"))
     {
+      bool hello = false;
+      if (!Serial)
+        hello = true;
       String speed = server.arg("init");
       if (speed != "921600")
         speed = "0";
       server.send(200, "text/plain", readSerial("fastuart " + speed));
       Serial.end();
       Serial.begin(server.arg("init").toInt());
+      if (hello)
+      {
+        Serial.print("hello\n");
+        Serial.read(); //echo
+        Serial.read(); //ok
+      }
     }
     else if (server.hasArg("os"))
     {
@@ -546,9 +556,6 @@ String readSerial(String cmd)
 String readStream(String cmd, int _loop, int _delay)
 {
   char b[255];
-  size_t len = 0;
-  String output;
-
   while (Serial.available())
     Serial.read(); //flush all previous output
 
@@ -556,14 +563,16 @@ String readStream(String cmd, int _loop, int _delay)
   Serial.print("\n");
   Serial.readBytes(b, cmd.length() + 1); //consume echo
 
-  server.setContentLength(CONTENT_LENGTH_UNKNOWN);
+  //server.sendHeader("Expires", "-1");
   server.sendHeader("Cache-Control", "no-cache");
-  server.send(200, "text/plain", "" );
-  
+  //server.setContentLength(CONTENT_LENGTH_UNKNOWN);
+  //server.send(200, "text/plain", "");
+  server.send(200, "text/html", "");
+
   //WiFiClient client = server.client();
-  
   for (int i = 0; i < _loop; i++) {
-    output = "";
+    String output = "";
+    size_t len = 0;
     if (i != 0)
     {
       Serial.print("!");
@@ -572,18 +581,17 @@ String readStream(String cmd, int _loop, int _delay)
     do {
       memset(b, 0, sizeof(b));
       len = Serial.readBytes(b, sizeof(b) - 1);
-      server.client().write((const char*)b, len);
+      //client.write((const char*)b, len);
       output += b;
     } while (len > 0);
 
-    //server.sendContent(output);
+    server.sendContent(output);
     //client.print(output);
     //client.flush();
 
     delay(_delay);
   }
-  //server.sendContent(""); //end the connection
-  //client.stop();
+  //client.stop(); // Stop is needed because we sent no content length
 }
 
 //==================
@@ -614,30 +622,40 @@ void STM32Upload()
       fsUpload.close();
       File f = SPIFFS.open("/" + upload.filename, "r");
 
+      server.sendHeader("Cache-Control", "no-cache");
+      //server.setContentLength(CONTENT_LENGTH_UNKNOWN);
       server.sendHeader("Refresh", "10; url=/index.php");
-      server.send(200, "text/html; charset=utf-8", "");
+      server.send(200, "text/html", "");
       server.sendContent("<pre>");
 
-      timeout = 0;
+      int timeout = 0;
       char c;
-      int PAGE_SIZE_BYTES = 1024;
+      const size_t PAGE_SIZE_BYTES = 1024;
       int len = f.size();
-      int pages = (len / PAGE_SIZE_BYTES) + 1;
-      //int pages = (len + PAGE_SIZE_BYTES - 1) / PAGE_SIZE_BYTES;
+      //int pages = (len / PAGE_SIZE_BYTES) + 1;
+      int pages = (len + PAGE_SIZE_BYTES - 1) / PAGE_SIZE_BYTES;
 
       server.sendContent("File length is " + String(len) + " bytes/" + String(pages) + " pages\n");
 
+      Serial.begin(115200);
       while (Serial.available())
         Serial.read();
 
+      //Clear the initialization Bug
+      //-----------------------------
+      Serial.print("hello\n");
+      Serial.read(); //echo
+      Serial.read(); //ok
+      //-----------------------------
       server.sendContent("Resetting device...\n");
-      Serial.print("reset\r");
+      Serial.print("reset\n");
 
       do {
         c = Serial.read();
-        server.sendContent(String(c));
+        //server.sendContent(String(c));
+        delay(10);
         timeout++;
-      } while (c != 'S' && c != '2' && timeout < 50000);
+      } while (c != 'S' && c != '2' && timeout < 600);
 
       server.sendContent("\n" + String(timeout) + "\n");
 
@@ -648,9 +666,9 @@ void STM32Upload()
         while (Serial.read() != 'S');
       }
 
-      if (timeout < 50000)
+      if (timeout < 600)
       {
-        server.sendContent("Sending number of pages...\n");
+        server.sendContent("Sending number of pages.." + String(pages) + "\n");
         Serial.write(pages);
 
         while (Serial.read() != 'P'); //Wait for page request
@@ -660,7 +678,9 @@ void STM32Upload()
 
         while (done != true)
         {
-          server.sendContent("Sending page " + String(page) + "\n");
+          server.sendContent("Sending page " + String(page) + "...\n");
+
+          f.seek(page * PAGE_SIZE_BYTES);
 
           char data[PAGE_SIZE_BYTES];
           size_t bytesRead = f.readBytes(data, sizeof(data));
@@ -672,7 +692,9 @@ void STM32Upload()
 
           while (c != 'C')
           {
-            Serial.write(data);
+            //Serial.write(data);
+            Serial.write((uint8_t*)data, sizeof(data));
+
             while (!Serial.available());
             c = Serial.read();
 
@@ -684,7 +706,8 @@ void STM32Upload()
 
           server.sendContent("Sending CRC...\n");
 
-          Serial.write(crc);
+          //Serial.write(crc);
+          Serial.write((uint8_t*)&crc, sizeof(uint32_t));
           while (!Serial.available());
           c = Serial.read();
 
@@ -710,6 +733,7 @@ void STM32Upload()
       }
       server.sendContent("</pre>");
       //server.client().flush();
+      //server.client().stop();
 
       f.close();
       SPIFFS.remove("/" + upload.filename);

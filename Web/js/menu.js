@@ -1,4 +1,5 @@
 var iconic;
+var serialTimeout = 12000;
 /*
 var serialPort = getCookie("serial");
 var serialWeb = getCookie("serial_web");

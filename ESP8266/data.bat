@@ -54,6 +54,14 @@ for /R "%~dp0\data" %%F in (*.*) do (
 			echo %%a
 			powershell -ExecutionPolicy Bypass -Command "(Get-Content %%a).replace('%%~nxsF', '!R!') | Set-Content %%a"
 		)
+		for /f "" %%a in ('findstr /M /C:"%%~nxF" /S "%~dp0\data\*.js"') do (
+			echo %%a
+			powershell -ExecutionPolicy Bypass -Command "(Get-Content %%a).replace('%%~nxsF', '!R!') | Set-Content %%a"
+		)
+		for /f "" %%a in ('findstr /M /C:"%%~nxF" /S "%~dp0\data\*.css"') do (
+			echo %%a
+			powershell -ExecutionPolicy Bypass -Command "(Get-Content %%a).replace('%%~nxsF', '!R!') | Set-Content %%a"
+		)
 	)
 )
 
@@ -101,8 +109,11 @@ forfiles /p .\ /s /m *.js /c "cmd /c java -jar %~dp0tools\closure-compiler-v2018
 
 :GZip
 for /R "%~dp0\data" %%F in (*.*) do (
-"%~dp0\tools\bin\gzip.exe" "%%F"
-move /y "%%F.gz" "%%F"
+	::Exclude php files
+	if NOT "%%~xF" == ".php" (
+		"%~dp0\tools\bin\gzip.exe" "%%F"
+		move /y "%%F.gz" "%%F"
+	)
 )
 
 ::================
@@ -113,6 +124,7 @@ set /a fs=0
 FOR /R .\data %%I IN (*) DO (
 	set /a value=%%~zI
 	set /a fs_ondisk+="((!value!-1)/4096+1)*4096"
+	set /a fs_ondisk+=256
 	set /a fs+=%%~zI
 )
 echo Size: %fs%
