@@ -77,9 +77,9 @@
         }, {
             "id": "-"
         }, {
-            "id": "Switch Check",
+            "id": "Board Test",
             "icon": "glyphicon-dashboard",
-            "onClick": "/switch-check.php"
+            "onClick": "/test.php"
         }, {
             "id": "-"
         }, {

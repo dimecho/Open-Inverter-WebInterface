@@ -116,7 +116,7 @@ C46,10u,'0805,
 C47,22n,'0603,
 D1,CDBA540-HF/B540C,DO-214,https://cdn.datasheetspdf.com/pdf-down/C/D/B/CDBA540-HF-ComchipTechnology.pdf
 D2,CDBA540-HF/B540C,DO-214,https://cdn.datasheetspdf.com/pdf-down/C/D/B/CDBA540-HF-ComchipTechnology.pdf
-D3,SBR1A40S3-7,'0603,https://www.diodes.com/assets/Datasheets/SBR1A40S3.pdf
+D3,SBR1A40S3-7,SOD-323,https://www.diodes.com/assets/Datasheets/SBR1A40S3.pdf
 JP1,,10pin,
 JP2,,26pin,
 JP3,,14pin,

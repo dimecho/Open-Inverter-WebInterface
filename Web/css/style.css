@@ -42,6 +42,16 @@ body {
 .svg-red * {
   fill:#b52808;
 }
+.circle-grey {
+  width: 20px;
+  height: 20px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  border-style: solid;
+  border-color: #808080;
+  background: #c0c0c0
+}
 .circle-green {
   width: 20px;
   height: 20px;

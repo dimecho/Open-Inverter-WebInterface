@@ -331,47 +331,46 @@ $(document).ready(function () {
 					console.log(c);
 					
 					var arrayHas = false;
-					
-					if (activeTab === "#graph0") {
-						for (var i = 0, l = chart_motor_datasets.length; i < l; i++) {
-							//console.log(chart_motor_datasets[i].id);
-							if(chart_motor_datasets[i].id == this.id)
-							{
-								arrayHas = true;
-								break;
-							}
-						}
-						if(!arrayHas) {
-							var dataset = {
-								type: "line",
-								id: this.id,
-								label: this.id,
-								backgroundColor: c.replace(")",", 0.2)"),
-								borderColor: c.replace(")",", 1)"),
-								borderWidth: 2,
-								//hoverBackgroundColor: "rgba(255,99,132,0.4)",
-								//hoverBorderColor: "rgba(255,99,132,1)",
-								data: [0],
-								datalabels: {
-									display: false
-								}
-							};
-							//console.log(dataset);
-							chart_motor_datasets.push(dataset);
-						}
 
-					} else if (activeTab === "#graph1") {
-						
-					} else if (activeTab === "#graph2") {
-						
-					} else if (activeTab === "#graph3") {
-						
-					} else if (activeTab === "#graph4") {
-						
-					} else if (activeTab === "#graph5") {
-					
+					for (var i = 0, l = chart_motor_datasets.length; i < l; i++) {
+						//console.log(chart_motor_datasets[i].id);
+						if(chart_motor_datasets[i].id == this.id){
+							arrayHas = true;
+							break;
+						}
 					}
-					chart.update();
+					if(!arrayHas) {
+						var d = new Array(chart_motor_datasets[0].data.length).fill(0);
+						var dataset = {
+							type: "line",
+							id: this.id,
+							label: this.id,
+							backgroundColor: c.replace(")",", 0.2)"),
+							borderColor: c.replace(")",", 1)"),
+							borderWidth: 2,
+							//hoverBackgroundColor: "rgba(255,99,132,0.4)",
+							//hoverBorderColor: "rgba(255,99,132,1)",
+							data: d,
+							datalabels: {
+								display: false
+							}
+						};
+						//console.log(dataset);
+						if (activeTab === "#graph0") {
+							chart_motor_datasets.push(dataset);
+						} else if (activeTab === "#graph1") {
+							chart_temp_datasets.push(dataset);
+						} else if (activeTab === "#graph2") {
+							chart_voltage_datasets.push(dataset);
+						} else if (activeTab === "#graph3") {
+							chart_amperage_datasets.push(dataset);
+						} else if (activeTab === "#graph4") {
+							chart_frequency_datasets.push(dataset);
+						//} else if (activeTab === "#graph5") {
+						
+						}
+						chart.update();
+					}
 				});
 			}
 		}
@@ -1494,7 +1493,7 @@ function updateChart(value, autosize, accuracy) {
                         break;
                     }else if (v !== "fweak") {
                         var point = parseFloat(split[d]);
-                        console.log(v + ":" + point);
+                        //console.log(v + ":" + point);
 
                         if (v === "ampnom") {
                             var max = Math.max.apply(Math, data.datasets[i].data);

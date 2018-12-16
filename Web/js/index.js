@@ -172,8 +172,8 @@ function buildParameters()
                   }
                 });
             }else{
-                buildStatus();
                 displayVersion();
+                buildStatus();
                 basicChecks(json);
             }
 
@@ -333,7 +333,7 @@ function checkUpdates() {
                                 }else if(os === "linux"){
                                     url += version + "/Huebner.Inverter.Linux.tgz";
                                 }else if(os === "esp8266"){
-                                    url += version + "/Huebner.Inverter.ESP8266.bin";
+                                    url += version + "/Huebner.Inverter.ESP8266.zip";
                                 }
                                 $.notify({
                                     icon: "glyphicon glyphicon-download-alt",

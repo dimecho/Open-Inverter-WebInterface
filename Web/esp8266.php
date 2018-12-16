@@ -30,18 +30,17 @@
 		$.ajax("/nvram", {
             dataType: 'json',
 	        success: function success(data) {
-                //console.log(data);
+                console.log(data);
                 if(data["nvram0"] == "0") {
                 	$("#WiFiModeAP").prop("checked", true);
                 }else{
                 	$("#WiFiModeClient").prop("checked", true);
                 }
-                var bool_value = data["nvram1"] == "1" ? true : false
+                var bool_value = data["nvram1"] == "1" ? true : false;
                 $("#WiFiHidden").val(data["nvram1"]);
-                $("WiFiHiddenCheckbox").prop("checked", bool_value);
+                $("#WiFiHiddenCheckbox").prop("checked", bool_value);
                 $("#WiFiChannel").val(data["nvram2"]);
                 $("#WiFiSSID").val(data["nvram3"]);
-                
                 $(".loader").hide();
                 $("#parameters").show();
 	        }

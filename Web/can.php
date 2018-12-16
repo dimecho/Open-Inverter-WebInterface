@@ -38,12 +38,18 @@
                         </tr>
                     </table>
                     <table class="table table-active table-bordered">
-                        <tr>
+                        <tr align="center">
                             <td>
-                                <button type="button" class="btn btn-danger" onClick="setCANDefaults()"><i class="glyphicon glyphicon-erase"></i> Reset CAN</button>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-success" onClick="saveCANMapping()"><i class="glyphicon glyphicon-erase"></i> Save CAN</button>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col">
+                                            <button type="button" class="btn btn-danger" onClick="setCANDefaults()"><i class="glyphicon glyphicon-erase"></i> Reset CAN</button>
+                                        </div>
+                                        <div class="col">
+                                           <button type="button" class="btn btn-success" onClick="saveCANMapping()"><i class="glyphicon glyphicon-erase"></i> Save CAN</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </table>

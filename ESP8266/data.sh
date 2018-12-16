@@ -10,7 +10,7 @@ mkdir -p data/fonts
 mkdir -p data/firmware
 mkdir -p data/firmware/img
 
-array=(index.php header.php menu.php esp8266.php can.php graph.php firmware.php simple.php switch-check.php motor-class.php version.txt description.csv)
+array=(index.php header.php menu.php esp8266.php can.php graph.php firmware.php simple.php test.php motor-class.php version.txt description.csv)
 for i in "${array[@]}"; do
     cp -rf ../Web/$i data
 done
@@ -20,7 +20,7 @@ for i in "${array[@]}"; do
     cp -rf ../Web/css/$i data/css
 done
 
-array=(jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js bootstrap-slider.js bootstrap-notify.js firmware.js can.js canmap.json parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js switch-check.js iconic.js mobile.js)
+array=(jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js bootstrap-slider.js bootstrap-notify.js firmware.js can.js canmap.json parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js test.js iconic.js mobile.js)
 for i in "${array[@]}"; do
     cp -rf ../Web/js/$i data/js
 done

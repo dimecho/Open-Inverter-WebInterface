@@ -44,8 +44,8 @@ Dima Dykhman
 
 > Console Management
 >
-> [![CC0](http://i.creativecommons.org/l/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)
+> [![CC0](https://licensebuttons.net/l/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)
 >
 > Inverter Design
 >
-> [![GPL](Web/img/gpl.png?raw=true)](https://www.gnu.org/licenses/gpl-3.0.txt)
+> [![CCSA](https://licensebuttons.net/l/by-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-sa/4.0/legalcode)
