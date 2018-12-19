@@ -23,8 +23,8 @@
                                 </center>
                                  <ol>
                                     <li>Buy a programming dongle<br>
-                                    <a data-fancybox="gallery" href="firmware/img/st-linkv2.jpg">
-                                        <img src="firmware/img/st-linkv2.jpg" class="img-thumbnail rounded" />
+                                    <a data-fancybox="gallery" href="firmware/img/stlinkv2.png">
+                                        <img src="firmware/img/stlinkv2.png" class="img-thumbnail rounded" />
                                     </a><br><br>
                                     </li>
                                     <li>Load software for Windows, probably have to register with ST

@@ -187,6 +187,26 @@
             "linux" : "/usr/share/openocd/bin/openocd"
         }
     },
+	"stlink" : {
+        "title" : "ST-Link Utility",
+        "download" : {
+            "mac" : "https://github.com/texane/stlink/releases/download/1.3.0/stlink-1.3.0-macosx-amd64.zip",
+            "windows" : "https://github.com/texane/stlink/releases/download/1.3.0/stlink-1.3.0-win64.zip",
+            "linux" : "",
+            "size" : 1,
+            "version" : "1.3.0"
+        },
+		"checksum" : {
+            "mac" : "",
+            "windows" : "e2548846c30971ec8aae64902310da65",
+            "linux" : ""
+        },
+        "path" : {
+            "mac" : "/usr/local/share/stlink/bin/st-util",
+            "windows" : "C:\\Program Files\\STLink\\bin\\st-util.exe",
+            "linux" : ""
+        }
+    },
     "eagle" : {
         "title" : "AutoCAD Eagle - PCB Design Software",
         "download" : {

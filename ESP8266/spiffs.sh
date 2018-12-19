@@ -12,13 +12,8 @@ if [ $yn = y ]; then
         if [ ! -f tools/espota.py ]; then
             curl -L -o tools/espota.py -k -C - https://raw.githubusercontent.com/esp8266/Arduino/master/tools/espota.py
         fi
-
         python tools/espota.py -i 192.168.4.1 -p 8266 -s -f flash-spiffs.bin
     else
-        #================
-        #Download ESPTool
-        #================
-
         # MacOS - /Library/Python/2.7/site-packages/
         sudo easy_install pip
 
@@ -27,6 +22,14 @@ if [ $yn = y ]; then
         sudo pip install esptool
         sudo pip install ptool
 
-        sudo esptool.py --port /dev/cu.usbserial --baud 115200 write_flash 0x100000 flash-spiffs.bin
+        shopt -s nocasematch
+        
+        cu=$(ls /dev/cu.* && ls /dev/ttyUSB*)
+        for serial in $cu; do
+            if [[ $serial == *usb* ]] || [[ $serial == *ch34* ]] || [[ $serial == *pl23* ]] ; then
+                sudo esptool.py --port $serial --baud 115200 write_flash 0x100000 flash-spiffs.bin
+                break
+            fi
+        done
     fi
 fi

@@ -1,4 +1,4 @@
-#define DEBUG Serial
+#include <RemoteDebug.h>
 #include <FS.h>
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
@@ -8,6 +8,7 @@
 #include <ESP8266WebServer.h>
 #include "src/ESP8266HTTPUpdateServer.h"
 
+RemoteDebug Debug;
 ESP8266WebServer server(80);
 ESP8266HTTPUpdateServer updater;
 File fsUpload;
@@ -21,17 +22,200 @@ int ACCESS_POINT_HIDE = 0;
 bool phpTag[] = { false, false, false, false };
 int timeout = 10;
 
+//============
+//SWD Debugger
+//============
+/*
+  Experimental SWD over ESP8266
+  https://github.com/scanlime/esp8266-arm-swd
+*/
+
+#include "src/arm_debug.h"
+
+const int swd_clock_pin = 4; //0; //GPIO0 (D3) -> Pin4 (SWD)
+const int swd_data_pin = 5; //2; //GPIO2 (D4) -> Pin2 (SWD)
+
+ARMDebug target(swd_clock_pin, swd_data_pin);
+
+// Turn the log level back up for debugging; but by default, we have it
+// completely off so that even failures happen quickly, to keep the web app responsive.
+//ARMDebug target(swd_clock_pin, swd_data_pin, ARMDebug::LOG_NONE);
+
+uint32_t intArg(const char *name)
+{
+  // Like server.arg(name).toInt(), but it handles integer bases other than 10
+  // with C-style prefixes (0xNUMBER for hex, or 0NUMBER for octal)
+
+  uint8_t tmp[64];
+  server.arg(name).getBytes(tmp, sizeof tmp, 0);
+  return strtoul((char*) tmp, 0, 0);
+}
+
+const char *boolStr(bool x)
+{
+  return x ? "true" : "false";
+}
+
+void swdMemRead()
+{
+  uint32_t addr = intArg("addr");
+  uint32_t count = constrain(intArg("count"), 1, 1024);
+  uint32_t value;
+  String output = "[";
+
+  while (count) {
+    if (target.memLoad(addr, value)) {
+      output += value;
+    } else {
+      output += "null";
+    }
+    addr += 4;
+    count--;
+    if (count) {
+      output += ",";
+    }
+  }
+
+  output += "]\n";
+  server.send(200, "application/json", output);
+}
+
+void swdRegRead()
+{
+  uint32_t addr = intArg("addr");
+  uint32_t count = constrain(intArg("count"), 1, 1024);
+  uint32_t value;
+  String output = "[";
+
+  while (count) {
+    if (target.regRead(addr >> 2, value)) {
+      output += value;
+    } else {
+      output += "null";
+    }
+    addr += 4;
+    count--;
+    if (count) {
+      output += ",";
+    }
+  }
+
+  output += "]\n";
+  server.send(200, "application/json", output);
+}
+
+void swdMemWrite()
+{
+  // Interprets the argument list as a list of stores to make in order.
+  // The key in the key=value pair consists of an address with an optional
+  // width prefix ('b' = byte wide, 'h' = half width, default = word)
+  // The address can be a '.' to auto-increment after the previous store.
+  //
+  // Returns a confirmation and result for each store, as JSON.
+
+  uint32_t addr = -1;
+  String output = "[\n";
+
+  for (int i = 0; server.argName(i).length() > 0; i++) {
+    uint8_t arg[64];
+    server.argName(i).getBytes(arg, sizeof arg, 0);
+
+    uint8_t *addrString = &arg[arg[0] == 'b' || arg[0] == 'h'];
+    if (addrString[0] != '.') {
+      addr = strtoul((char*) addrString, 0, 0);
+    }
+
+    uint8_t valueString[64];
+    server.arg(i).getBytes(valueString, sizeof valueString, 0);
+    uint32_t value = strtoul((char*) valueString, 0, 0);
+
+    bool result;
+    const char *storeType = "word";
+
+    switch (arg[0]) {
+      case 'b':
+        value &= 0xff;
+        storeType = "byte";
+        result = target.memStoreByte(addr, value);
+        addr++;
+        break;
+
+      case 'h':
+        storeType = "half";
+        value &= 0xffff;
+        result = target.memStoreHalf(addr, value);
+        addr += 2;
+        break;
+
+      default:
+        result = target.memStore(addr, value);
+        addr += 4;
+        break;
+    }
+
+    char buf[128];
+    snprintf(buf, sizeof buf,
+             "%s{\"store\": \"%s\", \"addr\": %lu, \"value\": %lu, \"result\": %s}",
+             i ? "," : "", storeType, addr, value, boolStr(result));
+    output += buf;
+  }
+  output += "\n]";
+  server.send(200, "application/json", output);
+}
+
+void swdRegWrite()
+{
+  String output = "[\n";
+
+  for (int i = 0; server.argName(i).length() > 0; i++) {
+    uint8_t addrString[64];
+    server.argName(i).getBytes(addrString, sizeof addrString, 0);
+    uint32_t addr = strtoul((char*) addrString, 0, 0);
+
+    uint8_t valueString[64];
+    server.arg(i).getBytes(valueString, sizeof valueString, 0);
+    uint32_t value = strtoul((char*) valueString, 0, 0);
+
+    bool result = target.regWrite(addr >> 2, value);
+
+    char buf[128];
+    snprintf(buf, sizeof buf,
+             "%s{\"addr\": %lu, \"value\": %lu, \"result\": %s}",
+             i ? "," : "", addr, value, boolStr(result));
+    output += buf;
+  }
+  output += "\n]";
+  server.send(200, "application/json", output);
+}
+
+void swdBegin()
+{
+  // See if we can communicate. If so, return information about the target.
+  // This shouldn't reset the target, but it does need to communicate,
+  // and the debug port itself will be reset.
+  //
+  // If all is well, this returns some identifying info about the target.
+
+  uint32_t idcode;
+  
+  if (target.begin() && target.getIDCODE(idcode)) {
+    char result[128];
+
+    // Note the room left in the API for future platforms detected,
+    // even though it requires refactoring a bit.
+
+    snprintf(result, sizeof result, "{\"connected\": true, \"idcode\": %lu}", idcode);
+
+    server.send(200, "application/json", result);
+  } else {
+    server.send(200, "application/json", "{\"connected\": false}");
+  }
+}
+
+//=============================
+
 void setup()
 {
-  /*
-    Serial.begin(115200);
-    while (!Serial && timeout > 0) {
-    delay(500);
-    timeout--;
-    }
-  */
-
-  pinMode(LED_Pin, OUTPUT);
   //======================
   //NVRAM type of Settings
   //======================
@@ -65,7 +249,7 @@ void setup()
     IPAddress dns0(192, 168, 4, 1);
     WiFi.softAPConfig(ip, gateway, subnet);
     WiFi.softAP(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD, ACCESS_POINT_CHANNEL, ACCESS_POINT_HIDE);
-    //DEBUG.println(WiFi.softAPIP());
+    //Debug.println(WiFi.softAPIP());
   } else {
     //================
     //WiFi Client Mode
@@ -74,11 +258,11 @@ void setup()
     WiFi.begin(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD);  //Connect to the WiFi network
     //WiFi.enableAP(0);
     while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-      //DEBUG.println("Connection Failed! Rebooting...");
+      //Debug.println("Connection Failed! Rebooting...");
       delay(5000);
       ESP.restart();
     }
-    //DEBUG.println(WiFi.localIP());
+    //Debug.println(WiFi.localIP());
   }
 
   //===================
@@ -106,22 +290,22 @@ void setup()
       type = "filesystem";
       SPIFFS.end(); //unmount SPIFFS
     }
-    //DEBUG.println("Start updating " + type);
+    //Debug.println("Start updating " + type);
   });
   /*
     ArduinoOTA.onEnd([]() {
-    DEBUG.println("\nEnd");
+    Debug.println("\nEnd");
     });
     ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
     DEBUG.printf("Progress: %u%%\r", (progress / (total / 100)));
     });
     ArduinoOTA.onError([](ota_error_t error) {
     //DEBUG.printf("Error[%u]: ", error);
-    if (error == OTA_AUTH_ERROR) DEBUG.println("Auth Failed");
-    else if (error == OTA_BEGIN_ERROR) DEBUG.println("Begin Failed");
-    else if (error == OTA_CONNECT_ERROR) DEBUG.println("Connect Failed");
-    else if (error == OTA_RECEIVE_ERROR) DEBUG.println("Receive Failed");
-    else if (error == OTA_END_ERROR) DEBUG.println("End Failed");
+    if (error == OTA_AUTH_ERROR) Debug.println("Auth Failed");
+    else if (error == OTA_BEGIN_ERROR) Debug.println("Begin Failed");
+    else if (error == OTA_CONNECT_ERROR) Debug.println("Connect Failed");
+    else if (error == OTA_RECEIVE_ERROR) Debug.println("Receive Failed");
+    else if (error == OTA_END_ERROR) Debug.println("End Failed");
     });
   */
   ArduinoOTA.begin();
@@ -135,6 +319,23 @@ void setup()
   //===============
   //Web Server
   //===============
+
+  //---------------
+  //SWD Debugger
+  //---------------
+  server.on("/swd/reset", []() {
+    server.send(200, "application/json", boolStr(target.debugPortReset()));
+  });
+  server.on("/swd/halt", []() {
+    server.send(200, "application/json", boolStr(target.debugHalt()));
+  });
+  server.on("/swd/begin", swdBegin);
+  server.on("/swd/mem/read", swdMemRead);
+  server.on("/swd/mem/write", swdMemWrite);
+  server.on("/swd/reg/read", swdRegRead);
+  server.on("/swd/reg/write", swdRegWrite);
+  //---------------
+
   server.on("/format", HTTP_GET, []() {
     String result = SPIFFS.format() ? "OK" : "Error";
     FSInfo fs_info;
@@ -153,23 +354,19 @@ void setup()
     NVRAMUpload();
   });
   server.on("/serial.php", HTTP_GET, []() {
+
     if (server.hasArg("init"))
     {
-      bool hello = false;
-      if (!Serial)
-        hello = true;
       String speed = server.arg("init");
       if (speed != "921600")
         speed = "0";
-      server.send(200, "text/plain", readSerial("fastuart " + speed));
+
+      String fastuart = readSerial("fastuart " + speed);
       Serial.end();
-      Serial.begin(server.arg("init").toInt());
-      if (hello)
-      {
-        Serial.print("hello\n");
-        Serial.read(); //echo
-        Serial.read(); //ok
-      }
+      Serial.begin(server.arg("init").toInt(), SERIAL_8N2);
+      fastuart += readSerial("hello");
+
+      server.send(200, "text/plain", fastuart);
     }
     else if (server.hasArg("os"))
     {
@@ -201,6 +398,7 @@ void setup()
       } else {
         out = readSerial("get " + sz);
       }
+      Debug.println(out);
       server.send(200, "text/plain", out);
     }
     else if (server.hasArg("command"))
@@ -245,7 +443,6 @@ void setup()
   //File system
   //===========
   SPIFFS.begin();
-  SPIFFS.remove("/esp.log");
 
   //==========
   //DNS Server
@@ -253,13 +450,40 @@ void setup()
   //http://inverter.local
   MDNS.begin("inverter");
   MDNS.addService("http", "tcp", 80);
+  MDNS.addService("telnet", "tcp", 23);
   MDNS.addService("arduino", "tcp", 8266);
+
+  //===================
+  //Remote Telnet Debug
+  //===================
+  Debug.begin("inverter"); // Telnet server
+  //Debug.setPassword(ACCESS_POINT_PASSWORD); // Telnet password
+  Debug.setResetCmdEnabled(true); // Enable the reset command
+  //Debug.showProfiler(true); // To show profiler - time between messages of Debug
+  //Debug.showColors(true); // Colors
+  //Debug.showDebugLevel(false); // To not show debug levels
+  //Debug.showTime(true); // To show time
+  //Debug.setSerialEnabled(true); // Serial echo
+
+  //======
+  //UART0
+  //======
+  Serial.begin(115200, SERIAL_8N2);
+
+  while (!Serial && timeout > 0) {
+    delay(500);
+    timeout--;
+  }
+
+  pinMode(LED_Pin, OUTPUT);
 }
 
 void loop()
 {
   ArduinoOTA.handle();
   server.handleClient();
+  Debug.handle();
+  //yield();
 }
 
 //=============
@@ -332,7 +556,7 @@ String NVRAM_Read(int address)
 //=============
 String PHP(String line, int i)
 {
-  ////DEBUG.println(line);
+  //Debug.println(line);
 
   if (line.indexOf("<?php") != -1) {
     line.replace("<?php", "");
@@ -354,12 +578,12 @@ String PHP(String line, int i)
       int e = line.lastIndexOf("\"");
       String include = line.substring(s, e);
 
-      //DEBUG.println("include:" + include);
+      //Debug.println("include:" + include);
 
       File f = SPIFFS.open("/" + include, "r");
       if (!f)
       {
-        ////DEBUG.println(include + " (file not found)");
+        //Debug.println(include + " (file not found)");
 
       } else {
 
@@ -393,8 +617,8 @@ String PHP(String line, int i)
 
 bool HTTPServer(String file)
 {
-  //DEBUG.println((server.method() == HTTP_GET) ? "GET" : "POST");
-  //DEBUG.println(file);
+  Debug.println((server.method() == HTTP_GET) ? "GET" : "POST");
+  Debug.println(file);
 
   if (SPIFFS.exists(file))
   {
@@ -402,7 +626,7 @@ bool HTTPServer(String file)
     if (f)
     {
       digitalWrite(LED_Pin, HIGH);
-      //DEBUG.println(f.size());
+      //Debug.println(f.size());
 
       String contentType = getContentType(file);
 
@@ -418,8 +642,6 @@ bool HTTPServer(String file)
           response += "\n";
         }
         server.send(200, contentType, response);
-      } else if (file.indexOf(".log") > 0) {
-        server.streamFile(f, contentType);
       } else {
         server.sendHeader("Content-Encoding", "gzip");
         server.streamFile(f, contentType);
@@ -455,7 +677,6 @@ String getContentType(String filename)
   else if (filename.endsWith(".pdf")) return "application/x-pdf";
   else if (filename.endsWith(".zip")) return "application/x-zip";
   else if (filename.endsWith(".csv")) return "text/plain";
-  else if (filename.endsWith(".log")) return "text/plain";
   return "text/plain";
 }
 
@@ -468,7 +689,7 @@ void SnapshotUpload()
 
   if (upload.status == UPLOAD_FILE_START)
   {
-    //DEBUG.println(upload.filename);
+    Debug.println(upload.filename);
     fsUpload = SPIFFS.open("/" + upload.filename, "w");
   }
   else if (upload.status == UPLOAD_FILE_WRITE)
@@ -481,7 +702,7 @@ void SnapshotUpload()
     if (fsUpload) {
       fsUpload.close();
 
-      //DEBUG.println(upload.totalSize);
+      Debug.println(upload.totalSize);
 
       File f = SPIFFS.open("/" + upload.filename, "r");
       while (f.available()) {
@@ -541,14 +762,18 @@ String readSerial(String cmd)
   while (Serial.available())
     Serial.read(); //flush all previous output
 
+  Debug.println(cmd);
+
   Serial.print(cmd);
   Serial.print("\n");
-  Serial.readBytes(b, cmd.length() + 1); //consume echo
+  Serial.readStringUntil('\n'); //consume echo
   do {
     memset(b, 0, sizeof(b));
     len = Serial.readBytes(b, sizeof(b) - 1);
     output += b;
   } while (len > 0);
+
+  Debug.println(output);
 
   return output;
 }
@@ -561,7 +786,7 @@ String readStream(String cmd, int _loop, int _delay)
 
   Serial.print(cmd);
   Serial.print("\n");
-  Serial.readBytes(b, cmd.length() + 1); //consume echo
+  Serial.readStringUntil('\n'); //consume echo
 
   //server.sendHeader("Expires", "-1");
   server.sendHeader("Cache-Control", "no-cache");
@@ -589,6 +814,7 @@ String readStream(String cmd, int _loop, int _delay)
     //client.print(output);
     //client.flush();
 
+    Debug.println(output);
     delay(_delay);
   }
   //client.stop(); // Stop is needed because we sent no content length
@@ -603,7 +829,7 @@ void STM32Upload()
 
   if (upload.status == UPLOAD_FILE_START) {
 
-    //DEBUG.println(upload.filename);
+    //Debug.println(upload.filename);
 
     if (!upload.filename.endsWith(".bin")) {
       server.send(500, "text/plain", "Firmware must be binary");
@@ -761,14 +987,4 @@ static uint32_t crc32(uint32_t* data, uint32_t len, uint32_t crc)
   for (uint32_t i = 0; i < len; i++)
     crc = crc32_word(crc, data[i]);
   return crc;
-}
-
-//=========================
-// FOR DEVELOPMENT PURPOSES
-//=========================
-void Log(String line)
-{
-  File f = SPIFFS.open("/esp.log", "a");
-  f.println(line);
-  f.close();
 }

@@ -1,4 +1,4 @@
-$openocd = "$env:programfiles\GNU MCU Eclipse\OpenOCD\0.10.0-10-20181020-0522"
+$stlink = "$env:programfiles\STLink"
 
 function Elevate() {
     # Get the ID and security principal of the current user account
@@ -14,20 +14,19 @@ function Elevate() {
 
 if($args[0] -eq "uninstall") {
 	Elevate
-	Remove-Item -Recurse -Force (Split-Path ($openocd) -Parent)
+	Remove-Item -Recurse -Force $stlink
 }else{
-    if (-Not (Test-Path $openocd)){
+    if (-Not (Test-Path $stlink)){
 		Elevate
 		Add-Type -AssemblyName System.IO.Compression.FileSystem
-		[System.IO.Compression.ZipFile]::ExtractToDirectory("$env:userprofile\Downloads\gnu-mcu-eclipse-openocd-0.10.0-10-20181020-0522-win64.zip", "$env:programfiles")
+		[System.IO.Compression.ZipFile]::ExtractToDirectory("$env:userprofile\Downloads\stlink-1.3.0-win64.zip", "$env:programfiles")
 	}else{
-        Set-Location "$openocd\bin"
+        Set-Location "$stlink\bin"
 		$FILE = $($args[0]).Replace("\","\\")
         $ADDRESS=" 0x08000000"
-
-        if ($args[2] -eq 'ram') { $ADDRESS=" 0x08001000" }
+		
         if ($args[0] -like '*.hex') { $ADDRESS="" }
-        
-		Start-Process ".\openocd.exe" -ArgumentList "-f ..\scripts\$($args[1]) -f ..\scripts\board\olimex_stm32_h103.cfg  -c ""init"" -c ""reset halt"" -c ""flash write_image erase unlock $($FILE)$($ADDRESS)"" -c ""reset"" -c ""shutdown""" -NoNewWindow -Wait
+		
+		Start-Process ".\st-util.exe" -ArgumentList "-c SWD -p ""$($FILE)$($ADDRESS)"" -Rst -Run" -NoNewWindow -Wait
 	}
 }

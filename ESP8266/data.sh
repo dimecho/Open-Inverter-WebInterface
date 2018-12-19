@@ -10,7 +10,7 @@ mkdir -p data/fonts
 mkdir -p data/firmware
 mkdir -p data/firmware/img
 
-array=(index.php header.php menu.php esp8266.php can.php graph.php firmware.php simple.php test.php motor-class.php version.txt description.csv)
+array=(index.php header.php menu.php esp8266.php can.php graph.php firmware.php simple.php test.php version.txt description.csv)
 for i in "${array[@]}"; do
     cp -rf ../Web/$i data
 done

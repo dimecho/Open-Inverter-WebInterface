@@ -1,5 +1,6 @@
 #!/bin/sh
 #sw_vers -buildVersion
+#sudo nvram boot-args="kext-dev-mode=1“
 
 cd "$(dirname "$0")"
 

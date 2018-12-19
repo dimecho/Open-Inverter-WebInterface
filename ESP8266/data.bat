@@ -13,7 +13,7 @@ mkdir data\fonts
 mkdir data\firmware
 mkdir data\firmware\img
 
-set array=index.php header.php menu.php esp8266.php can.php graph.php firmware.php simple.php test.php motor-class.php version.txt description.csv
+set array=index.php header.php menu.php esp8266.php can.php graph.php firmware.php simple.php test.php version.txt description.csv
 for %%a in (%array%) do (
   copy ..\Web\%%a data
 )

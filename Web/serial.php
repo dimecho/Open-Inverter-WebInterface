@@ -1,12 +1,11 @@
 <?php
+session_start();
+
     //header("Access-Control-Allow-Origin: *");
     header("Content-Type: text/plain");
     header("Cache-Control: no-cache");
 
-    session_start();
-
 	error_reporting(E_ERROR | E_PARSE);
-
 	
     if(isset($_SESSION["timeout"]))
 	{
@@ -17,10 +16,11 @@
 
     if(isset($_GET["init"]))
     {
-        $_SESSION = array();
-		session_start();
-		
-        echo serialDevice($_GET["init"]);
+        //if($_GET["init"] !== $_SESSION["speed"]) {
+            $_SESSION = array();
+            session_unset();
+
+            echo serialDevice($_GET["init"]);
     }
     else if(isset($_GET["os"]))
     {
@@ -41,8 +41,8 @@
         $json['serial']['port'] = $_GET["serial"];
         file_put_contents("js/serial.json", json_encode($json));
         
-		//$_SESSION = array();
-		//session_start();
+		$_SESSION = array();
+        session_unset();
 		
         $uname = strtolower(php_uname('s'));
         if (strpos($uname, "darwin") !== false) {
@@ -124,7 +124,7 @@
     function serialDevice($speed)
     {
 		$errors = "";
-		
+
 		$com = $_SESSION["serial"];
 		if(!isset($com)) {
 			$json = json_decode(file_get_contents("js/serial.json"), true);
@@ -177,7 +177,7 @@
 		}else{
             return "Error: Cannot open ". $com;
         }
-
+        
         return $com;
     }
 	
@@ -188,15 +188,16 @@
 		if($uart)
 		{
 			if($speed != "921600")
-					$speed = "0";
+				$speed = "0";
 			fwrite($uart, "fastuart " .$speed. "\n");
-			echo fgets($uart); //echo
-			$read = fgets($uart); //ok
+            fgets($uart); //echo
+			//$read = fgets($uart); //ok
+            $read = fread($uart,26); //ok
 			if(strpos($read, "OK") !== false)
 			{
-				//echo fgets($uart); //confirm
 				$_SESSION["speed"] = $speed;
 			}
+            echo $read;
 			fclose($uart);
 		}else{
 			echo "Error: Cannot open ". $com;

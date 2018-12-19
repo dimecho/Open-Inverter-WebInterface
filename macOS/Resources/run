@@ -25,6 +25,8 @@ echo "{
 		\"speed\": 115200
     }
 }" > "$(dirname "$0")/Web/js/serial.json"
+echo "minicom -D $serial -b 115200" > minicom.sh
+chmod +x minicom.sh
 
                 openBrowser http://$myIP:8080 &
                 return

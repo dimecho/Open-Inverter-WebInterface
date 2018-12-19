@@ -1,5 +1,5 @@
 <?php
-	session_start();
+session_start();
 	
     include_once("common.php");
 
@@ -75,7 +75,8 @@
 		if ($os === "windows") {
 			$command = "..\\Windows\\puttytel.exe -serial " .$_SESSION["serial"]. " -sercfg 115200,8,n,2,N";
 		}else if ($os === "mac") {
-			$command = "open -n -a Terminal ../minicom --args -D " .$_SESSION["serial"]. " -b 115200";
+            //$command = "open -n -a Terminal --args ../minicom -D " .$_SESSION["serial"]. " -b 115200";
+            $command = "open -n -a Terminal ../minicom.sh";
 		}else{
             $command = "minicom --args -D " .$_SESSION["serial"]. " -b 115200";
         }

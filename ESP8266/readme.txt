@@ -2,38 +2,40 @@ INSTRUCTIONS FOR OLIMEX ESP8266
 
 Build (From Source Code)
 
-    1) Run ./data.sh (data.bat Windows) build data directory
-    2) Open ESP8266.ino with Arduino IDE (Sketch -> Export compiled Binary) or upload sketch
-
-    [Arduino Developer Setup]
+    [Arduino IDE Setup]
 
     1) Arduino/File -> Preferences -> Additional Boards Manager URLs: http://arduino.esp8266.com/stable/package_esp8266com_index.json
     2) Tools -> Boards -> Board Manager -> esp8266 -> Install
-    3) Tools -> Boards -> Olimex MOD-WIFI-ESP8266
+    3) Tools -> Boards -> Olimex MOD-WIFI-ESP8266-DEV -> Flash Size -> 2M (1M SPIFFS)
+
+    [Build]
+
+    1) Run ./data.sh (data.bat Windows) build data directory
+    2) Open ESP8266.ino with Arduino IDE
+    3) Sketch -> Export compiled Binary
 
 Setup (New from Factory)
 
     1) Solder GPIO-0 bridge to 0 to enable UART
-    2) Connect ESP8266 board to TTL-USB converter (Note: 3.3V ONLY!)
+    2) Connect ESP8266 to Serial (Note: 3.3V ONLY!)
     3) Plugin to computer and check/install TTL-USB drivers
-    4) Run ./sketch.sh (sketch.bat Windows) flash "flash-sketch.bin" (NO OTA)
-    5) Run ./spiffs.sh (spiffs.bat Windows) flash "flash-spiffs.bin" (NO OTA)
+    4) Run ./sketch.sh (sketch.ps1 Windows) flash "flash-sketch.bin" (No OTA)
+    5) Run ./spiffs.sh (spiffs.ps1 Windows) flash "flash-spiffs.bin" (No OTA)
     6) Solder GPIO-0 bridge back to 1 to enable FLASH
-       Note: Future updates can be done over-the-air (OTA)
-    7) Connect to inverter TTL (see Wiring)
+    7) Connect to inverter UART (see Wiring)
 
 Setup (Upgrade Existing)
 
     [Web Browser - Recommended]
 
-    1) Connect to ESP8266 WiFi (see Usage)
-    2) Go to http://192.168.4.1/update and flash Sketch and SPIFFS
+    1) Connect to ESP8266 WiFi
+    2) Go to http://192.168.4.1/update
 
     [Computer]
 
-    1) Connect to ESP8266 WiFi (see Usage)
-    2) Run ./sketch.sh (sketch.bat Windows) flash "flash-sketch.bin" (OTA)
-    3) Run ./spiffs.sh (spiffs.bat Windows) flash "flash-spiffs.bin" (OTA)
+    1) Connect to ESP8266 (WiFi or Serial)
+    2) Run ./sketch.sh (sketch.ps1 Windows) flash "flash-sketch.bin"
+    3) Run ./spiffs.sh (spiffs.ps1 Windows) flash "flash-spiffs.bin"
 
 Wiring
           ______
