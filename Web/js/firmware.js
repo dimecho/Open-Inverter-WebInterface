@@ -3,9 +3,7 @@ var jtag_interface = [
 	"interface/ftdi/olimex-arm-usb-tiny-h.cfg",
 	"interface/parport.cfg",
 	"interface/stlink-v2.cfg",
-	"interface/ftdi/jtag-lock-pick_tiny_2.cfg",
-	"interface/jlink.cfg",
-	"interface/cmsis-dap.cfg"
+	"interface/ftdi/jtag-lock-pick_tiny_2.cfg"
 ];
 
 var jtag_name = [
@@ -13,9 +11,7 @@ var jtag_name = [
 	"Olimex Tiny-H",
 	"JTAG Wiggler",
 	"STlink v2.0",
-	"Lock-Pick Tiny v2.0",
-	"J-Link",
-	"CoLinkEx v1.2"
+	"Lock-Pick Tiny v2.0"
 ];
 
 $(document).on('click', '.browse', function(){
@@ -31,13 +27,14 @@ function setInterfaceImage() {
     {
 		if(v.indexOf("stlink-v2") != -1)
 		{
-			window.location.href = "st-link.php";
+			$("#jtag-image").attr("src", "firmware/img/stlinkv2.png");
+			checkSoftware("stlink");
 		}else{
             var img = v.split("/").pop().slice(0, -4);
 			$("#jtag-image").attr("src", "firmware/img/" + img + ".jpg");
-			$("#jtag-name").html(jtag_name[$("#firmware-interface option:selected").index()]);
-            $("#jtag-txt").html("");
 		}
+		$("#jtag-name").html(jtag_name[$("#firmware-interface option:selected").index()]);
+        $("#jtag-txt").html("");
 	}else{
 		if(os == "esp8266") {
 			$("#jtag-txt").html("Solder <b>GPIO-0</b> to <b>1</b> and boot ESP8266 from flash. Inverter firmware will flash using ESP8266 UART0.");

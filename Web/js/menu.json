@@ -67,10 +67,6 @@
             "icon": "glyphicon-object-align-bottom",
             "onClick": "/attiny.php"
         }, {
-            "id": "ST-Link Programmer",
-            "icon": "glyphicon-list-alt",
-            "onClick": "/st-link.php"
-        }, {
             "id": "Compile from Source",
             "icon": "glyphicon-console",
             "onClick": "checkSoftware(\"arm\")"

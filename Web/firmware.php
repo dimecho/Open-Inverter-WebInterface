@@ -10,7 +10,11 @@
 		$interface = urldecode($_GET["interface"]);
 		
 		if (strpos($interface, "interface") !== false) {
-			$command = runCommand("openocd", $file. " " .$interface. " ram", $os);
+            if (strpos($interface, "stlink-v2") !== false) {
+                $command = runCommand("stlink", $file. " " .$interface. " ram", $os);
+            }else{
+                $command = runCommand("openocd", $file. " " .$interface. " ram", $os);
+            }
 			exec($command, $output, $return);
 			echo sys_get_temp_dir();
 			echo "\n$command\n";

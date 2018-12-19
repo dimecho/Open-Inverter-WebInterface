@@ -12,6 +12,7 @@
 		324C22E81CF429E7003A1AF5 /* eagle in Resources */ = {isa = PBXBuildFile; fileRef = 324C22E71CF429E7003A1AF5 /* eagle */; };
 		325B6C851DBBE3EC00421596 /* fuse in Resources */ = {isa = PBXBuildFile; fileRef = 325B6C841DBBE3EC00421596 /* fuse */; };
 		328002011D6AAA4A001C5E4E /* run in Resources */ = {isa = PBXBuildFile; fileRef = 328002001D6AAA4A001C5E4E /* run */; };
+		32836C6B21C9F09D0009C3D5 /* stlink in Resources */ = {isa = PBXBuildFile; fileRef = 32836C6A21C9F09D0009C3D5 /* stlink */; };
 		32D281B41CF0066E00606B12 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D281B31CF0066E00606B12 /* Application.swift */; };
 		32D281B61CF0066F00606B12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32D281B51CF0066F00606B12 /* Assets.xcassets */; };
 		32D281B91CF0066F00606B12 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32D281B71CF0066F00606B12 /* Main.storyboard */; };
@@ -31,6 +32,7 @@
 		324C22E71CF429E7003A1AF5 /* eagle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = eagle; path = macOS/Resources/eagle; sourceTree = "<group>"; };
 		325B6C841DBBE3EC00421596 /* fuse */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = fuse; path = macOS/Resources/fuse; sourceTree = "<group>"; };
 		328002001D6AAA4A001C5E4E /* run */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = run; path = macOS/Resources/run; sourceTree = "<group>"; };
+		32836C6A21C9F09D0009C3D5 /* stlink */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = stlink; path = macOS/Resources/stlink; sourceTree = "<group>"; };
 		32D281AE1CF0066E00606B12 /* Huebner Inverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Huebner Inverter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		32D281B31CF0066E00606B12 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Application.swift; path = Sources/Application.swift; sourceTree = "<group>"; };
 		32D281B51CF0066F00606B12 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				3249F2A11D599E3900ECF5B4 /* openscad */,
 				32D281F21CF00EF200606B12 /* xquartz */,
 				32EBDE5C1D6ADB6A00CF5BEC /* source */,
+				32836C6A21C9F09D0009C3D5 /* stlink */,
 				32FFA9FB1D18D6FB00E5BBF0 /* openocd */,
 				325B6C841DBBE3EC00421596 /* fuse */,
 				32D5A3421D6AD27C008F9EFB /* arm */,
@@ -176,6 +179,7 @@
 				32D281B91CF0066F00606B12 /* Main.storyboard in Resources */,
 				325B6C851DBBE3EC00421596 /* fuse in Resources */,
 				32D281F51CF00EF200606B12 /* inkscape in Resources */,
+				32836C6B21C9F09D0009C3D5 /* stlink in Resources */,
 				32FFA9FC1D18D6FB00E5BBF0 /* openocd in Resources */,
 				3235CA8D219BA856009022D0 /* minicom in Resources */,
 				32D281F81CF00EF200606B12 /* xquartz in Resources */,

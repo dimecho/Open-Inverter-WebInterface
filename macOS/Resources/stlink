@@ -1,0 +1,23 @@
+#!/bin/sh
+if [ "$1" = "uninstall" ]; then
+    rm -rf "/usr/local/share/stlink-1.3.0"
+else
+    if [ ! -f "/usr/local/share/stlink-1.3.0/bin/st-flash" ]; then
+        tar xzfv ~/Downloads/stlink-1.3.0-macosx-amd64.zip -C /usr/local/share
+        mv /usr/local/share/stlink-1.3.0-macosx-amd64 /usr/local/share/stlink-1.3.0
+    else
+        cd "$PATH:/usr/local/share/stlink-1.3.0/bin/"
+
+        case "$1" in
+          *".hex"*) ADDRESS="" ;;
+          *".HEX"*) ADDRESS="" ;;
+          *)        ADDRESS=" 0x08000000" ;;
+        esac
+
+        if [ "$3" = "ram" ]; then
+            ADDRESS=" 0x08001000"
+        fi
+
+        st-flash $1$ADDRESS --reset
+    fi
+fi

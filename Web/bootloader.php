@@ -3,8 +3,16 @@
 	error_reporting(E_ERROR | E_PARSE);
     $os = detectOS();
 	
-    if(isset($_GET["ajax"])){
-		$command = runCommand("openocd", urldecode($_GET["file"]). " " .urldecode($_GET["interface"]),$os);
+    if(isset($_GET["ajax"]))
+    {
+        $file = urldecode($_GET["file"]);
+        $interface = urldecode($_GET["interface"]);
+
+        if (strpos($interface, "stlink-v2") !== false) {
+            $command = runCommand("stlink", $file. " " .$interface, $os);
+        }else{
+            $command = runCommand("openocd", $file. " " .$interface, $os);
+        }
         exec($command, $output, $return);
 		echo sys_get_temp_dir();
         echo "\n$command\n";
