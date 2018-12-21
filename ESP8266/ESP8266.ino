@@ -35,11 +35,11 @@ int timeout = 10;
 const int swd_clock_pin = 4; //0; //GPIO0 (D3) -> Pin4 (SWD)
 const int swd_data_pin = 5; //2; //GPIO2 (D4) -> Pin2 (SWD)
 
-ARMDebug target(swd_clock_pin, swd_data_pin);
+//ARMDebug target(swd_clock_pin, swd_data_pin);
 
 // Turn the log level back up for debugging; but by default, we have it
 // completely off so that even failures happen quickly, to keep the web app responsive.
-//ARMDebug target(swd_clock_pin, swd_data_pin, ARMDebug::LOG_NONE);
+ARMDebug target(swd_clock_pin, swd_data_pin, ARMDebug::LOG_NONE);
 
 uint32_t intArg(const char *name)
 {
@@ -372,10 +372,6 @@ void setup()
     {
       server.send(200, "text/plain", "esp8266");
     }
-    else if (server.hasArg("com"))
-    {
-      server.send(200, "text/plain", "ESP8266 UART");
-    }
     else if (server.hasArg("pk") && server.hasArg("name") && server.hasArg("value"))
     {
       server.send(200, "text/plain", readSerial("set " + server.arg("name") + " " + server.arg("value")));
@@ -418,6 +414,17 @@ void setup()
   server.on("/snapshot.php", HTTP_POST, []() {
     server.send(200);
   }, SnapshotUpload );
+  //---------------
+  //SWD Debugger
+  //---------------
+  //Short names for Windows and Unix
+  server.on("/bootlo~1.php", HTTP_POST, []() {
+    server.send(200);
+  }, SWDUpload );
+  server.on("/bootload.php", HTTP_POST, []() {
+    server.send(200);
+  }, SWDUpload );
+  //---------------
   server.on("/firmware.php", HTTP_POST, []() {
     server.send(200);
   }, STM32Upload );
@@ -821,6 +828,83 @@ String readStream(String cmd, int _loop, int _delay)
 }
 
 //==================
+// SWD UPDATER
+//==================
+void SWDUpload()
+{
+  HTTPUpload& upload = server.upload();
+
+  if (upload.status == UPLOAD_FILE_START) {
+
+    Debug.println(upload.filename);
+
+    if (!upload.filename.endsWith(".bin")) {
+      server.send(500, "text/plain", "Bootloader must be binary");
+    } else {
+      fsUpload = SPIFFS.open("/" + upload.filename, "w");
+    }
+  }
+  else if (upload.status == UPLOAD_FILE_WRITE)
+  {
+    if (fsUpload)
+      fsUpload.write(upload.buf, upload.currentSize);
+
+  } else if (upload.status == UPLOAD_FILE_END) {
+
+    if (fsUpload) {
+      fsUpload.close();
+
+      File f = SPIFFS.open("/" + upload.filename, "r");
+      int len = f.size();
+
+      uint32_t idcode;
+      uint32_t idcode_retry = 1073679324;
+
+      timeout = 10;
+      while (idcode == idcode_retry && timeout > 0) {
+        target.begin();
+        target.getIDCODE(idcode);
+        target.debugHalt();
+        delay(500);
+        timeout--;
+      }
+
+      server.sendHeader("Cache-Control", "no-cache");
+      //server.setContentLength(CONTENT_LENGTH_UNKNOWN);
+      //server.sendHeader("Refresh", "10; url=/firmware.php");
+      server.send(200, "text/html", "");
+      server.sendContent("<pre>");
+
+      server.sendContent("\nsize: ");
+      server.sendContent(String(len));
+
+      if (target.begin() && target.getIDCODE(idcode)) {
+        server.sendContent("\nidcode: ");
+        server.sendContent(String(idcode));
+
+        uint32_t addr = 134217728; //0x08000000
+        while (f.available()) {
+          //char b = char(f.read());
+
+          server.sendContent("\n0x");
+          server.sendContent(String(addr, HEX));
+
+          target.memStoreAndVerify(addr, f.read());
+
+          addr++;
+        }
+
+        f.close();
+
+      } else {
+        server.sendContent("\nSWD not connected");
+      }
+      server.sendContent("<pre>");
+    }
+  }
+}
+
+//==================
 // STM32 UPDATER
 //==================
 void STM32Upload()
@@ -829,16 +913,14 @@ void STM32Upload()
 
   if (upload.status == UPLOAD_FILE_START) {
 
-    //Debug.println(upload.filename);
+    Debug.println(upload.filename);
 
     if (!upload.filename.endsWith(".bin")) {
       server.send(500, "text/plain", "Firmware must be binary");
     } else {
       fsUpload = SPIFFS.open("/" + upload.filename, "w");
     }
-  }
-  else if (upload.status == UPLOAD_FILE_WRITE)
-  {
+  } else if (upload.status == UPLOAD_FILE_WRITE) {
     if (fsUpload)
       fsUpload.write(upload.buf, upload.currentSize);
 

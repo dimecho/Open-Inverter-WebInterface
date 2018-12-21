@@ -10,17 +10,17 @@ mkdir -p data/fonts
 mkdir -p data/firmware
 mkdir -p data/firmware/img
 
-array=(index.php header.php menu.php esp8266.php can.php graph.php firmware.php simple.php test.php version.txt description.csv)
+array=(index.php header.php menu.php esp8266.php can.php graph.php bootloader.php firmware.php simple.php test.php version.txt description.csv)
 for i in "${array[@]}"; do
     cp -rf ../Web/$i data
 done
 
-array=(alertify.css fancybox.css animate.css bootstrap.css bootstrap-slider.css glyphicons.css style.css)
+array=(alertify.css fancybox.css animate.css bootstrap.css ion.rangeSlider.css glyphicons.css style.css)
 for i in "${array[@]}"; do
     cp -rf ../Web/css/$i data/css
 done
 
-array=(jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js bootstrap-slider.js bootstrap-notify.js firmware.js can.js canmap.json parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js test.js iconic.js mobile.js)
+array=(jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js canmap.json parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js chartjs-plugin-zoom.js test.js iconic.js mobile.js)
 for i in "${array[@]}"; do
     cp -rf ../Web/js/$i data/js
 done
@@ -68,7 +68,7 @@ for f in $(find data -type f -name '*.*'); do
         #================
         #Find and replace
         #================
-        for ff in $(find ./data -type f -name '*.php' -o -name '*.js' -o -name '*.css'); do
+        for ff in $(find ./data -type f -name '*.php' -o -name '*.js' -o -name '*.json' -o -name '*.css'); do
             sed -i '' 's/'"$o"'/'"$fe"'/g' "$ff"
             sed -i '' 's#\/\*\!#\/\*#' "$ff" #Remove required comments
         done

@@ -2,18 +2,9 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-slider.css" />
-        <script src="js/bootstrap-slider.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/ion.rangeSlider.css" />
+        <script src="js/ion.rangeSlider.js"></script>
         <script src="js/simple.js"></script>
-        <style>
-            .tooltip-inner {
-                user-select: none;
-                -moz-user-select: none;
-                -khtml-user-select: none;
-                -webkit-user-select: none;
-                -o-user-select: none;
-            }
-        </style>
     </head>
     <body>
         <div class="container">

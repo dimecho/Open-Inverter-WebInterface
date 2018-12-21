@@ -21,28 +21,23 @@ $(document).on('click', '.browse', function(){
 
 function setInterfaceImage() {
 
-    var v = $("#firmware-interface").val();
-
-	if(v.indexOf("interface") != -1)
-    {
-		if(v.indexOf("stlink-v2") != -1)
-		{
+	if(os == "esp8266") {
+		$("#jtag-image").attr("src","firmware/img/esp8266.png");
+		$("#jtag-txt").html("Solder <b>GPIO-0</b> to <b>1</b> and boot ESP8266 from flash.");
+	}else{
+		$("#jtag-txt").html("");
+		var v = $("#firmware-interface").val();
+		if(v.indexOf("stlink-v2") != -1) {
 			$("#jtag-image").attr("src", "firmware/img/stlinkv2.png");
 			checkSoftware("stlink");
-		}else{
+		}else if(v.indexOf("interface") != -1) {
             var img = v.split("/").pop().slice(0, -4);
 			$("#jtag-image").attr("src", "firmware/img/" + img + ".jpg");
+		}else{
+			$("#jtag-image").attr("src","firmware/img/usb_ttl.jpg");
+			$("#jtag-txt").html("Caution: Main board Olimex is powered with 3.3V - Double check your TTL-USB adapter.");
 		}
 		$("#jtag-name").html(jtag_name[$("#firmware-interface option:selected").index()]);
-        $("#jtag-txt").html("");
-	}else{
-		if(os == "esp8266") {
-			$("#jtag-txt").html("Solder <b>GPIO-0</b> to <b>1</b> and boot ESP8266 from flash. Inverter firmware will flash using ESP8266 UART0.");
-			$("#jtag-image").attr("src","firmware/img/esp8266.png");
-		}else{
-			$("#jtag-txt").html("Caution: Main board Olimex is powered with 3.3V - Double check your TTL-USB adapter.");
-			$("#jtag-image").attr("src","firmware/img/usb_ttl.jpg");
-		}
 	}
 };
 

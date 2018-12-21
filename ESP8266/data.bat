@@ -13,17 +13,17 @@ mkdir data\fonts
 mkdir data\firmware
 mkdir data\firmware\img
 
-set array=index.php header.php menu.php esp8266.php can.php graph.php firmware.php simple.php test.php version.txt description.csv
+set array=index.php header.php menu.php esp8266.php can.php graph.php bootloader.php firmware.php simple.php test.php version.txt description.csv
 for %%a in (%array%) do (
   copy ..\Web\%%a data
 )
 
-set array=alertify.css fancybox.css animate.css bootstrap.css bootstrap-slider.css glyphicons.css style.css
+set array=alertify.css fancybox.css animate.css bootstrap.css ion.rangeSlider.css glyphicons.css style.css
 for %%a in (%array%) do (
   copy ..\Web\css\%%a data\css
 )
 
-set array=jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js bootstrap-slider.js bootstrap-notify.js firmware.js can.js canmap.json parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js test.js iconic.js mobile.js
+set array=jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js canmap.json parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js chartjs-plugin-zoom.js test.js iconic.js mobile.js
 for %%a in (%array%) do (
   copy ..\Web\js\%%a data\js
 )
@@ -55,6 +55,10 @@ for /R "%~dp0\data" %%F in (*.*) do (
 			powershell -ExecutionPolicy Bypass -Command "(Get-Content %%a).replace('%%~nxsF', '!R!') | Set-Content %%a"
 		)
 		for /f "" %%a in ('findstr /M /C:"%%~nxF" /S "%~dp0\data\*.js"') do (
+			echo %%a
+			powershell -ExecutionPolicy Bypass -Command "(Get-Content %%a).replace('%%~nxsF', '!R!') | Set-Content %%a"
+		)
+		for /f "" %%a in ('findstr /M /C:"%%~nxF" /S "%~dp0\data\*.json"') do (
 			echo %%a
 			powershell -ExecutionPolicy Bypass -Command "(Get-Content %%a).replace('%%~nxsF', '!R!') | Set-Content %%a"
 		)

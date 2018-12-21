@@ -1,5 +1,4 @@
 <?php
-	
     include_once("common.php");
     error_reporting(E_ERROR | E_PARSE);
 	$os = detectOS();
@@ -11,7 +10,7 @@
 		
 		if (strpos($interface, "interface") !== false) {
             if (strpos($interface, "stlink-v2") !== false) {
-                $command = runCommand("stlink", $file. " " .$interface. " ram", $os);
+                $command = runCommand("stlink", $file. " ram", $os);
             }else{
                 $command = runCommand("openocd", $file. " " .$interface. " ram", $os);
             }
@@ -168,23 +167,23 @@
 										$.ajax({
 											type: "GET",
 											url:';
-                                                echo "'";
-												//$tmp_dir = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
-												echo "firmware.php?ajax=1";
-												$ocd_interface = $_POST["interface"];
-												if ($os === "mac") {
-													$ocd_file = "/tmp/" .$_FILES['firmware']["name"];
-												}elseif ($os === "windows") {
-													$ocd_file = sys_get_temp_dir(). "\\" .$_FILES['firmware']["name"];
-													$ocd_interface = str_replace("/","\\",$ocd_interface);
-												}else{
-													$ocd_file = sys_get_temp_dir(). "/" .$_FILES['firmware']["name"];
-												}
-												move_uploaded_file($_FILES['firmware']['tmp_name'], $ocd_file);
-												echo "&file=" .urlencode($ocd_file);
-												echo "&interface=" .urlencode($ocd_interface);
-                                                echo "'";
-                                                echo ',success: function(data){
+											echo "'";
+											//$tmp_dir = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
+											echo "firmware.php?ajax=1";
+											$ocd_interface = $_POST["interface"];
+											if ($os === "mac") {
+												$ocd_file = "/tmp/" .$_FILES['firmware']["name"];
+											}elseif ($os === "windows") {
+												$ocd_file = sys_get_temp_dir(). "\\" .$_FILES['firmware']["name"];
+												$ocd_interface = str_replace("/","\\",$ocd_interface);
+											}else{
+												$ocd_file = sys_get_temp_dir(). "/" .$_FILES['firmware']["name"];
+											}
+											move_uploaded_file($_FILES['firmware']['tmp_name'], $ocd_file);
+											echo "&file=" .urlencode($ocd_file);
+											echo "&interface=" .urlencode($ocd_interface);
+											echo "'";
+											echo ',success: function(data){
 												//console.log(data);
                                                 deleteCookie("version");
 												progressBar.css("width","100%");
@@ -212,30 +211,31 @@
                         }else{
                         ?>
 						<script>
-                                $(document).ready(function() {
-                                    if(os != "esp8266") {
-                                        for (var i = 0; i < jtag_interface.length; i++) {
-                                            $("#firmware-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_interface[i]));
-                                        }
-                                    }
+							$(document).ready(function() {
+								if(os == "esp8266") {
+									$("#firmware-interface").append($("<option>",{value:"uart-esp8266",selected:'selected'}).append("UART over ESP8266"));
+								}else{
+									for (var i = 0; i < jtag_interface.length; i++) {
+										$("#firmware-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_name[i]));
+									}
 									//$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
-                                    $.ajax("serial.php?com=list", {
-                                        async: false,
+									$.ajax("serial.php?com=list", {
+										async: false,
 										success: function(data) {
 											//console.log(data);
 											var s = data.split(',');
 											for (var i = 0; i < s.length; i++) {
 												if(s[i] != "")
 													$("#firmware-interface").append($("<option>",{value:s[i]}).append(s[i]));
-											}  
+											}
 										}
 									});
-
-                                    $("#firmware-interface").prop('selectedIndex', 0);
-									$(".loader").hide();
-									$(".input-group-addon").show();
-                                    setInterfaceImage();
-                                });
+								}
+								$("#firmware-interface").prop('selectedIndex', 0);
+								$(".loader").hide();
+								$(".input-group-addon").show();
+								setInterfaceImage();
+							});
                         </script>
 						<tr>
                             <td>

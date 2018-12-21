@@ -210,67 +210,77 @@ function validateInput(id, value, callback)
         if(opmode > 0 && id != 'fslipspnt') {
             stopInverter();
             $.notify({ message: 'Inverter must not be in operating mode.' }, { type: 'danger' });
-            callback(false);
+			if(callback)
+				callback(false);
             return;
         }else{
             if (isInt(parseInt(value)) == false && isFloat(parseFloat(value)) == false){
                 $.notify({ message: id + ' Value must be a number' }, { type: 'danger' });
-                callback(false);
+				if(callback)
+					callback(false);
                 return;
             }else if(id == 'fmin'){
                 if(parseFloat(value) > parseFloat(inputText('#fslipmin')))
                 {
                     $.notify({ message: 'Should be set below fslipmin' }, { type: 'danger' });
-                    callback(false);
+					if(callback)
+						callback(false);
                     return;
                 }
             }else  if(id == 'polepairs'){
                 if ($.inArray(parseInt(value), [ 1, 2, 3, 4, 5]) == -1)
                 {
                     $.notify({ message: 'Pole pairs = half # of motor poles' }, { type: 'danger' });
-                    callback(false);
+					if(callback)
+						callback(false);
                     return;
                 }
             }else  if(id == 'udcmin'){
                 if(parseInt(value) > parseInt(inputText("#udcmax")))
                 {
                     $.notify({ message: 'Should be below maximum voltage (udcmax)' }, { type: 'danger' });
-                    callback(false);
+					if(callback)
+						callback(false);
                     return;
                 }
             }else  if(id == 'udcmax'){
                 if(parseInt(value) > parseInt(inputText("#udclim")))
                 {
                     $.notify({ message: 'Should be lower than cut-off voltage (udclim)' }, { type: 'danger' });
-                    callback(false);
+                    if(callback)
+						callback(false);
                     return;
                 }
             }else  if(id == 'udclim'){
                 if(parseInt(value) <= parseInt(inputText("#udcmax")))
                 {
                     $.notify({ message: 'Should be above maximum voltage (udcmax)' }, { type: 'danger' });
-                    callback(false);
+                    if(callback)
+						callback(false);
                     return;
                 }
             }else if(id == 'udcsw'){
                 if(parseInt(value) > parseInt(inputText("#udcmax")))
                 {
                     $.notify({ message: 'Should be below maximum voltage (udcmax)' }, { type: 'danger' });
-                    callback(false);
+                    if(callback)
+						callback(false);
                     return;
                 }
             }else if(id == 'udcsw'){
                 if(parseInt(value) > parseInt(inputText("#udcmin")))
                 {
                     $.notify({ message: 'Should be below minimum voltage (udcmin)' }, { type: 'danger' });
-                    callback(false);
+                    if(callback)
+						callback(false);
                     return;
                 }
             }else if(id == 'fslipmin'){
                 if(parseFloat(value) <= parseFloat(inputText('#fmin')))
                 {
                     $.notify({ message: 'Should be above starting frequency (fmin)' }, { type: 'danger' });
-                    callback(false);
+                    if(callback)
+						callback(false);
                     return;
                 }
             /*
@@ -286,9 +296,19 @@ function validateInput(id, value, callback)
                 //showProgressbar: true,
                 type: 'warning'
             });
-            callback(true);
+			if(callback)
+				callback(true);
         }
     });
+};
+
+function inputText(id)
+{
+    var getVariable = $(id).text();
+    if(getVariable === "")
+        getVariable = $(id).val();
+
+    return getVariable;
 };
 
 function setParameter(cmd, value, save, notify) {
@@ -391,7 +411,7 @@ function getJSONFloatValue(value, callback) {
         async: sync,
         timeout: serialTimeout,
         success: function success(data) {
-            console.log(data);
+            //console.log(data);
             f = parseFloat(data);
             if(isNaN(f))
                 f = 0;

@@ -202,8 +202,8 @@
             "linux" : ""
         },
         "path" : {
-            "mac" : "/usr/local/share/stlink-1.3.0/bin/st-flash",
-            "windows" : "C:\\Program Files\\STLink\\bin\\st-flash.exe",
+            "mac" : "/usr/local/share/stlink-1.3.0-macosx-amd64/bin/st-flash",
+            "windows" : "C:\\Program Files\\stlink-1.3.0-win64\\bin\\st-flash.exe",
             "linux" : ""
         }
     },

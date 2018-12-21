@@ -52,8 +52,12 @@
         "onClick": "",
         "dropdown": [{
             "id": "Flash ESP8266",
-            "icon": "glyphicon-object-align-horizontal",
+            "icon": "glyphicon-object-align-bottom",
             "onClick": "/esp8266.php"
+        }, {
+            "id": "Flash Bootloader",
+            "icon": "glyphicon-object-align-horizontal",
+            "onClick": "/bootloader.php"
         }, {
             "id": "Flash Firmware",
             "icon": "glyphicon-object-align-left",

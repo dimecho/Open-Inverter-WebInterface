@@ -28,6 +28,6 @@ if($args[0] -eq "uninstall") {
         if ($args[2] -eq 'ram') { $ADDRESS=" 0x08001000" }
         if ($args[0] -like '*.hex') { $ADDRESS="" }
 		
-		Start-Process ".\st-flash.exe" -ArgumentList "write ""$($FILE)$($ADDRESS)"" --reset" -NoNewWindow -Wait
+		Start-Process ".\st-flash.exe" -ArgumentList "write ""$($FILE)$""($ADDRESS) --reset" -NoNewWindow -Wait
 	}
 }

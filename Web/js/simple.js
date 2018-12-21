@@ -53,19 +53,19 @@ function buildSimpleParameters() {
 
         //=======================
         motor.append(simpleRow("polepairs", "Poles"));
-        motor.append(simpleRow("udcnom", "Motor Rating (V)"));
-        motor.append(simpleRow("boost", "Resistance (&#8486;)"));
-        motor.append(simpleRow("fweak", "Speed (RPM)"));
-        motor.append(simpleRow("idlespeed", "Idle (RPM)"));
-        motor.append(simpleRow("ampmin", "Torque (%)"));
-        motor.append(simpleRow("fmax", "Frequency (Hz)"));
-        motor.append(simpleRow("pwm", "Pulse Width Modulation (kHz)"));
+        motor.append(simpleRow("udcnom", "Motor Rating"));
+        motor.append(simpleRow("boost", "Resistance"));
+        motor.append(simpleRow("fweak", "Speed"));
+        motor.append(simpleRow("idlespeed", "Idle"));
+        motor.append(simpleRow("ampmin", "Torque"));
+        motor.append(simpleRow("fmax", "Frequency"));
+        motor.append(simpleRow("pwm", "Pulse Width Modulation"));
 
-        battery.append(simpleRow("udc", "Voltage (V)"));
-        battery.append(simpleRow("ocurlim", "Current (A)"));
-        battery.append(simpleRow("brknom", "Regenerative (%)"));
+        battery.append(simpleRow("udc", "Voltage"));
+        battery.append(simpleRow("ocurlim", "Current"));
+        battery.append(simpleRow("brknom", "Regenerative"));
         //=======================
-
+		/*
         $("#polepairs").slider({
             ticks: [2, 4, 6, 8, 10],
             step: 2,
@@ -76,7 +76,19 @@ function buildSimpleParameters() {
             validateInput("polepairs",e.value/2);
             setParameter("polepairs",e.value/2,true,true);
         });
+		*/
+		var polepairs_values = [2, 4, 6, 8, 10];
+		$("#polepairs").ionRangeSlider({
+			skin: "big",
+			values: polepairs_values,
+			from: polepairs_values.indexOf(json.polepairs.value * 2),
+			onFinish: function (e) {
+				validateInput("polepairs",e.from_value/2);
+				setParameter("polepairs",e.from_value/2,true,true);
+			}
+		});
         //=======================
+		/*
         $("#udcnom").slider({
             min: 12,
             max: 480,
@@ -88,131 +100,176 @@ function buildSimpleParameters() {
             validateInput("udcnom",e.value);
             setParameter("udcnom",e.value,true,true);
         });
+		*/
+		$("#udcnom").ionRangeSlider({
+			skin: "big",
+			grid: true,
+			step: 1,
+			min: 12,
+			max: 480,
+			from: json.udcnom.value,
+			postfix: " Volt",
+			onFinish: function (e) {
+				validateInput("udcnom",e.from);
+				setParameter("udcnom",e.from,true,true);
+			}
+		});
         //=======================
         //TODO: account for battery voltage
-        $("#boost").slider({
-            min: 0.0,
-            max: 10.0,
-            step: 0.1,
-            value: json.boost.value/1000,
-            precision: 1,
-            tooltip_position: 'left'
-        }).on('slideStop', function (e) {
-            validateInput("boost",e.value*1000);
-            setParameter("boost",e.value*1000,true,true);
-        });
+		$("#boost").ionRangeSlider({
+			skin: "big",
+			grid: true,
+			step: 0.1,
+			min: 0.0,
+			max: 10.0,
+			from: json.boost.value/1000,
+			postfix: " &#8486;",
+			onFinish: function (e) {
+				validateInput("boost",e.from*1000);
+				setParameter("boost",e.from*1000,true,true);
+			}
+		});
         //=======================
-        $("#fweak").slider({
-            min: 0,
-            max: 5000,
-            step: 100,
-            value: Math.round(json.fweak.value / json.fmax.value * 5000), //(json.udcmax.value / 1.41 / json.udcmax.value),
-            enabled: false
-        });
+		$("#fweak").ionRangeSlider({
+			skin: "big",
+			grid: true,
+			step: 100,
+			min: 0,
+			max: 5000,
+			from: Math.round(json.fweak.value / json.fmax.value * 5000), //(json.udcmax.value / 1.41 / json.udcmax.value),
+			postfix: " RPM"
+		});
         //=======================
-        $("#idlespeed").slider({
-            min: -100,
-            max: 3000,
-            step: 1,
-            ticks: [-100, 100, 500, 1000, 2000, 3000],
-            //ticks_positions: [-100, 100, 500, 1000, 2000, 3000],
-            ticks_labels: ['Disabled', '100 RPM', '500 RPM', '1000 RPM', '2000 RPM', '3000 RPM'],
-            value: json.idlespeed.value
-        }).on('slideStop', function (e) {
-            validateInput("idlespeed",e.value);
-            setParameter("idlespeed",e.value,true,true);
-        });
+		$("#idlespeed").ionRangeSlider({
+			skin: "big",
+			grid: true,
+			step: 1,
+			min: 0,
+			max: 2000,
+			from: json.idlespeed.value,
+			postfix: " RPM",
+			onFinish: function (e) {
+				validateInput("idlespeed",e.from);
+				setParameter("idlespeed",e.from,true,true);
+			}
+		});
         //=======================
         //TODO: calculate true torque - fweak,boost etc
-        $("#ampmin").slider({
-            min: 1,
-            max: 100,
-            step: 1,
-            value: json.ampmin.value
-        }).on('slideStop', function (e) {
-            validateInput("ampmin",e.value);
-            setParameter("ampmin",e.value,true,true);
-        });
+		$("#ampmin").ionRangeSlider({
+			skin: "big",
+			grid: true,
+			step: 1,
+			min: 1,
+			max: 100,
+			from: json.ampmin.value,
+			postfix: " %",
+			onFinish: function (e) {
+				validateInput("ampmin",e.from);
+				setParameter("ampmin",e.from,true,true);
+			}
+		});
         //=======================
-        $("#fmax").slider({
-            step: 1,
-            min: 20,
-            max: 200,
-            value: json.fmax.value
-        }).on('slideStop', function (e) {
-            //console.log(e.value);
-            //calculateCurve(e.value);   //calculate fweak
-            validateInput("fmax",e.value);
-            setParameter("fmax",e.value,true,true);
-        });
+		$("#fmax").ionRangeSlider({
+			skin: "big",
+			grid: true,
+			step: 1,
+			min: 20,
+			max: 200,
+			from: json.fmax.value,
+			postfix: " Hz",
+			onFinish: function (e) {
+				//console.log(e.from);
+				//calculateCurve(e.from);   //calculate fweak
+				validateInput("fmax",e.from);
+				setParameter("fmax",e.from,true,true);
+			}
+		});
         //=======================
-        $("#pwm").slider({
-            min: 0,
-            max: 4,
-            step: 1,
-            ticks: [4,3,2,1,0],
-            ticks_labels: ["1.1 Hz", "2.2 Hz", "4.4 Hz", "8.8 Hz", "17.6 Hz"],
-            value: json.pwmfrq.value
-        }).on('slideStop', function (e) {
-            //console.log(e.value);
-            //calculateCurve(e.value);   //calculate fweak
-            validateInput("pwmfrq",e.value);
-            setParameter("pwmfrq",e.value,true,true);
-        });
+		var pwm_values = ["17.6", "8.8", "4.4", "2.2", "1.1"];
+		console.log(json.pwmfrq.value);
+		$("#pwm").ionRangeSlider({
+			skin: "big",
+			values: pwm_values,
+			step: 1,
+			min: 0,
+			max: 4,
+			from: pwm_values.indexOf(json.pwmfrq.value),
+			postfix: " kHz",
+			onFinish: function (e) {
+				//console.log(e.from);
+				//calculateCurve(e.from);   //calculate fweak
+				validateInput("pwmfrq",e.from);
+				setParameter("pwmfrq",e.from,true,true);
+			}
+		});
         //=======================
-        $("#udc").slider({
-            min: 10,
-            max: 400,
-            value: [json.udcmin.value, json.udcmax.value],
-            range: true
-        }).on('slideStop', function (e) {
+		$("#udc").ionRangeSlider({
+			skin: "big",
+			grid: true,
+			type: "double",
+			step: 1,
+			min: 10,
+			max: 400,
+			from: json.udcmin.value,
+			to: json.udcmax.value,
+			postfix: " Volt",
+			onFinish: function (e) {
+				/*
+				slider_adjustment("udc",[400,220,120,54]);
+				if (e.to < 55) {
+					//set fmin 0.5
+					//set boost 10000
+				}
+				*/
+				//calculateCurve(e.from); //calculate fweak
 
-            slider_adjustment("udc",[400,220,120,54]);
-            if (e.value[1] < 55) {
-                //set fmin 0.5
-                //set boost 10000
-            }
-            //calculateCurve(e.value); //calculate fweak
+				//validateInput("udcmin",e.from);
+				//validateInput("udcmax",e.to);
 
-            validateInput("udcmin",e.value[0]);
-            validateInput("udcmax",e.value[1]);
-
-            clearTimeout(saveTimer);
-            saveTimer = setTimeout(function(){
-                setParameter("udcmin",e.value[0],true,true);
-                setParameter("udcmax",e.value[1],true,true);
-            }, 2000);
-        });
-        slider_adjustment("udc",[400,220,120,54]);
+				clearTimeout(saveTimer);
+				saveTimer = setTimeout(function(){
+					setParameter("udcmin",e.from,true,true);
+					setParameter("udcmax",e.to,true,true);
+				}, 2000);
+			}
+		});
+		//slider_adjustment("udc",[400,220,120,54]);
         //=======================
-        $("#ocurlim").slider({
-            step: 1,
-            min: 0,
-            max: 100,
-            value: 0-json.ocurlim.value,
-            focus: false
-        }).on('slideStop', function (e) {
-            slider_adjustment("ocurlim",[800,400,200,100]);
+		$("#ocurlim").ionRangeSlider({
+			skin: "big",
+			grid: true,
+			step: 1,
+			min: 0,
+			max: 200,
+			from: 0-json.ocurlim.value,
+			postfix: " Amp",
+			onFinish: function (e) {
+				//slider_adjustment("ocurlim",[800,400,200,100]);
 
-            validateInput("ocurlim",(0-e.value));
+				validateInput("ocurlim",(0-e.from));
 
-            clearTimeout(saveTimer);
-            saveTimer = setTimeout(function(){
-                setParameter("ocurlim",(0-e.value),true,true);
-            }, 1000);
-        });
-        slider_adjustment("ocurlim",[800,400,200,100]);
+				clearTimeout(saveTimer);
+				saveTimer = setTimeout(function(){
+					setParameter("ocurlim",(0-e.from),true,true);
+				}, 1000);
+			}
+		});
+		//slider_adjustment("ocurlim",[800,400,200,100]);
         //=======================
-        $("#brknom").slider({
-            min: 1,
-            max: 90,
-            value: json.brknom.value,
-            focus: false
-        }).on('slideStop', function (e) {
-            validateInput("brknom",e.value);
-            setParameter("brknom",e.value,true,true);
-        });
-
+		$("#brknom").ionRangeSlider({
+			skin: "big",
+			grid: true,
+			step: 1,
+			min: 0,
+			max: 90,
+			from: json.brknom.value,
+			postfix: " %",
+			onFinish: function (e) {
+				validateInput("brknom",e.from);
+				setParameter("brknom",e.from,true,true);
+			}
+		});
+		
         motor.show();
         battery.show();
     }

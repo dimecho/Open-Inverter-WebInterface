@@ -67,15 +67,6 @@ $(document).ready(function () {
     }
 });
 
-function inputText(id)
-{
-    var getVariable = $(id).text();
-    if(getVariable === "")
-        getVariable = $(id).val();
-
-    return getVariable;
-}
-
 function basicChecks(json)
 {
 	var fweak = json["fweak"].value;
