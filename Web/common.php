@@ -70,12 +70,16 @@
         return $command;
     }
 
-    function runCommand($command,$args,$os)
+    function runCommand($command,$args,$os,$console)
     {
         $command = commandOSCorrection($command,$args,$os);
 		
         if ($os === "mac") {
-            return "\"" .$_SERVER["DOCUMENT_ROOT"]. "/../" .$command. " 2>&1 &";
+            if(isset($console)) {
+                return "open -n -a Terminal \"" .$_SERVER["DOCUMENT_ROOT"]. "/../" .$command;
+            }else{
+                return "\"" .$_SERVER["DOCUMENT_ROOT"]. "/../" .$command. " 2>&1 &";
+            }
         }else if ($os === "windows") {
             return "powershell.exe -ExecutionPolicy Bypass -File \"" .$_SERVER["DOCUMENT_ROOT"] . "\\..\\Windows\\" .$command. " 2>&1";
         }else if ($GLOBALS["OS"] === "linux") {

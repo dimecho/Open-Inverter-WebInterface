@@ -112,6 +112,10 @@ session_start();
     {
         echo readSerial($_GET["command"]);
     }
+    else if(isset($_GET["test"]))
+    {
+        echo readSerial("");
+    }
     else if(isset($_GET["average"]))
     {
 		echo calculateAverage(readArray($_GET["average"],6));
@@ -254,41 +258,46 @@ session_start();
         //echo "\"" .$cmd. "\"";
         //echo "\"" .$read. "\"";
 		
-		//if ($cmd === $read){ //echo OK
-			if($cmd === "json\n"){
-                $read = fread($uart,1024);
-                for ($i = 0; $i < 9; $i++)
-                    $read .= fread($uart,1024);
-				while (substr($read, -6) !== "}\r\n}\r\n")
-					$read .= fread($uart,1);
-			}else if($cmd === "errors\n"){
-				$read = fgets($uart);
-				//TODO: read until end
-			}else if($cmd === "save\n"){
-				$read = fgets($uart); //CRC
-				$read .= fgets($uart); //CAN
-			}else{
-				if(strpos($cmd,",") !== false) //Multi-value support
-				{
-					$read = "";
-					$streamCount = 0;
-					$streamLength = substr_count($cmd, ',');
+        if($cmd === "\n"){ //Hardware test
+            if(strpos($read, "Serial Number") !== false) //test firmware OK
+            {
+                for ($i = 0; $i < 23; $i++)
+                    $read .= fgets($uart);
+            }else{ //incorrect test firmware
+                fgets($uart);
+            }
+		}else if($cmd === "json\n"){
+            $read = fread($uart,1024);
+            for ($i = 0; $i < 9; $i++)
+                $read .= fread($uart,1024);
+			while (substr($read, -6) !== "}\r\n}\r\n")
+				$read .= fread($uart,1);
+		}else if($cmd === "errors\n"){
+			$read = fgets($uart);
+			//TODO: read until end
+		}else if($cmd === "save\n"){
+			$read = fgets($uart); //CRC
+			$read .= fgets($uart); //CAN
+		}else{
+			if(strpos($cmd,",") !== false) //Multi-value support
+			{
+				$read = "";
+				$streamCount = 0;
+				$streamLength = substr_count($cmd, ',');
 
-					while($streamCount <= $streamLength)
-					{
-						$read .= fgets($uart);
-						$streamCount++;
-					}
-				}else{
-					$read = fgets($uart);
+				while($streamCount <= $streamLength)
+				{
+					$read .= fgets($uart);
+					$streamCount++;
 				}
+			}else{
+				$read = fgets($uart);
 			}
-            
-			$read = str_replace("\r", "", $read);
-			$read = rtrim($read, "\n");
-		//}else{
-		//	$read = "Error: Received corrupted echo ...check cables";
-		//}
+		}
+        
+		$read = str_replace("\r", "", $read);
+		$read = rtrim($read, "\n");
+
 		fclose($uart);
         
         return $read;

@@ -19,12 +19,8 @@ body {
 .slider {
   width: 90% !important;
 }
-.badge-lg {
-  font-size:13px !important;
-  font-weight:normal !important;
-}
 .btn-space {
-    margin-right: 6px;
+  margin-right: 6px;
 }
 .iconic {
   width:32px;

@@ -38,7 +38,7 @@ session_start();
             header("Location:bootloader.php");
         }else if($_GET["app"] == "source")
         {
-            $command = runCommand("source","",$os);
+            $command = runCommand("source","",$os,true);
             header("Location:sourcecode.php");
         }else if($_GET["app"] == "arduino")
         {

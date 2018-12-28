@@ -60,6 +60,7 @@ function buildSimpleParameters() {
         motor.append(simpleRow("ampmin", "Torque"));
         motor.append(simpleRow("fmax", "Frequency"));
         motor.append(simpleRow("pwm", "Pulse Width Modulation"));
+        motor.append(simpleRow("encmode", "Encoder Mode"));
 
         battery.append(simpleRow("udc", "Voltage"));
         battery.append(simpleRow("ocurlim", "Current"));
@@ -189,6 +190,7 @@ function buildSimpleParameters() {
 		console.log(json.pwmfrq.value);
 		$("#pwm").ionRangeSlider({
 			skin: "big",
+            grid: true,
 			values: pwm_values,
 			step: 1,
 			min: 0,
@@ -202,6 +204,27 @@ function buildSimpleParameters() {
 				setParameter("pwmfrq",e.from,true,true);
 			}
 		});
+        //=======================
+        var encmode_values = ["Single", "AB", "ABZ", "SPI", "Resolver"];
+        console.log(json.encmode.value);
+        $("#encmode").ionRangeSlider({
+            skin: "big",
+            grid: true,
+            values: encmode_values,
+            step: 1,
+            min: 0,
+            max: 4,
+            from: encmode_values.indexOf(json.encmode.value),
+            onFinish: function (e) {
+                //console.log(e.from);
+
+                clearTimeout(saveTimer);
+                saveTimer = setTimeout(function(){
+                    validateInput("encmode",e.from);
+                    setParameter("encmode",e.from,true,true);
+                }, 1500);
+            }
+        });
         //=======================
 		$("#udc").ionRangeSlider({
 			skin: "big",
@@ -251,7 +274,7 @@ function buildSimpleParameters() {
 				clearTimeout(saveTimer);
 				saveTimer = setTimeout(function(){
 					setParameter("ocurlim",(0-e.from),true,true);
-				}, 1000);
+				}, 1500);
 			}
 		});
 		//slider_adjustment("ocurlim",[800,400,200,100]);

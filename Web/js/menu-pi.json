@@ -59,10 +59,6 @@
             "icon": "glyphicon-object-align-left",
             "onClick": "/firmware.php"
         }, {
-            "id": "Flash ATTiny13",
-            "icon": "glyphicon-object-align-bottom",
-            "onClick": "/attiny13.php"
-        }, {
             "id": "-"
         }, {
             "id": "Board Test",
@@ -71,7 +67,7 @@
         }, {
             "id": "-"
         }, {
-            "id": "Wiring Diagram",
+            "id": "Wiring Diagrams",
             "icon": "glyphicon-flash",
             "onClick": "/wiring.php"
         }, {

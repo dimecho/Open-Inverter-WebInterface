@@ -50,19 +50,19 @@
     "arm" : {
         "title" : "ARM Embedded Compiler",
         "download" : {
-            "mac" : "https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/7-2018q2/gcc-arm-none-eabi-7-2018-q2-update-mac.tar.bz2",
-            "windows" : "https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/7-2018q2/gcc-arm-none-eabi-7-2018-q2-update-win32.exe",
+            "mac" : "https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/8-2018q4/gcc-arm-none-eabi-8-2018-q4-major-mac.tar.bz2",
+            "windows" : "https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/8-2018q4/gcc-arm-none-eabi-8-2018-q4-major-win32.exe",
             "linux" : "",
-            "size" : 100,
-            "version" : "7.2"
+            "size" : 106,
+            "version" : "8.4"
         },
 		"checksum" : {
-            "mac" : "",
-            "windows" : "70cdeac126e308bf030c747a879094fa",
+            "mac" : "6b707a2ce7ac18c6fd25413b0ba5bc63",
+            "windows" : "",
             "linux" : ""
         },
         "path" : {
-            "mac" : "/usr/local/share/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-gcc",
+            "mac" : "/usr/local/share/gcc-arm-none-eabi-8-2018-q4-major/bin/arm-none-eabi-gcc",
             "windows" : "C:\\SysGCC\\ARM\\bin\\arm-none-eabi-gcc.exe",
             "linux" : "/usr/share/gcc-arm-embedded/bin/gcc-arm-none-eabi"
         }
@@ -230,9 +230,9 @@
     "designsparkpcb" : {
         "title" : "DesignSpark - PCB Design Software",
         "download" : {
-            "mac" : "http://pcb.designspark.info/DesignSparkPCB_v8.1.1.exe",
-            "windows" : "http://pcb.designspark.info/DesignSparkPCB_v8.1.1.exe",
-            "linux" : "http://pcb.designspark.info/DesignSparkPCB_v8.1.1.exe",
+            "mac" : "https://pcb.designspark.info/DesignSparkPCB_v8.1.2.exe",
+            "windows" : "https://pcb.designspark.info/DesignSparkPCB_v8.1.2.exe",
+            "linux" : "https://pcb.designspark.info/DesignSparkPCB_v8.1.2.exe",
             "size" : 65,
             "version" : "8.1.1"
         },

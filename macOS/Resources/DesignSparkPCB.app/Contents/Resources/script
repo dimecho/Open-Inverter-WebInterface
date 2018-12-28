@@ -2,9 +2,9 @@
 
 if [ ! -d "/Applications/Wine Staging.app" ]; then
     cd ~/Downloads
-    echo "Downloading Wine 3.20 for Mac ..."
-    curl -k -L -O -C - https://dl.winehq.org/wine-builds/macosx/pool/winehq-staging-3.20.pkg
-    osascript -e "do shell script \"installer -pkg ~/Downloads/winehq-staging-3.20.pkg -target /\" with administrator privileges"
+    echo "Downloading Wine 4.0 for Mac ..."
+    curl -k -L -O -C - https://dl.winehq.org/wine-builds/macosx/pool/winehq-staging-4.0-rc3.pkg
+    osascript -e "do shell script \"installer -pkg ~/Downloads/winehq-staging-4.0-rc3.pkg -target /\" with administrator privileges"
 fi
 export DISPLAY=:0.0
 export PATH=$PATH:/Applications/Wine\ Staging.app/Contents/Resources/wine/bin/
@@ -18,41 +18,32 @@ if [ ! -d "$HOME/.wine/drive_c/Program Files/DesignSpark/DesignSpark PCB 8.1" ];
 
     export PATH=$PATH:"$(dirname "$0")"
 
+    winetricks --self-update
+
     winetricks fontsmooth-rgb
     winetricks settings fontsmooth=rgb
 
-    winetricks d3dx9
+    #winetricks d3dx9
     winetricks d3dx10
-    winetricks d3dx11
 
-    winetricks mfc40
+    #winetricks mfc40
     winetricks mfc42
 
-    winetricks mono28
-    #winetricks dotnet40
+    #winetricks wine-mono
+    #winetricks dotnet46
 
-    winetricks msvc80
-    winetricks msvc90
-    winetricks msvc100
-
-    winetricks vcrun6
-    winetricks vcrun2005
-    winetricks vcrun2008
+    #winetricks vcrun6
     winetricks vcrun2010
-    winetricks vcrun2012
-    winetricks vcrun2013
-    winetricks vcrun2015
 
     #mkdir "$HOME/.wine/drive_c/DSLib"
 
-    if [ ! -f "$HOME/Downloads/DesignSparkPCB_v8.1.1.exe" ]; then
+    if [ ! -f "$HOME/Downloads/DesignSparkPCB_v8.1.2.exe" ]; then
         cd ~/Downloads
         echo "Downloading DesignSparkPCB ..."
-        curl -k -L -O -C - https://pcb.designspark.info/DesignSparkPCB_v8.1.1.exe
+        curl -k -L -O -C - https://pcb.designspark.info/DesignSparkPCB_v8.1.2.exe
     fi
 
     cd "/Applications/Wine Staging.app/Contents/Resources/wine/bin/"
-    ./wine ~/Downloads/DesignSparkPCB_v8.1.1.exe
-else
-    open -a "Wine Staging" --args "$HOME/.wine/drive_c/Program Files/DesignSpark/DesignSpark PCB 8.1/DesignSpark.exe" "$1"
+    ./wine ~/Downloads/DesignSparkPCB_v8.1.2.exe
 fi
+open -a "Wine Staging" --args "$HOME/.wine/drive_c/Program Files/DesignSpark/DesignSpark PCB 8.1/DesignSpark.exe" "$1"

@@ -29,6 +29,18 @@
         checkSoftware($software,$os,$_GET["check"],false);
     }
 
+    function confirmDownload($software,$os,$app)
+    {
+        $crc = $software[$app]["checksum"][$os];
+
+        if($crc !== "")
+        {
+            echo "confirmDownload('" . $app. "','" .$crc. "')";
+        }else{
+            echo "confirmDownload('" . $app. "')";
+        }
+    }
+
     function checkSoftware($software,$os,$app,$quite)
     {
         $path = $software[$app]["path"][$os];
@@ -46,14 +58,14 @@
             if ($os === "mac") {
                 if(!is_file($software["xquartz"]["path"]["mac"]))
                 {
-                    echo "confirmDownload('xquartz')";
+                    confirmDownload($software,$os,"xquartz");
                     return false;
                 }
             }
 		}else if($app == "eagle") {
 			if ($os === "windows") {
                 if(!is_file($software["designsparkpcb"]["path"]["windows"])){
-                    echo "confirmDownload('designsparkpcb')";
+                    confirmDownload($software,$os,"designsparkpcb");
                     return false;
                 }
             }
@@ -65,7 +77,7 @@
             return true;
         }else{
             if(!$quite)
-                echo "confirmDownload('" .$app. "')";
+                confirmDownload($software,$os,$app);
 			return false;
         }
     }
@@ -86,17 +98,17 @@
                         {
                             echo "openExternalApp('source')";
                         }else{
-                            echo "confirmDownload('source')";
+                            confirmDownload($software,$os,"source");
                         }
                     }else{
-                        echo "confirmDownload('python')";
+                        confirmDownload($software,$os,"python");
                     }
                 }else{
-                    echo "confirmDownload('gcc')";
+                    confirmDownload($software,$os,"gcc");
                 }
             }
         }else{
-            echo "confirmDownload('arm')";
+            confirmDownload($software,$os,"arm");
         }
     }
 ?>

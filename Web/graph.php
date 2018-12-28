@@ -11,8 +11,8 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-slider.css" />
-        <script src="js/bootstrap-slider.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/ion.rangeSlider.css" />
+        <script src="js/ion.rangeSlider.js"></script>
         <script src="js/potentiometer.js"></script>
         <script src="js/jquery.knob.js"></script>
         <script src="js/chart.js"></script>

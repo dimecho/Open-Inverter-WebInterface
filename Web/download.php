@@ -60,7 +60,7 @@
         $array['version'] = $id['download']['version'];
 
         echo json_encode($array);
-        
+
     }else if(isset($_GET['pause'])){
 
         echo $_GET['pause'];
@@ -167,16 +167,16 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <?php include "header.php" ?>
+        <?php include "header.php"; ?>
         <script>
             $(document).ready(function() {
-                download(<?php echo "\"".$_GET['start']."\""; ?>);
+                download(<?php echo "\"" .$_GET['start']. "\",\"" .$_GET['crc']. "\""; ?>);
             });
         </script>
     </head>
     <body>
         <div class="container">
-            <?php include "menu.php" ?>
+            <?php include "menu.php"; ?>
             <br><br>
             <div class="row">
                 <div class="col">
@@ -215,6 +215,37 @@
                             </tbody>
                         </table>
                     </center>
+                    <a class="checksum" data-fancybox data-src="#checksum" href="javascript:;"></a>
+                    <div class="hidden" id="checksum" style="width:60%;border-radius:5px">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col" align="center">
+                                    <h4><i class="glyphicon glyphicon-warning-sign"></i> Warning: Wrong Checksum</h4><br>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col" align="left">
+                                    Downloaded File:<br>
+                                    Expected Cheksum:<br>
+                                    Received Checksum:<br>
+                                </div>
+                                <div class="col" align="left">
+                                    <span class="badge badge-secondary badge-dark" id="checksum_file"><?php echo $destination; ?></span>
+                                    <span class="badge badge-secondary badge-success" id="checksum_good"></span>
+                                    <span class="badge badge-secondary badge-danger" id="checksum_bad"></span>
+                                </div>
+                            </div>
+                            <div class="row"><hr></div>
+                            <div class="row">
+                                <div class="col" align="center">
+                                    <button class="btn btn-danger" type="button" onClick="$.fancybox.close();"><i class="glyphicon glyphicon-remove"></i> Cancel</button>
+                                </div>
+                                <div class="col" align="center">
+                                    <button class="btn btn-success" type="button" id="continue_install"><i class="glyphicon glyphicon-ok"></i> Continue Installing</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

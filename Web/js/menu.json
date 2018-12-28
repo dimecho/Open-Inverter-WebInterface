@@ -63,10 +63,6 @@
             "icon": "glyphicon-object-align-left",
             "onClick": "/firmware.php"
         }, {
-            "id": "Flash ATTiny13",
-            "icon": "glyphicon-object-align-bottom",
-            "onClick": "/attiny.php"
-        }, {
             "id": "Compile from Source",
             "icon": "glyphicon-console",
             "onClick": "checkSoftware(\"arm\")"
@@ -79,7 +75,7 @@
         }, {
             "id": "-"
         }, {
-            "id": "Wiring Diagram",
+            "id": "Wiring Diagrams",
             "icon": "glyphicon-flash",
             "onClick": "/wiring.php"
         }, {

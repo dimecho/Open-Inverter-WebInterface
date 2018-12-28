@@ -11,11 +11,11 @@ function Elevate() {
 }
 
 if($args[0] -eq "uninstall") {
-	Start-Process "C:\Program Files (x86)\GNU Tools Arm Embedded\7 2018-q2-update\uninstall.exe" -Wait
+	Start-Process "C:\Program Files (x86)\GNU Tools Arm Embedded\8 2018-q4-major\uninstall.exe" -Wait
 	Start-Process "C:\SysGCC\ARM\uninstall.exe" -Wait
 }else{
 	Elevate
-	Start-Process "$env:USERPROFILE\Downloads\gcc-arm-none-eabi-7-2018-q2-update-win32.exe" -Wait
-	Move-Item "C:\Program Files (x86)\GNU Tools Arm Embedded\7 2018-q2-update" "C:\SysGCC\ARM" -Force
+	Start-Process "$env:USERPROFILE\Downloads\gcc-arm-none-eabi-8-2018-q4-major-win32.exe" -Wait
+	Move-Item "C:\Program Files (x86)\GNU Tools Arm Embedded\8 2018-q4-major" "C:\SysGCC\ARM" -Force
 	Remove-Item "C:\Program Files (x86)\GNU Tools Arm Embedded\"
 }

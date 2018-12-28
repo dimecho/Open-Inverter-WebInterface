@@ -197,7 +197,9 @@ void swdBegin()
   // If all is well, this returns some identifying info about the target.
 
   uint32_t idcode;
-  
+  target.getIDCODE(idcode);
+  Debug.println(idcode);
+
   if (target.begin() && target.getIDCODE(idcode)) {
     char result[128];
 
@@ -421,7 +423,7 @@ void setup()
   server.on("/bootlo~1.php", HTTP_POST, []() {
     server.send(200);
   }, SWDUpload );
-  server.on("/bootload.php", HTTP_POST, []() {
+  server.on("/bootloader.php", HTTP_POST, []() {
     server.send(200);
   }, SWDUpload );
   //---------------
@@ -487,10 +489,10 @@ void setup()
 
 void loop()
 {
+  Debug.handle();
   ArduinoOTA.handle();
   server.handleClient();
-  Debug.handle();
-  //yield();
+  yield();
 }
 
 //=============
@@ -854,26 +856,26 @@ void SWDUpload()
     if (fsUpload) {
       fsUpload.close();
 
+      server.sendHeader("Cache-Control", "no-cache");
+      //server.setContentLength(CONTENT_LENGTH_UNKNOWN);
+      //server.sendHeader("Refresh", "10; url=/firmware.php");
+      server.send(200, "text/html", "");
+      server.sendContent("<pre>");
+
       File f = SPIFFS.open("/" + upload.filename, "r");
       int len = f.size();
 
       uint32_t idcode;
-      uint32_t idcode_retry = 1073679324;
+      uint32_t SWD_idcode = 463475831; //0x1BA01477 - page:1089
 
       timeout = 10;
-      while (idcode == idcode_retry && timeout > 0) {
+      while (idcode != SWD_idcode && timeout > 0) {
         target.begin();
         target.getIDCODE(idcode);
         target.debugHalt();
         delay(500);
         timeout--;
       }
-
-      server.sendHeader("Cache-Control", "no-cache");
-      //server.setContentLength(CONTENT_LENGTH_UNKNOWN);
-      //server.sendHeader("Refresh", "10; url=/firmware.php");
-      server.send(200, "text/html", "");
-      server.sendContent("<pre>");
 
       server.sendContent("\nsize: ");
       server.sendContent(String(len));
@@ -889,7 +891,8 @@ void SWDUpload()
           server.sendContent("\n0x");
           server.sendContent(String(addr, HEX));
 
-          target.memStoreAndVerify(addr, f.read());
+          target.memStore(addr, f.read());
+          //target.memStoreAndVerify(addr, f.read());
 
           addr++;
         }

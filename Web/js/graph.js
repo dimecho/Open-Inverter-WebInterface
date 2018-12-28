@@ -447,29 +447,37 @@ function buildGraphMenu() {
     var btn_pdf = $("<button>", { class: "btn btn-warning btn-space", onClick: "exportPDF(true)" }).append("Export PDF");
     var btn_img = $("<button>", { class: "btn btn-info btn-space", onClick: "exportPDF()" }).append("Export Image");
 
-    $.getScript("js/bootstrap-slider.js").done(function(script, textStatus) {
+    var s = $("#buildGraphSlider").empty();
+    var slow_img = "Slow  "; //$("<img>", { class: "iconic", src: "img/slow.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Slow"} );
+    var input = $("<input>", { id: "speed", type: "text", "data-provide": "slider"} );
+    var fast_img = "  Fast"; //$("<img>", { class: "iconic", src: "img/fast.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Fast"} );
+    
+    //s.append(slow_img);
+    s.append(input);
+    //s.append(fast_img);
 
-        $("head").append("<link rel=\"stylesheet\" type=\"text/css\" href=\"css/bootstrap-slider.css\" />");
+    function speed_prettify (n) {
+        if (n === 1) {
+            return "Slow";
+        }else if (n === 100) {
+            return "Fast";
+        }
+        return n;
+    };
+    
+    input.ionRangeSlider({
+        skin: "big",
+        grid: true,
+        step: 1,
+        min: 1,
+        max: 100,
+        from: (syncronizedDelay / syncronizedDelayRatio),
+        prettify: speed_prettify,
+        //postfix: " %",
+        onFinish: function (e) {
+            //console.log(e.from);
 
-        var s = $("#buildGraphSlider").empty();
-        var slow_img = "Slow  "; //$("<img>", { class: "iconic", src: "img/slow.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Slow"} );
-        var input = $("<input>", { id: "speed", type: "text", "data-provide": "slider"} );
-        var fast_img = "  Fast"; //$("<img>", { class: "iconic", src: "img/fast.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Fast"} );
-        
-        s.append(slow_img);
-        s.append(input);
-        s.append(fast_img);
-
-        input.bootstrapSlider({
-            min: 1,
-            max: 100,
-            step: 1,
-            value: syncronizedDelay / syncronizedDelayRatio,
-            //scale: 'logarithmic',
-            reversed: true
-        }).on('slide', function (e) {
-
-            syncronizedDelay = e.value * syncronizedDelayRatio;
+            syncronizedDelay = e.from * syncronizedDelayRatio;
             //console.log(syncronizedDelay);
 
             //var t = Math.round(syncronizedDelay / 1000 * 60);
@@ -479,7 +487,7 @@ function buildGraphMenu() {
             //chart.config.data.labels = initTimeAxis(t);
             //chart.update();
             //startChart();
-        });
+        }
     });
 
     activeTab = "#graph0";
