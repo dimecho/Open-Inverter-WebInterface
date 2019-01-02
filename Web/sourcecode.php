@@ -6,9 +6,11 @@
     if(isset($_GET["hw"])){
         
         set_time_limit(10000);
-        
-        exec(runCommand("source",$_GET["hw"],$os), $output, $return);
-        
+
+        $command = runCommand("source",$_GET["hw"],$os,1);
+        exec($command, $output, $return);
+
+        echo "\n$command\n";
         foreach ($output as $line) {
             echo "$line\n";
         }
@@ -17,7 +19,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <?php include "header.php" ?>
+        <?php include "header.php"; ?>
         <script src="js/sourcecode.js"></script>
     </head>
     <body>
@@ -30,7 +32,7 @@
                         <tr align="center">
                             <td>
                                 <div class="progress progress-striped active">
-                                    <div class="progress-bar" style="width:1%" id="progressBar"></div>
+                                    <div class="progress-bar" style="width:1%"></div>
                                 </div>
                                 <div id="output"></div>
                             </td>

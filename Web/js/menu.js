@@ -187,12 +187,16 @@ function isFloat(n){
 
 function checkSoftware(app){
 
+    var result;
     $.ajax("install.php?check=" + app, {
+        async: false,
         success: function success(data) {
             console.log(data);
-            eval(data);
+            //eval(data);
+            result = data;
         }
     });
+    return result;
 };
 
 function openConsole(){
@@ -387,8 +391,6 @@ function openExternalApp(app) {
     
     if (app === "openscad") {
         $('.fileSVG').trigger('click');
-    } else if (app === "openocd") {
-        window.location.href = "bootloader.php";
     } else if (app === "source") {
         window.location.href = "sourcecode.php";
     } else if (app === "attiny") {

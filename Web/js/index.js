@@ -32,8 +32,8 @@ $(document).ready(function () {
                     //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
                     $.ajax("serial.php?com=list", {
                         async: false,
-                        success: function(d) {
-                           //console.log(d);
+                        success: function(data) {
+                           //console.log(data);
                            $(".serial").fancybox({
                                 maxWidth    : 800,
                                 maxHeight   : 640,
@@ -45,7 +45,7 @@ $(document).ready(function () {
                                 openEffect  : 'none',
                                 closeEffect : 'none'
                             });
-                            var s = d.split(',');
+                            var s = data.split('\n');
                             for (var i = 0; i < s.length; i++) {
                                 if(s[i] != "")
                                     $("#serial-interface").append($("<option>",{value:s[i]}).append(s[i]));

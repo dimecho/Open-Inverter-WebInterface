@@ -1,7 +1,7 @@
 Snubbers caps use 1uF for every 100A on rails.
 fweak applies only to sensor operation.
 Clean flux, it attracts moisture and causes shorts.
-You can use pin18 on main board (v.1) for temperature indicator.<br><img src="img/temp_indicator.png" />
+You can use pin18 on main board (v.1) for temperature indicator.<br><img src="pcb/Hardware v1.0/temp_indicator.png" />
 If encoder requires 5V leave out R2 and connect Pin 2 directly to 5V.
 The faster the switching (pwmfrq) the higher the losses in the inverter and the lower the losses in the motor.
 Make ampmin as small as possible to get good economy.
@@ -9,7 +9,7 @@ fslipmin=fslipmax (no slip) useful during debugging.
 Combine film caps (100uF) and elcaps (1500uF) to get optimal current damping.
 Signal from encoder is translated by BC547 transistor - 5V to encoder is OK.
 Measuring Pin3 from encoder 0.8V is normal, it is the Vbe of any bipolar transistor.
-Modifying encoder for high impedance low-pass filtered digital input.<br>Remove R1, R3 and T1 and bridge the base to the collector (bridge two pins of T1 that are NOT connected to the ground).<br><img src="img/encoder_lowpass.png" />
+Modifying encoder for high impedance low-pass filtered digital input.<br>Remove R1, R3 and T1 and bridge the base to the collector (bridge two pins of T1 that are NOT connected to the ground).<br><img src="pcb/Hardware v1.0/encoder_lowpass.png" />
 Which phase connects + charging line for boost charger? Use outside phases and do not connect to the middle phase.
 encflt may cause delays in the control loop. Setting it to 0 disables filtering entirely.
 Some STM32 pins are 5V tolerant and all others can take 5V with a simple 10k series resistor.

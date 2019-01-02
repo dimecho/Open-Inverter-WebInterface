@@ -45,35 +45,37 @@ function loadTab() {
 
         $("#hardware-version").empty();
         $("#debugger-interface").empty();
-        $("#serial-interface").empty();
+        $("#serial2-interface").empty();
 
-        for (var i = 1; i <= 3; i++) {
-            $("#hardware-version").append($("<option>",{value:i,selected:'selected'}).append("Hardware v" + i + ".0"));
-        }
+        $("#hardware-version").append($("<option>",{value:1}).append("Hardware v1.0"));
+        $("#hardware-version").append($("<option>",{value:3}).append("Hardware v3.0"));
+        
         if(os == "esp8266") {
-            $("#debugger-interface").append($("<option>",{value:"swd-esp8266",selected:'selected'}).append("SWD over ESP8266"));
-            $("#serial-interface").append($("<option>",{value:"uart-esp8266",selected:'selected'}).append("UART over ESP8266"));
+            $("#debugger-interface").append($("<option>",{value:"swd-esp8266"}).append("SWD over ESP8266"));
+            $("#serial2-interface").append($("<option>",{value:"uart-esp8266"}).append("UART over ESP8266"));
         }else{
             for (var i = 0; i < jtag_interface.length; i++) {
-                $("#debugger-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_name[i]));
+                $("#debugger-interface").append($("<option>",{value:jtag_interface[i]}).append(jtag_name[i]));
             }
-            //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
+            $("#debugger-interface").prop('selectedIndex', 0);
+
             $.ajax("serial.php?com=list", {
                 async: false,
                 success: function(data) {
-                    //console.log(data);
-                    var s = data.split(',');
+                    var s = data.split('\n');
                     for (var i = 0; i < s.length; i++) {
                         if(s[i] != "")
-                            $("#serial-interface").append($("<option>",{value:s[i]}).append(s[i]));
+                            $("#serial2-interface").append($("<option>",{value:s[i]}).append(s[i]));
                     }
+                    $("#serial2-interface").prop('selectedIndex', 0);
                 }
             });
         }
 
-        //$("#hardware-version").prop('selectedIndex', 0);
-        $("#debugger-interface").prop('selectedIndex', 0);
-        $("#serial-interface").prop('selectedIndex', 0);
+        $("#hardware-version").change(function() {
+            setHardwareImage();
+        });
+
         setHardwareImage();
     }
 };
@@ -100,14 +102,25 @@ function startTest() {
         analogTest();
     }else if(activeTab == "#tabHardware") {
         $.fancybox.close();
-        hardwareTest();
+
+        var d = $("#debugger-interface").val();
+        var s = "";
+
+        if(d.indexOf("stlink-v2") != -1 || d.indexOf("olimex-arm-jtag-swd") != -1) {
+            s = checkSoftware("stlink");
+        }else{
+            s = checkSoftware("openocd");
+        }
+
+        if(s.indexOf("openExternalApp") != -1)
+        {
+            hardwareTest();
+        }
     }
 };
 
-
 function analogTest() {
 
-    //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?get=" + testParam, {
     testRequest = $.ajax("serial.php?get=" + testParam, {
         //async: false,
         success: function success(data) {
@@ -134,15 +147,64 @@ function analogTest() {
 
 function hardwareTest() {
 
-	//$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?test=3", {
-    testRequest = $.ajax("serial.php?test=3", {
-		//async: false,
-		success: function success(data) {
-			console.log(data);
+    $("#hardware-image").hide();
+    $(".loader").show();
 
-			data = data.split("\n");
-		}
-	});
+    var d = $("#debugger-interface").val();
+    
+    testRequest = $.ajax("test.php?flash=1&debugger=" + d , {
+        async: false,
+        success: function success(data) {
+            console.log(data);
+
+            if(data.indexOf("jolly good") != -1 || data.indexOf("shutdown command invoked") !=-1) {
+                $.notify({ message: 'Flashed stm32-test.bin sucessfully.' }, { type: 'success' });
+
+                setTimeout(function () {
+                    $.notify({ message: 'Running GPIO tests.' }, { type: 'warning' });
+                    hardwareTestResults();
+                }, 2000);
+            }else{
+                $.notify({ message: 'Flash Error, try again.' }, { type: 'danger' });
+            }
+        }
+    });
+};
+
+function hardwareTestResults() {
+
+    var v = $("#hardware-version").val();
+    var s = $("#serial2-interface").val();
+
+    $.ajax("serial.php?test=" + v + "&serial=" + s, {
+        async: false,
+        success: function success(data) {
+
+            console.log(data);
+
+            if(data === "")
+            {
+                $(".loader").hide();
+                $("#hardware-image").show();
+                $.notify({ message: 'Test Check Failed' }, { type: 'danger' });
+            }else{
+                var results = $("#hardware-results");
+                results.empty();
+                data = data.split("\n");
+
+                for (var i = 1; i < data.length; i++) {
+
+                    var row = $("<div>",{class: "row"});
+                    var col = $("<div>",{class: "col"});
+
+                    col.append(data[i].replace("[31;1;1m", "<b style='color:red'>").replace("[32;1;1m", "<b style='color:green'>").replace("[0;0;0m", "</b>"));
+                    row.append(col);
+                    results.append(row);
+                }
+                $(".loader").hide();
+            }
+        }
+    });
 };
 
 function setHardwareImage() {
@@ -150,10 +212,12 @@ function setHardwareImage() {
     var v = $("#hardware-version").val();
 
     if(v == 1) {
-        $("#hardware-image").attr("src", "pcb/Hardware v1.0/test.png");
+        $("#hardware-image").attr("src", "pcb/Hardware v1.0/diagrams/test.png");
     }else if(v == 2) {
-        $("#hardware-image").attr("src", "pcb/Hardware v2.0/test.png");
+        $("#hardware-image").attr("src", "pcb/Hardware v2.0/diagrams/test.png");
     }else if(v == 3) {
-        $("#hardware-image").attr("src", "pcb/Hardware v3.0/test.png");
+        $("#hardware-image").attr("src", "pcb/Hardware v3.0/diagrams/test.png");
     }
+
+    $("#hardware-image").show();
 };

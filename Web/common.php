@@ -52,19 +52,15 @@
         }
 
         if(!empty($args)){
-
             if ($os === "mac" || $os === "windows") {
-                
-                $command = $command. "\"";
                 $split = explode(" ",$args);
                 foreach ($split as $key){
-                    $command .= " \"" .$key. "\""; //wrap individual arguments
+                    $command .= "\" \"" .$key; //wrap individual arguments
                 }
+                $command = str_replace("%", " ", $command); //tread % as space (args may have path with spaces)
             }else{
-                $command .= " " .$args. "\""; //no wrap
+                $command .= "\" \"" .$args; //no wrap
             }
-        }else{
-            $command .= "\""; //close quote
         }
 
         return $command;
@@ -75,20 +71,20 @@
         $command = commandOSCorrection($command,$args,$os);
 		
         if ($os === "mac") {
-            if(isset($console)) {
-                return "open -n -a Terminal \"" .$_SERVER["DOCUMENT_ROOT"]. "/../" .$command;
+            if($console === 1) {
+                return "open -n -a Terminal --args \"" .$_SERVER["DOCUMENT_ROOT"]. "/../" .$command. "\"";
             }else{
-                return "\"" .$_SERVER["DOCUMENT_ROOT"]. "/../" .$command. " 2>&1 &";
+                return "\"" .$_SERVER["DOCUMENT_ROOT"]. "/../" .$command. "\" 2>&1 &";
             }
         }else if ($os === "windows") {
-            return "powershell.exe -ExecutionPolicy Bypass -File \"" .$_SERVER["DOCUMENT_ROOT"] . "\\..\\Windows\\" .$command. " 2>&1";
+            return "powershell.exe -ExecutionPolicy Bypass -File \"" .$_SERVER["DOCUMENT_ROOT"] . "\\..\\Windows\\" .$command. "\" 2>&1";
         }else if ($GLOBALS["OS"] === "linux") {
             if(is_file("/usr/bin/gnome-terminal")){
                 //More transparent of what's going on
-                return "gnome-terminal -e 'bash -c \"" .$_SERVER["DOCUMENT_ROOT"]. "/../Linux/" .$command. ";bash' 2>&1";
+                return "gnome-terminal -e 'bash -c \"" .$_SERVER["DOCUMENT_ROOT"]. "/../Linux/" .$command. "\";bash' 2>&1";
             }else{
                 //Process behind the scenes
-                return "\"" .$_SERVER["DOCUMENT_ROOT"]. "/../Linux/" .$command. " 2>&1";
+                return "\"" .$_SERVER["DOCUMENT_ROOT"]. "/../Linux/" .$command. "\" 2>&1";
             }
         }
         return "echo";

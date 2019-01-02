@@ -1,3 +1,31 @@
+<?php
+    include_once("common.php");
+    error_reporting(E_ERROR | E_PARSE);
+    $os = detectOS();
+    
+    if(isset($_GET["flash"]))
+    {
+        $file = str_replace(" ", "%", getcwd()) . "/firmware/stm32_test.bin";
+        $interface = urldecode($_GET["debugger"]);
+
+        if ($os === "windows") {
+            $file = str_replace("/","\\",$file);
+            $interface = str_replace("/","\\",$interface);
+        }
+
+        if (strpos($interface, "stlink-v2") !== false) {
+            $command = runCommand("stlink", $file, $os, 0);
+        }else{
+            $command = runCommand("openocd", $file. " " .$interface, $os, 0);
+        }
+        exec($command, $output, $return);
+
+        echo "\n$command\n";
+        foreach ($output as $line) {
+            echo "$line\n";
+        }
+    }else{
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -87,22 +115,27 @@
                             <div class="row"><hr></div>
                             <div class="row">
                                 <div class="col">Hardware:</div>
-                                <div class="col"><select name="hardware-version" class="form-control" onchange="setHardwareImage();" id="hardware-version"></select></div>
+                                <div class="col"><select name="hardware" class="form-control" id="hardware-version"></select></div>
                             </div>
                             <div class="row">
                                 <div class="col">Debugger:</div>
-                                <div class="col"><select name="debugger-interface" class="form-control" id="debugger-interface"></select></div>
+                                <div class="col"><select name="debugger" class="form-control" id="debugger-interface"></select></div>
                             </div>
                             <div class="row">
                                 <div class="col">Serial:</div>
-                                <div class="col"><select name="serial-interface" class="form-control" id="serial-interface"></select></div>
+                                <div class="col"><select name="serial" class="form-control" id="serial2-interface"></select></div>
                             </div>
                             <div class="row"><hr></div>
                             <div class="row">
-                                <div class="col text-center">
-                                    <img src="" id="hardware-image" class="rounded" />
+                                <div class="col">
+                                    <center>
+                                        <div class="loader hidden"></div>
+                                        <img src="" id="hardware-image" class="rounded" />
+                                     </center>
+                                    <div class="container" id="hardware-results"></div>
                                 </div>
                             </div>
+                            <div class="row"><hr></div>
                         </div>
                     </div>
                 </div>
@@ -131,3 +164,4 @@
         </div>
     </body>
 </html>
+<?php } ?>

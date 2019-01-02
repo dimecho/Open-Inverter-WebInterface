@@ -57,7 +57,7 @@
         "dropdown": [{
             "id": "Flash Bootloader",
             "icon": "glyphicon-object-align-horizontal",
-            "onClick": "checkSoftware(\"openocd\")"
+            "onClick": "/bootloader.php"
         }, {
             "id": "Flash Firmware",
             "icon": "glyphicon-object-align-left",
@@ -65,7 +65,7 @@
         }, {
             "id": "Compile from Source",
             "icon": "glyphicon-console",
-            "onClick": "checkSoftware(\"arm\")"
+            "onClick": "eval(checkSoftware(\"arm\"))"
         }, {
             "id": "-"
         }, {
@@ -75,17 +75,17 @@
         }, {
             "id": "-"
         }, {
-            "id": "Wiring Diagrams",
-            "icon": "glyphicon-flash",
-            "onClick": "/wiring.php"
-        }, {
             "id": "Schematics",
             "icon": "glyphicon-cog",
-            "onClick": "checkSoftware(\"eagle\")"
+            "onClick": "eval(checkSoftware(\"eagle\"))"
         }, {
             "id": "Components",
             "icon": "glyphicon-list-alt",
             "onClick": "/pcb.php"
+        }, {
+            "id": "Wiring Diagrams",
+            "icon": "glyphicon-flash",
+            "onClick": "/wiring.php"
         }]
     }, {
         "id": "Console",

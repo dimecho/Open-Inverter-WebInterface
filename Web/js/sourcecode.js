@@ -75,9 +75,9 @@ function buildSourceCode(HWCONFIG) {
         url: "sourcecode.php?hw=" + HWCONFIG,
         data: {},
         success: function(data){
-            //console.log(data);
-            notify.update({'type': 'success', 'allow_dismiss': true, 'message': 'Compiled'});
-            progressBar.css("width","100%");
+            console.log(data);
+            //notify.update({'type': 'success', 'allow_dismiss': true, 'message': 'Compiled'});
+            $(".progress-bar").css("width", "100%");
             $("#output").append($("<pre>").append(data));
         }
     });

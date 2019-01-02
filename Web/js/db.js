@@ -1,24 +1,19 @@
-var motorDB;
-
 $(document).ready(function () {
-
-    motorDB = loadMotorDB();
-
-    buildMotorDB();
+    loadMotorDB();
 });
 
-function setMotorImage()
+function setMotorImage(motorDB)
 {
-    var i = $("#motor").val();
-    $("#motorimage").attr("src", "db/" + motorDB.motors[i].image);
+    var i = $("#motor-select").val();
+    $("#motor-image").attr("src", "db/" + motorDB.motors[i].image);
 
-    var motorinfo = $("#motorinfo").empty();
+    var motorinfo = $("#motor-info").empty();
     motorinfo.append("<li>Manufacturer: " + motorDB.motors[i].manufacturer + "</li>");
     motorinfo.append("<li>Model: " + motorDB.motors[i].model + "</li>");
     motorinfo.append("<li>Voltage: " + motorDB.motors[i].voltage + "</li>");
     motorinfo.append("<li>Amperage: " + motorDB.motors[i].amperage + "</li>");
 
-    var motortune = $("#motortune").empty();
+    var motortune = $("#motor-tune").empty();
     var table =  $("<table>");
 
     for(var t in motorDB.motors[i].tune)
@@ -29,11 +24,10 @@ function setMotorImage()
             success: function(data)
             {
                 //console.log(data);
-
                 var json = JSON.parse(data);
                 var btn = $("<button>", {class:"btn btn-success", id:motorDB.motors[i].tune[t].file});
                 var tr = $("<tr>");
-                var td = $("<td>").append(btn.append("[" + t + "] Set Motor for " + parseInt(json.udc) + " V"));
+                var td = $("<td>").append(btn.append("[" + t + "] Set Motor for " + TryParseInt(json.udc, "(?)") + " V"));
                 tr.append(td);
                 table.append(tr);
 
@@ -63,37 +57,49 @@ function setMotorImage()
     motortune.append(table);
 };
 
-function buildMotorDB()
+function buildMotorDB(motorDB)
 {
     if(motorDB)
     {
         //console.log(motorDB);
 
+        var list = $("#motor-select");
+
         for(var i in motorDB.motors)
         {
             //console.log(motorDB.motors[i]);
-            $("#motor").append($("<option>",{value:i,selected:'selected'}).append(motorDB.motors[i].manufacturer + " - " + motorDB.motors[i].model));
+            list.append($("<option>",{value:i}).append(motorDB.motors[i].manufacturer + " - " + motorDB.motors[i].model));
         }
 
-        $("#motor").prop('selectedIndex', 0);
+        list.change(function() {
+            setMotorImage(motorDB);
+        });
 
-        setMotorImage();
+        list.prop('selectedIndex', 0);
+        setMotorImage(motorDB);
     }
 };
 
 function loadMotorDB() {
 
-    var json = {};
-
     $.ajax("db/database.json", {
-        async: false,
         dataType: 'json',
         success: function success(data) {
-            //console.log(data);
-            json = data;
+            buildMotorDB(data);
         },
         error: function error(xhr, textStatus, errorThrown) {}
     });
-
-    return json;
 };
+
+function TryParseInt(str,defaultValue) {
+
+    var retValue = defaultValue;
+    if(str !== undefined) {
+        if(str.length > 0) {
+            if (!isNaN(str)) {
+                retValue = parseInt(str);
+            }
+        }
+    }
+    return retValue;
+}

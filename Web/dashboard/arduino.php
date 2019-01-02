@@ -14,7 +14,7 @@
                     <table class="table table-active table-bordered">
                         <tr>
                             <td>
-                                <button type="button" class="btn btn-primary" onClick="checkSoftware('arduino')"><i class="glyphicon glyphicon-th-large"></i> Open Arduino IDE</button>
+                                <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('arduino'))"><i class="glyphicon glyphicon-th-large"></i> Open Arduino IDE</button>
                             </td>
                         </tr>
                     </table>

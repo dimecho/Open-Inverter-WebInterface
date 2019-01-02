@@ -87,7 +87,7 @@ function download(app, crc)
             var xhr = new window.XMLHttpRequest();
             xhr.addEventListener("progress", function(e){
                 var s = e.target.responseText.split(",");
-                $("#progressBar").css("width", s.pop() + "%");
+                $(".progress-bar").css("width", s.pop() + "%");
                 //if(a === "100")
                     //downloadComplete(app);
                 //console.log(s.pop());

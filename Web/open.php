@@ -34,11 +34,11 @@ session_start();
             $command  = "arm";
         }else if($_GET["app"] == "openocd" || $_GET["app"] == "bootloader")
         {
-            $command = runCommand("openocd","",$os);
+            $command = runCommand("openocd","",$os,0);
             header("Location:bootloader.php");
         }else if($_GET["app"] == "source")
         {
-            $command = runCommand("source","",$os,true);
+            //$command = runCommand("source","",$os,1);
             header("Location:sourcecode.php");
         }else if($_GET["app"] == "arduino")
         {

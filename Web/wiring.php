@@ -15,7 +15,7 @@
                         <div class="row"><hr></div>
                         <div class="row">
                             <div class="col">
-                                <div class="card" id="hw1">
+                                <div class="card" id="h1">
                                     <img class="card-img-top" src="" alt="">
                                     <div class="card-body">
                                     <h5 class="card-title text-center"></h5>
@@ -24,7 +24,7 @@
                                         <div class="row">
                                             <div class="col">
                                                 <a data-fancybox="gallery" href="">
-                                                    <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-qrcode"></i> Pinout</button>
+                                                    <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-th-list"></i> Pinout</button>
                                                 </a>
                                             </div>
                                             <div class="col">
@@ -43,7 +43,7 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="card" id="hw1d">
+                                <div class="card" id="h1d">
                                     <img class="card-img-top" src="" alt="">
                                     <div class="card-body">
                                     <h5 class="card-title text-center"></h5>
@@ -52,7 +52,7 @@
                                         <div class="row">
                                             <div class="col">
                                                 <a data-fancybox="gallery" href="">
-                                                    <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-qrcode"></i> Pinout</button>
+                                                    <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-th-list"></i> Pinout</button>
                                                 </a>
                                             </div>
                                             <div class="col">
@@ -69,7 +69,7 @@
                         <div class="row"><hr></div>
                         <div class="row">
                             <div class="col">
-                                <div class="card" id="hw2">
+                                <div class="card" id="h2">
                                     <img class="card-img-top" src="" alt="">
                                     <div class="card-body">
                                     <h5 class="card-title text-center"></h5>
@@ -78,7 +78,7 @@
                                         <div class="row">
                                             <div class="col">
                                                 <a data-fancybox="gallery" href="">
-                                                    <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-qrcode"></i> Pinout</button>
+                                                    <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-th-list"></i> Pinout</button>
                                                 </a>
                                             </div>
                                             <div class="col">
@@ -97,7 +97,7 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="card" id="hw3">
+                                <div class="card" id="h3">
                                     <img class="card-img-top" src="" alt="">
                                     <div class="card-body">
                                     <h5 class="card-title text-center"></h5>
@@ -106,7 +106,7 @@
                                         <div class="row">
                                             <div class="col">
                                                 <a data-fancybox="gallery" href="">
-                                                    <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-qrcode"></i> Pinout</button>
+                                                    <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-th-list"></i> Pinout</button>
                                                 </a>
                                             </div>
                                             <div class="col">

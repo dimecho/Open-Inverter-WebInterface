@@ -9,7 +9,7 @@
 
     if(!isset($_GET["url"]) && isset($_GET["app"]))
     {
-        exec(runCommand($_GET["app"],"",$os), $output, $return);
+        exec(runCommand($_GET["app"],"",$os,0), $output, $return);
         
         //echo "$command\n";
         
@@ -19,9 +19,9 @@
     }
     else if(isset($_GET["remove"]))
     {
-        exec(runCommand($_GET["remove"],"uninstall",$os));
+        exec(runCommand($_GET["remove"],"uninstall",$os,0));
         
-        //echo runCommand($_GET["remove"],"uninstall",$os);
+        //echo runCommand($_GET["remove"],"uninstall",$os,0);
         echo $_GET["remove"];
     }
     else if(isset($_GET["check"]))

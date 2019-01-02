@@ -17,7 +17,7 @@
                                 <br>
                                 <div class="input-group">
                                     <span class = "input-group-addon w-75">
-                                        <select class="form-control" onchange="setMotorImage()" id="motor"></select>
+                                        <select class="form-control" id="motor-select"></select>
                                     </span>
                                     <span class = "input-group-addon w-25">
                                         <button class="browse btn btn-primary" type="button"><i class="icon-list-alt"></i> Select Motor</button>
@@ -26,12 +26,12 @@
                                 <br><br>
                                 <div class="input-group">
                                     <span class = "input-group-addon w-50">
-                                        <img src="" id="motorimage" class="rounded pull-left w-75">
+                                        <img src="" id="motor-image" class="rounded pull-left w-75">
                                     </span>
                                     <span class = "input-group-addon align-text-top pull-left">
-                                        <ul class="text-left" id="motorinfo"></ul>
+                                        <ul class="text-left" id="motor-info"></ul>
                                         <br>
-                                        <div id="motortune"></div>
+                                        <div id="motor-tune"></div>
                                     </span>
                                 </div>
                             </td>

@@ -13,9 +13,6 @@ body {
 .hidden {
   display: none;
 }
-.tooltip-inner {
-  max-width: 500px;
-}
 .slider {
   width: 90% !important;
 }

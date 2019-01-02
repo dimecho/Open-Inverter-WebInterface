@@ -9,6 +9,15 @@
             "file": "AC-35.txt"
         }]
     },{
+        "model": "Ansaldo",
+        "manufacturer": "Electro Adda",
+        "voltage": 480,
+        "amperage": 100,
+        "image": "img/Ansaldo.jpg",
+        "tune": [{
+            "file": "Ansaldo.txt"
+        }]
+    },{
         "model": "P90",
         "manufacturer": "Enova",
         "voltage": 360,

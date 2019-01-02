@@ -1,16 +1,18 @@
 var jtag_interface = [
 	"interface/ftdi/olimex-arm-usb-ocd-h.cfg",
 	"interface/ftdi/olimex-arm-usb-tiny-h.cfg",
+    "interface/stlink-v2.cfg",
+    "interface/ftdi/olimex-arm-usb-tiny-h.cfg -f interface/ftdi/olimex-arm-jtag-swd.cfg",
 	"interface/parport.cfg",
-	"interface/stlink-v2.cfg",
 	"interface/ftdi/jtag-lock-pick_tiny_2.cfg"
 ];
 
 var jtag_name = [
 	"Olimex OCD-H",
 	"Olimex Tiny-H",
+    "STlink v2.0",
+    "Olimex JTAG-SWD",
 	"JTAG Wiggler",
-	"STlink v2.0",
 	"Lock-Pick Tiny v2.0"
 ];
 
@@ -29,10 +31,14 @@ function setInterfaceImage() {
 		var v = $("#firmware-interface").val();
 		if(v.indexOf("stlink-v2") != -1) {
 			$("#jtag-image").attr("src", "firmware/img/stlinkv2.png");
-			checkSoftware("stlink");
+			eval(checkSoftware("stlink"));
+        }else if(v.indexOf("olimex-arm-jtag-swd") != -1) {
+            $("#jtag-image").attr("src", "firmware/img/olimex-arm-jtag-swd.jpg");
+            eval(checkSoftware("openocd"));
 		}else if(v.indexOf("interface") != -1) {
             var img = v.split("/").pop().slice(0, -4);
 			$("#jtag-image").attr("src", "firmware/img/" + img + ".jpg");
+			eval(checkSoftware("openocd"));
 		}else{
 			$("#jtag-image").attr("src","firmware/img/usb_ttl.jpg");
 			$("#jtag-txt").html("Caution: Main board Olimex is powered with 3.3V - Double check your TTL-USB adapter.");

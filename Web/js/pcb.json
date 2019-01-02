@@ -1,0 +1,57 @@
+[{
+    "id": "h1",
+    "title" : "Hardware v1.0",
+    "path": "pcb/Hardware v1.0/",
+    "thumb": "bom/img/base_board4.jpg",
+    "pincsv": "diagrams/wiring.csv",
+    "pinout": "diagrams/pinout.png",
+    "wiring": "diagrams/wiring.png",
+    "description": "Starter board. Simple to solder and understand. Unique design - Sensor uses ATTiny13 for voltage isolation.",
+    "boards": [{
+        "base_board4": "R20 and JP7 are not populated!",
+        "gate_driver": "",
+        "sensor_board3": "Add C4 & C5 100nF when using LEM HTFS current sensors"
+    }]
+}, {
+    "id": "h1d",
+    "title": "Hardware v1.0 (Damien Mod)",
+    "path": "pcb/Hardware v1.0 (Damien Mod)/",
+    "thumb": "bom/img/main_board_v2.jpg",
+    "pincsv": "diagrams/wiring.csv",
+    "pinout": "diagrams/wiring.png",
+    "wiring": "#",
+    "description": "Modified by Damien Maguire. All-in-one with driver over-saturation protection.",
+    "boards": [{
+        "combi_v8": "",
+        "main_board_v2": "",
+        "igbt_v2": "U1, U1 and link out ZD1, ZD2 components are optional for Desat detection tuning",
+        "sensor_board_v1": ""
+    }]
+}, {
+    "id": "h2",
+    "title": "Hardware v2.0",
+    "path": "pcb/Hardware v2.0/",
+    "thumb": "bom/img/base_board6.jpg",
+    "pincsv": "diagrams/wiring.csv",
+    "pinout": "diagrams/pinout.png",
+    "wiring": "diagrams/wiring.png",
+    "description": "CAN support, ABZ encoder and IGBT over-saturation protection. Improved voltage and current sensors.<br><br><a href='http://johanneshuebner.com/quickcms/index.html%3Fen_main-board,21.html' target='_blank'>Main Board</a><br><a href='http://johanneshuebner.com/quickcms/index.html%3Fen_sensor-board,22.html' target='_blank'>Sensor Board</a><br><a href='http://johanneshuebner.com/quickcms/index.html%3Fen_gate-drivers,23.html' target='_blank'>Gate Drivers</a>",
+    "boards": [{
+        "base_board6": "",
+        "gate_driver2": "",
+        "sensor_current": "",
+        "sensor_voltage": ""
+    }]
+}, {
+    "id": "h3",
+    "title": "Hardware v3.0",
+    "path": "pcb/Hardware v3.0/",
+    "thumb": "bom/img/base_board7.jpg",
+    "pincsv": "diagrams/wiring.csv",
+    "pinout": "diagrams/pinout.png",
+    "wiring": "diagrams/wiring.png",
+    "description": "Support for permanent magnet motors with resolver. ESP8266 module for wireless configuration.",
+    "boards": [{
+        "base_board7": ""
+    }]
+}]

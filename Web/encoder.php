@@ -12,10 +12,10 @@
                     <table class="table table-active table-bordered">
                         <tr>
                             <td>
-                                <button type="button" class="btn btn-primary" onClick="checkSoftware('inkscape')"><i class="glyphicon glyphicon-cog"></i> Inkscape (2D)</button>
+                                <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('inkscape'))"><i class="glyphicon glyphicon-cog"></i> Inkscape (2D)</button>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-primary" onClick="checkSoftware('openscad')"><i class="glyphicon glyphicon-cog"></i> OpenSCAD (3D)</button>
+                                <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('openscad'))"><i class="glyphicon glyphicon-cog"></i> OpenSCAD (3D)</button>
                             </td>
                         </tr>
                     </table>

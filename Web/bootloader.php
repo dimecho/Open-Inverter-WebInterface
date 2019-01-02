@@ -9,9 +9,9 @@
         $interface = urldecode($_GET["interface"]);
 
         if (strpos($interface, "stlink-v2") !== false) {
-            $command = runCommand("stlink", $file, $os);
+            $command = runCommand("stlink", $file, $os, 0);
         }else{
-            $command = runCommand("openocd", $file. " " .$interface, $os);
+            $command = runCommand("openocd", $file. " " .$interface, $os, 0);
         }
         exec($command, $output, $return);
 		echo sys_get_temp_dir();

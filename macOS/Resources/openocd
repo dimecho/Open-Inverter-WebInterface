@@ -25,6 +25,6 @@ else
             ADDRESS=" 0x08001000"
         fi
 
-        openocd -f ./$2 -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset halt" -c "flash write_image erase unlock $1$ADDRESS" -c "reset" -c "shutdown" 
+        openocd -f ./$2 -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset halt" -c "flash write_image erase unlock \"$1\"$ADDRESS" -c "reset" -c "shutdown" 
     fi
 fi

@@ -1,30 +1,32 @@
-Part,ID,Value,Device,PDF
-IL1_IL2_UDC_TMPHS_VCC,35,,PINHD-1X8,
-C1,5,100nF,C-EU025-024X044,
-C2,8,100µF,CPOL-EUE2-5,
-C3,2,1µF*,C-EU025-024X044,
-C6,2,1µF*,C-EU025-024X044,
-C7,2,1µF*,C-EU025-024X044,
-IC1,32,,LM2902N,http://www.ti.com/lit/ds/symlink/lm2902.pdf
-IC2,47,*,ATTINY13DIP,http://www.atmel.com/images/doc2535.pdf
-PWS1,48,*,ROE-0505S/BO0505S,http://www.recom-power.com/pdf/Econoline/ROE.pdf
-OK1,49,*,PC817,http://www.futurlec.com/Datasheet/LED/PC817.pdf
-R1,23,680k,R-EU_0207/10,
-R3,23,680k,R-EU_0207/10,
-R5,19,10k,R-EU_0207/10,
-R6,24,100k 1%,R-EU_0207/10,
-R7,24,100k 1%,R-EU_0207/10,
-R8,19,10k,R-EU_0207/10,
-R9,24,100k 1%,R-EU_0207/10,
-R10,24,100k 1%,R-EU_0207/10,
-R11,19,10k,R-EU_0207/10,
-R12,16,1.2k,R-EU_0207/10,
-R13,29,3.3k 1%,R-EU_0207/10,
-R14,28,4.7k 1%,R-EU_0207/10,
-R15,18,500R*,R-EU_0207/10,
-R16,18,500R*,R-EU_0207/10,
-R17,19,10k*,R-EU_0207/10,
-L1,13,10µH,L-EU,http://www.protostack.com/download/sp0203.pdf
-TMPHS,35,,PINHD-1X2,
-U$1,41,,L06P800S05/L01Z_S05/LEM HTFS ,http://www.tamuracorp.com/clientuploads/pdfs/engineeringdocs/L06PXXXS05.pdf
-U$2,41,,L06P800S05/L01Z_S05/LEM HTFS ,http://www.tamuracorp.com/clientuploads/pdfs/engineeringdocs/L06PXXXS05.pdf
+Part,Value,Package,PDF
+IL1_IL2_UDC_TMPHS_VCC,,PINHD-1X8,
+C1,100nF,104,
+C2,100uF,6x6,
+C3,100nF/1uF,105,
+C4*,100nF,104,
+C5*,100nF,104,
+C6,1uF,105,
+C7,1uF,105,
+IC1,TLC274P/LM2902N,DIP-14,https://www.ti.com/lit/ds/symlink/lm2902.pdf
+IC2,ATTINY13A,DIP-8,https://www.atmel.com/images/doc2535.pdf
+PWS1,BO0505S/ROE-0505S,,https://www.recom-power.com/pdf/Econoline/ROE.pdf
+OK1,PC817,DIP-4,https://www.farnell.com/datasheets/73758.pdf
+R1,680k,1/4W,
+R3,680k,1/4W,
+R5,10k,1/4W,
+R6,100k,1/4W (1%),
+R7,100k,1/4W (1%),
+R8,10k,1/4W,
+R9,100k,1/4W (1%),
+R10,100k,1/4W (1%),
+R11,10k,1/4W,
+R12,1.2k,1/4W,
+R13,3.3k,1/4W (1%),
+R14,4.7k,1/4W (1%),
+R15,500R,1/4W,
+R16,500R,1/4W,
+R17,10k,1/4W,
+L1,10uH,1/4W,https://www.protostack.com.au/download/sp0203.pdf
+TMPHS,JCurve,10k,
+U1*,LEMHTFS/L01Z_S05/L06P800S05,,https://www.tamuracorp.com/clientuploads/pdfs/engineeringdocs/L06PXXXS05.pdf
+U2*,LEMHTFS/L01Z_S05/L06P800S05,,https://www.tamuracorp.com/clientuploads/pdfs/engineeringdocs/L06PXXXS05.pdf

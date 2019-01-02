@@ -22,7 +22,7 @@ Console Management for [Huebner Inverter Project](https://github.com/jsphuebner/
 
 ## Screenshot
 
-![Screenshot](Web/img/screenshot.jpg?raw=true)
+![Screenshot](Web/img/screenshot.png?raw=true)
 
 ## Download
 

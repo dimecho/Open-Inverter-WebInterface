@@ -10,9 +10,9 @@
 		
 		if (strpos($interface, "interface") !== false) {
             if (strpos($interface, "stlink-v2") !== false) {
-                $command = runCommand("stlink", $file. " ram", $os);
+                $command = runCommand("stlink", $file. " ram", $os, 0);
             }else{
-                $command = runCommand("openocd", $file. " " .$interface. " ram", $os);
+                $command = runCommand("openocd", $file. " " .$interface. " ram", $os, 0);
             }
 			exec($command, $output, $return);
 			echo sys_get_temp_dir();
@@ -223,7 +223,7 @@
 										async: false,
 										success: function(data) {
 											//console.log(data);
-											var s = data.split(',');
+											var s = data.split('\n');
 											for (var i = 0; i < s.length; i++) {
 												if(s[i] != "")
 													$("#firmware-interface").append($("<option>",{value:s[i]}).append(s[i]));

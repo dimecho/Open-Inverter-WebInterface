@@ -272,7 +272,7 @@ var xhr;
 
 $(document).ready(function () {
 
-	//$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?init=921600", {
+	/*
     $.ajax("serial.php?init=921600", {
 		success: function(data) {
 			console.log(data);
@@ -281,6 +281,7 @@ $(document).ready(function () {
 			}
 		}
 	});
+    */
 	
     /*
     $(document).click(function (e) {

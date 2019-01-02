@@ -195,7 +195,7 @@
                                         <div class="input-group w-100">
                                             <span class = "input-group-addon w-75">
                                                 <div class="progress progress-striped active" style="margin-top:10px;">
-                                                  <div class="progress-bar" style="width:0%" id="progressBar"></div>
+                                                  <div class="progress-bar" style="width:0%"></div>
                                                 </div>
                                             </span>
                                             <span class = "input-group-addon w-25">
