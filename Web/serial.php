@@ -37,10 +37,10 @@ session_start();
     }
     else if(isset($_GET["test"]))
     {
-        if(isset($_GET["serial"])) {
+		if(isset($_GET["serial"])) {
             $_SESSION["serial"] = $_GET["serial"];
-        }
-        echo readSerial(" ");
+		}
+		echo readSerial(" ");
     }
     else if(isset($_GET["serial"]))
     {
@@ -204,19 +204,40 @@ session_start();
     function uart_read_line($uart)
     {
         while(substr($read, -1) !== "\n")
-            $read .=stream_get_contents($uart, 1);
+            $read .= stream_get_contents($uart, 1);
 
         return $read;
     }
 
-    function uart_read_eof($uart)
+    function uart_read_eof($uart,$end)
     {
-        do {
-            sleep(1); //required in NONBLOCK mode
-            $n = stream_get_contents($uart, -1);
-            //echo "[" . strlen($n) . "]"; //DEBUG
-            $read .= $n;
-        } while($n != "");
+        if (php_uname('s') == "Windows NT") {
+			//Windows does not set "stream_set_blocking"
+			//PHP Bug https://bugs.php.net/bug.php?id=47918
+			while(true) {
+				$read .= stream_get_contents($uart, 1);
+				foreach($end as $item) {
+					if(strpos($read, $item) == true) {
+						break 2;
+					}
+				}
+			}
+			$read .= uart_read_line($uart);
+		}else{
+			//Works well for Macs with auto timer.
+			$timer = 10000;
+			do {
+				usleep($timer);
+				$n = stream_get_contents($uart, -1);
+				//echo "[" . strlen($n) . "]"; //DEBUG
+				if($n != "") {
+					$read .= $n;
+					$timer--; //once we get going quicker to read ending.
+				}else{
+					$timer++;
+				}
+			} while($timer > 1000000); //1 second
+		}
 
         return $read;
     }
@@ -289,8 +310,8 @@ session_start();
         if(!$uart)
             return $com;
 
-        while(stream_get_meta_data($uart)["unread_bytes"] > 0) //flush all previous output
-            stream_get_contents($uart, -1);
+        //while(stream_get_meta_data($uart)["unread_bytes"] > 0) //flush all previous output
+        //    stream_get_contents($uart, -1);
         
         fwrite($uart, $cmd); //fputs($uart, $cmd);
 
@@ -303,15 +324,15 @@ session_start();
         //echo "\"" .$read. "\"";
 
         if($cmd === " "){ //Hardware test
-            $read .= uart_read_eof($uart);
+            $read .= uart_read_eof($uart,array("All tests","one test"));
         }else if($cmd === "json\n"){
             $read = fread($uart,1024);
             for ($i = 0; $i < 9; $i++)
                 $read .= fread($uart,1024);
-            while (substr($read, -6) !== "}\r\n}\r\n") //quicker then - uart_read_eof($uart);
-                $read .= stream_get_contents($uart, -1); //fread($uart,1);
+            while (substr($read, -6) !== "}\r\n}\r\n")
+                $read .= fread($uart,1);
         }else if($cmd === "errors\n"){
-            $read = uart_read_eof($uart);
+            $read = uart_read_eof($uart,array("\r"));
         }else if($cmd === "save\n"){
             $read = uart_read_line($uart); //fgets($uart); //CRC
             $read .= uart_read_line($uart); //fgets($uart); //CAN

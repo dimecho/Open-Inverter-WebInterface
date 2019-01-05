@@ -102,7 +102,7 @@ function download(app, crc)
 
             console.log(data);
 
-            if(data.indexOf("OK") != -1)
+            if(data.indexOf("Error") != -1)
             {
                 $("#checksum_good").append(crc);
                 $("#checksum_bad").append(data.replace(" Error", ""));

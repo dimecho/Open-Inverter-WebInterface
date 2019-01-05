@@ -75,7 +75,7 @@
 												//console.log(data);
 												progressBar.css("width","100%");
 												$("#output").append($("<pre>").append(data));
-												if(data.indexOf("shutdown command invoked") !=-1)
+												if(data.indexOf("shutdown command invoked") !=-1 || data.indexOf("jolly good") !=-1)
 												{
 													$.notify({ message: "Bootloader Complete" },{ type: "success" });
 													$.notify({ message: "...Next Flash Firmware" },{ type: "warning" });

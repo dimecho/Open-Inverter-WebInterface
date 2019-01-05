@@ -2,7 +2,7 @@ var jtag_interface = [
 	"interface/ftdi/olimex-arm-usb-ocd-h.cfg",
 	"interface/ftdi/olimex-arm-usb-tiny-h.cfg",
     "interface/stlink-v2.cfg",
-    "interface/ftdi/olimex-arm-usb-tiny-h.cfg -f interface/ftdi/olimex-arm-jtag-swd.cfg",
+    "interface/ftdi/olimex-arm-jtag-swd.cfg",
 	"interface/parport.cfg",
 	"interface/ftdi/jtag-lock-pick_tiny_2.cfg"
 ];

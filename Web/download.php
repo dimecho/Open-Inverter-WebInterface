@@ -9,10 +9,13 @@
 
     if(isset($_GET['start']) || isset($_GET['download'])){
 
-        $id = $software[$_GET['start']];
+		if(isset($_GET['start'])) {
+			$id = $software[$_GET['start']];
+		}
 
-        if($id == "")
+        if(isset($_GET['download'])) {
             $id = $software[$_GET['download']];
+		}
 
         if(isset($id['download']['all'])){
             $source = $id['download']['all'];

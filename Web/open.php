@@ -59,6 +59,8 @@ session_start();
             }else if ($os === "linux") {
                 $command = "su \$SUDO_USER -c \"xdg-open '" .$_SERVER["DOCUMENT_ROOT"]. "/pcb'\"";
             }
+		}else{
+            $command = runCommand($_GET["app"],"",$os,0);
         }
         
 		echo $command;

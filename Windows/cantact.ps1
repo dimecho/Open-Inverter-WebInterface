@@ -1,4 +1,4 @@
-$stlink = "$env:programfiles\stlink-1.3.0-win64"
+$cantact = "$env:programfiles\cantact"
 
 function Elevate() {
     # Get the ID and security principal of the current user account
@@ -14,21 +14,14 @@ function Elevate() {
 
 if($args[0] -eq "uninstall") {
 	Elevate
-	Remove-Item -Recurse -Force $stlink
+	Remove-Item -Recurse -Force $cantact
 }else{
-    if (-Not (Test-Path $stlink)){
+    if (-Not (Test-Path $cantact)){
 		Elevate
 		Add-Type -AssemblyName System.IO.Compression.FileSystem
-		[System.IO.Compression.ZipFile]::ExtractToDirectory("$env:userprofile\Downloads\stlink-1.3.0-win64.zip", "$env:programfiles")
-	}else{
-        Set-Location "$stlink\bin"
-		$FILE = $($args[0]).Replace("\","\\")
-        $ADDRESS=" 0x08000000"
-
-        if ($args[1] -eq 'ram') { $ADDRESS=" 0x08001000" }
-        if ($args[0] -like '*.hex') { $ADDRESS="" }
-		if ($args[0] -like '*.hex') { $FORMAT=" --format ihex" }
-		
-		Start-Process ".\st-flash.exe" -ArgumentList "--reset$($FORMAT) write ""$($FILE)""$($ADDRESS)" -NoNewWindow -Wait
+		[System.IO.Compression.ZipFile]::ExtractToDirectory("$env:userprofile\Downloads\cantact-v0.3.0-alpha.zip", "$env:programfiles")
 	}
+	
+    Set-Location "$cantact\bin"
+	Start-Process ".\cantact64.exe"
 }

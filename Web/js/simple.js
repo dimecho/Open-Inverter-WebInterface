@@ -14,14 +14,6 @@ $(document).ready(function () {
             $("#brknompedal").slider({ value: -50 });
         }
     });
-
-    /*
-    $(".slider").on('slideStop', function(e) {
-        //console.log(e);
-        console.log(e.target.nextSibling.id + ":" + e.value);
-    });
-    */
-    //var delay =  speed.slider('getValue');
 });
 
 function calculateCurve(value) {
@@ -551,11 +543,84 @@ function numimpTest(wait) {
                     var speed = getJSONAverageFloatValue("speed");
                     setParameter("ampnom",0);
                     var numimp = round(speed / expectedSpeed * 8);
-                    $.notify({ message: 'Your encoder seems to have ' + numimp + ' pulses per rotation' }, { type: 'success' });
+                    $.notify({ message: "Your encoder seems to have " + numimp + " pulses per rotation" }, { type: "success" });
                     setParameter("numimp",numimp);
                 }, 2000);
             }, function () {});
         }
+    }
+};
+
+function tempTuning() {
+
+	if(navigator.geolocation)
+    {
+		navigator.geolocation.getCurrentPosition(function(position) {
+
+            var apikey = "642f15a86f86f020e97958563f5d8ebd";
+            
+            $.ajax("http://api.openweathermap.org/data/2.5/weather?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=metric&APPID=" + apikey, {
+                dataType: "json",
+                success: function(data) {
+            
+                    console.log(data);
+
+                    var t = data.main.temp;
+
+                    $.notify({ message: "Outside Temperature: " + t}, { type: "warning" });
+
+                    var _snshs = [0, 1, 2];
+                    var snshs = ["JCurve", "Semikron (Skiip82)", "MBB600"];
+
+                    var _snsm = [12, 13, 14];
+                    var snsm = ["KTY83-110", "KTY84-130", "Leaf"];
+
+                    var detect_tmphs = false;
+                    var detect_tmpm = false;
+
+                    for (var i = 0; i < _snshs.length; i++) {
+
+                        var tmphs = getJSONAverageFloatValue("tmphs"); //Heatsink
+
+                        console.log(tmphs + ">" + t);
+
+                        if (tmphs < (t - 1) || tmphs > (t + 1)) { //+-1 degree
+                            setParameter("snshs",_snshs[i]);
+                        }else{
+                            $.notify({ message: "Heatsink Sensor: " + snshs[i]}, { type: "success" });
+                            detect_tmphs = true;
+                            break;
+                        }
+                    }
+
+                    for (var i = 0; i < _snsm.length; i++) {
+
+                        var tmpm = getJSONAverageFloatValue("tmpm"); //Motor
+
+                        console.log(tmpm + ">" + t);
+
+                        if (tmpm < (t - 1) || tmpm > (t + 1)) { //+-1 degree
+                            setParameter("snsm",_snsm[i]);
+                        }else{
+                            $.notify({ message: "Motor Sensor: " + snsm[i]}, { type: "success" });
+                            detect_tmpm = true;
+                            break;
+                        }
+                    }
+
+                    if(detect_tmpm === false)
+                        $.notify({ message: "Heatsink Sensor: Not Detected"}, { type: "danger" });
+
+                    if(detect_tmpm === false)
+                        $.notify({ message: "Motor Sensor: Not Detected"}, { type: "danger" });
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $.notify({ message: "Error: [api.openweathermap.org] " + xhr.status + " " + thrownError}, { type: "danger" });
+                }
+            });
+		});
+	}else{
+        $.notify({ message: "Error: Navigation Unavaliable"}, { type: "danger" });
     }
 };
 

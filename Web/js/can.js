@@ -2,6 +2,16 @@ var canDB = {};
 var canMap = {};
 var json = {};
 
+var can_interface = [
+	"firmware/img/canable.jpg",
+	"firmware/img/usb2can.png"
+];
+
+var can_name = [
+	"CANable",
+	"USB2CAN"
+];
+
 $(document).ready(function () {
 
 	$.ajax("js/can.json", {
@@ -22,9 +32,48 @@ $(document).ready(function () {
         }
     });
 
+    if(os == "esp8266") {
+        $("#open-cantact").remove();
+        $("#can-image").remove();
+    }else{
+    	for (var i = 0; i < can_interface.length; i++) {
+    		$("#can-interface").append($("<option>",{value:can_interface[i]}).append(can_name[i]));
+    	}
+        setCANImage();
+    }
+	
+	$.ajax("serial.php?get=canspeed,canperiod", {
+        //async: sync,
+        success: function success(data)
+        {
+            data = data.replace("\n\n", "\n");
+            data = data.split(/\n/);
+			console.log(data);
+			
+			$("#can-speed").prop('selectedIndex', data[0]);
+			$("#can-period").prop('selectedIndex', data[1]);
+		}
+    });
+	
     buildCANParameters();
     buildStatus(false);
 });
+
+function setCANImage() {
+	$("#can-image img").attr("src", $("#can-interface").val());
+};
+
+function setCANSpeed() {
+	var v = $("#can-speed").val();
+	$.notify({ message: "canspeed=" + v },{ type: 'warning' });
+	setParameter("canspeed",v,true,true);
+};
+
+function setCANPeriod() {
+	var v = $("#can-period").val();
+	$.notify({ message: "canperiod=" + v },{ type: 'warning' });
+	setParameter("canperiod",v,true,true);
+};
 
 function buildCANParameters() {
     

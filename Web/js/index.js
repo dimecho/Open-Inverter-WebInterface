@@ -53,7 +53,11 @@ $(document).ready(function () {
                             $(".serial").trigger('click');
                         }
                     });
-                    
+				}else if(data.indexOf("test pin") != -1){
+                    $.notify({ message: 'STM32 Test firmware detected.' }, { type: 'danger' });
+					setTimeout(function () {
+						window.location.href = "test.php";
+					}, 1500);
                 }else{
                     driverIssues = data;
                     if(data.indexOf("9600") != -1) {

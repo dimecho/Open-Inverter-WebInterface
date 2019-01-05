@@ -236,7 +236,7 @@
             "size" : 65,
             "version" : "8.1.1"
         },
-		"checksum" : {
+        "checksum" : {
             "mac" : "c6a6b952be6843a8f3dc0ab97b29bd70",
             "windows" : "c6a6b952be6843a8f3dc0ab97b29bd70",
             "linux" : "c6a6b952be6843a8f3dc0ab97b29bd70"
@@ -244,6 +244,26 @@
         "path" : {
             "mac" : "/Applications/DesignSparkPCB.app/Contents/MacOS/DesignSparkPCB",
             "windows" : "C:\\Program Files (x86)\\DesignSpark\\DesignSpark PCB 8.1\\DesignSpark.exe",
+            "linux" : ""
+        }
+    },
+    "cantact" : {
+        "title" : "CANtact App - Controller Area Network",
+        "download" : {
+            "mac" : "https://github.com/linklayer/cantact-app/releases/download/v0.3.0-alpha/cantact-v0.3.0-alpha.zip",
+            "windows" : "https://github.com/linklayer/cantact-app/releases/download/v0.3.0-alpha/cantact-v0.3.0-alpha.zip",
+            "linux" : "",
+            "size" : 15,
+            "version" : "0.3.0"
+        },
+		"checksum" : {
+            "mac" : "c8855450f0287527599d73ca8836d44b",
+            "windows" : "c8855450f0287527599d73ca8836d44b",
+            "linux" : ""
+        },
+        "path" : {
+            "mac" : "/Applications/cantact/bin/cantact",
+            "windows" : "C:\\Program Files\\cantact\\bin\\cantact64.exe",
             "linux" : ""
         }
     },

@@ -35,7 +35,7 @@ function loadComponents(v) {
 
     $.ajax("js/pcb.json", {
         dataType: "json",
-        async: false,
+        //async: false,
         success: function(data) {
 
             for(var key in data)

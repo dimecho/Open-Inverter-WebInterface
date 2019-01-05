@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="9.1.0">
+<eagle version="6.4">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
-<setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="1.27" unitdist="mm" unit="mm" style="lines" multiple="1" display="no" altdistance="0.025" altunitdist="inch" altunit="inch"/>
@@ -61,12 +60,10 @@
 <wire x1="49.2" y1="0" x2="49.2" y2="55.87" width="0" layer="20"/>
 <wire x1="49.2" y1="55.87" x2="0" y2="55.87" width="0" layer="20"/>
 <wire x1="0" y1="55.87" x2="0" y2="0" width="0" layer="20"/>
-<text x="15.24" y="26.67" size="1.778" layer="25">(c) 2016 Johannes Huebner</text>
-<text x="5.08" y="8.89" size="1.778" layer="25" rot="R90">Gate Driver V2</text>
+<text x="15.24" y="26.67" size="1.4224" layer="25" font="vector">(c) 2018 Johannes Huebner</text>
+<text x="5.08" y="7.62" size="1.778" layer="25" rot="R90">Gate Driver V2</text>
 <hole x="3.81" y="52.07" drill="3.2"/>
 <hole x="3.81" y="3.81" drill="3.2"/>
-<hole x="45.72" y="52.07" drill="3.2"/>
-<hole x="45.72" y="3.81" drill="3.2"/>
 </plain>
 <libraries>
 <library name="dc-dc-converter">
@@ -412,23 +409,16 @@ design rules under a new name.</description>
 <param name="slThermalsForVias" value="0"/>
 <param name="dpMaxLengthDifference" value="10mm"/>
 <param name="dpGapFactor" value="2.5"/>
+<param name="checkGrid" value="0"/>
 <param name="checkAngle" value="0"/>
 <param name="checkFont" value="1"/>
 <param name="checkRestrict" value="1"/>
-<param name="checkStop" value="0"/>
-<param name="checkValues" value="0"/>
-<param name="checkNames" value="1"/>
-<param name="checkWireStubs" value="1"/>
-<param name="checkPolygonWidth" value="0"/>
 <param name="useDiameter" value="13"/>
 <param name="maxErrors" value="50"/>
 </designrules>
 <autorouter>
 <pass name="Default">
 <param name="RoutingGrid" value="50mil"/>
-<param name="AutoGrid" value="1"/>
-<param name="Efforts" value="0"/>
-<param name="TopRouterVariant" value="1"/>
 <param name="tpViaShape" value="round"/>
 <param name="PrefDir.1" value="|"/>
 <param name="PrefDir.2" value="0"/>
@@ -512,11 +502,11 @@ design rules under a new name.</description>
 </element>
 <element name="C1" library="rcl" package="C050-025X075" value="100n" x="25.4" y="46.99" rot="R270"/>
 <element name="C2" library="rcl" package="C050-025X075" value="100n" x="25.4" y="21.59" rot="R270"/>
-<element name="C4" library="rcl" package="E2,5-6E" value="100µ" x="22.86" y="31.75" rot="R180"/>
-<element name="C5" library="rcl" package="E2,5-6E" value="100µ" x="22.86" y="3.81" rot="R180"/>
-<element name="C6" library="rcl" package="E2,5-6E" value="100µ" x="29.21" y="3.81" smashed="yes" rot="R180">
-<attribute name="NAME" x="34.163" y="4.826" size="1.27" layer="25" ratio="10" rot="R180"/>
-<attribute name="VALUE" x="26.543" y="6.35" size="1.27" layer="27" ratio="10" rot="R180"/>
+<element name="C4" library="rcl" package="E2,5-6E" value="100µ" x="22.86" y="30.48" rot="R180"/>
+<element name="C5" library="rcl" package="E2,5-6E" value="100µ" x="22.86" y="2.54" rot="R180"/>
+<element name="C6" library="rcl" package="E2,5-6E" value="100µ" x="29.21" y="2.54" smashed="yes" rot="R180">
+<attribute name="NAME" x="34.163" y="3.556" size="1.27" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="26.543" y="5.08" size="1.27" layer="27" ratio="10" rot="R180"/>
 </element>
 <element name="GTOP" library="pinhead" package="1X01" value="" x="45.72" y="41.91"/>
 <element name="ETOP" library="pinhead" package="1X01" value="" x="45.72" y="34.29"/>
@@ -533,16 +523,16 @@ design rules under a new name.</description>
 </element>
 <element name="R6" library="rcl" package="0309/12" value="4R7" x="31.75" y="15.24" rot="R90"/>
 <element name="-_BT_TP_+" library="pinhead" package="1X04" value="" x="3.81" y="34.29" rot="R90"/>
-<element name="C7" library="rcl" package="E2,5-5" value="100µ" x="12.7" y="31.75" smashed="yes" rot="R180">
-<attribute name="NAME" x="17.907" y="33.02" size="1.27" layer="25" ratio="10" rot="R180"/>
-<attribute name="VALUE" x="10.287" y="34.163" size="1.27" layer="27" ratio="10" rot="R180"/>
+<element name="C7" library="rcl" package="E2,5-5" value="100µ" x="12.7" y="30.48" smashed="yes" rot="R180">
+<attribute name="NAME" x="17.907" y="31.75" size="1.27" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="10.287" y="32.893" size="1.27" layer="27" ratio="10" rot="R180"/>
 </element>
-<element name="C8" library="rcl" package="E2,5-5" value="100µ" x="12.7" y="3.81" rot="R180"/>
+<element name="C8" library="rcl" package="E2,5-5" value="100µ" x="12.7" y="2.54" rot="R180"/>
 <element name="D1" library="diode" package="CB417-15" value="P6KEXXC" x="39.37" y="43.18" rot="R90"/>
 <element name="D2" library="diode" package="CB417-15" value="P6KEXXC" x="39.37" y="15.24" rot="R90"/>
-<element name="C3" library="rcl" package="E2,5-6E" value="100µ" x="29.21" y="31.75" smashed="yes" rot="R180">
-<attribute name="NAME" x="35.433" y="32.766" size="1.27" layer="25" ratio="10" rot="R180"/>
-<attribute name="VALUE" x="26.543" y="34.29" size="1.27" layer="27" ratio="10" rot="R180"/>
+<element name="C3" library="rcl" package="E2,5-6E" value="100µ" x="29.21" y="30.48" smashed="yes" rot="R180">
+<attribute name="NAME" x="35.433" y="31.496" size="1.27" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="26.543" y="33.02" size="1.27" layer="27" ratio="10" rot="R180"/>
 </element>
 </elements>
 <signals>
@@ -564,7 +554,7 @@ design rules under a new name.</description>
 <contactref element="DC1" pad="4"/>
 <contactref element="C1" pad="2"/>
 <contactref element="IC1" pad="5"/>
-<wire x1="21.59" y1="31.75" x2="21.59" y2="40.64" width="0.6096" layer="16"/>
+<wire x1="21.59" y1="30.48" x2="21.59" y2="40.64" width="0.6096" layer="16"/>
 <wire x1="21.59" y1="44.45" x2="25.4" y2="44.45" width="0.6096" layer="16"/>
 <wire x1="21.59" y1="40.64" x2="21.59" y2="44.45" width="0.6096" layer="16"/>
 </signal>
@@ -606,7 +596,7 @@ design rules under a new name.</description>
 <contactref element="DC2" pad="4"/>
 <contactref element="C2" pad="2"/>
 <contactref element="IC2" pad="5"/>
-<wire x1="21.59" y1="3.81" x2="21.59" y2="12.7" width="0.6096" layer="16"/>
+<wire x1="21.59" y1="2.54" x2="21.59" y2="12.7" width="0.6096" layer="16"/>
 <wire x1="21.59" y1="12.7" x2="21.59" y2="16.51" width="0.6096" layer="16"/>
 <wire x1="21.59" y1="16.51" x2="22.86" y2="16.51" width="0.6096" layer="16"/>
 <wire x1="22.86" y1="16.51" x2="25.4" y2="19.05" width="0.6096" layer="16"/>
@@ -770,13 +760,6 @@ design rules under a new name.</description>
 </polygon>
 </signal>
 </signals>
-<mfgpreviewcolors>
-<mfgpreviewcolor name="soldermaskcolor" color="0xC8008000"/>
-<mfgpreviewcolor name="silkscreencolor" color="0xFFFEFEFE"/>
-<mfgpreviewcolor name="backgroundcolor" color="0xFF282828"/>
-<mfgpreviewcolor name="coppercolor" color="0xFFFFBF00"/>
-<mfgpreviewcolor name="substratecolor" color="0xFF786E46"/>
-</mfgpreviewcolors>
 </board>
 </drawing>
 </eagle>
