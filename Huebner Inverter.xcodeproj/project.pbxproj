@@ -11,6 +11,9 @@
 		3249F2A21D599E3900ECF5B4 /* openscad in Resources */ = {isa = PBXBuildFile; fileRef = 3249F2A11D599E3900ECF5B4 /* openscad */; };
 		324C22E81CF429E7003A1AF5 /* eagle in Resources */ = {isa = PBXBuildFile; fileRef = 324C22E71CF429E7003A1AF5 /* eagle */; };
 		325B6C851DBBE3EC00421596 /* fuse in Resources */ = {isa = PBXBuildFile; fileRef = 325B6C841DBBE3EC00421596 /* fuse */; };
+		32724CE821E1DD7200127D21 /* avr in Resources */ = {isa = PBXBuildFile; fileRef = 32724CE721E1DD7200127D21 /* avr */; };
+		32724CEA21E1DD9D00127D21 /* arduino in Resources */ = {isa = PBXBuildFile; fileRef = 32724CE921E1DD9D00127D21 /* arduino */; };
+		32724CEC21E1DDA800127D21 /* cantact in Resources */ = {isa = PBXBuildFile; fileRef = 32724CEB21E1DDA700127D21 /* cantact */; };
 		328002011D6AAA4A001C5E4E /* run in Resources */ = {isa = PBXBuildFile; fileRef = 328002001D6AAA4A001C5E4E /* run */; };
 		32836C6B21C9F09D0009C3D5 /* stlink in Resources */ = {isa = PBXBuildFile; fileRef = 32836C6A21C9F09D0009C3D5 /* stlink */; };
 		32D281B41CF0066E00606B12 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D281B31CF0066E00606B12 /* Application.swift */; };
@@ -31,6 +34,9 @@
 		3249F2A11D599E3900ECF5B4 /* openscad */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = openscad; path = macOS/Resources/openscad; sourceTree = "<group>"; };
 		324C22E71CF429E7003A1AF5 /* eagle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = eagle; path = macOS/Resources/eagle; sourceTree = "<group>"; };
 		325B6C841DBBE3EC00421596 /* fuse */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = fuse; path = macOS/Resources/fuse; sourceTree = "<group>"; };
+		32724CE721E1DD7200127D21 /* avr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = avr; path = macOS/Resources/avr; sourceTree = "<group>"; };
+		32724CE921E1DD9D00127D21 /* arduino */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = arduino; path = macOS/Resources/arduino; sourceTree = "<group>"; };
+		32724CEB21E1DDA700127D21 /* cantact */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = cantact; path = macOS/Resources/cantact; sourceTree = "<group>"; };
 		328002001D6AAA4A001C5E4E /* run */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = run; path = macOS/Resources/run; sourceTree = "<group>"; };
 		32836C6A21C9F09D0009C3D5 /* stlink */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = stlink; path = macOS/Resources/stlink; sourceTree = "<group>"; };
 		32D281AE1CF0066E00606B12 /* Huebner Inverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Huebner Inverter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -103,8 +109,11 @@
 				32EBDE5C1D6ADB6A00CF5BEC /* source */,
 				32836C6A21C9F09D0009C3D5 /* stlink */,
 				32FFA9FB1D18D6FB00E5BBF0 /* openocd */,
+				32724CE921E1DD9D00127D21 /* arduino */,
+				32724CEB21E1DDA700127D21 /* cantact */,
 				325B6C841DBBE3EC00421596 /* fuse */,
 				32D5A3421D6AD27C008F9EFB /* arm */,
+				32724CE721E1DD7200127D21 /* avr */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -175,7 +184,10 @@
 				32EBDE5D1D6ADB6A00CF5BEC /* source in Resources */,
 				3249F2A21D599E3900ECF5B4 /* openscad in Resources */,
 				32D281B61CF0066F00606B12 /* Assets.xcassets in Resources */,
+				32724CE821E1DD7200127D21 /* avr in Resources */,
 				32D5A3431D6AD27C008F9EFB /* arm in Resources */,
+				32724CEA21E1DD9D00127D21 /* arduino in Resources */,
+				32724CEC21E1DDA800127D21 /* cantact in Resources */,
 				32D281B91CF0066F00606B12 /* Main.storyboard in Resources */,
 				325B6C851DBBE3EC00421596 /* fuse in Resources */,
 				32D281F51CF00EF200606B12 /* inkscape in Resources */,

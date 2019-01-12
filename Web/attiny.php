@@ -22,7 +22,7 @@
                                     <br><br>
 									<div class="row">
 										<div class="col">
-											<button type="button" class="btn btn-primary" onClick="eval(checkSoftware('attiny'))"><i class="glyphicon glyphicon-cog"></i> Install AVRDude</button>
+											<button type="button" class="btn btn-primary" onClick="eval(checkSoftware('avr'))"><i class="glyphicon glyphicon-cog"></i> Install AVR</button>
 										</div>
 										<div class="col">
 											<button type="button" class="btn btn-primary" onClick="window.open('firmware/attiny13.zip')"><i class="glyphicon glyphicon-circle-arrow-down"></i> Download ATTiny13 Code</button>

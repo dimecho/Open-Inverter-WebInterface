@@ -393,7 +393,7 @@ function openExternalApp(app) {
         $('.fileSVG').trigger('click');
     } else if (app === "source") {
         window.location.href = "sourcecode.php";
-    } else if (app === "attiny") {
+    } else if (app === "avr") {
         window.location.href = "attiny.php";
     } else {
         $.ajax("open.php?app=" + app);

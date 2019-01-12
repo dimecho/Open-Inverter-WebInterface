@@ -67,24 +67,24 @@
             "linux" : "/usr/share/gcc-arm-embedded/bin/gcc-arm-none-eabi"
         }
     },
-    "attiny" : {
+    "avr" : {
         "title" : "AVR Compiler",
         "download" : {
-            "mac" : "https://www.obdev.at/downloads/crosspack/CrossPack-AVR-20131216.dmg",
-            "windows" : "http://sysprogs.com/files/gnutoolchains/avr/avr-gcc5.3.0.exe",
+            "mac" : "http://ww1.microchip.com/downloads/en/DeviceDoc/avr8-gnu-toolchain-osx-3.6.2.503-darwin.any.x86_64.tar.gz",
+            "windows" : "http://ww1.microchip.com/downloads/en/DeviceDoc/avr8-gnu-toolchain-3.6.2.1759-win32.any.x86.zip",
             "linux" : "",
-            "size" : 40,
-            "version" : "20131216"
+            "size" : 45,
+            "version" : "3.6.2"
         },
 		"checksum" : {
-            "mac" : "",
-            "windows" : "bc4400e56f5cda5e2dea3bd7bf5fd48a",
+            "mac" : "3185f14c0700e4dc0a33c1aed93b95ef",
+            "windows" : "",
             "linux" : ""
         },
         "path" : {
-            "mac" : "/usr/local/etc/gcc_arm/avr/bin/avrdude",
-            "windows" : "C:\\SysGCC\\avr\\bin\\avrdude.exe",
-            "linux" : "/usr/bin/avrdude"
+            "mac" : "/usr/local/share/avr8-gnu-toolchain-darwin_x86_64/bin/avr-gcc",
+            "windows" : "C:\\SysGCC\\avr8\\bin\\avr-gcc.exe",
+            "linux" : "/usr/bin/avr-gcc"
         }
     },
     "arduino" : {

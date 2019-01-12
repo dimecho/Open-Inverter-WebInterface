@@ -29,9 +29,6 @@ session_start();
         }else if($_GET["app"] == "gcc")
         {
             header("Location:sourcecode.php");
-        }else if($_GET["app"] == "arm")
-        {
-            $command  = "arm";
         }else if($_GET["app"] == "openocd" || $_GET["app"] == "bootloader")
         {
             $command = runCommand("openocd","",$os,0);

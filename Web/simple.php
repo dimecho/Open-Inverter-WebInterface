@@ -49,6 +49,28 @@
                     <table class="table table-active bg-light table-bordered table-striped table-hover" id="parameters_Motor"></table>
                     <table class="table table-active bg-light table-bordered"><tr><td><h4>Battery</h4></td></tr></table>
                     <table class="table table-active bg-light table-bordered table-striped table-hover" id="parameters_Battery"></table>
+                    <a class="temp-tune" data-fancybox data-src="#temp-tune" href="javascript:;"></a>
+                    <div class="hidden" id="temp-tune" style="width:60%;border-radius:5px">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col">
+                                    Current Temperature (&#8451;):
+                                </div>
+                                 <div class="col">
+                                    <input type="text" class="form-control" id="temp-degree">
+                                </div>
+                            </div>
+                            <div class="row"><hr></div>
+                            <div class="row">
+                                <div class="col" align="center">
+                                    <button class="btn btn-danger" type="button" onClick="$.fancybox.close();"><i class="glyphicon glyphicon-remove"></i> Cancel</button>
+                                </div>
+                                <div class="col" align="center">
+                                    <button class="btn btn-success" type="button" id="temp-continue"><i class="glyphicon glyphicon-ok"></i> Continue</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

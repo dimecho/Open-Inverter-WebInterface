@@ -1,16 +1,16 @@
 Part,Value,Package,PDF
 IC1,LM2596S,TO-263,https://www.ti.com/lit/ds/symlink/lm2596.pdf
-IC2,LM386/TD2822D,SOP-8,https://www.st.com/resource/en/datasheet/cd00000134.pdf
+IC2,LM386M/TD2822D,SOP-8,https://www.st.com/resource/en/datasheet/cd00000134.pdf
 IC3,TJA1040T/TCAN4420DR,SOP-8,https://www.ti.com/lit/ds/symlink/tcan4420.pdf
 IC4,STM32F103RBT6,LQFP-64,https://www.st.com/resource/en/datasheet/cd00161566.pdf
 IC5,MIC2288YD5/FAN5333B,SOT-23-5,https://ww1.microchip.com/downloads/en/DeviceDoc/mic2282.pdf
 IC6,ULN2003AD,SOP-16,https://www.ti.com/lit/ds/symlink/uln2003a.pdf
-IC7,LM339/LM2901,SOP-14,https://www.ti.com/lit/ds/symlink/lm2901.pdf
+IC7,LM339D/LM2901D,SOIC-14,https://www.ti.com/lit/ds/symlink/lm2901.pdf
 IC8,LM1117/TC2117 (3.3V),SOT-223,https://www.ti.com/lit/ds/symlink/lm1117.pdf
-IC9,SN74LVC1G10,SOT-23-6,https://www.ti.com/lit/ds/symlink/sn74lvc1g10.pdf
+IC9,SN74HC10D/SN74LVC1G10,SOIC-14/SOT-23-6,https://www.ti.com/lit/ds/symlink/sn74lvc1g10.pdf
 Q1,8Mhz,FS8.000P,https://media.digikey.com/pdf/Data%20Sheets/Fox%20Electronics%20PDFs/FOXSDLF_080R-20.pdf
-LED_ALIVE,green,'1206,
-LED_PWR,red,'1206,
+LED_ALIVE,green,'0805,
+LED_PWR,red,'0805,
 L1,10uH,'0603,
 L2,47uH,12x12,
 L3,10uH,'0603,
@@ -117,10 +117,10 @@ C47,22nF,'0603,
 D1,B540C/CDBA540-HF,DO-214AC,https://cdn.datasheetspdf.com/pdf-down/C/D/B/CDBA540-HF-ComchipTechnology.pdf
 D2,B540C/CDBA540-HF,DO-214AC,https://cdn.datasheetspdf.com/pdf-down/C/D/B/CDBA540-HF-ComchipTechnology.pdf
 D3,SBR1A40S3-7,SOD-323,https://www.diodes.com/assets/Datasheets/SBR1A40S3.pdf
-JP1,,10pin,
-JP2,,26pin,
-JP3,,14pin,
-JP4-JP5,,2pin,
-JP6,SWD Programming Header,10pin (1.27mm pitch),
-JP7,,16pin,
-JP8-JP9,,2pin,
+JP1,,2x5 (10pin),
+JP2,,2x13 (26pin),
+JP3,,2x7 (14pin),
+JP4-JP5,,1x2 (2pin),
+JP6,,2x5 (10pin),
+JP7,,2x8 (16pin),
+JP8-JP9,,1x2 (2pin),

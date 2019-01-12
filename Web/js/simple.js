@@ -551,14 +551,61 @@ function numimpTest(wait) {
     }
 };
 
+function tempTuningRun(t) {
+
+    var _snshs = [0, 1, 2];
+    var snshs = ["JCurve", "Semikron (Skiip82)", "MBB600"];
+
+    var _snsm = [12, 13, 14];
+    var snsm = ["KTY83-110", "KTY84-130", "Leaf"];
+
+    var detect_tmphs = false;
+    var detect_tmpm = false;
+
+    for (var i = 0; i < _snshs.length; i++) {
+
+        var tmphs = getJSONAverageFloatValue("tmphs"); //Heatsink
+
+        console.log(tmphs + ">" + t);
+
+        if (tmphs < (t - 1) || tmphs > (t + 1)) { //+-1 degree
+            setParameter("snshs",_snshs[i]);
+        }else{
+            $.notify({ message: "Heatsink Sensor: " + snshs[i]}, { type: "success" });
+            detect_tmphs = true;
+            break;
+        }
+    }
+
+    for (var i = 0; i < _snsm.length; i++) {
+
+        var tmpm = getJSONAverageFloatValue("tmpm"); //Motor
+
+        console.log(tmpm + ">" + t);
+
+        if (tmpm < (t - 1) || tmpm > (t + 1)) { //+-1 degree
+            setParameter("snsm",_snsm[i]);
+        }else{
+            $.notify({ message: "Motor Sensor: " + snsm[i]}, { type: "success" });
+            detect_tmpm = true;
+            break;
+        }
+    }
+
+    if(detect_tmpm === false)
+        $.notify({ message: "Heatsink Sensor: Not Detected"}, { type: "danger" });
+
+    if(detect_tmpm === false)
+        $.notify({ message: "Motor Sensor: Not Detected"}, { type: "danger" });
+};
+
 function tempTuning() {
 
 	if(navigator.geolocation)
     {
-		navigator.geolocation.getCurrentPosition(function(position) {
-
+		navigator.geolocation.getCurrentPosition(function(position)
+        {
             var apikey = "642f15a86f86f020e97958563f5d8ebd";
-            
             $.ajax("http://api.openweathermap.org/data/2.5/weather?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=metric&APPID=" + apikey, {
                 dataType: "json",
                 success: function(data) {
@@ -566,59 +613,29 @@ function tempTuning() {
                     console.log(data);
 
                     var t = data.main.temp;
-
                     $.notify({ message: "Outside Temperature: " + t}, { type: "warning" });
 
-                    var _snshs = [0, 1, 2];
-                    var snshs = ["JCurve", "Semikron (Skiip82)", "MBB600"];
-
-                    var _snsm = [12, 13, 14];
-                    var snsm = ["KTY83-110", "KTY84-130", "Leaf"];
-
-                    var detect_tmphs = false;
-                    var detect_tmpm = false;
-
-                    for (var i = 0; i < _snshs.length; i++) {
-
-                        var tmphs = getJSONAverageFloatValue("tmphs"); //Heatsink
-
-                        console.log(tmphs + ">" + t);
-
-                        if (tmphs < (t - 1) || tmphs > (t + 1)) { //+-1 degree
-                            setParameter("snshs",_snshs[i]);
-                        }else{
-                            $.notify({ message: "Heatsink Sensor: " + snshs[i]}, { type: "success" });
-                            detect_tmphs = true;
-                            break;
-                        }
-                    }
-
-                    for (var i = 0; i < _snsm.length; i++) {
-
-                        var tmpm = getJSONAverageFloatValue("tmpm"); //Motor
-
-                        console.log(tmpm + ">" + t);
-
-                        if (tmpm < (t - 1) || tmpm > (t + 1)) { //+-1 degree
-                            setParameter("snsm",_snsm[i]);
-                        }else{
-                            $.notify({ message: "Motor Sensor: " + snsm[i]}, { type: "success" });
-                            detect_tmpm = true;
-                            break;
-                        }
-                    }
-
-                    if(detect_tmpm === false)
-                        $.notify({ message: "Heatsink Sensor: Not Detected"}, { type: "danger" });
-
-                    if(detect_tmpm === false)
-                        $.notify({ message: "Motor Sensor: Not Detected"}, { type: "danger" });
+                    tempTuningRun(t);
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
                     $.notify({ message: "Error: [api.openweathermap.org] " + xhr.status + " " + thrownError}, { type: "danger" });
+                    $(".temp-tune").trigger('click');
                 }
             });
-		});
+		},function(error) {
+            var errors = { 
+                1: 'Permission denied',
+                2: 'Position unavailable',
+                3: 'Request timeout'
+            };
+            console.log("Error: " + errors[error.code]);
+            $(".temp-tune").trigger('click');
+            $("#temp-continue").click(function(){
+                $.fancybox.close();
+                var t = $("#temp-degree").val();
+                tempTuningRun(t);
+            });
+        });
 	}else{
         $.notify({ message: "Error: Navigation Unavaliable"}, { type: "danger" });
     }

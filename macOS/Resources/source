@@ -51,7 +51,7 @@ else
         make clean
         make
         #--------- ATtiny13 --------------
-        export PATH="$PATH:/usr/local/etc/gcc_arm/avr/bin/"
+        export PATH="$PATH:/usr/local/share/avr8-gnu-toolchain-darwin_x86_64/bin/"
 
         cd ~/Documents/stm32-sine-master/src/
         if [ ! -d attiny13 ]; then
