@@ -111,14 +111,14 @@
         "title" : "Python",
         "download" : {
             "mac" : "",
-            "windows" : "https://www.python.org/ftp/python/3.7.1/python-3.7.1-amd64.exe",
+            "windows" : "https://www.python.org/ftp/python/3.7.2/python-3.7.2-amd64.exe",
             "linux" : "",
             "size" : 26,
             "version" : ""
         },
 		"checksum" : {
             "mac" : "",
-            "windows" : "4c9fd65b437ad393532e57f15ce832bc",
+            "windows" : "ff258093f0b3953c886192dec9f52763",
             "linux" : ""
         },
         "path" : {
@@ -150,15 +150,15 @@
     "inkscape" : {
         "title" : "Inkscape - Vector Graphics Software",
         "download" : {
-            "mac" : "https://inkscape.org/en/gallery/item/11269/Inkscape-0.92.2-1-x11-10.7-x86_64.dmg",
-            "windows" : "https://inkscape.org/en/gallery/item/11263/inkscape-0.92.2-x64.msi",
+            "mac" : "https://inkscape.org/gallery/item/11269/Inkscape-0.92.2-1-x11-10.7-x86_64.dmg",
+            "windows" : "https://inkscape.org/gallery/item/12190/inkscape-0.92.3-x64.msi",
             "linux" : "",
-            "size" : 70,
-            "version" : "0.92.2"
+            "size" : 80,
+            "version" : "0.92.3"
         },
 		"checksum" : {
-            "mac" : "",
-            "windows" : "78c8be4a470f40f2f6e38d3792fdecef",
+            "mac" : "32441e9314b5970661155970fd3e170c",
+            "windows" : "100fa7d2aef7ec36823b9ad40e4635ea",
             "linux" : ""
         },
         "path" : {
@@ -210,21 +210,21 @@
     "eagle" : {
         "title" : "AutoCAD Eagle - PCB Design Software",
         "download" : {
-            "mac" : "https://eagle-updates.circuits.io/downloads/9_2_2/Autodesk_EAGLE_9.2.2_English_Mac_64bit.pkg",
-            "windows" : "https://eagle-updates.circuits.io/downloads/9_2_2/Autodesk_EAGLE_9.2.2_English_Win_64bit.exe",
-            "linux" : "https://eagle-updates.circuits.io/downloads/9_2_2/Autodesk_EAGLE_9.2.2_English_Linux_64bit.tar.gz",
+            "mac" : "https://eagle-updates.circuits.io/downloads/9_3_0/Autodesk_EAGLE_9.3.0_English_Mac_64bit.pkg",
+            "windows" : "https://eagle-updates.circuits.io/downloads/9_3_0/Autodesk_EAGLE_9.3.0_English_Win_64bit.exe",
+            "linux" : "https://eagle-updates.circuits.io/downloads/9_3_0/Autodesk_EAGLE_9.3.0_English_Linux_64bit.tar.gz",
             "size" : 140,
-            "version" : "9.2.2"
+            "version" : "9.3.0"
         },
 		"checksum" : {
-            "mac" : "937e3efa34efe6bb6221b60c5f677054",
-            "windows" : "2e4a181561199b139410b43a0fc7129d",
+            "mac" : "3a1e5c6cdb65cbffd4f360d2fdce9df5",
+            "windows" : "",
             "linux" : ""
         },
         "path" : {
-            "mac" : "/Applications/EAGLE-9.2.2/Eagle.app/Contents/MacOS/Eagle",
-            "windows" : "C:\\EAGLE 9.2.2\\eagle.exe",
-            "linux" : "/opt/eagle-9.2.2/bin/eagle"
+            "mac" : "/Applications/EAGLE-9.3.0/Eagle.app/Contents/MacOS/Eagle",
+            "windows" : "C:\\EAGLE 9.3.0\\eagle.exe",
+            "linux" : "/opt/eagle-9.3.0/bin/eagle"
         }
     },
     "designsparkpcb" : {

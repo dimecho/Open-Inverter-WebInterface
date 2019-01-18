@@ -2965,6 +2965,22 @@ Metric Code Size 2012</description>
 <rectangle x1="-1" y1="-0.65" x2="-0.5" y2="0.65" layer="51"/>
 <rectangle x1="0.5" y1="-0.65" x2="1" y2="0.65" layer="51"/>
 </package>
+<package name="TJ3-U1" urn="urn:adsk.eagle:footprint:23001/1" library_version="2">
+<description>&lt;b&gt;Inductor&lt;/b&gt;&lt;p&gt;
+Source: TJ-Serie Vishay.pdf</description>
+<wire x1="-3.65" y1="8.15" x2="3.65" y2="8.15" width="0.2032" layer="21"/>
+<wire x1="3.65" y1="-8.15" x2="-3.65" y2="-8.15" width="0.2032" layer="21"/>
+<wire x1="-3.65" y1="-8.15" x2="-3.65" y2="-1.1" width="0.2032" layer="21"/>
+<wire x1="-3.65" y1="-1.1" x2="-3.65" y2="1.1" width="0.2032" layer="51"/>
+<wire x1="-3.65" y1="1.1" x2="-3.65" y2="8.15" width="0.2032" layer="21"/>
+<wire x1="3.65" y1="8.15" x2="3.65" y2="1.1" width="0.2032" layer="21"/>
+<wire x1="3.65" y1="1.1" x2="3.65" y2="-1.1" width="0.2032" layer="51"/>
+<wire x1="3.65" y1="-1.1" x2="3.65" y2="-8.15" width="0.2032" layer="21"/>
+<pad name="1" x="-3.3" y="0" drill="0.9"/>
+<pad name="2" x="3.3" y="0" drill="0.9"/>
+<text x="-0.635" y="-5.08" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<text x="1.905" y="-5.08" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
+</package>
 </packages>
 <packages3d>
 <package3d name="C0603K" urn="urn:adsk.eagle:package:26200/1" type="box" library_version="1">
@@ -2995,6 +3011,13 @@ http://www.bccomponents.com/</description>
 Metric Code Size 2012</description>
 <packageinstances>
 <packageinstance name="C0805K"/>
+</packageinstances>
+</package3d>
+<package3d name="TJ3-U1" urn="urn:adsk.eagle:package:23496/1" type="box" library_version="2">
+<description>Inductor
+Source: TJ-Serie Vishay.pdf</description>
+<packageinstances>
+<packageinstance name="TJ3-U1"/>
 </packageinstances>
 </package3d>
 </packages3d>
@@ -4844,6 +4867,10 @@ design rules under a new name.</description>
 <element name="JP17" library="wirepad" library_urn="urn:adsk.eagle:library:412" package="1,6/0,8" package3d_urn="urn:adsk.eagle:package:30830/1" value="" x="20.7264" y="-0.1524" smashed="yes">
 <attribute name="VALUE" x="20.7264" y="0.4476" size="0.0254" layer="27"/>
 </element>
+<element name="L5" library="resistor" library_urn="urn:adsk.eagle:library:348" package="TJ3-U1" package3d_urn="urn:adsk.eagle:package:23496/1" value="" x="-9.6012" y="31.8516" smashed="yes">
+<attribute name="NAME" x="-10.2362" y="26.7716" size="1.27" layer="25" rot="R90"/>
+<attribute name="VALUE" x="-7.6962" y="26.7716" size="1.27" layer="27" rot="R90"/>
+</element>
 </elements>
 <signals>
 <signal name="PC12">
@@ -5079,6 +5106,10 @@ design rules under a new name.</description>
 <wire x1="-22.922" y1="27.154" x2="-23.368" y2="27.6" width="0.1524" layer="1"/>
 <wire x1="-23.5458" y1="31.8516" x2="-23.5458" y2="27.7778" width="0.8128" layer="1"/>
 <wire x1="-23.368" y1="27.6" x2="-23.5458" y2="27.7778" width="0.1524" layer="1"/>
+<contactref element="L5" pad="1"/>
+<wire x1="-12.9012" y1="31.8516" x2="-10.3632" y2="31.8516" width="0.8128" layer="1"/>
+<wire x1="-9.398" y1="30.8864" x2="-9.398" y2="27.154" width="0.8128" layer="1"/>
+<wire x1="-10.3632" y1="31.8516" x2="-9.398" y2="30.8864" width="0.8128" layer="1"/>
 </signal>
 <signal name="VCC">
 <contactref element="IC8" pad="3"/>
@@ -5106,7 +5137,8 @@ design rules under a new name.</description>
 <contactref element="L4" pad="1"/>
 <contactref element="IC3" pad="3"/>
 <contactref element="L2" pad="1"/>
-<wire x1="-1.5" y1="28.956" x2="-9.398" y2="36.854" width="0.8128" layer="1"/>
+<wire x1="-1.5" y1="28.956" x2="-4.3314" y2="31.7874" width="0.8128" layer="1"/>
+<wire x1="-4.3314" y1="31.7874" x2="-9.398" y2="36.854" width="0.8128" layer="1"/>
 <wire x1="-23.81" y1="-30.51" x2="-26.499" y2="-30.51" width="0.1524" layer="1"/>
 <wire x1="-26.67" y1="-30.339" x2="-26.499" y2="-30.51" width="0.1524" layer="1"/>
 <wire x1="-23.81" y1="-30.51" x2="-21.91" y2="-30.51" width="0.1524" layer="1"/>
@@ -5164,6 +5196,9 @@ design rules under a new name.</description>
 <wire x1="-19.558" y1="-30.21" x2="-17.288" y2="-30.21" width="0.1524" layer="1"/>
 <wire x1="-17.288" y1="-30.21" x2="-17.272" y2="-30.226" width="0.1524" layer="1"/>
 <wire x1="0.762" y1="28.956" x2="0.762" y2="31.336" width="0.6096" layer="1"/>
+<contactref element="L5" pad="2"/>
+<wire x1="-6.3012" y1="31.8516" x2="-4.3956" y2="31.8516" width="0.8128" layer="1"/>
+<wire x1="-4.3956" y1="31.8516" x2="-4.3314" y2="31.7874" width="0.1524" layer="1"/>
 </signal>
 <signal name="N$4">
 <contactref element="IC1" pad="1"/>
