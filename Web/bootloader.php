@@ -116,8 +116,11 @@
 									<div class="loader"></div>
                                     <div class="input-group w-100">
                                         <span class = "input-group-addon hidden w-75">
-                                            <select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage()" id="firmware-interface"></select>
-                                        </span>
+										    <form enctype="multipart/form-data" action="bootloader.php" method="POST" id="firmwareForm">
+												<input name="firmware" type="file" class="file" hidden onchange="firmwareUpload()" />
+												<select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage()" id="firmware-interface"></select>
+											</form>
+										</span>
                                         <span class = "input-group-addon hidden w-25">
 											<center>
 												<button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select stm32_loader.bin</button>
@@ -137,9 +140,6 @@
                 </div>
             </div>
         </div>
-        <form enctype="multipart/form-data" action="bootloader.php" method="POST" id="firmwareForm">
-            <input name="firmware" type="file" class="file" hidden onchange="firmwareUpload()" />
-        </form>
     </body>
 </html>
 <?php } ?>

@@ -19,8 +19,11 @@ char ACCESS_POINT_SSID[] = "Inverter";
 char ACCESS_POINT_PASSWORD[] = "inverter123";
 int ACCESS_POINT_CHANNEL = 7;
 int ACCESS_POINT_HIDE = 0;
-bool phpTag[] = { false, false, false, false };
-int timeout = 10;
+bool phpTag[] = { false, false, false };
+const char text_html[] = "text/html";
+const char text_plain[] = "text/plain";
+const char text_json[] = "application/json";
+String interface = "" ;
 
 //============
 //SWD Debugger
@@ -32,8 +35,8 @@ int timeout = 10;
 
 #include "src/arm_debug.h"
 
-const int swd_clock_pin = 4; //0; //GPIO0 (D3) -> Pin4 (SWD)
-const int swd_data_pin = 5; //2; //GPIO2 (D4) -> Pin2 (SWD)
+const uint8_t swd_clock_pin = 4; //0; //GPIO0 (D3) -> Pin4 (SWD)
+const uint8_t swd_data_pin = 5; //2; //GPIO2 (D4) -> Pin2 (SWD)
 
 //ARMDebug target(swd_clock_pin, swd_data_pin);
 
@@ -198,7 +201,7 @@ void swdBegin()
 
   uint32_t idcode;
   target.getIDCODE(idcode);
-  Debug.println(idcode);
+  //Debug.println(idcode);
 
   if (target.begin() && target.getIDCODE(idcode)) {
     char result[128];
@@ -208,9 +211,9 @@ void swdBegin()
 
     snprintf(result, sizeof result, "{\"connected\": true, \"idcode\": %lu}", idcode);
 
-    server.send(200, "application/json", result);
+    server.send(200, text_json, result);
   } else {
-    server.send(200, "application/json", "{\"connected\": false}");
+    server.send(200, text_json, "{\"connected\": false}");
   }
 }
 
@@ -326,10 +329,10 @@ void setup()
   //SWD Debugger
   //---------------
   server.on("/swd/reset", []() {
-    server.send(200, "application/json", boolStr(target.debugPortReset()));
+    server.send(200, text_json, boolStr(target.debugPortReset()));
   });
   server.on("/swd/halt", []() {
-    server.send(200, "application/json", boolStr(target.debugHalt()));
+    server.send(200, text_json, boolStr(target.debugHalt()));
   });
   server.on("/swd/begin", swdBegin);
   server.on("/swd/mem/read", swdMemRead);
@@ -342,10 +345,10 @@ void setup()
     String result = SPIFFS.format() ? "OK" : "Error";
     FSInfo fs_info;
     SPIFFS.info(fs_info);
-    server.send(200, "text/plain", "<b>Format " + result + "</b><br/>Total Flash Size: " + String(ESP.getFlashChipSize()) + "<br>SPIFFS Size: " + String(fs_info.totalBytes) + "<br>SPIFFS Used: " + String(fs_info.usedBytes));
+    server.send(200, text_plain, "<b>Format " + result + "</b><br/>Total Flash Size: " + String(ESP.getFlashChipSize()) + "<br>SPIFFS Size: " + String(fs_info.totalBytes) + "<br>SPIFFS Used: " + String(fs_info.usedBytes));
   });
   server.on("/reset", HTTP_GET, []() {
-    server.send(200, "text/plain", "...");
+    server.send(200, text_plain, "...");
     delay(500);
     ESP.restart();
   });
@@ -368,15 +371,15 @@ void setup()
       Serial.begin(server.arg("init").toInt(), SERIAL_8N2);
       fastuart += readSerial("hello");
 
-      server.send(200, "text/plain", fastuart);
+      server.send(200, text_plain, fastuart);
     }
     else if (server.hasArg("os"))
     {
-      server.send(200, "text/plain", "esp8266");
+      server.send(200, text_plain, "esp8266");
     }
     else if (server.hasArg("pk") && server.hasArg("name") && server.hasArg("value"))
     {
-      server.send(200, "text/plain", readSerial("set " + server.arg("name") + " " + server.arg("value")));
+      server.send(200, text_plain, readSerial("set " + server.arg("name") + " " + server.arg("value")));
     }
     else if (server.hasArg("get"))
     {
@@ -397,11 +400,11 @@ void setup()
         out = readSerial("get " + sz);
       }
       Debug.println(out);
-      server.send(200, "text/plain", out);
+      server.send(200, text_plain, out);
     }
     else if (server.hasArg("command"))
     {
-      server.send(200, "text/plain", readSerial(server.arg("command")));
+      server.send(200, text_plain, readSerial(server.arg("command")));
     }
     else if (server.hasArg("stream"))
     {
@@ -420,16 +423,22 @@ void setup()
   //SWD Debugger
   //---------------
   //Short names for Windows and Unix
+  //---------------
   server.on("/bootlo~1.php", HTTP_POST, []() {
     server.send(200);
-  }, SWDUpload );
+  }, FirmwareUpload );
   server.on("/bootloader.php", HTTP_POST, []() {
     server.send(200);
-  }, SWDUpload );
+  }, FirmwareUpload );
   //---------------
   server.on("/firmware.php", HTTP_POST, []() {
     server.send(200);
-  }, STM32Upload );
+  }, FirmwareUpload );
+  //---------------
+  server.on("/interface", HTTP_POST, []() {
+    interface = server.arg("i");
+    server.send(200, text_plain, interface);
+  });
   server.on("/js/menu-mobile.json", HTTP_GET, []() {
     HTTPServer("/js/menu.json");
   });
@@ -439,12 +448,12 @@ void setup()
       server.send(303);
     } else {
       server.sendHeader("Refresh", "6; url=/update");
-      server.send(200, "text/html", "File System Not Found ...Upload SPIFFS");
+      server.send(200, text_html, "File System Not Found ...Upload SPIFFS");
     }
   });
   server.onNotFound([]() {
     if (!HTTPServer(server.uri()))
-      server.send(404, "text/plain", "404: Not Found");
+      server.send(404, text_plain, "404: Not Found");
   });
   server.begin();
 
@@ -479,6 +488,7 @@ void setup()
   //======
   Serial.begin(115200, SERIAL_8N2);
 
+  uint8_t timeout = 10;
   while (!Serial && timeout > 0) {
     delay(500);
     timeout--;
@@ -501,7 +511,7 @@ void loop()
 void NVRAM()
 {
   String out = "{\n";
-  for (int i = 0; i < 4; i++) {
+  for (uint8_t i = 0; i < 4; i++) {
     out += "\t\"nvram" + String(i) + "\": \"" + NVRAM_Read(i) + "\",\n";
   }
 
@@ -511,7 +521,7 @@ void NVRAM()
   out = out.substring(0, (out.length() - 2));
   out += "\n}";
 
-  server.send(200, "text/json", out);
+  server.send(200, text_json, out);
 }
 
 void NVRAMUpload()
@@ -520,7 +530,7 @@ void NVRAMUpload()
 
   String out = "<pre>";
 
-  for (int i = 0; i < server.args(); i++) {
+  for (uint8_t i = 0; i < server.args(); i++) {
     out += server.argName(i) + ": ";
     NVRAM_Write(i, server.arg(i));
     out += NVRAM_Read(i) + "\n";
@@ -528,16 +538,16 @@ void NVRAMUpload()
   out += "\n...Rebooting";
   out += "</pre>";
 
-  server.sendHeader("Refresh", "10; url=/esp8266.php");
-  server.send(200, "text/html", out);
+  server.sendHeader("Refresh", "8; url=/esp8266.php");
+  server.send(200, text_html, out);
 
-  delay(5000);
+  delay(4000);
   ESP.restart();
 }
 
 void NVRAM_Erase()
 {
-  for (int i = 0 ; i < EEPROM.length() ; i++) {
+  for (uint16_t i = 0 ; i < EEPROM.length() ; i++) {
     EEPROM.write(i, 0);
   }
 }
@@ -552,7 +562,7 @@ void NVRAM_Write(int address, String txt)
   EEPROM.commit();
 }
 
-String NVRAM_Read(int address)
+String NVRAM_Read(uint8_t address)
 {
   char arrayToStore[32];
   EEPROM.get(address * sizeof(arrayToStore), arrayToStore);
@@ -671,22 +681,20 @@ bool HTTPServer(String file)
 String getContentType(String filename)
 {
   if (server.hasArg("download")) return "application/octet-stream";
-  else if (filename.endsWith(".php")) return "text/html";
-  else if (filename.endsWith(".htm")) return "text/html";
-  else if (filename.endsWith(".html")) return "text/html";
+  else if (filename.endsWith(".php")) return text_html;
+  else if (filename.endsWith(".htm")) return text_html;
+  else if (filename.endsWith(".html")) return text_html;
   else if (filename.endsWith(".css")) return "text/css";
   else if (filename.endsWith(".js")) return "application/javascript";
-  else if (filename.endsWith(".json")) return "application/json";
+  else if (filename.endsWith(".json")) return text_json;
   else if (filename.endsWith(".png")) return "image/png";
-  else if (filename.endsWith(".gif")) return "image/gif";
   else if (filename.endsWith(".jpg")) return "image/jpeg";
   else if (filename.endsWith(".ico")) return "image/x-icon";
   else if (filename.endsWith(".svg")) return "image/svg+xml";
-  else if (filename.endsWith(".xml")) return "text/xml";
   else if (filename.endsWith(".pdf")) return "application/x-pdf";
   else if (filename.endsWith(".zip")) return "application/x-zip";
-  else if (filename.endsWith(".csv")) return "text/plain";
-  return "text/plain";
+  else if (filename.endsWith(".csv")) return "text/csv";
+  return text_plain;
 }
 
 //====================
@@ -737,7 +745,7 @@ void SnapshotUpload()
       server.send(303);
 
     } else {
-      server.send(500, "text/plain", "500: Couldn't Upload File");
+      server.send(500, text_plain, "500: Couldn't Upload File");
     }
   }
 }
@@ -756,7 +764,7 @@ void Snapshot()
   json = "{\n    \"" + all + "\"\n}";
 
   server.sendHeader("Content-Disposition", "attachment; filename=\"snapshot.txt\"");
-  server.send(200, "text/json", json);
+  server.send(200, text_json, json);
 }
 
 //===================
@@ -799,12 +807,12 @@ String readStream(String cmd, int _loop, int _delay)
 
   //server.sendHeader("Expires", "-1");
   server.sendHeader("Cache-Control", "no-cache");
-  //server.setContentLength(CONTENT_LENGTH_UNKNOWN);
-  //server.send(200, "text/plain", "");
-  server.send(200, "text/html", "");
+  server.setContentLength(CONTENT_LENGTH_UNKNOWN);
+  server.send(200, text_plain, "");
+  //server.send(200, text_html, "");
 
   //WiFiClient client = server.client();
-  for (int i = 0; i < _loop; i++) {
+  for (uint16_t i = 0; i < _loop; i++) {
     String output = "";
     size_t len = 0;
     if (i != 0)
@@ -823,16 +831,13 @@ String readStream(String cmd, int _loop, int _delay)
     //client.print(output);
     //client.flush();
 
-    Debug.println(output);
+    //Debug.println(output);
     delay(_delay);
   }
   //client.stop(); // Stop is needed because we sent no content length
 }
 
-//==================
-// SWD UPDATER
-//==================
-void SWDUpload()
+void FirmwareUpload()
 {
   HTTPUpload& upload = server.upload();
 
@@ -841,86 +846,9 @@ void SWDUpload()
     Debug.println(upload.filename);
 
     if (!upload.filename.endsWith(".bin")) {
-      server.send(500, "text/plain", "Bootloader must be binary");
+      server.send(500, text_plain, "File must be binary");
     } else {
-      fsUpload = SPIFFS.open("/" + upload.filename, "w");
-    }
-  }
-  else if (upload.status == UPLOAD_FILE_WRITE)
-  {
-    if (fsUpload)
-      fsUpload.write(upload.buf, upload.currentSize);
-
-  } else if (upload.status == UPLOAD_FILE_END) {
-
-    if (fsUpload) {
-      fsUpload.close();
-
-      server.sendHeader("Cache-Control", "no-cache");
-      //server.setContentLength(CONTENT_LENGTH_UNKNOWN);
-      //server.sendHeader("Refresh", "10; url=/firmware.php");
-      server.send(200, "text/html", "");
-      server.sendContent("<pre>");
-
-      File f = SPIFFS.open("/" + upload.filename, "r");
-      int len = f.size();
-
-      uint32_t idcode;
-      uint32_t SWD_idcode = 463475831; //0x1BA01477 - page:1089
-
-      timeout = 10;
-      while (idcode != SWD_idcode && timeout > 0) {
-        target.begin();
-        target.getIDCODE(idcode);
-        target.debugHalt();
-        delay(500);
-        timeout--;
-      }
-
-      server.sendContent("\nsize: ");
-      server.sendContent(String(len));
-
-      if (target.begin() && target.getIDCODE(idcode)) {
-        server.sendContent("\nidcode: ");
-        server.sendContent(String(idcode));
-
-        uint32_t addr = 134217728; //0x08000000
-        while (f.available()) {
-          //char b = char(f.read());
-
-          server.sendContent("\n0x");
-          server.sendContent(String(addr, HEX));
-
-          target.memStore(addr, f.read());
-          //target.memStoreAndVerify(addr, f.read());
-
-          addr++;
-        }
-
-        f.close();
-
-      } else {
-        server.sendContent("\nSWD not connected");
-      }
-      server.sendContent("<pre>");
-    }
-  }
-}
-
-//==================
-// STM32 UPDATER
-//==================
-void STM32Upload()
-{
-  HTTPUpload& upload = server.upload();
-
-  if (upload.status == UPLOAD_FILE_START) {
-
-    Debug.println(upload.filename);
-
-    if (!upload.filename.endsWith(".bin")) {
-      server.send(500, "text/plain", "Firmware must be binary");
-    } else {
+      //SPIFFS.remove("/" + upload.filename);
       fsUpload = SPIFFS.open("/" + upload.filename, "w");
     }
   } else if (upload.status == UPLOAD_FILE_WRITE) {
@@ -931,116 +859,168 @@ void STM32Upload()
 
     if (fsUpload) {
       fsUpload.close();
+
       File f = SPIFFS.open("/" + upload.filename, "r");
+      uint32_t len = f.size();
+      uint32_t addr = (uint32_t)0x08000000;
 
       server.sendHeader("Cache-Control", "no-cache");
-      //server.setContentLength(CONTENT_LENGTH_UNKNOWN);
-      server.sendHeader("Refresh", "10; url=/index.php");
-      server.send(200, "text/html", "");
+      server.setContentLength(CONTENT_LENGTH_UNKNOWN);
+      if (server.uri() == "/firmware.php") {
+        server.sendHeader("Refresh", "10; url=/index.php");
+        addr = (uint32_t)0x08001000;
+      } else {
+        server.sendHeader("Refresh", "30; url=/firmware.php");
+      }
+      server.send(200, text_html, "");
       server.sendContent("<pre>");
 
-      int timeout = 0;
-      char c;
-      const size_t PAGE_SIZE_BYTES = 1024;
-      int len = f.size();
-      //int pages = (len / PAGE_SIZE_BYTES) + 1;
-      int pages = (len + PAGE_SIZE_BYTES - 1) / PAGE_SIZE_BYTES;
+      //Debug.println(interface);
+      if (interface == "swd-esp8266") {
+        //==================
+        // SWD UPDATER
+        //==================
+        uint32_t idcode;
+        uint32_t SWD_idcode = 463475831; //0x1BA01477 - page:1089
 
-      server.sendContent("File length is " + String(len) + " bytes/" + String(pages) + " pages\n");
+        uint8_t timeout = 10;
+        while (idcode != SWD_idcode && timeout > 0) {
+          target.begin();
+          target.getIDCODE(idcode);
+          target.debugHalt();
+          delay(500);
+          timeout--;
+        }
+        server.sendContent("\nsize: ");
+        server.sendContent(String(len));
 
-      Serial.begin(115200);
-      while (Serial.available())
-        Serial.read();
+        if (target.begin() && target.getIDCODE(idcode)) {
+          server.sendContent("\nidcode: ");
+          server.sendContent(String(idcode));
 
-      //Clear the initialization Bug
-      //-----------------------------
-      Serial.print("hello\n");
-      Serial.read(); //echo
-      Serial.read(); //ok
-      //-----------------------------
-      server.sendContent("Resetting device...\n");
-      Serial.print("reset\n");
+          while (f.available()) {
+            //char b = char(f.read());
 
-      do {
-        c = Serial.read();
-        //server.sendContent(String(c));
-        delay(10);
-        timeout++;
-      } while (c != 'S' && c != '2' && timeout < 600);
+            server.sendContent("\n0x");
+            server.sendContent(String(addr, HEX));
 
-      server.sendContent("\n" + String(timeout) + "\n");
+            uint32_t data = f.read();
+            server.sendContent("=0x");
+            server.sendContent(String(data, HEX));
 
-      if (c == '2')
-      {
-        server.sendContent("Bootloader v2 detected\n");
-        Serial.write(0xAA); //Send magic
-        while (Serial.read() != 'S');
-      }
+            target.memStore(addr, data);
+            //target.memStoreAndVerify(addr, f.read());
 
-      if (timeout < 600)
-      {
-        server.sendContent("Sending number of pages.." + String(pages) + "\n");
-        Serial.write(pages);
+            addr++;
+          }
+        } else {
+          server.sendContent("\nSWD not connected");
+        }
+      } else {
+        //==================
+        // STM32 UPDATER
+        //==================
+        uint8_t timeout = 0;
+        char c;
+        const size_t PAGE_SIZE_BYTES = 1024;
+        //int pages = (len / PAGE_SIZE_BYTES) + 1;
+        uint8_t pages = (len + PAGE_SIZE_BYTES - 1) / PAGE_SIZE_BYTES;
 
-        while (Serial.read() != 'P'); //Wait for page request
+        server.sendContent("File length is " + String(len) + " bytes/" + String(pages) + " pages\n");
 
-        int page = 0;
-        bool done = false;
+        Serial.begin(115200);
+        while (Serial.available())
+          Serial.read();
 
-        while (done != true)
+        //Clear the initialization Bug
+        //-----------------------------
+        Serial.print("hello\n");
+        Serial.read(); //echo
+        Serial.read(); //ok
+        //-----------------------------
+        server.sendContent("Resetting device...\n");
+        Serial.print("reset\n");
+
+        do {
+          c = Serial.read();
+          //server.sendContent(String(c));
+          delay(10);
+          timeout++;
+        } while (c != 'S' && c != '2' && timeout < 255);
+
+        server.sendContent("\n" + String(timeout) + "\n");
+
+        if (c == '2')
         {
-          server.sendContent("Sending page " + String(page) + "...\n");
+          server.sendContent("Bootloader v2 detected\n");
+          Serial.write(0xAA); //Send magic
+          while (Serial.read() != 'S');
+        }
 
-          f.seek(page * PAGE_SIZE_BYTES);
+        if (timeout < 255)
+        {
+          server.sendContent("Sending number of pages.." + String(pages) + "\n");
+          Serial.write(pages);
 
-          char data[PAGE_SIZE_BYTES];
-          size_t bytesRead = f.readBytes(data, sizeof(data));
+          while (Serial.read() != 'P'); //Wait for page request
 
-          while (bytesRead < PAGE_SIZE_BYTES) //Fill ramaining bytes with zeros, prevents corrupted endings
-            data[bytesRead++] = 0xff;
+          uint8_t page = 0;
+          bool done = false;
 
-          uint32_t crc = crc32((uint32_t*)data, PAGE_SIZE_BYTES / 4, 0xffffffff);
-
-          while (c != 'C')
+          while (done != true)
           {
-            //Serial.write(data);
-            Serial.write((uint8_t*)data, sizeof(data));
+            server.sendContent("Sending page " + String(page) + "...\n");
 
+            f.seek(page * PAGE_SIZE_BYTES);
+
+            char data[PAGE_SIZE_BYTES];
+            size_t bytesRead = f.readBytes(data, sizeof(data));
+
+            while (bytesRead < PAGE_SIZE_BYTES) //Fill ramaining bytes with zeros, prevents corrupted endings
+              data[bytesRead++] = 0xff;
+
+            uint32_t crc = crc32((uint32_t*)data, PAGE_SIZE_BYTES / 4, 0xffffffff);
+
+            while (c != 'C')
+            {
+              //Serial.write(data);
+              Serial.write((uint8_t*)data, sizeof(data));
+
+              while (!Serial.available());
+              c = Serial.read();
+
+              if (c == 'T')
+              {
+                server.sendContent("Transmission Error\n");
+              }
+            }
+            server.sendContent("Sending CRC...\n");
+
+            //Serial.write(crc);
+            Serial.write((uint8_t*)&crc, sizeof(uint32_t));
             while (!Serial.available());
             c = Serial.read();
 
-            if (c == 'T')
+            if ('D' == c)
             {
-              server.sendContent("Transmission Error\n");
+              server.sendContent("CRC correct!\n");
+              server.sendContent("Update done!\n");
+
+              done = true;
+            }
+            else if ('E' == c)
+            {
+              server.sendContent("CRC error!\n");
+            }
+            else if ('P' == c)
+            {
+              server.sendContent("CRC correct!\n");
+              page++;
             }
           }
-
-          server.sendContent("Sending CRC...\n");
-
-          //Serial.write(crc);
-          Serial.write((uint8_t*)&crc, sizeof(uint32_t));
-          while (!Serial.available());
-          c = Serial.read();
-
-          if ('D' == c)
-          {
-            server.sendContent("CRC correct!\n");
-            server.sendContent("Update done!\n");
-
-            done = true;
-          }
-          else if ('E' == c)
-          {
-            server.sendContent("CRC error!\n");
-          }
-          else if ('P' == c)
-          {
-            server.sendContent("CRC correct!\n");
-            page++;
-          }
+        } else {
+          server.sendContent("STM32 is bricked - Try pressing reset button during upload\n");
         }
-      } else {
-        server.sendContent("STM32 is bricked - Try pressing reset button during upload\n");
       }
       server.sendContent("</pre>");
       //server.client().flush();
@@ -1054,11 +1034,9 @@ void STM32Upload()
 
 static uint32_t crc32_word(uint32_t Crc, uint32_t Data)
 {
-  int i;
-
   Crc = Crc ^ Data;
 
-  for (i = 0; i < 32; i++)
+  for (uint8_t i = 0; i < 32; i++)
     if (Crc & 0x80000000)
       Crc = (Crc << 1) ^ 0x04C11DB7; // Polynomial used in STM32
     else

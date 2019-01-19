@@ -109,6 +109,9 @@
                             <div class="row"><hr></div>
                             <div class="row">
                                 <div class="col">
+                                    <button type="button" class="btn btn-primary" onClick="window.open('https://github.com/jsphuebner/stm32-test')"><i class="glyphicon glyphicon-circle-arrow-down"></i> Download Test Firmware</button>
+                                </div>
+                                <div class="col">
                                     <button class="btn btn-success" type="button" onClick="$('.hwtestconfirm').trigger('click');"><i class="glyphicon glyphicon-flash"></i> Start</button>
                                 </div>
                             </div>

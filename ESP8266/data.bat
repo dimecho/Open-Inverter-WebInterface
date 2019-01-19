@@ -12,18 +12,21 @@ mkdir data\img
 mkdir data\fonts
 mkdir data\firmware
 mkdir data\firmware\img
+mkdir data\pcb
+mkdir data\pcb\v1.0
+mkdir data\pcb\v3.0
 
 set array=index.php header.php menu.php esp8266.php can.php graph.php bootloader.php firmware.php simple.php test.php version.txt description.csv
 for %%a in (%array%) do (
   copy ..\Web\%%a data
 )
 
-set array=alertify.css fancybox.css animate.css bootstrap.css ion.rangeSlider.css glyphicons.css style.css
+set array=alertify.css jquery.fancybox.css animate.css bootstrap.css ion.rangeSlider.css glyphicons.css style.css
 for %%a in (%array%) do (
   copy ..\Web\css\%%a data\css
 )
 
-set array=jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js canmap.json parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js chartjs-plugin-zoom.js test.js iconic.js mobile.js
+set array=jquery.js jquery.knob.js potentiometer.js jquery.fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js canmap.json parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js chartjs-plugin-zoom.js test.js iconic.js mobile.js
 for %%a in (%array%) do (
   copy ..\Web\js\%%a data\js
 )
@@ -34,6 +37,8 @@ for %%a in (%array%) do (
   copy ..\Web\img\%%a data\img
 )
 
+copy "..\Web\pcb\Hardware v1.0\diagrams\test.png" data\pcb\v1.0
+copy "..\Web\pcb\Hardware v3.0\diagrams\test.png" data\pcb\v3.0
 ::copy ../Web/fonts/glyphicons-halflings-regular.ttf data/fonts
 ::copy ../Web/fonts/glyphicons-halflings-regular.woff data/fonts
 copy ..\Web\fonts\glyphicons-halflings-regular.woff2 data\fonts

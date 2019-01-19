@@ -21,14 +21,33 @@ $(document).on('click', '.browse', function(){
 	file.trigger('click');
 });
 
+function beginESP8266SWD() {
+	
+	$.ajax("/swd/begin", {
+		dataType: "json",
+		success: function(data) {
+			console.log(data);
+			if(data.connected === true) {
+				$.notify({ message: "SWD over ESP8266 Connected" },{ type: "success" });
+				$.notify({ message: "Hardware IDCode: " + data.idcode },{ type: "warning" });
+			}else{
+				$.notify({ message: "SWD over ESP8266 Not Connected, Try Reset and different Power Source (USB may not be enough)" },{ type: "danger" });
+			}
+		}
+	});
+};
+
 function setInterfaceImage() {
 
+	var v = $("#firmware-interface").val();
 	if(os == "esp8266") {
-		$("#jtag-image").attr("src","firmware/img/esp8266.png");
 		$("#jtag-txt").html("Solder <b>GPIO-0</b> to <b>1</b> and boot ESP8266 from flash.");
+		if(v == "swd-esp8266") {
+			beginESP8266SWD();
+		}
+		$("#jtag-image").attr("src","firmware/img/esp8266.png");
 	}else{
 		$("#jtag-txt").html("");
-		var v = $("#firmware-interface").val();
 		if(v.indexOf("stlink-v2") != -1) {
 			$("#jtag-image").attr("src", "firmware/img/stlinkv2.png");
 			eval(checkSoftware("stlink"));
@@ -49,8 +68,17 @@ function setInterfaceImage() {
 
 function firmwareUpload() {
 	var file = $('.file').get(0).files[0].name;
-
 	if (file.toUpperCase().indexOf(".BIN") !=-1 || file.toUpperCase().indexOf(".HEX") !=-1) {
+		if(os == "esp8266") { //Special ESP8266 requirement
+			$.ajax({
+				async: false,
+				type: "POST",
+				url: "/interface?i=" + $("#firmware-interface").val(),
+				success: function(data) {
+					console.log(data);
+				}
+			});
+		}
 		$('#firmwareForm').submit();
 	}else{
 		$.notify({ message: "File must be .bin or .hex format" }, { type: "danger" });

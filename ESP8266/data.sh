@@ -9,18 +9,21 @@ mkdir -p data/img
 mkdir -p data/fonts
 mkdir -p data/firmware
 mkdir -p data/firmware/img
+mkdir -p data/pcb
+mkdir -p data/pcb/v1.0
+mkdir -p data/pcb/v3.0
 
 array=(index.php header.php menu.php esp8266.php can.php graph.php bootloader.php firmware.php simple.php test.php version.txt description.csv)
 for i in "${array[@]}"; do
     cp -rf ../Web/$i data
 done
 
-array=(alertify.css fancybox.css animate.css bootstrap.css ion.rangeSlider.css glyphicons.css style.css)
+array=(alertify.css jquery.fancybox.css animate.css bootstrap.css ion.rangeSlider.css glyphicons.css style.css)
 for i in "${array[@]}"; do
     cp -rf ../Web/css/$i data/css
 done
 
-array=(jquery.js jquery.knob.js potentiometer.js fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js canmap.json parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js chartjs-plugin-zoom.js test.js iconic.js mobile.js)
+array=(jquery.js jquery.knob.js potentiometer.js jquery.fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js canmap.json parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js chartjs-plugin-zoom.js test.js iconic.js mobile.js)
 for i in "${array[@]}"; do
     cp -rf ../Web/js/$i data/js
 done
@@ -31,6 +34,8 @@ for i in "${array[@]}"; do
     cp -rf ../Web/img/$i data/img
 done
 
+cp -rf  "../Web/pcb/Hardware v1.0/diagrams/test.png" data/pcb/v1.0
+cp -rf  "../Web/pcb/Hardware v3.0/diagrams/test.png" data/pcb/v3.0
 #cp -rf ../Web/fonts/glyphicons-halflings-regular.ttf data/fonts
 #cp -rf ../Web/fonts/glyphicons-halflings-regular.woff data/fonts
 cp -rf ../Web/fonts/glyphicons-halflings-regular.woff2 data/fonts
@@ -71,10 +76,40 @@ for f in $(find data -type f -name '*.*'); do
         for ff in $(find ./data -type f -name '*.php' -o -name '*.js' -o -name '*.json' -o -name '*.css'); do
             sed -i '' 's/'"$o"'/'"$fe"'/g' "$ff"
             sed -i '' 's#\/\*\!#\/\*#' "$ff" #Remove required comments
+            sed -i '' 's/'"pcb\/Hardware v1.0\/diagrams\/test.png"'/'"pcb\/v1.0\/test.png"'/g' "$ff"
+            sed -i '' 's/'"pcb\/Hardware v3.0\/diagrams\/test.png"'/'"pcb\/v3.0\/test.png"'/g' "$ff"
         done
 
         mv -f "data/$f" "data/$nn"
     fi
+done
+
+#================
+#Clean PHP
+#================
+for f in $(find ./data -name '*.php'); do
+    php=false
+    while read -r line; do
+        if [[ $line == *"<?php"* ]]; then
+            php=true
+        fi
+        if [[ $line == *"?>"* ]]; then
+            php=false
+        fi
+        if [ $php = false ]; then
+            echo "$line" >> "$f.p"
+        else
+            if [[ $line == *"include"* ]]; then
+                #echo "<?php" >> "$f.p"
+                echo "$line" >> "$f.p"
+            else
+                if [[ $line == *"<?php"* ]]; then
+                    echo "<?php" >> "$f.p"
+                fi
+            fi
+        fi
+    done < "$f"
+    mv "$f.p" "$f"
 done
 
 #====================
@@ -104,7 +139,6 @@ if [ ! -f tools/mkspiffs ]; then
     cd ../
 fi
 
-
 #==============
 #Compress Files
 #==============
@@ -118,11 +152,11 @@ echo " > Compress Javascript? (y/n)"
 read yn
 if [ $yn = y ]; then
     for f in $(find data -name '*.js'); do
-        java -jar tools/closure-compiler-v20180910.jar --language_in ECMASCRIPT5 --js_output_file "$f-min.js" --js "$f"
+        java -jar tools/closure-compiler-v20180910.jar --strict_mode_input=false --language_in ECMASCRIPT5 --js_output_file "$f-min.js" --js "$f"
         mv "$f-min.js" "$f"
     done
 fi
-for f in $(find data -type f -name '*.*' ! -name '*.php' ! -name '.gitignore'); do
+for f in $(find data -type f -name '*.*' ! -name '*.bin' ! -name '*.php' ! -name '.gitignore'); do
     gzip "$f"
     mv "$f.gz" "$f"
 done

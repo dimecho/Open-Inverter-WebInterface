@@ -214,6 +214,7 @@
 							$(document).ready(function() {
 								if(os == "esp8266") {
 									$("#firmware-interface").append($("<option>",{value:"uart-esp8266",selected:'selected'}).append("UART over ESP8266"));
+									$("#firmware-interface").append($("<option>",{value:"swd-esp8266",selected:'selected'}).append("SWD over ESP8266"));
 								}else{
 									for (var i = 0; i < jtag_interface.length; i++) {
 										$("#firmware-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_name[i]));
@@ -243,8 +244,11 @@
                                 <div class="loader"></div>
                                 <div class="input-group w-100">
                                     <span class="input-group-addon hidden w-75">
-                                        <select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage()" id="firmware-interface"></select>
-                                    </span>
+										<form enctype="multipart/form-data" action="firmware.php" method="POST" id="firmwareForm">
+											<input name="firmware" type="file" class="file" hidden onchange="firmwareUpload()" />
+											<select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage()" id="firmware-interface"></select>
+										</form>
+									</span>
                                     <span class="input-group-addon hidden w-25">
 										<center>
 											<button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select stm32_sine.bin</button>
@@ -264,9 +268,6 @@
                 </div>
             </div>
         </div>
-        <form enctype="multipart/form-data" action="firmware.php" method="POST" id="firmwareForm">
-            <input name="firmware" type="file" class="file" hidden onchange="firmwareUpload()" />
-        </form>
     </body>
 </html>
 <?php

@@ -11,10 +11,10 @@ IC9,SN74HC10D/SN74LVC1G10,SOIC-14/SOT-23-6,https://www.ti.com/lit/ds/symlink/sn7
 Q1,8Mhz,FS8.000P,https://media.digikey.com/pdf/Data%20Sheets/Fox%20Electronics%20PDFs/FOXSDLF_080R-20.pdf
 LED_ALIVE,green,'0805,
 LED_PWR,red,'0805,
-L1,10uH,'0603,
+L1,10uH,'1206,
 L2,47uH,12x12,
-L3,10uH,'0603,
-L4,10uH,'0603,
+L3,10uH,'1206,
+L4,10uH,'1206,
 R1,220R,'0603,
 R2,3k3,'0603,
 R3,3k3,'0603,
@@ -114,8 +114,8 @@ C44,22nF,'0603,
 C45,470uF (16v),6x7,
 C46,10uF,'0805,
 C47,22nF,'0603,
-D1,B540C/CDBA540-HF,DO-214AC,https://cdn.datasheetspdf.com/pdf-down/C/D/B/CDBA540-HF-ComchipTechnology.pdf
-D2,B540C/CDBA540-HF,DO-214AC,https://cdn.datasheetspdf.com/pdf-down/C/D/B/CDBA540-HF-ComchipTechnology.pdf
+D1,B540C/1N5819/CDBA540-HF,DO-214AC,https://cdn.datasheetspdf.com/pdf-down/C/D/B/CDBA540-HF-ComchipTechnology.pdf
+D2,B540C/1N5819/CDBA540-HF,DO-214AC,https://cdn.datasheetspdf.com/pdf-down/C/D/B/CDBA540-HF-ComchipTechnology.pdf
 D3,SBR1A40S3-7,SOD-323,https://www.diodes.com/assets/Datasheets/SBR1A40S3.pdf
 JP1,,2x5 (10pin),
 JP2,,2x13 (26pin),
