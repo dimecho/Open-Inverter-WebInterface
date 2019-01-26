@@ -7,13 +7,12 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br>
              <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered">
                         <tr>
                             <td>
-                                <span class="glyphicon glyphicon-trash"></span> Remove Software installed by Huebner Inverter.
+                                <span class="icons icon-trash"></span> Remove Software installed by Huebner Inverter.
                             </td>
                         </tr>
                     </table>
@@ -50,7 +49,7 @@
                             }
                         ?>
                     </table>
-                    <button class="browse btn btn-primary" type="button" onclick="Uninstall();"><i class="glyphicon glyphicon-trash"></i> Uninstall</button>
+                    <button class="browse btn btn-primary" type="button" onclick="Uninstall();"><i class="icons icon-trash"></i> Uninstall</button>
                 </div>
             </div>
         </div>

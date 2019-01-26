@@ -80,7 +80,6 @@
  <body>
 	<div class="container">
 		<?php include "menu.php" ?>
-		<br>
 		<div class="row">
 			<div class="col">
 			    <table class="table table-active table-bordered">
@@ -114,7 +113,7 @@
 								<div class="form-group">
 									<label for="WiFiChannel">Channel</label>
 									<div class="input-group">
-										<div class="input-group-addon"><i class="glyphicon glyphicon-align-left"></i></div>
+										<div class="input-group-addon"><i class="icons icon-graph-bar p-3"></i></div>
 										<select id="WiFiChannel" class="form-control" name="WiFiChannel">
 											<option>1</option>
 											<option>2</option>
@@ -132,17 +131,17 @@
 								</div> 
 								<div class="form-group">
 									<div class="input-group">
-								    	<div class="input-group-addon"><i class="glyphicon glyphicon-signal"></i></div>
+								    	<div class="input-group-addon"><i class="icons icon-wifi p-3"></i></div>
 								    	<input type="text" id="WiFiSSID" name="WiFiSSID" class="form-control" placeholder="SSID">
 									</div>
 								</div>
 								<div class="form-group">
 									<div class="input-group">
-										<div class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></div>
+										<div class="input-group-addon"><i class="icons icon-password p-3"></i></div>
 								    	<input type="password" id="WiFiPassword" name="WiFiPassword" class="form-control" placeholder="Password">
 									</div>
 								</div>
-								<center><button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-ok-sign"></i> Save</button></center>
+								<center><button type="submit" class="btn btn-success"><i class="icons icon-ok"></i> Save</button></center>
                             </form>
                         </td>
                     </tr>
@@ -150,10 +149,10 @@
 				<table class="table table-active table-bordered">
 					<tr align="center">
 						<td align="center">
-							<button class="btn btn-primary" type="button" id="browseSPIFFS"><i class="glyphicon glyphicon-th"></i> Flash SPIFFS</button>
+							<button class="btn btn-primary" type="button" id="browseSPIFFS"><i class="icons icon-chip"></i> Flash SPIFFS</button>
 						</td>
 						<td align="center">
-							<button class="btn btn-primary" type="button" id="browseSketch"><i class="glyphicon glyphicon-th"></i> Flash Sketch</button>
+							<button class="btn btn-primary" type="button" id="browseSketch"><i class="icons icon-chip"></i> Flash Sketch</button>
 						</td>
 					</tr>
 					<tr align="center">

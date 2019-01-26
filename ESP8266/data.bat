@@ -10,8 +10,7 @@ mkdir data\css
 mkdir data\js
 mkdir data\img
 mkdir data\fonts
-mkdir data\firmware
-mkdir data\firmware\img
+::mkdir data\firmware
 mkdir data\pcb
 mkdir data\pcb\v1.0
 mkdir data\pcb\v3.0
@@ -21,28 +20,28 @@ for %%a in (%array%) do (
   copy ..\Web\%%a data
 )
 
-set array=alertify.css jquery.fancybox.css animate.css bootstrap.css ion.rangeSlider.css glyphicons.css style.css
+set array=alertify.css jquery.fancybox.css animate.css bootstrap.css ion.rangeSlider.css icons.css style.css
 for %%a in (%array%) do (
   copy ..\Web\css\%%a data\css
 )
 
-set array=jquery.js jquery.knob.js potentiometer.js jquery.fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js canmap.json parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js chartjs-plugin-zoom.js test.js iconic.js mobile.js
+set array=jquery.js jquery.knob.js potentiometer.js jquery.fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js canmap.json parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js chartjs-plugin-zoom.js test.js mobile.js
 for %%a in (%array%) do (
   copy ..\Web\js\%%a data\js
 )
 copy ..\Web\js\menu-esp8266.json data\js\menu.json
 
-set array=background.png safety.png alert.svg battery.svg engine.svg idea.svg key.svg temperature.svg
+set array=background.png safety.png
 for %%a in (%array%) do (
   copy ..\Web\img\%%a data\img
 )
 
 copy "..\Web\pcb\Hardware v1.0\diagrams\test.png" data\pcb\v1.0
+copy "..\Web\pcb\Hardware v1.0\diagrams\esp8266.png" data\pcb\v1.0
 copy "..\Web\pcb\Hardware v3.0\diagrams\test.png" data\pcb\v3.0
-::copy ../Web/fonts/glyphicons-halflings-regular.ttf data/fonts
-::copy ../Web/fonts/glyphicons-halflings-regular.woff data/fonts
-copy ..\Web\fonts\glyphicons-halflings-regular.woff2 data\fonts
-copy ..\Web\firmware\img\esp8266.png data\firmware\img
+copy "..\Web\pcb\Hardware v3.0\diagrams\esp8266.png" data\pcb\v3.0
+::copy ..\Web\fonts\icons.ttf data\fonts
+copy ..\Web\fonts\icons.woff data\fonts
 
 ::======================
 ::Correct long filenames
@@ -72,6 +71,11 @@ for /R "%~dp0\data" %%F in (*.*) do (
 			powershell -ExecutionPolicy Bypass -Command "(Get-Content %%a).replace('%%~nxsF', '!R!') | Set-Content %%a"
 		)
 	)
+)
+
+for /R "%~dp0\data" %%F in (*.js) do (
+	powershell -ExecutionPolicy Bypass -Command "(Get-Content %%F).replace('pcb/Hardware v1.0/diagrams/', 'pcb/v1.0/') | Set-Content %%F"
+	powershell -ExecutionPolicy Bypass -Command "(Get-Content %%F).replace('pcb/Hardware v3.0/diagrams/', 'pcb/v3.0/') | Set-Content %%F"
 )
 
 ::====================
@@ -114,7 +118,7 @@ If /I "%INPUT%"=="n" goto GZip
 echo Incorrect input & goto CompressJava
 
 :CompressJavaY
-forfiles /p .\ /s /m *.js /c "cmd /c java -jar %~dp0tools\closure-compiler-v20180910.jar --language_in ECMASCRIPT5 --js_output_file @file --js @file"
+forfiles /p .\ /s /m *.js /c "cmd /c java -jar %~dp0tools\closure-compiler-v20180910.jar --strict_mode_input=false --language_in ECMASCRIPT5 --js_output_file @file --js @file"
 
 :GZip
 for /R "%~dp0\data" %%F in (*.*) do (
@@ -139,7 +143,8 @@ FOR /R .\data %%I IN (*) DO (
 echo Size: %fs%
 echo Size on disk: %fs_ondisk%
 
-"%~dp0\tools\mkspiffs.exe" -c .\data\  -b 8192 -p 256 -s %fs_ondisk% flash-spiffs.bin
+::"%~dp0\tools\mkspiffs.exe" -c .\data\  -b 8192 -p 256 -s %fs_ondisk% flash-spiffs.bin
+"%~dp0\tools\mkspiffs.exe" -c .\data\  -b 8192 -p 256 -s 643072 flash-spiffs.bin
 ::"%~dp0\tools\mkspiffs.exe" -c .\data\  -b 8192 -p 256 -s 1028096 flash-spiffs.bin
 ::"%~dp0\tools\mkspiffs.exe" -i flash-spiffs.bin
 pause

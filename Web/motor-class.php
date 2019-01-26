@@ -6,7 +6,6 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br>
              <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered">

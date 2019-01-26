@@ -1,128 +1,128 @@
 {
     "menu": [{
         "id": "Motor",
-        "icon": "glyphicon-cd",
+        "icon": "icon-motor",
         "onClick": "",
         "dropdown": [{
             "id": "Start Inverter",
-            "icon": "glyphicon-flash",
-            "onClick": "alertify.startInverterMode(\"<i class='glyphicon glyphicon-dashboard'></i> Warning: Before starting the inverter set the throttle control to zero.\")"
+            "icon": "icon-key",
+            "onClick": "alertify.startInverterMode(\"<i class='icons icon-speedometer'></i> Warning: Before starting the inverter set the throttle control to zero.\")"
         }, {
             "id": "Stop Inverter",
-            "icon": "glyphicon-alert",
+            "icon": "icon-alert",
             "onClick": "stopInverter()"
         }, {
             "id": "Reset to Default",
-            "icon": "glyphicon-erase",
+            "icon": "icon-reset",
             "onClick": "setDefaults()"
         }, {
             "id": "Motor Database",
-            "icon": "glyphicon-align-justify",
+            "icon": "icon-magic",
             "onClick": "/db.php"
         }, {
             "id": "-"
         }, {
             "id": "Parameters",
-            "icon": "glyphicon-transfer",
+            "icon": "icon-settings",
             "onClick": "/index.php"
         }, {
             "id": "Graph",
-            "icon": "glyphicon-signal",
+            "icon": "icon-graph-bar",
             "onClick": "/graph.php"
         }, {
             "id": "-"
         }, {
             "id": "Upload",
-            "icon": "glyphicon-upload",
+            "icon": "icon-up",
             "onClick": "uploadSnapshot()"
         }, {
             "id": "Download",
-            "icon": "glyphicon-download",
+            "icon": "icon-down",
             "onClick": "downloadSnapshot()"
         }, {
             "id": "-"
         }, {
             "id": "Auto Tuning",
-            "icon": "glyphicon-random",
+            "icon": "icon-tune",
             "onClick": "/simple.php"
         }, {
             "id": "CAN Mapping",
-            "icon": "glyphicon-list-alt",
+            "icon": "icon-list",
             "onClick": "/can.php"
         }]
     }, {
         "id": "Inverter",
-        "icon": "glyphicon-compressed",
+        "icon": "icon-inverter",
         "onClick": "",
         "dropdown": [{
             "id": "Flash Bootloader",
-            "icon": "glyphicon-object-align-horizontal",
+            "icon": "icon-chip",
             "onClick": "/bootloader.php"
         }, {
             "id": "Flash Firmware",
-            "icon": "glyphicon-object-align-left",
+            "icon": "icon-ram",
             "onClick": "/firmware.php"
         }, {
             "id": "Compile from Source",
-            "icon": "glyphicon-console",
+            "icon": "icon-source",
             "onClick": "eval(checkSoftware(\"arm\"))"
         }, {
             "id": "-"
         }, {
             "id": "Board Test",
-            "icon": "glyphicon-dashboard",
+            "icon": "icon-test",
             "onClick": "/test.php"
         }, {
             "id": "-"
         }, {
             "id": "Schematics",
-            "icon": "glyphicon-cog",
+            "icon": "icon-pcb",
             "onClick": "eval(checkSoftware(\"eagle\"))"
         }, {
             "id": "Components",
-            "icon": "glyphicon-list-alt",
+            "icon": "icon-components",
             "onClick": "/pcb.php"
         }, {
             "id": "Wiring Diagrams",
-            "icon": "glyphicon-flash",
+            "icon": "icon-connect",
             "onClick": "/wiring.php"
         }]
     }, {
         "id": "Console",
-        "icon": "glyphicon-console",
+        "icon": "icon-console",
         "onClick": "javascript:openConsole()"
     }, {
         "id": "Info",
-        "icon": "glyphicon-info-sign",
+        "icon": "icon-info",
         "onClick": "",
         "dropdown": [{
             "id": "Motor Classification",
-            "icon": "glyphicon-tasks",
+            "icon": "icon-list",
             "onClick": "/motor-class.php"
         }, {
             "id": "IGBT Test",
-            "icon": "glyphicon-hand-down",
+            "icon": "icon-point-down",
             "onClick": "/igbt-test.php"
         }, {
             "id": "Encoder",
-            "icon": "glyphicon-record",
+            "icon": "icon-encoder",
             "onClick": "/encoder.php"
         }, {
             "id": "Arduino LCD",
-            "icon": "glyphicon-phone",
+            "icon": "icon-lcd",
             "onClick": "/dashboard.php?i=arduino"
         }, {
             "id": "Power Stage",
-            "icon": "glyphicon-flash",
+            "icon": "icon-power",
             "onClick": "/design.php"
         }, {
             "id": "Tips",
-            "icon": "glyphicon-question-sign",
+            "icon": "icon-circle-question",
             "onClick": "/tips.php"
         }]
     }, {
         "id": "Uninstall",
-        "icon": "glyphicon-trash",
+        "icon": "icon-trash",
         "onClick": "/uninstall.php"
     }]
 }

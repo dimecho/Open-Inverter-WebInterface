@@ -4,12 +4,14 @@ var json = {};
 
 var can_interface = [
 	"firmware/img/canable.jpg",
-	"firmware/img/usb2can.png"
+	"firmware/img/usb2can.png",
+	"firmware/img/can-mcp2515.jpg"
 ];
 
 var can_name = [
 	"CANable",
-	"USB2CAN"
+	"USB2CAN",
+	"MCP2515"
 ];
 
 $(document).ready(function () {
@@ -34,7 +36,7 @@ $(document).ready(function () {
 
     if(os == "esp8266") {
         $("#open-cantact").remove();
-        $("#can-image").remove();
+		$("#can-interface").append($("<option>",{value:can_interface[2]}).append("CAN over ESP8266 with MCP2515"));
     }else{
     	for (var i = 0; i < can_interface.length; i++) {
     		$("#can-interface").append($("<option>",{value:can_interface[i]}).append(can_name[i]));
@@ -299,7 +301,7 @@ function saveCANMapping() {
                         if (data.indexOf("successful") != -1) {
                             $.notify({ message: data }, { type: "success" });
                         } else {
-                            $.notify({ icon: "glyphicon glyphicon-warning-sign", title: "Error", message: data },{ type: "danger" });
+                            $.notify({ icon: "icons icon-alert", title: "Error", message: data },{ type: "danger" });
                         }
                     }
                 }
@@ -318,11 +320,11 @@ function saveCANMapping() {
                     dataType: "json",
                     data: {"data": JSON.stringify(canjson)},
                     failure: function(errMsg) {
-                        $.notify({ icon: "glyphicon glyphicon-warning-sign", title: "Error", message: errMsg },{ type: "danger" });
+                        $.notify({ icon: "icons icon-alert", title: "Error", message: errMsg },{ type: "danger" });
                     }
                 });
             }else{
-                $.notify({ icon: 'glyphicon glyphicon-warning-sign', title: 'Error', message: data },{ type: 'danger' });
+                $.notify({ icon: 'icons icon-alert', title: 'Error', message: data },{ type: 'danger' });
             }
         }else{
             $.notify({ message: "A maximum of 8 messages can be defined" }, { type: "danger" });
@@ -341,7 +343,7 @@ function setCANDefaults() {
             $.ajax("can.php?clear=1");
             $.notify({ message: "CAN reset to Default" }, { type: "success" });
         } else {
-            $.notify({ icon: "glyphicon glyphicon-warning-sign", title: "Error", message: data }, { type: "danger" });
+            $.notify({ icon: "icons icon-alert", title: "Error", message: data }, { type: "danger" });
         }
 
         setTimeout(function () {

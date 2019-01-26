@@ -5,22 +5,19 @@ var testArray = ["pot","din_mprot","din_emcystop","din_brake","din_start","din_f
 var testParam = testArray.join(',');
 var activeTab = "#tabAnalog";
 
-$(document).ready(function () {
+var can_interface = [
+	"firmware/img/canable.jpg",
+	"firmware/img/usb2can.png",
+	"firmware/img/can-mcp2515.jpg"
+];
 
-	$(".pot").knob({
-		"min":0,
-        "max":4095,
-		"fgColor":"#FF0000",
-		"bgColor":"#FFFFFF",
-        //"skin":"tron",
-		//"thickness": 0.1,
-		"readOnly":true,
-		"displayInput":true,
-		"angleOffset":90,
-		"rotation":"anticlockwise",
-		"displayPrevious": true,
-		"value": 0
-	});
+var can_name = [
+	"CANable",
+	"USB2CAN",
+	"MCP2515"
+];
+
+$(document).ready(function () {
 
     $('.nav-tabs a').click(function () {
         $(this).tab('show');
@@ -36,20 +33,45 @@ $(document).ready(function () {
     });
 });
 
+$(document).on('click', '.browse', function(){
+    var file = $('.file');
+    file.trigger('click');
+});
+
 function loadTab() {
 
     if(activeTab == "#tabAnalog") {
-
+		
+		$(".pot").knob({
+			"min":0,
+			"max":4095,
+			"fgColor":"#FF0000",
+			"bgColor":"#FFFFFF",
+			//"skin":"tron",
+			//"thickness": 0.1,
+			"readOnly":true,
+			"displayInput":true,
+			"angleOffset":90,
+			"rotation":"anticlockwise",
+			"displayPrevious": true,
+			"value": 0
+		});
+	
+	}else if(activeTab == "#tabDigital") {
+		
+		if(os == "esp8266") {
+			$("#can-interface").append($("<option>",{value:can_interface[2]}).append("CAN over ESP8266 with MCP2515"));
+		}else{
+			for (var i = 0; i < can_interface.length; i++) {
+				$("#can-interface").append($("<option>",{value:can_interface[i]}).append(can_name[i]));
+			}
+		}
     }else if(activeTab == "#tabHardware") {
-        //$.notify({ message: 'Hardware v3.0 Only' }, { type: 'success' });
 
-        $("#hardware-version").empty();
+		$("#hardware-version").empty();
         $("#debugger-interface").empty();
         $("#serial2-interface").empty();
-
-        $("#hardware-version").append($("<option>",{value:1}).append("Hardware v1.0"));
-        $("#hardware-version").append($("<option>",{value:3}).append("Hardware v3.0"));
-        
+		
         if(os == "esp8266") {
             $("#debugger-interface").append($("<option>",{value:"swd-esp8266"}).append("SWD over ESP8266"));
             $("#serial2-interface").append($("<option>",{value:"uart-esp8266"}).append("UART over ESP8266"));
@@ -71,12 +93,21 @@ function loadTab() {
                 }
             });
         }
-
-        $("#hardware-version").change(function() {
-            setHardwareImage();
-        });
-
-        setHardwareImage();
+		
+		//0=Rev1, 1=Rev2, 2=Rev3, 3=Tesla
+		$("#hardware-version").append($("<option>",{value:0}).append("Hardware v1.0"));
+		$("#hardware-version").append($("<option>",{value:2}).append("Hardware v3.0"));
+		
+		getJSONFloatValue("hwver", function(hwrev) {
+			if (isInt(parseInt(hwrev)) == true) {
+				$("#hardware-version").val(hwrev);
+			}
+		});
+		
+		$("#hardware-version").change(function() {
+			setHardwareImage();
+		});
+		setHardwareImage();
     }
 };
 
@@ -132,7 +163,7 @@ function analogTest() {
             
             for (var i = 1; i < data.length; i++) {
                 //if(data[i].match(/[1]/)) { //slow
-                if (parseInt(data[i]) === 1) { //faster
+                if (parseInt(data[i]) == 1) { //faster
                     $("#" + testArray[i]).addClass("circle-green").removeClass("circle-red");
                 }else{
                     $("#" + testArray[i]).addClass("circle-red").removeClass("circle-green");
@@ -145,27 +176,44 @@ function analogTest() {
     });
 };
 
-function hardwareTest() {
+function hardwareTest(file) {
 
-    $("#hardware-image").hide();
+	var xhr2 = !! ( window.FormData && ("upload" in ($.ajaxSettings.xhr()) ));
+	if(xhr2 == false) {
+		$.notify({ message: 'Browser does not support FormData()' }, { type: 'danger' });
+		return;
+	}
+	
+    //$("#hardware-image").hide();
     $(".loader").show();
 
-    var d = $("#debugger-interface").val();
-    
-    testRequest = $.ajax("test.php?flash=1&debugger=" + d , {
-        async: false,
+	var formData = new FormData();
+	if($(".file").length > 0) {
+		formData.append("file", $(".file")[0].files[0]);
+	}
+    formData.append("flash", 1);
+	formData.append("debugger", $("#debugger-interface").val());
+	
+    testRequest = $.ajax("test.php", {
+		type: "POST",
+        data: formData,
+		cache: false,
+		contentType: false,
+		processData: false,
+        timeout: 12000,
         success: function success(data) {
             console.log(data);
-
             if(data.indexOf("jolly good") != -1 || data.indexOf("shutdown command invoked") !=-1) {
                 $.notify({ message: 'Flashed stm32-test.bin sucessfully.' }, { type: 'success' });
-
                 setTimeout(function () {
                     $.notify({ message: 'Running GPIO tests.' }, { type: 'warning' });
                     hardwareTestResults();
                 }, 2000);
             }else{
                 $.notify({ message: 'Flash Error, try again.' }, { type: 'danger' });
+				$.notify({ message: data }, { type: 'warning' });
+				$(".loader").hide();
+				//$("#hardware-image").show();
             }
         }
     });
@@ -173,18 +221,17 @@ function hardwareTest() {
 
 function hardwareTestResults() {
 
-    var v = $("#hardware-version").val();
+	var v = $("#hardware-version").val();
     var s = $("#serial2-interface").val();
-
+	
     $.ajax("serial.php?test=" + v + "&serial=" + s, {
         async: false,
         success: function success(data) {
 
             console.log(data);
 
-            if(data === "")
+            if(data == "")
             {
-                $(".loader").hide();
                 $("#hardware-image").show();
                 $.notify({ message: 'Test Check Failed' }, { type: 'danger' });
             }else{
@@ -201,23 +248,30 @@ function hardwareTestResults() {
                     row.append(col);
                     results.append(row);
                 }
-                $(".loader").hide();
+                
             }
+			$(".loader").hide();
         }
     });
 };
 
+function setFirmwareFile() {
+	var ext = $(".file").val().split('.').pop();
+	if(ext == "bin" || ext == "hex") {
+		$("#firmware-file-path").val($(".file").val().split('\\').pop().split('/').pop());
+		$.notify({ message: 'Ready for Test' }, { type: 'success' });
+	}else{
+		$.notify({ message: 'File must be .bin or .hex' }, { type: 'danger' });
+	}
+}
+
 function setHardwareImage() {
-
-    var v = $("#hardware-version").val();
-
-    if(v == 1) {
-        $("#hardware-image").attr("src", "pcb/Hardware v1.0/diagrams/test.png");
-    }else if(v == 2) {
-        $("#hardware-image").attr("src", "pcb/Hardware v2.0/diagrams/test.png");
-    }else if(v == 3) {
-        $("#hardware-image").attr("src", "pcb/Hardware v3.0/diagrams/test.png");
-    }
-
-    $("#hardware-image").show();
+    var hwrev = $("#hardware-version").val();
+	
+	if(hwrev == 2) {
+		$("#hardware-image").attr("src","pcb/Hardware v3.0/diagrams/test.png");
+	}else{
+		$("#hardware-image").attr("src","pcb/Hardware v1.0/diagrams/test.png");
+	}
+	//$("#hardware-image").show();
 };

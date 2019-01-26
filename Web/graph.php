@@ -23,7 +23,6 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br>
             <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light">
@@ -67,7 +66,7 @@
             <center>
                 <div id="buildPointsMenu"></div>
                 <br>
-                <button class="browse btn btn-primary" type="button" onClick="$.fancybox.close();"><i class="glyphicon glyphicon-search"></i> OK</button>
+                <button class="browse btn btn-primary" type="button" onClick="$.fancybox.close();"><i class="icons icon-ok"></i> OK</button>
             </center>
         </div>
     </body>

@@ -45,11 +45,18 @@ function setInterfaceImage() {
 		if(v == "swd-esp8266") {
 			beginESP8266SWD();
 		}
-		$("#jtag-image").attr("src","firmware/img/esp8266.png");
+		getJSONFloatValue("hwver", function(hwrev) {
+			//0=Rev1, 1=Rev2, 2=Rev3, 3=Tesla
+	        if(hwrev === 2) {
+	        	$("#jtag-image").attr("src","pcb/v3.0/esp8266.png");
+	        }else{
+	        	$("#jtag-image").attr("src","pcb/v1.0/esp8266.png");
+	        }
+	    });
 	}else{
 		$("#jtag-txt").html("");
 		if(v.indexOf("stlink-v2") != -1) {
-			$("#jtag-image").attr("src", "firmware/img/stlinkv2.png");
+			$("#jtag-image").attr("src", "pcb/Hardware v1.0/diagrams/stlinkv2.png");
 			eval(checkSoftware("stlink"));
         }else if(v.indexOf("olimex-arm-jtag-swd") != -1) {
             $("#jtag-image").attr("src", "firmware/img/olimex-arm-jtag-swd.jpg");

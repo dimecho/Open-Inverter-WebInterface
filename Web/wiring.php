@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <?php include "header.php"; ?>
+        <?php include "header.php" ?>
         <script src="js/jspdf.js"></script>
         <script src="js/wiring.js"></script>
     </head>
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br>
              <div class="row">
                 <div class="col">
                     <div class="container bg-light">
@@ -24,17 +23,17 @@
                                         <div class="row">
                                             <div class="col">
                                                 <a data-fancybox="gallery" href="">
-                                                    <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-th-list"></i> Pinout</button>
+                                                    <button type="button" class="btn btn-primary"><i class="icons icon-list"></i> Pinout</button>
                                                 </a>
                                             </div>
                                             <div class="col">
                                                 <a data-fancybox="gallery" href="">
-                                                    <button type="button" class="btn btn-success"><i class="glyphicon glyphicon-flash"></i> Wiring</button>
+                                                    <button type="button" class="btn btn-success"><i class="icons icon-connect"></i> Wiring</button>
                                                 </a>
                                             </div>
                                             <div class="col">
                                                 <a href="attiny.php">
-                                                    <button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-object-align-bottom"></i> ATTiny13</button>
+                                                    <button type="button" class="btn btn-danger"><i class="icons icon-chip"></i> ATTiny13</button>
                                                 </a>
                                             </div>
                                         </div>
@@ -52,12 +51,12 @@
                                         <div class="row">
                                             <div class="col">
                                                 <a data-fancybox="gallery" href="">
-                                                    <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-th-list"></i> Pinout</button>
+                                                    <button type="button" class="btn btn-primary"><i class="icons icon-list"></i> Pinout</button>
                                                 </a>
                                             </div>
                                             <div class="col">
                                                 <a data-fancybox="gallery" href="">
-                                                    <button type="button" class="btn btn-success"><i class="glyphicon glyphicon-flash"></i> Wiring</button>
+                                                    <button type="button" class="btn btn-success"><i class="icons icon-connect"></i> Wiring</button>
                                                 </a>
                                             </div>
                                         </div>
@@ -78,17 +77,17 @@
                                         <div class="row">
                                             <div class="col">
                                                 <a data-fancybox="gallery" href="">
-                                                    <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-th-list"></i> Pinout</button>
+                                                    <button type="button" class="btn btn-primary"><i class="icons icon-list"></i> Pinout</button>
                                                 </a>
                                             </div>
                                             <div class="col">
                                                 <a data-fancybox="gallery" href="">
-                                                    <button type="button" class="btn btn-success"><i class="glyphicon glyphicon-flash"></i> Wiring</button>
+                                                    <button type="button" class="btn btn-success"><i class="icons icon-connect"></i> Wiring</button>
                                                 </a>
                                             </div>
                                             <div class="col">
-                                                <a data-fancybox="gallery" href="firmware/img/esp8266.png">
-                                                    <button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-object-align-bottom"></i> ESP8266</button>
+                                                <a data-fancybox="gallery" href="pcb/Hardware v1.0/diagrams/esp8266.png">
+                                                    <button type="button" class="btn btn-danger"><i class="icons icon-chip"></i> ESP8266</button>
                                                 </a>
                                             </div>
                                         </div>
@@ -106,12 +105,17 @@
                                         <div class="row">
                                             <div class="col">
                                                 <a data-fancybox="gallery" href="">
-                                                    <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-th-list"></i> Pinout</button>
+                                                    <button type="button" class="btn btn-primary"><i class="icons icon-list"></i> Pinout</button>
                                                 </a>
                                             </div>
                                             <div class="col">
                                                 <a data-fancybox="gallery" href="">
-                                                    <button type="button" class="btn btn-success"><i class="glyphicon glyphicon-flash"></i> Wiring</button>
+                                                    <button type="button" class="btn btn-success"><i class="icons icon-connect"></i> Wiring</button>
+                                                </a>
+                                            </div>
+											<div class="col">
+                                                <a data-fancybox="gallery" href="pcb/Hardware v3.0/diagrams/esp8266.png">
+                                                    <button type="button" class="btn btn-danger"><i class="icons icon-chip"></i> ESP8266</button>
                                                 </a>
                                             </div>
                                         </div>

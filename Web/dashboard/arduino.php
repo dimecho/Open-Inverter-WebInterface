@@ -14,7 +14,7 @@
                     <table class="table table-active table-bordered">
                         <tr>
                             <td>
-                                <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('arduino'))"><i class="glyphicon glyphicon-th-large"></i> Open Arduino IDE</button>
+                                <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('arduino'))"><i class="icons icon-gear"></i> Open Arduino IDE</button>
                             </td>
                         </tr>
                     </table>
@@ -61,7 +61,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <span class="glyphicon glyphicon-triangle-right"></span> Interface uses <a href="https://bitbucket.org/fmalpartida/new-liquidcrystal/downloads" target="_blank">NewLiquidCrystal Library</a>
+                                <span class="icons icon-source"></span> Interface uses <a href="https://bitbucket.org/fmalpartida/new-liquidcrystal/downloads" target="_blank">NewLiquidCrystal Library</a>
                             </td>
                         </tr>
                     </table>

@@ -19,7 +19,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <?php include "header.php"; ?>
+        <?php include "header.php" ?>
         <script src="js/sourcecode.js"></script>
     </head>
     <body>

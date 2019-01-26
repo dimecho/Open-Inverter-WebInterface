@@ -441,7 +441,7 @@ function buildGraphMenu() {
     var menu = $("#buildGraphMenu").empty();
     var menu_buttons = $("#buildGraphButtons").empty();
 
-	var btn_points_i = $("<i>", { class: "glyphicon glyphicon-ok" });
+	var btn_points_i = $("<i>", { class: "icons icon-ok" });
 	var btn_points = $("<button>", { class: "btn btn-primary btn-space", onClick: "buildPointsMenu();$('.graphPoints').trigger('click');" }).append(btn_points_i).append(" Select Points");
     var btn_start = $("<button>", { class: "btn btn-success btn-space", onClick: "startChart()" }).append("Start Graph");
     var btn_stop = $("<button>", { class: "btn btn-danger btn-space", onClick: "stopChart()" }).append("Stop Graph");
@@ -449,9 +449,9 @@ function buildGraphMenu() {
     var btn_img = $("<button>", { class: "btn btn-info btn-space", onClick: "exportPDF()" }).append("Export Image");
 
     var s = $("#buildGraphSlider").empty();
-    var slow_img = "Slow  "; //$("<img>", { class: "iconic", src: "img/slow.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Slow"} );
+    var slow_img = "Slow  ";
     var input = $("<input>", { id: "speed", type: "text", "data-provide": "slider"} );
-    var fast_img = "  Fast"; //$("<img>", { class: "iconic", src: "img/fast.svg", "data-toggle": "tooltip", "data-html": "true", "title": "Fast"} );
+    var fast_img = "  Fast";
     
     //s.append(slow_img);
     s.append(input);
@@ -505,7 +505,7 @@ function buildGraphMenu() {
         var nav = $("<nav>", { class: "navbar navbar-toggleable-md navbar-light bg-faded" });
         var div = $("<div>", { class: "collapse navbar-collapse", id: "navbarsGraph" });
         var button = $("<button>", { class: "navbar-toggler navbar-toggler-right", type: "button", "data-toggle":"collapse", "data-target": "#navbarsGraph", "aria-controls": "navbarsGraph", "aria-expanded": false, "aria-label": "Navigation" });
-        var span = $("<span>", { class: "text-dark display-3 glyphicon glyphicon-menu-hamburger" });
+        var span = $("<span>", { class: "text-dark display-3 icons icon-menu" });
         var text = $("<a>", { class: "text-dark display-4", href:"#"}).append($("<b>").append(activeTabText));
 
         button.append(span);

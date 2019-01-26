@@ -223,7 +223,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col" align="center">
-                                    <h4><i class="glyphicon glyphicon-warning-sign"></i> Warning: Wrong Checksum</h4><br>
+                                    <h4><i class="icons icon-alert"></i> Warning: Wrong Checksum</h4><br>
                                 </div>
                             </div>
                             <div class="row">
@@ -241,10 +241,10 @@
                             <div class="row"><hr></div>
                             <div class="row">
                                 <div class="col" align="center">
-                                    <button class="btn btn-danger" type="button" onClick="$.fancybox.close();"><i class="glyphicon glyphicon-remove"></i> Cancel</button>
+                                    <button class="btn btn-danger" type="button" onClick="$.fancybox.close();"><i class="icons icon-cancel"></i> Cancel</button>
                                 </div>
                                 <div class="col" align="center">
-                                    <button class="btn btn-success" type="button" id="continue_install"><i class="glyphicon glyphicon-ok"></i> Continue Installing</button>
+                                    <button class="btn btn-success" type="button" id="continue_install"><i class="icons icon-ok"></i> Continue Installing</button>
                                 </div>
                             </div>
                         </div>

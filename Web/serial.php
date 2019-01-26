@@ -331,7 +331,7 @@ session_start();
                 $read .= fread($uart,1024);
             while (substr($read, -6) !== "}\r\n}\r\n")
                 $read .= fread($uart,1);
-        }else if($cmd === "errors\n"){
+        }else if($cmd === "all\n" || $cmd === "errors\n"){
             $read = uart_read_eof($uart,array("\r"));
         }else if($cmd === "save\n"){
             $read = uart_read_line($uart); //fgets($uart); //CRC

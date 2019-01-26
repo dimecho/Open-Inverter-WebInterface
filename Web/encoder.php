@@ -5,17 +5,16 @@
     </head>
     <body>
         <div class="container">
-            <?php include "menu.php" ?>
-            <br>
-             <div class="row">
+		<?php include "menu.php" ?>
+            <div class="row">
                 <div class="col">
                     <table class="table table-active table-bordered">
                         <tr>
                             <td>
-                                <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('inkscape'))"><i class="glyphicon glyphicon-cog"></i> Inkscape (2D)</button>
+                                <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('inkscape'))"><i class="icons icon-gear"></i> Inkscape (2D)</button>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('openscad'))"><i class="glyphicon glyphicon-cog"></i> OpenSCAD (3D)</button>
+                                <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('openscad'))"><i class="icons icon-gear"></i> OpenSCAD (3D)</button>
                             </td>
                         </tr>
                     </table>
@@ -69,5 +68,9 @@
                 </div>
             </div>
         </div>
+		<form action="open.php" method="POST" enctype="multipart/form-data">
+			<input type="file" name="file" class="fileSVG" hidden onchange="javascript:this.form.submit();" accept=".svg">
+			<input type="submit" hidden>
+		</form>
     </body>
 </html>

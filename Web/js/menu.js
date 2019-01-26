@@ -1,4 +1,3 @@
-var iconic;
 var serialTimeout = 12000;
 /*
 var serialPort = getCookie("serial");
@@ -11,7 +10,7 @@ var os = getCookie("os");
 
 $(document).ready(function () {
 
-    if (os === undefined) {
+    if (os == undefined) {
         $.ajax("serial.php?os=1", {
             async: false,
             success: function(data) {
@@ -38,9 +37,10 @@ $(document).ready(function () {
     */
 
     var version = getCookie("version");
-    if (version === undefined) {
+    if (version == undefined) {
         $.ajax("version.txt", {
             success: function(version) {
+				version = version.replace("\n", ".");
                 setCookie("version", version, 1);
                 titleVersion(version);
             }
@@ -52,8 +52,6 @@ $(document).ready(function () {
     //os = "mobile";
 
     buildMenu();
-
-    iconic = IconicJS();
     
     alertify.defaults.transition = "slide";
     alertify.defaults.theme.ok = "btn btn-primary";
@@ -338,7 +336,7 @@ function setParameter(cmd, value, save, notify) {
 
                         $.notify({ message: data },{ type: 'success' });
                     }else{
-                        $.notify({ icon: 'glyphicon glyphicon-warning-sign', title: 'Error', message: data },{ type: 'danger' });
+                        $.notify({ icon: 'icons icon-alert', title: 'Error', message: data },{ type: 'danger' });
                     }
                 }
             }
@@ -456,7 +454,7 @@ function startInverter(mode) {
         */
     } else {
         $.notify({
-            icon: "glyphicon glyphicon-warning-sign", title: "Error", message: data
+            icon: "icons icon-warning", title: "Error", message: data
         }, {
             type: "danger"
         });
@@ -473,7 +471,7 @@ function stopInverter() {
         setParameter("chargemode", "0", false, false);
     } else {
         $.notify({
-            icon: "glyphicon glyphicon-warning-sign", title: "Error", message: data
+            icon: "icons icon-warning", title: "Error", message: data
         }, {
             type: "danger"
         });
@@ -503,7 +501,7 @@ function setDefaults() {
             $.notify({ message: "Inverter reset to Default" }, { type: "success" });
         } else {
             $.notify({
-                icon: "glyphicon glyphicon-warning-sign", title: "Error", message: data
+                icon: "icons icon-warning", title: "Error", message: data
             }, {
                 type: "danger"
             });
@@ -554,7 +552,7 @@ function buildTips() {
 
                 for (var i = 0; i < row.length; i++) {
                     if (i === n) {
-                        img = $("<img>", { class: "iconic", "data-src": "img/idea.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h8>Tip: " + row[i] + "</h8>" });
+                        img = $("<img>", { class: "icons icon-light", "data-toggle": "tooltip", "data-html": "true", "title": "<h8>Tip: " + row[i] + "</h8>" });
                         opStatus.append(img);
                         break;
                     }
@@ -583,29 +581,7 @@ function buildMenu() {
 
             var nav = $("#buildNav").empty();
             var div = $("<div>", { class: "collapse navbar-collapse", id:"navbarsDefault" });
-            var container = $("<table>", { style: "width:100%;" });
-            var row = $("<tr>");
-            var col = $("<td>");
-
-            if (os === "mobile") {
-                
-                var button = $("<button>", { class: "navbar-toggler navbar-toggler-right", type: "button", "data-toggle":"collapse", "data-target": "#navbarsDefault", "aria-controls": "navbarsDefault", "aria-expanded": false, "aria-label": "Navigation" });
-                var span = $("<span>", { class: "text-white display-3 glyphicon glyphicon-menu-hamburger" });
-                button.append(span);
-                col.append(button);
-     
-                nav.addClass("navbar-toggleable-md navbar-inverse bg-inverse");
-                nav.attr("style","background-color: #000;");
-            }else{
-
-                nav.addClass("navbar-expand-md navbar-light bg-light");
-            }
-
-            col.append(div);
-            row.append(col);
-            container.append(row);
-            nav.append(container);
-
+			
             for(var key in json.menu)
             {
                 //console.log(json.menu[key].id);
@@ -613,7 +589,7 @@ function buildMenu() {
                 var ul = $("<ul>", { class: "navbar-nav" });
                 var li = $("<li>", { class: "nav-item" });
                 var a = $("<a>", { class: "nav-link bg-inverse", href: "#" });
-                var _i = $("<i>", { class: "glyphicon " +  json.menu[key].icon });
+                var _i = $("<i>", { class: "icons " +  json.menu[key].icon });
                 
                 a.append(_i);
                 a.append($("<b>").append(" " + json.menu[key].id));
@@ -643,7 +619,7 @@ function buildMenu() {
                             
                             var dropdown_item = $("<a>", { class: "dropdown-item", href: "#" });
 
-                            var icon = $("<i>", { class: "glyphicon " + json.menu[key].dropdown[d].icon });
+                            var icon = $("<i>", { class: "icons " + json.menu[key].dropdown[d].icon });
                             var item = $("<span>");
 
                             if (onclick.indexOf("/") != -1 && onclick.indexOf("alertify") == -1)
@@ -676,19 +652,28 @@ function buildMenu() {
                 ul.append(li);
                 div.append(ul);
             }
+			
+			nav.append(div);
 
-            var status = $("<div>", { id: "opStatus" });
-            var col = $("<td>");
-            col.append(status);
-            row.append(col);
+            var col = $("<div>", { class: "col col-sm-auto", id: "opStatus"});
+			nav.parent().parent().append(col);
 
-            var span = $("<span>", { class: "badge badge-info float-right", id: "firmwareVersion" });
-            var col = $("<td>");
+            var span = $("<span>", { class: "badge badge-info", id: "firmwareVersion" });
+            var col = $("<div>", { class: "col col-sm-1" });
             col.append(span);
-            row.append(col);
-
-            if(os === "mobile") {
-                span.attr("style","font-size: 125%;");
+			nav.parent().parent().append(col);
+			
+			var button = $("<button>", { class: "navbar-toggler navbar-toggler-right", type: "button", "data-toggle":"collapse", "data-target": "#navbarsDefault", "aria-controls": "navbarsDefault", "aria-expanded": false, "aria-label": "Menu" });
+            var span = $("<span>", { class: "navbar-toggler-icon icons icon-menu" }); //text-white display-3
+            button.append(span);
+			nav.append(button);
+			
+			if (os === "mobile") {
+                //nav.addClass("navbar-toggleable-md navbar-inverse bg-inverse");
+                //nav.attr("style","background-color: #000;");
+				span.attr("style","font-size: 125%;");
+            }else{
+                nav.addClass("navbar-expand-md navbar-light bg-light");
             }
         }
     });
@@ -712,8 +697,8 @@ function buildStatus() {
 
             $('.tooltip').remove();
 
-            var opStatus = $("<span>");
-            var img = $("<img>", { class: "iconic", "data-src": "img/key.svg", "data-toggle": "tooltip", "data-html": "true" });
+            var opStatus = $("<div>");
+            var img = $("<i>", { class: "icon-status icons icon-key", "data-toggle": "tooltip", "data-html": "true" });
 
             if(data[0] !== "") {
 
@@ -721,89 +706,81 @@ function buildStatus() {
 
                 if (parseFloat(data[15]) === 3) {
                     img.attr("title", "<h6>Boost Mode</h6>");
-                    img.addClass("svg-yellow");
+                    img.addClass("icon-yellow");
                 } else if (parseFloat(data[15]) === 4) {
                     img.attr("title", "<h6>Buck Mode</h6>");
-                    img.addClass("svg-yellow");
+                    img.addClass("icon-yellow");
                 }else if (parseFloat(data[0]) === 0) {
                     img.attr("title", "<h6>Off</h6>");
-                    img.addClass("svg-red");
+                    img.addClass("icon-red");
                 } else if (parseFloat(data[0]) === 1) {
                     if (parseFloat(data[6]) === 1) {
                         img.attr("title", "<h6>Pulse Only - Do not leave ON</h6>");
-                        img.addClass("svg-yellow");
+                        img.addClass("icon-yellow");
                     } else {
                         img.attr("title", "<h6>Running</h6>");
-                        img.addClass("svg-green");
+                        img.addClass("icon-green");
                     }
                 } else if (parseFloat(data[0]) === 2) {
                     img.attr("title", "<h6>Manual Mode</h6>");
-                    img.addClass("svg-green");
+                    img.addClass("icon-green");
                     $("#potentiometer").show();
                 }
                 opStatus.append(img);
-                iconic.inject(img);
                 //========================
                 /*
                 if(json.ocurlim.value > 0){
-                    div.append($("<img>", {"data-src":"img/amperage.svg"}));
+                    div.append($("<i>", {"data-src":"img/amperage.svg"}));
                 }
                 opStatus.append(div);
                 */
                 //========================
-                img = $("<img>", { class: "iconic", "data-src": "img/battery.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[1] + "V</h6>" });
+                img = $("<i>", { class: "icon-status icons icon-battery", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[1] + "V</h6>" });
                 if (parseFloat(data[1]) > parseFloat(data[2]) && parseFloat(data[1]) > 10 && parseFloat(data[1]) < 520) { // && parseFloat(data[15]) !== 0) {
-                    img.addClass("svg-green");
+                    img.addClass("icon-green");
                 } else {
-                    img.addClass("svg-red");
+                    img.addClass("icon-red");
                 }
                 opStatus.append(img);
-                iconic.inject(img);
                 //========================
-                img = $("<img>", { class: "iconic", "data-src": "img/temperature.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[3] + "°C</h6>"});
+                img = $("<i>", { class: "icon-status icons icon-temp", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[3] + "&#8451;</h6>"});
                 if (parseFloat(data[3]) > 150 || parseFloat(data[4]) > 150) {
-                    img.addClass("svg-red");
+                    img.addClass("icon-red");
                     opStatus.append(img);
-                    iconic.inject(img);
                 } else if (parseFloat(data[3]) < 0 || parseFloat(data[4]) < 0 || parseFloat(data[3]) > 100 || parseFloat(data[4]) > 100) {
-                    img.addClass("svg-yellow");
+                    img.addClass("icon-yellow");
                     opStatus.append(img);
-                    iconic.inject(img);
                 }
                 //========================
-                img = $("<img>", { class: "iconic", "data-src": "img/magnet.svg","data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[5] + "ms</h6>" });
+                img = $("<i>", { class: "icon-status icons icon-magnet", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[5] + "ms</h6>" });
                 if(parseFloat(data[5]) < 22){
-                    img.addClass("svg-red");
+                    img.addClass("icon-red");
                     opStatus.append(img);
-                    iconic.inject(img);
                 }
                 //========================
                 /*
-                img = $("<img>", { class: "iconic", src: "img/speedometer.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + speed + "RPM</h6>" });
+                img = $("<i>", { class: "icon-status icons icon-speedometer", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + speed + "RPM</h6>" });
                 if (speed > 6000) {
-                    img.addClass("svg-red");
+                    img.addClass("icon-red");
                     opStatus.append(img);
                 } else if (speed > 3000) {
-                    img.addClass("svg-yellow");
+                    img.addClass("icon-yellow");
                     opStatus.append(img);
                 }
                 */
                 //========================
                 if (parseFloat(data[7]) != 1 && parseFloat(data[15]) === 0) {
-                    img = $("<img>", { class: "iconic", "data-src": "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Probably forgot PIN 11 to 12V</h6>" });
+                    img = $("<i>", { class: "icon-status icons icon-alert", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Probably forgot PIN 11 to 12V</h6>" });
                     opStatus.append(img);
-                    iconic.inject(img);
                 }
                 //========================
                 if (errors.indexOf("No Errors") === -1) {
-                    img = $("<img>", { class: "iconic", "data-src": "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + errors + "</h6>" });
+                    img = $("<i>", { class: "icon-status icons icon-alert", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + errors + "</h6>" });
                     opStatus.append(img);
-                    iconic.inject(img);
                 }
             }else{
-                img = $("<img>", { class: "iconic", "data-src": "img/alert.svg", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Inverter Disconnected</h6>" });
+                img = $("<i>", { class: "icon-status icons icon-alert", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Inverter Disconnected</h6>" });
                 opStatus.append(img);
-                iconic.inject(img);
             }
             
             $("#opStatus").empty().append(opStatus);
@@ -812,10 +789,8 @@ function buildStatus() {
 
             if(os === "mobile")
             {
-                $(".iconic").attr("style","width:80px; height:80px;");
+                $(".icons").attr("style","width:80px; height:80px;");
             }
-            
-            //iconic.inject('img.iconic');
             
             $('[data-toggle="tooltip"]').tooltip();
             

@@ -60,7 +60,6 @@ if(isset($_GET["find"])) {
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br>
              <div class="row">
                 <div class="col">
                     <div class="container bg-light" id="pcbList" style="display:none">

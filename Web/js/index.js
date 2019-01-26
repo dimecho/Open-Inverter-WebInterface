@@ -25,6 +25,7 @@ $(document).ready(function () {
         //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?init=115200", {
         $.ajax("serial.php?init=115200", {
             async: false,
+			timeout:2200,
             success: function(data) {
                 console.log(data);
                 if(data.indexOf("Error") != -1)
@@ -32,6 +33,7 @@ $(document).ready(function () {
                     //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
                     $.ajax("serial.php?com=list", {
                         async: false,
+						timeout:2000,
                         success: function(data) {
                            //console.log(data);
                            $(".serial").fancybox({
@@ -212,7 +214,7 @@ function buildParameters()
                 //    a.append(json[key].value);
                 //}
 
-                var category_icon = $("<i>", { class:"text-muted glyphicon" });
+                var category_icon = $("<i>", { class:"text-muted icons" });
 
                 if(json[key].category)
                 {
@@ -224,45 +226,49 @@ function buildParameters()
 
                     if(category == "Motor")
                     {
-                        category_icon.addClass("glyphicon-cd");
+                        category_icon.addClass("icon-motor");
                     }
                     else if(category == "Inverter")
                     {
-                        category_icon.addClass("glyphicon-compressed");
+                        category_icon.addClass("icon-inverter");
                     }
                     else if(category == "Charger")
                     {
-                        category_icon.addClass("glyphicon-flash");
+                        category_icon.addClass("icon-plug");
                     }
                     else if(category == "Throttle")
                     {
-                        category_icon.addClass("glyphicon-off");
+                        category_icon.addClass("icon-throttle");
                     }
                     else if(category == "Regen")
                     {
-                        category_icon.addClass("glyphicon-retweet");
+                        category_icon.addClass("icon-power");
                     }
                     else if(category == "Automation")
                     {
-                        category_icon.addClass("glyphicon-cog");
+                        category_icon.addClass("icon-gear");
                     }
                     else if(category == "Derating")
                     {
-                        category_icon.addClass("glyphicon-magnet");
+                        category_icon.addClass("icon-magnet");
                     }
                     else if(category == "Contactor Control")
                     {
-                        category_icon.addClass("glyphicon-download-alt");
+                        category_icon.addClass("icon-download");
                     }
                     else if(category == "Aux PWM")
                     {
-                        category_icon.addClass("glyphicon-barcode");
+                        category_icon.addClass("icon-pwm");
                     }
                     else if(category == "Testing")
                     {
-                        category_icon.addClass("glyphicon-dashboard");
+                        category_icon.addClass("icon-test");
+					}
+                    else if(category == "Communication")
+                    {
+                        category_icon.addClass("icon-transfer");
                     }else{
-                        category_icon.addClass("glyphicon-info-sign");
+                        category_icon.addClass("icon-info");
                     }
                 }
                 

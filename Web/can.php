@@ -21,14 +21,13 @@
     <body>
         <div class="container">
             <?php include "menu.php" ?>
-            <br>
             <div class="row">
                 <div class="col">
                     <div class="container bg-light">
                         <div class="row"><hr></div>
                         <div class="row">
                             <div class="col col-md-4">
-                                <p>USB-CAN Interface:</p>
+                                <p>CAN Interface:</p>
                                 <p>Inverter CAN Speed:</p>
 								<p>Inverter CAN Period:</p>
                             </div>
@@ -52,13 +51,13 @@
                         <div class="row"><hr></div>
                         <div class="row">
                             <div class="col" id="open-cantact">
-                                <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('cantact'))"><i class="glyphicon glyphicon-th-list"></i> Open CANtact App</button>
+                                <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('cantact'))"><i class="icons icon-list"></i> Open CANtact App</button>
                             </div>
                             <div class="col">
-                                <button type="button" class="btn btn-danger" onClick="setCANDefaults()"><i class="glyphicon glyphicon-erase"></i> Reset CAN</button>
+                                <button type="button" class="btn btn-danger" onClick="setCANDefaults()"><i class="icons icon-reset"></i> Reset CAN</button>
                             </div>
                             <div class="col">
-                               <button type="button" class="btn btn-success" onClick="saveCANMapping()"><i class="glyphicon glyphicon-erase"></i> Save CAN</button>
+                               <button type="button" class="btn btn-success" onClick="saveCANMapping()"><i class="icons icon-save"></i> Save CAN</button>
                             </div>
                         </div>
                         <div class="row"><hr></div>

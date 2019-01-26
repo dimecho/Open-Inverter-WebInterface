@@ -19,21 +19,19 @@ body {
 .btn-space {
   margin-right: 6px;
 }
-.iconic {
-  width:32px;
-  height:32px;
+.icon-status {
+  font-size: 2em;
   margin: 8px auto;
-  padding: 4px;
-  vertical-align: top;
+  padding: 10px;
 }
-.svg-green * {
-  fill:#569e26;
+.icon-green {
+  color:#569e26;
 }
-.svg-yellow * {
-  fill:#efc411;
+.icon-yellow {
+  color:#efc411;
 }
-.svg-red * {
-  fill:#b52808;
+.icon-red {
+  color:#b52808;
 }
 .circle-grey {
   width: 20px;

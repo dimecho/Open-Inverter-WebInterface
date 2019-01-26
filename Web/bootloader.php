@@ -24,19 +24,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <?php include "header.php"; ?>
+        <?php include "header.php" ?>
 		<script src="js/firmware.js"></script>
     </head>
     <body>
         <div class="container">
-            <?php include "menu.php"; ?>
-            <br>
+		<?php include "menu.php" ?>
             <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered">
                         <tr>
                             <td>
-                                <button type="button" class="btn btn-primary" onClick="window.open('https://github.com/jsphuebner/tumanako-inverter-fw-bootloader')"><i class="glyphicon glyphicon-circle-arrow-down"></i> Download Bootloader</button>
+                                <button type="button" class="btn btn-primary" onClick="window.open('https://github.com/jsphuebner/tumanako-inverter-fw-bootloader')"><i class="icons icon-download"></i> Download Bootloader</button>
                             </td>
                         </tr>
                     </table>
@@ -121,10 +120,8 @@
 												<select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage()" id="firmware-interface"></select>
 											</form>
 										</span>
-                                        <span class = "input-group-addon hidden w-25">
-											<center>
-												<button class="browse btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i> Select stm32_loader.bin</button>
-											</center>
+                                        <span class = "input-group-addon hidden w-25 text-center">
+											<button class="browse btn btn-primary" type="button"><i class="icons icon-select"></i> Select stm32_loader.bin</button>
 										</span>
                                     </div>
                                     <br><br><h2 id="jtag-name"></h2>

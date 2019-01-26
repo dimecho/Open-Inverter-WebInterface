@@ -2,7 +2,7 @@
 #include <FS.h>
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
+//#include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include <ESP8266WebServer.h>
@@ -25,18 +25,44 @@ const char text_plain[] = "text/plain";
 const char text_json[] = "application/json";
 String interface = "" ;
 
-//============
-//SWD Debugger
-//============
+//====================
+//Experimental CAN-Bus
+//====================
+/* http://scottsnowden.co.uk/esp8266-mcp2515-can-bus-to-wifi-gateway/
+   http://www.canhack.org/board/viewtopic.php?f=1&t=1041
+   http://forum.arduino.cc/index.php?topic=152145.0
+   https://github.com/Metaln00b/NodeMCU-BlackBox
+*/
+#include "src/mcp_can.h"
+#include <SPI.h>
 /*
-  Experimental SWD over ESP8266
+  #define MCP_8MHz_250kBPS_CFG1 (0x40)
+  #define MCP_8MHz_250kBPS_CFG2 (0xF1)
+  #define MCP_8MHz_250kBPS_CFG3 (0x85)
+*/
+long unsigned int rxId;
+unsigned char len = 0;
+unsigned char rxBuf[8];
+char msgString[128];  // Array to store serial string
+
+/*
+  MISO=D7(GPIO12),MOSI=D6(GPIO13),SCLK=D5(GPIO14),CS=D2(GPIO0),INT=D4(GPIO2)
+  https://arduino-esp8266.readthedocs.io/en/2.4.0-rc1/libraries.html#spi
+*/
+#define CAN0_INT 2    // Set INT to pin 2 (D4)
+MCP_CAN CAN0(4);      // Set CS to pin 4 (D2)
+
+//=========================
+//Experimental SWD Debugger
+//=========================
+/*
   https://github.com/scanlime/esp8266-arm-swd
 */
 
 #include "src/arm_debug.h"
 
-const uint8_t swd_clock_pin = 4; //0; //GPIO0 (D3) -> Pin4 (SWD)
-const uint8_t swd_data_pin = 5; //2; //GPIO2 (D4) -> Pin2 (SWD)
+const uint8_t swd_clock_pin = 4; //GPIO4
+const uint8_t swd_data_pin = 5; //GPIO5
 
 //ARMDebug target(swd_clock_pin, swd_data_pin);
 
@@ -216,7 +242,6 @@ void swdBegin()
     server.send(200, text_json, "{\"connected\": false}");
   }
 }
-
 //=============================
 
 void setup()
@@ -324,10 +349,11 @@ void setup()
   //===============
   //Web Server
   //===============
-
-  //---------------
-  //SWD Debugger
-  //---------------
+  /*
+    -------------------------
+    Experimental SWD Debugger
+    -------------------------
+  */
   server.on("/swd/reset", []() {
     server.send(200, text_json, boolStr(target.debugPortReset()));
   });
@@ -339,7 +365,7 @@ void setup()
   server.on("/swd/mem/write", swdMemWrite);
   server.on("/swd/reg/read", swdRegRead);
   server.on("/swd/reg/write", swdRegWrite);
-  //---------------
+  /*-------------------------*/
 
   server.on("/format", HTTP_GET, []() {
     String result = SPIFFS.format() ? "OK" : "Error";
@@ -419,22 +445,15 @@ void setup()
   server.on("/snapshot.php", HTTP_POST, []() {
     server.send(200);
   }, SnapshotUpload );
-  //---------------
-  //SWD Debugger
-  //---------------
-  //Short names for Windows and Unix
-  //---------------
-  server.on("/bootlo~1.php", HTTP_POST, []() {
+  server.on("/bootlo~1.php", HTTP_POST, []() { //Short name for Windows
     server.send(200);
   }, FirmwareUpload );
   server.on("/bootloader.php", HTTP_POST, []() {
     server.send(200);
   }, FirmwareUpload );
-  //---------------
   server.on("/firmware.php", HTTP_POST, []() {
     server.send(200);
   }, FirmwareUpload );
-  //---------------
   server.on("/interface", HTTP_POST, []() {
     interface = server.arg("i");
     server.send(200, text_plain, interface);
@@ -465,11 +484,13 @@ void setup()
   //==========
   //DNS Server
   //==========
-  //http://inverter.local
-  MDNS.begin("inverter");
-  MDNS.addService("http", "tcp", 80);
-  MDNS.addService("telnet", "tcp", 23);
-  MDNS.addService("arduino", "tcp", 8266);
+  /* http://inverter.local */
+  /*
+    MDNS.begin("inverter");
+    MDNS.addService("http", "tcp", 80);
+    MDNS.addService("telnet", "tcp", 23);
+    MDNS.addService("arduino", "tcp", 8266);
+  */
 
   //===================
   //Remote Telnet Debug
@@ -483,6 +504,19 @@ void setup()
   //Debug.showTime(true); // To show time
   //Debug.setSerialEnabled(true); // Serial echo
 
+  //====================
+  //Experimental CAN-Bus
+  //====================
+  if (CAN0.begin(MCP_ANY, CAN_250KBPS, MCP_8MHZ) == CAN_OK)
+  {
+    Debug.println("MCP2515 Initialized Successfully!");
+    //CAN0.setMode(MCP_NORMAL);
+    CAN0.setMode(MCP_LOOPBACK);
+    pinMode(CAN0_INT, INPUT);
+  } else {
+    Debug.println("Error Initializing MCP2515...");
+  }
+
   //======
   //UART0
   //======
@@ -490,6 +524,7 @@ void setup()
 
   uint8_t timeout = 10;
   while (!Serial && timeout > 0) {
+    Serial.swap(); //Swapped UART pins
     delay(500);
     timeout--;
   }
@@ -502,6 +537,62 @@ void loop()
   Debug.handle();
   ArduinoOTA.handle();
   server.handleClient();
+
+  //====================
+  //Experimental CAN-Bus
+  //====================
+  if (!digitalRead(CAN0_INT))
+  {
+    CAN0.readMsgBuf(&rxId, &len, rxBuf);      // Read data: len = data length, buf = data byte(s)
+
+    if ((rxId & 0x80000000) == 0x80000000)
+      sprintf(msgString, "Extended ID: 0x%.8lX  DLC: %1d  Data:", (rxId & 0x1FFFFFFF), len);
+    else
+      sprintf(msgString, "Standard ID: 0x%.3lX       DLC: %1d  Data:", rxId, len);
+
+    Debug.print(msgString);
+
+    if ((rxId & 0x40000000) == 0x40000000) {
+      sprintf(msgString, " REMOTE REQUEST FRAME");
+      Debug.print(msgString);
+    } else {
+      for (byte i = 0; i < len; i++) {
+        sprintf(msgString, " 0x%.2X", rxBuf[i]);
+        Debug.println(msgString);
+      }
+    }
+    Debug.println();
+  }
+  /*
+    if (CAN0.checkError() == CAN_CTRLERROR) {
+    Serial.print("Error register value: ");
+    byte tempErr = CAN0.getError() & MCP_EFLG_ERRORMASK; // We are only interested in errors, not warnings.
+    Debug.println(tempErr, BIN);
+
+    Debug.print("Transmit error counter register value: ");
+    tempErr = CAN0.errorCountTX();
+    Debug.println(tempErr, DEC);
+
+    Debug.print("Receive error counter register value: ");
+    tempErr = CAN0.errorCountRX();
+    Debug.println(tempErr, DEC);
+    }
+  */
+  /*
+    unsigned char stmp[8] = {0, 1, 2, 3, 4, 5, 6, 7};
+    if (Serial.available()) {
+    stmp[0] = Serial.read();
+    if (stmp[0] == 'l') {
+      CAN0.setMode(MCP_LOOPBACK);
+    }
+    if (stmp[0] == 'n') {
+      CAN0.setMode(MCP_NORMAL);
+    }
+    }
+  */
+  //CAN0.sendMsgBuf(0x00, 0, 8, stmp);
+  //delay(100);                       // send data per 100ms
+  //====================
   yield();
 }
 
@@ -882,15 +973,18 @@ void FirmwareUpload()
         //==================
         uint32_t idcode;
         uint32_t SWD_idcode = 463475831; //0x1BA01477 - page:1089
-
+        bool debugHalt = false;
         uint8_t timeout = 10;
         while (idcode != SWD_idcode && timeout > 0) {
           target.begin();
           target.getIDCODE(idcode);
-          target.debugHalt();
+          delay(500);
+          debugHalt = target.debugHalt();
           delay(500);
           timeout--;
         }
+        server.sendContent("\ndebug: ");
+        server.sendContent(String(debugHalt));
         server.sendContent("\nsize: ");
         server.sendContent(String(len));
 
@@ -904,12 +998,12 @@ void FirmwareUpload()
             server.sendContent("\n0x");
             server.sendContent(String(addr, HEX));
 
-            uint32_t data = f.read();
-            server.sendContent("=0x");
-            server.sendContent(String(data, HEX));
+            //uint32_t data = f.read();
+            //server.sendContent("=0x");
+            //server.sendContent(String(data, HEX));
 
-            target.memStore(addr, data);
-            //target.memStoreAndVerify(addr, f.read());
+            //target.memStore(addr, data);
+            target.memStoreAndVerify(addr, f.read());
 
             addr++;
           }

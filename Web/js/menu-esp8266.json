@@ -1,72 +1,72 @@
 {
     "menu": [{
         "id": "Motor",
-        "icon": "glyphicon-cd",
+        "icon": "icon-motor",
         "onClick": "",
         "dropdown": [{
             "id": "Start Inverter",
-            "icon": "glyphicon-flash",
-            "onClick": "alertify.startInverterMode(\"<i class='glyphicon glyphicon-dashboard'></i> Warning: Before starting the inverter set the throttle control to zero.\")"
+            "icon": "icon-key",
+            "onClick": "alertify.startInverterMode(\"<i class='icons icon-speedometer'></i> Warning: Before starting the inverter set the throttle control to zero.\")"
         }, {
             "id": "Stop Inverter",
-            "icon": "glyphicon-alert",
+            "icon": "icon-alert",
             "onClick": "stopInverter()"
         }, {
             "id": "Reset to Default",
-            "icon": "glyphicon-erase",
+            "icon": "icon-reset",
             "onClick": "setDefaults()"
         }, {
             "id": "-"
         }, {
             "id": "Parameters",
-            "icon": "glyphicon-transfer",
+            "icon": "icon-settings",
             "onClick": "/index.php"
         }, {
             "id": "Graph",
-            "icon": "glyphicon-signal",
+            "icon": "icon-graph-bar",
             "onClick": "/graph.php"
         }, {
             "id": "-"
         }, {
             "id": "Upload",
-            "icon": "glyphicon-upload",
+            "icon": "icon-up",
             "onClick": "uploadSnapshot()"
         }, {
             "id": "Download",
-            "icon": "glyphicon-download",
+            "icon": "icon-down",
             "onClick": "downloadSnapshot()"
         }, {
             "id": "-"
         }, {
             "id": "Auto Tuning",
-            "icon": "glyphicon-random",
+            "icon": "icon-tune",
             "onClick": "/simple.php"
         }, {
             "id": "CAN Mapping",
-            "icon": "glyphicon-list-alt",
+            "icon": "icon-list",
             "onClick": "/can.php"
         }]
     }, {
         "id": "Inverter",
-        "icon": "glyphicon-compressed",
+        "icon": "icon-inverter",
         "onClick": "",
         "dropdown": [{
             "id": "Flash ESP8266",
-            "icon": "glyphicon-object-align-bottom",
+            "icon": "icon-wifi",
             "onClick": "/esp8266.php"
         }, {
             "id": "Flash Bootloader",
-            "icon": "glyphicon-object-align-horizontal",
+            "icon": "icon-chip",
             "onClick": "/bootloader.php"
         }, {
             "id": "Flash Firmware",
-            "icon": "glyphicon-object-align-left",
+            "icon": "icon-ram",
             "onClick": "/firmware.php"
         }, {
             "id": "-"
         }, {
             "id": "Board Test",
-            "icon": "glyphicon-dashboard",
+            "icon": "icon-test",
             "onClick": "/test.php"
         }]
     }]

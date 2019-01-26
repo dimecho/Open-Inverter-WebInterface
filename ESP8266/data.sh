@@ -18,28 +18,28 @@ for i in "${array[@]}"; do
     cp -rf ../Web/$i data
 done
 
-array=(alertify.css jquery.fancybox.css animate.css bootstrap.css ion.rangeSlider.css glyphicons.css style.css)
+array=(alertify.css jquery.fancybox.css animate.css bootstrap.css ion.rangeSlider.css icons.css style.css)
 for i in "${array[@]}"; do
     cp -rf ../Web/css/$i data/css
 done
 
-array=(jquery.js jquery.knob.js potentiometer.js jquery.fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js canmap.json parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js chartjs-plugin-zoom.js test.js iconic.js mobile.js)
+array=(jquery.js jquery.knob.js potentiometer.js jquery.fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js canmap.json parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js chartjs-plugin-zoom.js test.js mobile.js)
 for i in "${array[@]}"; do
     cp -rf ../Web/js/$i data/js
 done
 cp -rf ../Web/js/menu-esp8266.json data/js/menu.json
 
-array=(background.png safety.png alert.svg battery.svg engine.svg idea.svg key.svg temperature.svg)
+array=(background.png safety.png)
 for i in "${array[@]}"; do
     cp -rf ../Web/img/$i data/img
 done
 
 cp -rf  "../Web/pcb/Hardware v1.0/diagrams/test.png" data/pcb/v1.0
+cp -rf  "../Web/pcb/Hardware v1.0/diagrams/esp8266.png" data/pcb/v1.0
 cp -rf  "../Web/pcb/Hardware v3.0/diagrams/test.png" data/pcb/v3.0
-#cp -rf ../Web/fonts/glyphicons-halflings-regular.ttf data/fonts
-#cp -rf ../Web/fonts/glyphicons-halflings-regular.woff data/fonts
-cp -rf ../Web/fonts/glyphicons-halflings-regular.woff2 data/fonts
-cp -rf ../Web/firmware/img/esp8266.png data/firmware/img
+cp -rf  "../Web/pcb/Hardware v3.0/diagrams/esp8266.png" data/pcb/v3.0
+cp -rf ../Web/fonts/icons.ttf data/fonts
+cp -rf ../Web/fonts/icons.woff data/fonts
 
 #======================
 #Correct long filenames
@@ -76,8 +76,8 @@ for f in $(find data -type f -name '*.*'); do
         for ff in $(find ./data -type f -name '*.php' -o -name '*.js' -o -name '*.json' -o -name '*.css'); do
             sed -i '' 's/'"$o"'/'"$fe"'/g' "$ff"
             sed -i '' 's#\/\*\!#\/\*#' "$ff" #Remove required comments
-            sed -i '' 's/'"pcb\/Hardware v1.0\/diagrams\/test.png"'/'"pcb\/v1.0\/test.png"'/g' "$ff"
-            sed -i '' 's/'"pcb\/Hardware v3.0\/diagrams\/test.png"'/'"pcb\/v3.0\/test.png"'/g' "$ff"
+            sed -i '' 's/'"pcb\/Hardware v1.0\/diagrams\/"'/'"pcb\/v1.0\/"'/g' "$ff"
+            sed -i '' 's/'"pcb\/Hardware v3.0\/diagrams\/"'/'"pcb\/v3.0\/"'/g' "$ff"
         done
 
         mv -f "data/$f" "data/$nn"

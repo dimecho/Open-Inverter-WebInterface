@@ -29,6 +29,8 @@ if($args[0] -eq "uninstall") {
         if ($args[0] -like '*.hex') { $ADDRESS="" }
 		if ($args[0] -like '*.hex') { $FORMAT=" --format ihex" }
 		
+		Start-Process ".\st-info.exe" -ArgumentList "--probe" -NoNewWindow -Wait
+		Start-Process ".\st-info.exe" -ArgumentList "--chipid" -NoNewWindow -Wait
 		Start-Process ".\st-flash.exe" -ArgumentList "--reset$($FORMAT) write ""$($FILE)""$($ADDRESS)" -NoNewWindow -Wait
 	}
 }
