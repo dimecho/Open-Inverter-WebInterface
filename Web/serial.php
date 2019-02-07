@@ -40,7 +40,7 @@ session_start();
 		if(isset($_GET["serial"])) {
             $_SESSION["serial"] = $_GET["serial"];
 		}
-		echo readSerial(" ");
+		echo readSerial("\n");
     }
     else if(isset($_GET["serial"]))
     {
@@ -155,7 +155,7 @@ session_start();
         $uname = strtolower(php_uname('s'));
 
         if (strpos($uname, "windows") !== false) {
-            exec("mode " .$com. ": BAUD=" . $speed. " PARITY=n DATA=8 STOP=2", $mode);
+            exec("mode " .$com. ": BAUD=" . $speed. " PARITY=n DATA=8 STOP=1", $mode);
             print_r($mode);
             if(strpos($errors ,"Invalid") !== false)
                 $errors = "Error:";
@@ -323,8 +323,12 @@ session_start();
         //echo "\"" .$cmd. "\"";
         //echo "\"" .$read. "\"";
 
-        if($cmd === " "){ //Hardware test
-            $read .= uart_read_eof($uart,array("All tests","one test"));
+        if($cmd == "\n"){ //Hardware test
+            $read = uart_read_line($uart);
+            //Avoid freezing if no test firmware flashed
+            if(strpos($read, "Unknown command") === false) {
+                $read .= uart_read_eof($uart,array("All tests","one test"));
+            }
         }else if($cmd === "json\n"){
             $read = fread($uart,1024);
             for ($i = 0; $i < 9; $i++)

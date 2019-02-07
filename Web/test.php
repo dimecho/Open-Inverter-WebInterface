@@ -173,9 +173,11 @@
                             </div>
 							<div class="row mt-4"></div>
                             <div class="row">
-                                <div class="col"></div>
                                 <div class="col">
-									<button class="btn btn-success" type="button" onClick="$('.hwtestconfirm').trigger('click');"><i class="icons icon-chip"></i> Start</button>
+                                    <button class="btn btn-success" type="button" onClick="$('.hwtestconfirm').trigger('click');"><i class="icons icon-chip"></i> Flash Test Firmware</button>
+                                </div>
+                                <div class="col">
+									<button class="btn btn-success" type="button" onClick="hardwareTestRun();"><i class="icons icon-test"></i> Run Test Results</button>
                                 </div>
                             </div>
                             <div class="row mt-4"></div>

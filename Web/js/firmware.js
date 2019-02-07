@@ -10,7 +10,7 @@ var jtag_interface = [
 var jtag_name = [
 	"Olimex OCD-H",
 	"Olimex Tiny-H",
-    "STlink v2.0",
+    "ST-Link v2.0",
     "Olimex JTAG-SWD",
 	"JTAG Wiggler",
 	"Lock-Pick Tiny v2.0"

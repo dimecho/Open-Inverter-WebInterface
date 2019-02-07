@@ -31,6 +31,7 @@ $(document).ready(function () {
         $(activeTab).show();
         loadTab();
     });
+    hardwareTestProcess("");
 });
 
 $(document).on('click', '.browse', function(){
@@ -72,6 +73,14 @@ function loadTab() {
         $("#debugger-interface").empty();
         $("#serial2-interface").empty();
 		
+		//0=Rev1, 1=Rev2, 2=Rev3, 3=Tesla
+		$("#hardware-version").append($("<option>",{value:0}).append("Hardware v1.0"));
+		$("#hardware-version").append($("<option>",{value:2}).append("Hardware v3.0"));
+		$("#hardware-version").prop('selectedIndex', 1);
+		$("#hardware-version").change(function() {
+			setHardwareImage();
+		});
+
         if(os == "esp8266") {
             $("#debugger-interface").append($("<option>",{value:"swd-esp8266"}).append("SWD over ESP8266"));
             $("#serial2-interface").append($("<option>",{value:"uart-esp8266"}).append("UART over ESP8266"));
@@ -82,7 +91,7 @@ function loadTab() {
             $("#debugger-interface").prop('selectedIndex', 0);
 
             $.ajax("serial.php?com=list", {
-                async: false,
+                //async: false,
                 success: function(data) {
                     var s = data.split('\n');
                     for (var i = 0; i < s.length; i++) {
@@ -93,21 +102,16 @@ function loadTab() {
                 }
             });
         }
-		
-		//0=Rev1, 1=Rev2, 2=Rev3, 3=Tesla
-		$("#hardware-version").append($("<option>",{value:0}).append("Hardware v1.0"));
-		$("#hardware-version").append($("<option>",{value:2}).append("Hardware v3.0"));
-		
+	
+        setHardwareImage();
+        /*
 		getJSONFloatValue("hwver", function(hwrev) {
 			if (isInt(parseInt(hwrev)) == true) {
 				$("#hardware-version").val(hwrev);
 			}
-		});
-		
-		$("#hardware-version").change(function() {
 			setHardwareImage();
 		});
-		setHardwareImage();
+        */
     }
 };
 
@@ -145,7 +149,7 @@ function startTest() {
 
         if(s.indexOf("openExternalApp") != -1)
         {
-            hardwareTest();
+            hardwareTestFlash();
         }
     }
 };
@@ -176,7 +180,7 @@ function analogTest() {
     });
 };
 
-function hardwareTest(file) {
+function hardwareTestFlash(file) {
 
 	var xhr2 = !! ( window.FormData && ("upload" in ($.ajaxSettings.xhr()) ));
 	if(xhr2 == false) {
@@ -200,62 +204,93 @@ function hardwareTest(file) {
 		cache: false,
 		contentType: false,
 		processData: false,
-        timeout: 12000,
+        timeout: 8000,
         success: function success(data) {
             console.log(data);
             if(data.indexOf("jolly good") != -1 || data.indexOf("shutdown command invoked") !=-1) {
                 $.notify({ message: 'Flashed stm32-test.bin sucessfully.' }, { type: 'success' });
                 setTimeout(function () {
-                    $.notify({ message: 'Running GPIO tests.' }, { type: 'warning' });
-                    hardwareTestResults();
+                	hardwareTestRun();
                 }, 2000);
             }else{
-                $.notify({ message: 'Flash Error, try again.' }, { type: 'danger' });
-				$.notify({ message: data }, { type: 'warning' });
+                $.notify({ message: 'Flash Error, Try again' }, { type: 'danger' });
+                if(data.indexOf("stlink_flash_loader_run") != -1) {
+                	$.notify({ message: "Check SWD cables, Reset, Try again"}, { type: 'warning' });
+                }else{
+					$.notify({ message: data }, { type: 'warning' });
+				}
 				$(".loader").hide();
 				//$("#hardware-image").show();
             }
+        },
+        error:function() {
+            $.notify({ message: 'Timed Out ...Reset Power to Board' }, { type: 'danger' });
+            $(".loader").hide();
         }
     });
+};
+
+function hardwareTestRun() {
+    $.notify({ message: 'Running GPIO tests.' }, { type: 'warning' });
+    hardwareTestResults();
 };
 
 function hardwareTestResults() {
 
 	var v = $("#hardware-version").val();
     var s = $("#serial2-interface").val();
+
+    $(".loader").show();
 	
     $.ajax("serial.php?test=" + v + "&serial=" + s, {
-        async: false,
+        //async: false,
+        timeout: 3000,
         success: function success(data) {
-
             console.log(data);
-
-            if(data == "")
-            {
-                $("#hardware-image").show();
+            if(data == "") {
                 $.notify({ message: 'Test Check Failed' }, { type: 'danger' });
+            }else if (data.indexOf("Unknown command") != -1) {
+                $.notify({ message: 'Current Firmware OK' }, { type: 'success' });
+                $.notify({ message: 'Flash Test Firmware' }, { type: 'warning' });
             }else{
+            	data = hardwareTestProcess(data);
                 var results = $("#hardware-results");
                 results.empty();
                 data = data.split("\n");
-
                 for (var i = 1; i < data.length; i++) {
-
                     var row = $("<div>",{class: "row"});
                     var col = $("<div>",{class: "col"});
-
                     col.append(data[i].replace("[31;1;1m", "<b style='color:red'>").replace("[32;1;1m", "<b style='color:green'>").replace("[0;0;0m", "</b>"));
                     row.append(col);
                     results.append(row);
                 }
-                
             }
 			$(".loader").hide();
+        },
+        error:function() {
+            $.notify({ message: 'Timed Out ...Reset Power to Board' }, { type: 'danger' });
+            $(".loader").hide();
         }
     });
 };
 
+function hardwareTestProcess(data) {
+	$.ajax("js/test.json", {
+		async: false,
+        dataType: "json",
+        success: function(json) {
+            for(var key in json) {
+            	//console.log(key + ":" + json[key]);
+            	data = data.replace(new RegExp(key + " ", 'g'), key + " (" + json[key].toUpperCase() + ") ");
+                data = data.replace(new RegExp(key + ",", 'g'), key + " (" + json[key].toUpperCase() + "),");
+            }
+        }
+    });
+    return data;
+};
+
 function setFirmwareFile() {
+
 	var ext = $(".file").val().split('.').pop();
 	if(ext == "bin" || ext == "hex") {
 		$("#firmware-file-path").val($(".file").val().split('\\').pop().split('/').pop());
@@ -270,6 +305,7 @@ function setHardwareImage() {
 	
 	if(hwrev == 2) {
 		$("#hardware-image").attr("src","pcb/Hardware v3.0/diagrams/test.png");
+		$("#debugger-interface").prop('selectedIndex', 2); //ST-Link
 	}else{
 		$("#hardware-image").attr("src","pcb/Hardware v1.0/diagrams/test.png");
 	}

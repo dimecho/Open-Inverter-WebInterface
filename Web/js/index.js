@@ -59,7 +59,7 @@ $(document).ready(function () {
                     $.notify({ message: 'STM32 Test firmware detected.' }, { type: 'danger' });
 					setTimeout(function () {
 						window.location.href = "test.php";
-					}, 1500);
+					}, 2500);
                 }else{
                     driverIssues = data;
                     if(data.indexOf("9600") != -1) {

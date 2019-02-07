@@ -9,8 +9,8 @@ IC7,LM339D/LM2901D,SOIC-14,https://www.ti.com/lit/ds/symlink/lm2901.pdf
 IC8,LM1117/TC2117 (3.3V),SOT-223,https://www.ti.com/lit/ds/symlink/lm1117.pdf
 IC9,SN74HC10D/SN74LVC1G10,SOIC-14/SOT-23-6,https://www.ti.com/lit/ds/symlink/sn74lvc1g10.pdf
 Q1,8Mhz,FS8.000P,https://media.digikey.com/pdf/Data%20Sheets/Fox%20Electronics%20PDFs/FOXSDLF_080R-20.pdf
-LED_ALIVE,green,'0805,
-LED_PWR,red,'0805,
+LED_ALIVE,green,'0603,
+LED_PWR,red,'0603,
 L1,10uH,'1206,
 L2,47uH,12x12,
 L3,10uH,'1206,

@@ -85,13 +85,13 @@ class Application: NSViewController, NSApplicationDelegate
 			//cfsetispeed(&raw, speed_t(B115200))     // set input speed
 			//cfsetospeed(&raw, speed_t(B115200))     // set output speed
 			//------------------
-			var cflag:tcflag_t = 0
-            cflag |= UInt(CS8)            // 8-bit
-            cflag |= UInt(CSTOPB)         // stop 2
-			//raw.c_cflag &= ~(UInt(FNDELAY))		// clear fcntl, otherwise VMIN/VTIME are ignored
+			//raw.c_cflag &= ~(UInt(FNDELAY))	// clear fcntl, otherwise VMIN/VTIME are ignored
 			//raw.c_cflag &= ~(UInt(CRTSCTS))	// clear rtscts
-            raw.c_cflag &= ~(UInt(CSIZE))		// clear all bits
-            raw.c_cflag |= cflag				// set cflags
+			raw.c_cflag &=  ~(UInt(PARENB));    // No Parity
+			raw.c_cflag &=  ~(UInt(CSTOPB));    // 1 Stop Bit
+			raw.c_cflag &=  ~(UInt(CSIZE));     // clear all bits
+			raw.c_cflag |=  (UInt(CS8));        // 8 Bits
+			//raw.c_cflag |=  (UInt(CSTOPB));   // 2 Stop Bit
             //------------------
             if (tcsetattr (fd, TCSANOW, &raw) != 0) // set termios
             {

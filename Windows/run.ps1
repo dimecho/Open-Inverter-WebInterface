@@ -78,7 +78,7 @@ function startPHP($page) {
 			#================================================
 			#Quick Fix [give it a kick] - Prolific Driver Bug or Windows?
 			#================================================
-			$process = Start-Process -FilePath "$PSScriptRoot\puttytel.exe" -ArgumentList "-serial $($comPort) -sercfg 115200,8,n,2,N" -PassThru -WindowStyle Hidden
+			$process = Start-Process -FilePath "$PSScriptRoot\puttytel.exe" -ArgumentList "-serial $($comPort) -sercfg 115200,8,n,1,N" -PassThru -WindowStyle Hidden
 			try{
 				$process | Wait-Process -Timeout 5 -ErrorAction Stop
 			}catch{
