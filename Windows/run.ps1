@@ -106,7 +106,7 @@ function findPort {
 	DO
 	{
 		checkDrivers
-		$portArray = ([System.IO.Ports.SerialPort]::GetPortNames() | select -first 1)
+		$portArray = ([System.IO.Ports.SerialPort]::GetPortNames() | Sort-Object | Select -First 1)
 		ForEach ($item in $portArray)
 		{
 			return $item

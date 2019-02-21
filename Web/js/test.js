@@ -32,6 +32,7 @@ $(document).ready(function () {
         loadTab();
     });
     hardwareTestProcess("");
+    displayHWVersion();
 });
 
 $(document).on('click', '.browse', function(){
@@ -75,8 +76,8 @@ function loadTab() {
 		
 		//0=Rev1, 1=Rev2, 2=Rev3, 3=Tesla
 		$("#hardware-version").append($("<option>",{value:0}).append("Hardware v1.0"));
+        $("#hardware-version").append($("<option>",{value:1}).append("Hardware v2.0"));
 		$("#hardware-version").append($("<option>",{value:2}).append("Hardware v3.0"));
-		$("#hardware-version").prop('selectedIndex', 1);
 		$("#hardware-version").change(function() {
 			setHardwareImage();
 		});
@@ -84,6 +85,7 @@ function loadTab() {
         if(os == "esp8266") {
             $("#debugger-interface").append($("<option>",{value:"swd-esp8266"}).append("SWD over ESP8266"));
             $("#serial2-interface").append($("<option>",{value:"uart-esp8266"}).append("UART over ESP8266"));
+ 			$("#firmware-file-path").val("[Select Binary File]");
         }else{
             for (var i = 0; i < jtag_interface.length; i++) {
                 $("#debugger-interface").append($("<option>",{value:jtag_interface[i]}).append(jtag_name[i]));
@@ -102,16 +104,15 @@ function loadTab() {
                 }
             });
         }
-	
+        console.log(hardware);
+
+        if (hardware == undefined) {
+            $("#hardware-version").prop('selectedIndex', 2);
+        }else{
+            $("#hardware-version").prop('selectedIndex', hardware);
+        }
+
         setHardwareImage();
-        /*
-		getJSONFloatValue("hwver", function(hwrev) {
-			if (isInt(parseInt(hwrev)) == true) {
-				$("#hardware-version").val(hwrev);
-			}
-			setHardwareImage();
-		});
-        */
     }
 };
 
@@ -136,21 +137,26 @@ function startTest() {
         }
         analogTest();
     }else if(activeTab == "#tabHardware") {
+    	
         $.fancybox.close();
 
-        var d = $("#debugger-interface").val();
-        var s = "";
-
-        if(d.indexOf("stlink-v2") != -1 || d.indexOf("olimex-arm-jtag-swd") != -1) {
-            s = checkSoftware("stlink");
+        if(os == "esp8266") {
+        	hardwareTestFlash();
         }else{
-            s = checkSoftware("openocd");
-        }
+        	var d = $("#debugger-interface").val();
+	        var s = "";
 
-        if(s.indexOf("openExternalApp") != -1)
-        {
-            hardwareTestFlash();
-        }
+	        if(d.indexOf("stlink-v2") != -1 || d.indexOf("olimex-arm-jtag-swd") != -1) {
+	            s = checkSoftware("stlink");
+	        }else{
+	            s = checkSoftware("openocd");
+	        }
+
+	        if(s.indexOf("openExternalApp") != -1)
+	        {
+	            hardwareTestFlash();
+	        }
+    	}
     }
 };
 
@@ -191,13 +197,24 @@ function hardwareTestFlash(file) {
     //$("#hardware-image").hide();
     $(".loader").show();
 
+    if(os == "esp8266") { //Special ESP8266 requirement
+        $.ajax({
+    		async: false,
+    		//type: "POST",
+    		url: "/interface?i=" + $("#debugger-interface").val(),
+    		success: function(data) {
+    			console.log(data);
+    		}
+    	});
+    }
+
 	var formData = new FormData();
 	if($(".file").length > 0) {
 		formData.append("file", $(".file")[0].files[0]);
 	}
     formData.append("flash", 1);
-	formData.append("debugger", $("#debugger-interface").val());
-	
+	formData.append("interface", $("#debugger-interface").val());
+
     testRequest = $.ajax("test.php", {
 		type: "POST",
         data: formData,
@@ -241,6 +258,8 @@ function hardwareTestResults() {
     var s = $("#serial2-interface").val();
 
     $(".loader").show();
+
+    setCookie("hardware", v, 1);
 	
     $.ajax("serial.php?test=" + v + "&serial=" + s, {
         //async: false,
@@ -294,7 +313,7 @@ function setFirmwareFile() {
 	var ext = $(".file").val().split('.').pop();
 	if(ext == "bin" || ext == "hex") {
 		$("#firmware-file-path").val($(".file").val().split('\\').pop().split('/').pop());
-		$.notify({ message: 'Ready for Test' }, { type: 'success' });
+		$.notify({ message: 'Ready for Firmware Flash' }, { type: 'success' });
 	}else{
 		$.notify({ message: 'File must be .bin or .hex' }, { type: 'danger' });
 	}
@@ -303,9 +322,11 @@ function setFirmwareFile() {
 function setHardwareImage() {
     var hwrev = $("#hardware-version").val();
 	
-	if(hwrev == 2) {
+	if(hwrev == "2") {
 		$("#hardware-image").attr("src","pcb/Hardware v3.0/diagrams/test.png");
-		$("#debugger-interface").prop('selectedIndex', 2); //ST-Link
+		if(os != "esp8266") {
+			$("#debugger-interface").prop('selectedIndex', 2); //ST-Link
+		}
 	}else{
 		$("#hardware-image").attr("src","pcb/Hardware v1.0/diagrams/test.png");
 	}

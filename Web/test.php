@@ -12,7 +12,7 @@
 			$file = $_FILES['file']['tmp_name'];
 		}
 
-        $interface = urldecode($_POST["debugger"]);
+        $interface = urldecode($_POST["interface"]);
 
         if ($os === "windows") {
             $file = str_replace("/","\\",$file);

@@ -17,11 +17,11 @@
 		}
 	};
 
-	function WiFiHiddenCheck(element) {
+	function HiddenCheck(id,element) {
 		if(element.checked) {
-			$("#WiFiHidden").val("1");
+			$("#" + id).val("1");
 		}else{
-			$("#WiFiHidden").val("0");
+			$("#" + id).val("0");
 		}
 	};
 	
@@ -41,6 +41,12 @@
                 $("#WiFiHiddenCheckbox").prop("checked", bool_value);
                 $("#WiFiChannel").val(data["nvram2"]);
                 $("#WiFiSSID").val(data["nvram3"]);
+                bool_value = data["nvram5"] == "1" ? true : false;
+                $("#EnableSWD").val(data["nvram5"]);
+                $("#EnableSWDCheckbox").prop("checked", bool_value);
+                bool_value = data["nvram6"] == "1" ? true : false;
+                $("#EnableCAN").val(data["nvram6"]);
+                $("#EnableCANCheckbox").prop("checked", bool_value);
                 $(".loader").hide();
                 $("#parameters").show();
 	        }
@@ -86,7 +92,7 @@
                     <tr>
                         <td>
                         	<center><div class="loader"></div></center>
-                        	<form class="hidden" method="POST" action="/nvram" id="parameters">
+                        	<form class="hidden" method="POST" action="/nvram" id="parameters" oninput='WiFiPasswordConfirm.setCustomValidity(WiFiPasswordConfirm.value != WiFiPassword.value ? "Passwords do not match." : "")'>
                         		<fieldset class="form-group">
                         			<legend>ESP8266 Wireless Connection:</legend>
 		                        	<div class="form-check">
@@ -105,7 +111,7 @@
 									<div class="form-check">
 									  <label class="form-check-label">
 									  	<input type="hidden" id="WiFiHidden" name="WiFiHidden" value="0">
-									    <input type="checkbox" id="WiFiHiddenCheckbox" class="form-check-input" onclick="WiFiHiddenCheck(this);">
+									    <input type="checkbox" id="WiFiHiddenCheckbox" class="form-check-input" onclick="HiddenCheck('WiFiHidden',this)">
 									    	Hidden SSID
 									  </label>
 									</div>
@@ -132,13 +138,33 @@
 								<div class="form-group">
 									<div class="input-group">
 								    	<div class="input-group-addon"><i class="icons icon-wifi p-3"></i></div>
-								    	<input type="text" id="WiFiSSID" name="WiFiSSID" class="form-control" placeholder="SSID">
+								    	<input type="text" id="WiFiSSID" name="WiFiSSID" class="form-control" placeholder="SSID" required>
 									</div>
 								</div>
 								<div class="form-group">
 									<div class="input-group">
 										<div class="input-group-addon"><i class="icons icon-password p-3"></i></div>
-								    	<input type="password" id="WiFiPassword" name="WiFiPassword" class="form-control" placeholder="Password">
+								    	<input type="password" id="WiFiPassword" name="WiFiPassword" class="form-control" placeholder="Password" required>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="input-group">
+										<div class="input-group-addon"><i class="icons icon-password p-3"></i></div>
+								    	<input type="password" id="WiFiPasswordConfirm" name="WiFiPasswordConfirm" class="form-control" placeholder="Password Confirm">
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="form-check">
+									  <label class="form-check-label">
+										  	<input type="hidden" id="EnableSWD" name="EnableSWD" value="0">
+									    	<input type="checkbox" id="EnableSWDCheckbox" class="form-check-input" onclick="HiddenCheck('EnableSWD',this)"> Enable SWD
+									  </label>
+									</div>
+									<div class="form-check">
+									  <label class="form-check-label">
+										  	<input type="hidden" id="EnableCAN" name="EnableCAN" value="0">
+								    		<input type="checkbox" id="EnableCANCheckbox" class="form-check-input" onclick="HiddenCheck('EnableCAN',this)"> Enable CAN
+									  </label>
 									</div>
 								</div>
 								<center><button type="submit" class="btn btn-success"><i class="icons icon-ok"></i> Save</button></center>

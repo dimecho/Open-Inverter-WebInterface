@@ -42,19 +42,24 @@ function setInterfaceImage() {
 	var v = $("#firmware-interface").val();
 	if(os == "esp8266") {
 		$("#jtag-txt").html("Solder <b>GPIO-0</b> to <b>1</b> and boot ESP8266 from flash.");
-		if(v == "swd-esp8266") {
-			beginESP8266SWD();
-		}
-		getJSONFloatValue("hwver", function(hwrev) {
-			//0=Rev1, 1=Rev2, 2=Rev3, 3=Tesla
-	        if(hwrev === 2) {
-	        	$("#jtag-image").attr("src","pcb/v3.0/esp8266.png");
-	        }else{
-	        	$("#jtag-image").attr("src","pcb/v1.0/esp8266.png");
-	        }
-	    });
+		
+		//0=Rev1, 1=Rev2, 2=Rev3, 3=Tesla
+		if (hardware == undefined) {
+			$(".hardware").trigger('click'); //Manual Select
+        }else{
+        	if(v == "swd-esp8266") {
+				beginESP8266SWD();
+			}
+			if(hardware == "2") {
+			 	$("#jtag-image").attr("src","pcb/v3.0/esp8266.png");
+			}else{
+			 	$("#jtag-image").attr("src","pcb/v1.0/esp8266.png");
+			}
+        }
 	}else{
 		$("#jtag-txt").html("");
+        $("#jtag-name").html(jtag_name[$("#firmware-interface option:selected").index()]);
+
 		if(v.indexOf("stlink-v2") != -1) {
 			$("#jtag-image").attr("src", "pcb/Hardware v1.0/diagrams/stlinkv2.png");
 			eval(checkSoftware("stlink"));
@@ -68,8 +73,8 @@ function setInterfaceImage() {
 		}else{
 			$("#jtag-image").attr("src","firmware/img/usb_ttl.jpg");
 			$("#jtag-txt").html("Caution: Main board Olimex is powered with 3.3V - Double check your TTL-USB adapter.");
+            $("#jtag-name").html("USB-TTL");
 		}
-		$("#jtag-name").html(jtag_name[$("#firmware-interface option:selected").index()]);
 	}
 };
 
@@ -78,15 +83,17 @@ function firmwareUpload() {
 	if (file.toUpperCase().indexOf(".BIN") !=-1 || file.toUpperCase().indexOf(".HEX") !=-1) {
 		if(os == "esp8266") { //Special ESP8266 requirement
 			$.ajax({
-				async: false,
-				type: "POST",
+				//async: false,
+				//type: "POST",
 				url: "/interface?i=" + $("#firmware-interface").val(),
 				success: function(data) {
 					console.log(data);
+					$('#firmwareForm').submit();
 				}
 			});
+		}else{
+			$('#firmwareForm').submit();
 		}
-		$('#firmwareForm').submit();
 	}else{
 		$.notify({ message: "File must be .bin or .hex format" }, { type: "danger" });
 	}

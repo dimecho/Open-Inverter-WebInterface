@@ -86,6 +86,7 @@ function loadMotorDB() {
         dataType: 'json',
         success: function success(data) {
             buildMotorDB(data);
+            displayHWVersion();
         },
         error: function error(xhr, textStatus, errorThrown) {}
     });

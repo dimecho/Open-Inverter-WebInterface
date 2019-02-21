@@ -140,8 +140,8 @@ session_start();
     function serialDevice($speed)
     {
         $errors = "";
-
         $com = $_SESSION["serial"];
+
         if(!isset($com)) {
             $json = json_decode(file_get_contents("js/serial.json"), true);
             $_SESSION["serial"] = $json['serial']['port'];
@@ -150,8 +150,7 @@ session_start();
             $com = $_SESSION["serial"];
         }
         
-        fastUART($com,$speed);
-        
+        $read = fastUART($com,$speed);
         $uname = strtolower(php_uname('s'));
 
         if (strpos($uname, "windows") !== false) {
@@ -181,30 +180,51 @@ session_start();
 
         if($errors != "")
             return "Error: " . $errors;
-        
-        $uart = fopen($com, "r+");
-        stream_set_blocking($uart, 0); //O_NONBLOCK
-        stream_set_timeout($uart, 8);
-        
-        if($uart)
-        {
-            fwrite($uart, "hello\n");
-            //echo fgets($uart); //echo
-            //echo fgets($uart); //ok
-            echo uart_read_line($uart); //echo
-            echo uart_read_line($uart); //ok
-            fclose($uart);
+
+        $err = substr($read, 0, 2);
+
+        if($err === "2D" || $err === "w}"){
+            return $read;
         }else{
-            return "Error: Cannot open ". $com;
+            echo $read;
+            $uart = fopen($com, "r+");
+            stream_set_blocking($uart, 0); //O_NONBLOCK
+            stream_set_timeout($uart, 8);
+            
+            if($uart)
+            {
+                fwrite($uart, "hello\n");
+                //echo fgets($uart); //echo
+                //echo fgets($uart); //ok
+                echo uart_read_line($uart); //echo
+                echo uart_read_line($uart); //ok
+                fclose($uart);
+            }else{
+                return "Error: Cannot open ". $com;
+            }
         }
-        
         return $com;
     }
     
     function uart_read_line($uart)
     {
-        while(substr($read, -1) !== "\n")
+        while(substr($read, -1) !== "\n") {
             $read .= stream_get_contents($uart, 1);
+        }
+
+        return $read;
+    }
+
+    function uart_read_echo($uart,$cmd)
+    {
+        $l = strlen($cmd);
+        //echo "[". $l. "]\n";
+
+        //Loop receive echo, otherwise partial echo may come in
+        do {
+            $read .= stream_get_contents($uart, 1);
+            //echo "[". $read. "] " . strlen($read) . "\n";
+        } while(strlen($read) < $l); //a bit slow but reliable
 
         return $read;
     }
@@ -252,10 +272,22 @@ session_start();
         {
             if($speed != "921600")
                 $speed = "0";
-            fwrite($uart, "fastuart " .$speed. "\n");
-            uart_read_line($uart); //fgets($uart); //read echo
-            
+
+            $cmd = "fastuart " .$speed. "\n";
+
+            fwrite($uart,$cmd);
+            $read = uart_read_echo($uart,$cmd); //echo
+            $err = substr($read, 0, 2);
+
+            if($err === "2D" || $err === "w}"){ //Bootloader loop detected or wrong speed
+                fclose($uart);
+                return $read;
+            }
+
+            echo $read;
+
             $read = uart_read_line($uart); //fread($uart,26); //ok
+
             if(strpos($read, "OK") !== false)
             {
                 $_SESSION["speed"] = $speed;
@@ -263,9 +295,10 @@ session_start();
             }
             fclose($uart);
 
-            echo $read;
+            return $read;
         }else{
-            echo "Error: Cannot open ". $com;
+        	fclose($uart);
+            return "Error: ". $com;
         }
     }
     
@@ -273,132 +306,145 @@ session_start();
     {
         $arr = array();
         $com = $_SESSION["serial"];
-        $cmd = "get " .$cmd. "\n";
         $uart = fopen($com, "r+"); //Read & Write
         stream_set_blocking($uart, 0); //O_NONBLOCK
         stream_set_timeout($uart, 8);
 
-        if(!$uart)
-            return $com;
-        
-        fwrite($uart, $cmd);
-        $read = uart_read_line($uart); //fgets($uart); //echo
-
-        for ($x = 0; $x <= $n; $x++)
+        if($uart)
         {
-            fwrite($uart, "!");
-            $read = uart_read_line($uart); //fgets($uart);
-            $read = ltrim($read, "!");
+            $cmd = "get " .$cmd. "\n";
 
-            array_push($arr, (float)$read);
+            fwrite($uart, $cmd);
+            $read = uart_read_echo($uart,$cmd); //echo
+
+            for ($x = 0; $x <= $n; $x++)
+            {
+                fwrite($uart, "!");
+                $read = uart_read_line($uart); //fgets($uart);
+                $read = ltrim($read, "!");
+
+                array_push($arr, (float)$read);
+            }
+            fclose($uart);
+            return $arr;
+        }else{
+        	fclose($uart);
+            return "Error: ". $com;
         }
-
-        fclose($uart);
-        
-        return $arr;
     }
     
     function readSerial($cmd)
     {
         $com = $_SESSION["serial"];
-
         $uart = fopen($com, "r+"); //Read & Write
         stream_set_blocking($uart, 0); //O_NONBLOCK
         stream_set_timeout($uart, 8);
         //print_r(stream_get_meta_data($uart));
 
-        if(!$uart)
-            return $com;
+        if($uart)
+        {
+            //while(stream_get_meta_data($uart)["unread_bytes"] > 0) //flush all previous output
+            //    stream_get_contents($uart, -1);
+            
+            fwrite($uart, $cmd); //fputs($uart, $cmd);
+            $read = uart_read_echo($uart,$cmd); //echo
 
-        //while(stream_get_meta_data($uart)["unread_bytes"] > 0) //flush all previous output
-        //    stream_get_contents($uart, -1);
-        
-        fwrite($uart, $cmd); //fputs($uart, $cmd);
+            //DEBUG
+            //echo $com;
+            //echo $uart;
+            //echo "\"" .$cmd. "\"";
+            //echo "\"" .$read. "\"";
 
-        $read = uart_read_line($uart); //fgets($uart);
-
-        //DEBUG
-        //echo $com;
-        //echo $uart;
-        //echo "\"" .$cmd. "\"";
-        //echo "\"" .$read. "\"";
-
-        if($cmd == "\n"){ //Hardware test
-            $read = uart_read_line($uart);
-            //Avoid freezing if no test firmware flashed
-            if(strpos($read, "Unknown command") === false) {
-                $read .= uart_read_eof($uart,array("All tests","one test"));
-            }
-        }else if($cmd === "json\n"){
-            $read = fread($uart,1024);
-            for ($i = 0; $i < 9; $i++)
-                $read .= fread($uart,1024);
-            while (substr($read, -6) !== "}\r\n}\r\n")
-                $read .= fread($uart,1);
-        }else if($cmd === "all\n" || $cmd === "errors\n"){
-            $read = uart_read_eof($uart,array("\r"));
-        }else if($cmd === "save\n"){
-            $read = uart_read_line($uart); //fgets($uart); //CRC
-            $read .= uart_read_line($uart); //fgets($uart); //CAN
-        }else{
-            if(strpos($cmd,",") !== false) //Multi-value support
-            {
-                $read = "";
-                $streamCount = 0;
-                $streamLength = substr_count($cmd, ',');
-
-                while($streamCount <= $streamLength)
-                {
-                    $read .= uart_read_line($uart); //fgets($uart);
-                    $streamCount++;
+            if(substr($read, 0, 2) === "2D"){ //Bootloader loop detected
+                fclose($uart);
+                return "2D";
+            }else if($cmd == "\n"){ //Hardware test
+                $read = uart_read_line($uart);
+                //Avoid freezing if no test firmware flashed
+                if(strpos($read, "Unknown command") === false) {
+                    $read .= uart_read_eof($uart,array("All tests","one test"));
                 }
+            }else if($cmd === "json\n"){
+                $read = stream_get_contents($uart, 1024); //fread($uart,1024);
+                for ($i = 0; $i < 9; $i++) {
+                    $read .= stream_get_contents($uart, 1024); //fread($uart,1024);
+                }
+                while (substr($read, -6) !== "}\r\n}\r\n"){
+                    $read .= stream_get_contents($uart, 1); //fread($uart,1);
+                }
+            }else if($cmd === "all\n" || $cmd === "errors\n"){
+                $read = uart_read_eof($uart,array("\r"));
+            }else if($cmd === "save\n"){
+                $read = uart_read_line($uart); //fgets($uart); //CRC
+                $read .= uart_read_line($uart); //fgets($uart); //CAN
             }else{
-                $read = fgets($uart);
+                if(strpos($cmd,",") !== false) //Multi-value support
+                {
+                    $read = "";
+                    $streamCount = 0;
+                    $streamLength = substr_count($cmd, ',');
+
+                    while($streamCount <= $streamLength)
+                    {
+                        $read .= uart_read_line($uart); //fgets($uart);
+                        $streamCount++;
+                    }
+                }else{
+                    $read = fgets($uart);
+                }
             }
+            fclose($uart);
+            
+            $read = str_replace("\r", "", $read);
+            $read = rtrim($read, "\n");
+            
+            return $read;
+        }else{
+        	fclose($uart);
+            return "Error: ". $com;
         }
-
-        fclose($uart);
-        
-        $read = str_replace("\r", "", $read);
-        $read = rtrim($read, "\n");
-
-        return $read;
     }
 
     function streamSerial($cmd,$loop,$delay)
     {
         $com = $_SESSION["serial"];
-        $streamLength = substr_count($cmd, ',');
-
         $uart = fopen($com, "r+"); //Read & Write
         stream_set_blocking($uart, 0); //O_NONBLOCK
         stream_set_timeout($uart, 8);
-        
-        fwrite($uart, $cmd);
-        $read = uart_read_line($uart); //fgets($uart); //echo
 
-        for ($i = 0; $i < $loop; $i++)
+        if($uart)
         {
-            $streamCount = 0;
+            $streamLength = substr_count($cmd, ',');
+        
+            fwrite($uart, $cmd);
+            $read = uart_read_line($uart); //fgets($uart); //echo
 
-            if($i != 0)
-                fwrite($uart, "!");
-            
-            ob_end_flush();
-            while($streamCount <= $streamLength)
+            for ($i = 0; $i < $loop; $i++)
             {
-                $read = uart_read_line($uart); //fgets($uart);
-                $read = ltrim($read, "!");
-                
-                echo str_replace("\r", "", $read);
-                
-                usleep($delay);
-                $streamCount++;
-            }
-            ob_start();
-        }
+                $streamCount = 0;
 
-        fclose($uart);
+                if($i != 0)
+                    fwrite($uart, "!");
+                
+                ob_end_flush();
+                while($streamCount <= $streamLength)
+                {
+                    $read = uart_read_line($uart); //fgets($uart);
+                    $read = ltrim($read, "!");
+                    
+                    echo str_replace("\r", "", $read);
+                    
+                    usleep($delay);
+                    $streamCount++;
+                }
+                ob_start();
+            }
+            fclose($uart);
+
+        }else{
+        	fclose($uart);
+            return "Error: ". $com;
+        }
     }
 
     function calculateMedian($arr)

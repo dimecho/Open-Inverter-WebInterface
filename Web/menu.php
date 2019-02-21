@@ -2,7 +2,7 @@
 	<div class="col">
 		<div class="container bg-light">
 			<div class="row">
-				<div class="col col-sm-auto">
+				<div class="col-auto mr-auto">
 					<nav class="navbar" id="buildNav"></nav>
 				</div>
 			</div>
@@ -29,7 +29,18 @@
 	<p>Select Serial Interface:</p>
 	<select name="interface" class="form-control" form="serialForm" id="serial-interface"></select>
 	<br>
-	<button class="browse btn btn-primary" type="button" onClick="$.fancybox.close();selectSerial();"><i class="icons icon-save"></i> Save</button>
+	<button class="browse btn btn-primary" type="button" onClick="selectSerial();$.fancybox.close();"><i class="icons icon-save"></i> Save</button>
+</div>
+<a class="hardware" data-fancybox data-src="#hardware" href="javascript:;"></a>
+<div class="hidden" id="hardware" style="width:60%;border-radius:5px">
+	<p>Select Hardware Version:</p>
+	<select name="hardware" class="form-control" form="hardwareForm" id="hwver">
+		<option value=0>Hardware v1.0</option>
+		<option value=1>Hardware v2.0</option>
+		<option value=2>Hardware v3.0</option>
+	</select>
+	<br>
+	<button class="browse btn btn-primary" type="button" onClick="selectHardware();$.fancybox.close();"><i class="icons icon-save"></i> Save</button>
 </div>
 <a class="safety" data-fancybox data-src="#warning" href="javascript:;"></a>
 <div class="hidden" id="warning" style="width:60%;border-radius:5px">

@@ -10,6 +10,7 @@
             <div class="row">
                 <div class="col" align="center">
                     <div class="loader hidden"></div>
+                    <i class="icons icon-com display-2 hidden" id="com"></i>
                     <table class="table table-active table-bordered bg-light table-striped table-hover" id="parameters"></table>
                 </div>
             </div>

@@ -107,6 +107,7 @@
 									$(".loader").hide();
 									$(".input-group-addon").show();
                                     setInterfaceImage();
+                                    displayHWVersion();
                                 });
                             </script>
                             <tr>

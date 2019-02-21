@@ -102,3 +102,6 @@ body {
 .chartAreaWrapper2 {
   position: relative;
 }
+.badge {
+  font-weight: normal !important;
+}

@@ -7,18 +7,21 @@
 #include <ArduinoOTA.h>
 #include <ESP8266WebServer.h>
 #include "src/ESP8266HTTPUpdateServer.h"
+#define SPIFFS_ALIGNED_OBJECT_INDEX_TABLES 1
+#define LED_BUILTIN 1 //GPIO1=Olimex, GPIO2=ESP-12/WeMos(D4)
 
 RemoteDebug Debug;
 ESP8266WebServer server(80);
 ESP8266HTTPUpdateServer updater;
 File fsUpload;
 
-int LED_Pin = 1;
 int ACCESS_POINT_MODE = 0;
 char ACCESS_POINT_SSID[] = "Inverter";
 char ACCESS_POINT_PASSWORD[] = "inverter123";
 int ACCESS_POINT_CHANNEL = 7;
 int ACCESS_POINT_HIDE = 0;
+int ENABLE_SWD = 0;
+int ENABLE_CAN = 0;
 bool phpTag[] = { false, false, false };
 const char text_html[] = "text/html";
 const char text_plain[] = "text/plain";
@@ -46,11 +49,16 @@ unsigned char rxBuf[8];
 char msgString[128];  // Array to store serial string
 
 /*
-  MISO=D7(GPIO12),MOSI=D6(GPIO13),SCLK=D5(GPIO14),CS=D2(GPIO0),INT=D4(GPIO2)
+  MISO=D7(GPIO12),MOSI=D6(GPIO13),SCLK=D5(GPIO14),CS=D2(GPIO4),INT=D4(GPIO2)
   https://arduino-esp8266.readthedocs.io/en/2.4.0-rc1/libraries.html#spi
+
+  There’s an extended mode where you can swap the normal pins to the SPI0 hardware pins.
+  This is enabled by calling SPI.pins(6, 7, 8, 0) before the call to SPI.begin().
+
+  The pins would change to: MOSI=SD1,MISO=SD0,SCLK=CLK,HWCS=GPIO0
 */
-#define CAN0_INT 2    // Set INT to pin 2 (D4)
-MCP_CAN CAN0(4);      // Set CS to pin 4 (D2)
+#define CAN0_INT 2    // Set INT to pin GPIO2 (D4)
+MCP_CAN CAN0(4);      // Set CS to pin GPIO4 (D2)
 
 //=========================
 //Experimental SWD Debugger
@@ -61,8 +69,8 @@ MCP_CAN CAN0(4);      // Set CS to pin 4 (D2)
 
 #include "src/arm_debug.h"
 
-const uint8_t swd_clock_pin = 4; //GPIO4
-const uint8_t swd_data_pin = 5; //GPIO5
+const uint8_t swd_clock_pin = 4; //GPIO4 (D2)
+const uint8_t swd_data_pin = 5; //GPIO5 (D1)
 
 //ARMDebug target(swd_clock_pin, swd_data_pin);
 
@@ -246,10 +254,31 @@ void swdBegin()
 
 void setup()
 {
+  Serial.begin(115200, SERIAL_8N1);
+  //Serial.setTimeout(1000);
+  //Serial.setDebugOutput(true);
+
+  uint8_t timeout = 10;
+  while (!Serial && timeout > 0) {
+    Serial.swap(); //Swapped UART pins
+    delay(500);
+    timeout--;
+  }
+
+  //===========
+  //File system
+  //===========
+  SPIFFS.begin();
+
   //======================
   //NVRAM type of Settings
   //======================
-  EEPROM.begin(512);
+  EEPROM.begin(256);
+  /*
+    New ESP can cause "Fatal exception 9(LoadStoreAlignmentCause)" with uninitialized EEPROM
+    TODO: Find the solution - ESP.getResetReason()?
+  */
+  Serial.println(ESP.getResetReason());
   if (NVRAM_Read(0) == "") {
     NVRAM_Erase();
     NVRAM_Write(0, String(ACCESS_POINT_MODE));
@@ -257,6 +286,9 @@ void setup()
     NVRAM_Write(2, String(ACCESS_POINT_CHANNEL));
     NVRAM_Write(3, ACCESS_POINT_SSID);
     NVRAM_Write(4, ACCESS_POINT_PASSWORD);
+    NVRAM_Write(5, String(ENABLE_SWD));
+    NVRAM_Write(6, String(ENABLE_CAN));
+    SPIFFS.format();
   } else {
     ACCESS_POINT_MODE = NVRAM_Read(0).toInt();
     ACCESS_POINT_HIDE = NVRAM_Read(1).toInt();
@@ -265,6 +297,8 @@ void setup()
     s.toCharArray(ACCESS_POINT_SSID, s.length() + 1);
     String p = NVRAM_Read(4);
     p.toCharArray(ACCESS_POINT_PASSWORD, p.length() + 1);
+    ENABLE_SWD = NVRAM_Read(5).toInt();
+    ENABLE_CAN = NVRAM_Read(6).toInt();
   }
   //EEPROM.end();
 
@@ -279,7 +313,7 @@ void setup()
     IPAddress dns0(192, 168, 4, 1);
     WiFi.softAPConfig(ip, gateway, subnet);
     WiFi.softAP(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD, ACCESS_POINT_CHANNEL, ACCESS_POINT_HIDE);
-    //Debug.println(WiFi.softAPIP());
+    //Serial.println(WiFi.softAPIP());
   } else {
     //================
     //WiFi Client Mode
@@ -288,11 +322,11 @@ void setup()
     WiFi.begin(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD);  //Connect to the WiFi network
     //WiFi.enableAP(0);
     while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-      //Debug.println("Connection Failed! Rebooting...");
+      //Serial.println("Connection Failed! Rebooting...");
       delay(5000);
       ESP.restart();
     }
-    //Debug.println(WiFi.localIP());
+    //Serial.println(WiFi.localIP());
   }
 
   //===================
@@ -320,7 +354,7 @@ void setup()
       type = "filesystem";
       SPIFFS.end(); //unmount SPIFFS
     }
-    //Debug.println("Start updating " + type);
+    //Serial.println("Start updating " + type);
   });
   /*
     ArduinoOTA.onEnd([]() {
@@ -388,16 +422,21 @@ void setup()
 
     if (server.hasArg("init"))
     {
-      String speed = server.arg("init");
-      if (speed != "921600")
-        speed = "0";
+      String output = flushSerial();
 
-      String fastuart = readSerial("fastuart " + speed);
-      Serial.end();
-      Serial.begin(server.arg("init").toInt(), SERIAL_8N2);
-      fastuart += readSerial("hello");
+      if (output.substring(0, 2) != "2D") //Empty Bootloader detection
+      {
+        String speed = server.arg("init");
+        if (speed != "921600") {
+          speed = "0";
+        }
+        output = readSerial("fastuart " + speed);
+        Serial.end();
+        Serial.begin(server.arg("init").toInt(), SERIAL_8N1);
+        output += readSerial("hello");
+      }
 
-      server.send(200, text_plain, fastuart);
+      server.send(200, text_plain, output);
     }
     else if (server.hasArg("os"))
     {
@@ -454,7 +493,10 @@ void setup()
   server.on("/firmware.php", HTTP_POST, []() {
     server.send(200);
   }, FirmwareUpload );
-  server.on("/interface", HTTP_POST, []() {
+  server.on("/test.php", HTTP_POST, []() {
+    server.send(200);
+  }, FirmwareUpload );
+  server.on("/interface", HTTP_GET, []() {
     interface = server.arg("i");
     server.send(200, text_plain, interface);
   });
@@ -475,11 +517,6 @@ void setup()
       server.send(404, text_plain, "404: Not Found");
   });
   server.begin();
-
-  //===========
-  //File system
-  //===========
-  SPIFFS.begin();
 
   //==========
   //DNS Server
@@ -507,29 +544,20 @@ void setup()
   //====================
   //Experimental CAN-Bus
   //====================
-  if (CAN0.begin(MCP_ANY, CAN_250KBPS, MCP_8MHZ) == CAN_OK)
-  {
-    Debug.println("MCP2515 Initialized Successfully!");
-    //CAN0.setMode(MCP_NORMAL);
-    CAN0.setMode(MCP_LOOPBACK);
-    pinMode(CAN0_INT, INPUT);
-  } else {
-    Debug.println("Error Initializing MCP2515...");
+  if (ENABLE_CAN == 1) {
+    if (CAN0.begin(MCP_ANY, CAN_250KBPS, MCP_8MHZ) == CAN_OK)
+      //if(CAN0.begin(MCP_ANY, CAN_250KBPS, MCP_16MHZ) == CAN_OK)
+    {
+      Serial.println("MCP2515 Initialized Successfully!");
+      CAN0.setMode(MCP_NORMAL);
+      //CAN0.setMode(MCP_LOOPBACK);
+      pinMode(CAN0_INT, INPUT);
+    } else {
+      Serial.println("Error Initializing MCP2515...");
+    }
   }
 
-  //======
-  //UART0
-  //======
-  Serial.begin(115200, SERIAL_8N2);
-
-  uint8_t timeout = 10;
-  while (!Serial && timeout > 0) {
-    Serial.swap(); //Swapped UART pins
-    delay(500);
-    timeout--;
-  }
-
-  pinMode(LED_Pin, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop()
@@ -541,28 +569,34 @@ void loop()
   //====================
   //Experimental CAN-Bus
   //====================
-  if (!digitalRead(CAN0_INT))
+  //if (!digitalRead(CAN0_INT))
+  if (CAN0.checkReceive() == CAN_MSGAVAIL)
   {
     CAN0.readMsgBuf(&rxId, &len, rxBuf);      // Read data: len = data length, buf = data byte(s)
+
+    Debug.print("<"); Debug.print(rxId); Debug.print(",");
 
     if ((rxId & 0x80000000) == 0x80000000)
       sprintf(msgString, "Extended ID: 0x%.8lX  DLC: %1d  Data:", (rxId & 0x1FFFFFFF), len);
     else
       sprintf(msgString, "Standard ID: 0x%.3lX       DLC: %1d  Data:", rxId, len);
 
-    Debug.print(msgString);
+    //Debug.print(msgString);
 
     if ((rxId & 0x40000000) == 0x40000000) {
       sprintf(msgString, " REMOTE REQUEST FRAME");
       Debug.print(msgString);
     } else {
       for (byte i = 0; i < len; i++) {
-        sprintf(msgString, " 0x%.2X", rxBuf[i]);
-        Debug.println(msgString);
+        //sprintf(msgString, " 0x%.2X", rxBuf[i]);
+        //Debug.println(msgString);
+        Debug.print(rxBuf[i]); Debug.print(",");
       }
+      Debug.print(">");
     }
     Debug.println();
   }
+
   /*
     if (CAN0.checkError() == CAN_CTRLERROR) {
     Serial.print("Error register value: ");
@@ -602,12 +636,15 @@ void loop()
 void NVRAM()
 {
   String out = "{\n";
-  for (uint8_t i = 0; i < 4; i++) {
+  for (uint8_t i = 0; i <= 3; i++) {
     out += "\t\"nvram" + String(i) + "\": \"" + NVRAM_Read(i) + "\",\n";
   }
 
-  //out += "\t\"var3\": \"" + String(ACCESS_POINT_SSID) + "\",\n";
-  //out += "\t\"var4\": \"" + String(ACCESS_POINT_PASSWORD) + "\",\n";
+  //skip plaintext password (4)
+
+  for (uint8_t i = 5; i <= 6; i++) {
+    out += "\t\"nvram" + String(i) + "\": \"" + NVRAM_Read(i) + "\",\n";
+  }
 
   out = out.substring(0, (out.length() - 2));
   out += "\n}";
@@ -621,10 +658,18 @@ void NVRAMUpload()
 
   String out = "<pre>";
 
-  for (uint8_t i = 0; i < server.args(); i++) {
+  for (uint8_t i = 0; i <= 4; i++) {
     out += server.argName(i) + ": ";
     NVRAM_Write(i, server.arg(i));
     out += NVRAM_Read(i) + "\n";
+  }
+
+  //skip confirm password (5)
+
+  for (uint8_t i = 6; i <= 7; i++) {
+    out += server.argName(i) + ": ";
+    NVRAM_Write(i - 1, server.arg(i));
+    out += NVRAM_Read(i - 1) + "\n";
   }
   out += "\n...Rebooting";
   out += "</pre>";
@@ -643,7 +688,7 @@ void NVRAM_Erase()
   }
 }
 
-void NVRAM_Write(int address, String txt)
+void NVRAM_Write(uint32_t address, String txt)
 {
   char arrayToStore[32];
   memset(arrayToStore, 0, sizeof(arrayToStore));
@@ -653,7 +698,7 @@ void NVRAM_Write(int address, String txt)
   EEPROM.commit();
 }
 
-String NVRAM_Read(uint8_t address)
+String NVRAM_Read(uint32_t address)
 {
   char arrayToStore[32];
   EEPROM.get(address * sizeof(arrayToStore), arrayToStore);
@@ -735,7 +780,7 @@ bool HTTPServer(String file)
     File f = SPIFFS.open(file, "r");
     if (f)
     {
-      digitalWrite(LED_Pin, HIGH);
+      digitalWrite(LED_BUILTIN, HIGH);
       //Debug.println(f.size());
 
       String contentType = getContentType(file);
@@ -758,7 +803,7 @@ bool HTTPServer(String file)
       }
       f.close();
 
-      digitalWrite(LED_Pin, LOW);
+      digitalWrite(LED_BUILTIN, LOW);
 
       return true;
     } else {
@@ -854,34 +899,46 @@ void Snapshot()
 
   json = "{\n    \"" + all + "\"\n}";
 
-  server.sendHeader("Content-Disposition", "attachment; filename=\"snapshot.txt\"");
+  server.sendHeader("Content-Disposition", "attachment; filename=\"snapshot.json\"");
   server.send(200, text_json, json);
 }
 
 //===================
 // SERIAL PROCESSING
 //===================
+String flushSerial()
+{
+  String output;
+  uint8_t timeout = 8;
+
+  while (Serial.available() && timeout > 0) {
+    output = Serial.readString(); //flush all previous output
+    timeout--;
+  }
+  return output;
+}
+
 String readSerial(String cmd)
 {
   char b[255];
-  size_t len = 0;
-  String output;
+  String output = flushSerial();
 
-  while (Serial.available())
-    Serial.read(); //flush all previous output
-
-  Debug.println(cmd);
-
-  Serial.print(cmd);
-  Serial.print("\n");
-  Serial.readStringUntil('\n'); //consume echo
-  do {
-    memset(b, 0, sizeof(b));
-    len = Serial.readBytes(b, sizeof(b) - 1);
-    output += b;
-  } while (len > 0);
-
-  Debug.println(output);
+  //Debug.println(cmd);
+  if (output.substring(0, 2) != "2D") //Empty Bootloader detection
+  {
+    Serial.print(cmd);
+    Serial.print("\n");
+    Serial.readStringUntil('\n'); //consume echo
+    //for (uint16_t i = 0; i <= cmd.length() + 1; i++)
+    //  Serial.read();
+    size_t len = 0;
+    do {
+      memset(b, 0, sizeof(b));
+      len = Serial.readBytes(b, sizeof(b) - 1);
+      output += b;
+    } while (len > 0);
+  }
+  //Debug.println(output);
 
   return output;
 }
@@ -889,12 +946,7 @@ String readSerial(String cmd)
 String readStream(String cmd, int _loop, int _delay)
 {
   char b[255];
-  while (Serial.available())
-    Serial.read(); //flush all previous output
-
-  Serial.print(cmd);
-  Serial.print("\n");
-  Serial.readStringUntil('\n'); //consume echo
+  String output = flushSerial();
 
   //server.sendHeader("Expires", "-1");
   server.sendHeader("Cache-Control", "no-cache");
@@ -902,28 +954,38 @@ String readStream(String cmd, int _loop, int _delay)
   server.send(200, text_plain, "");
   //server.send(200, text_html, "");
 
-  //WiFiClient client = server.client();
-  for (uint16_t i = 0; i < _loop; i++) {
-    String output = "";
-    size_t len = 0;
-    if (i != 0)
-    {
-      Serial.print("!");
-      Serial.readBytes(b, 1); //consume "!"
-    }
-    do {
-      memset(b, 0, sizeof(b));
-      len = Serial.readBytes(b, sizeof(b) - 1);
-      //client.write((const char*)b, len);
-      output += b;
-    } while (len > 0);
-
+  //Debug.println(cmd);
+  if (output.substring(0, 2) != "2D") //Empty Bootloader detection
+  {
     server.sendContent(output);
-    //client.print(output);
-    //client.flush();
+  } else {
+    Serial.print(cmd);
+    Serial.print("\n");
+    Serial.readStringUntil('\n'); //consume echo
 
-    //Debug.println(output);
-    delay(_delay);
+    //WiFiClient client = server.client();
+    for (uint16_t i = 0; i < _loop; i++) {
+      String output = "";
+      size_t len = 0;
+      if (i != 0)
+      {
+        Serial.print("!");
+        Serial.readBytes(b, 1); //consume "!"
+      }
+      do {
+        memset(b, 0, sizeof(b));
+        len = Serial.readBytes(b, sizeof(b) - 1);
+        //client.write((const char*)b, len);
+        output += b;
+      } while (len > 0);
+
+      server.sendContent(output);
+      //client.print(output);
+      //client.flush();
+
+      //Debug.println(output);
+      delay(_delay);
+    }
   }
   //client.stop(); // Stop is needed because we sent no content length
 }
@@ -954,9 +1016,11 @@ void FirmwareUpload()
       File f = SPIFFS.open("/" + upload.filename, "r");
       uint32_t len = f.size();
       uint32_t addr = (uint32_t)0x08000000;
+      uint32_t addrEnd = (uint32_t)0x0801ffff;
 
       server.sendHeader("Cache-Control", "no-cache");
       server.setContentLength(CONTENT_LENGTH_UNKNOWN);
+
       if (server.uri() == "/firmware.php") {
         server.sendHeader("Refresh", "10; url=/index.php");
         addr = (uint32_t)0x08001000;
@@ -966,7 +1030,9 @@ void FirmwareUpload()
       server.send(200, text_html, "");
       server.sendContent("<pre>");
 
-      //Debug.println(interface);
+      server.sendContent("\ninterface: ");
+      server.sendContent(interface);
+
       if (interface == "swd-esp8266") {
         //==================
         // SWD UPDATER
@@ -978,7 +1044,6 @@ void FirmwareUpload()
         while (idcode != SWD_idcode && timeout > 0) {
           target.begin();
           target.getIDCODE(idcode);
-          delay(500);
           debugHalt = target.debugHalt();
           delay(500);
           timeout--;
@@ -992,21 +1057,31 @@ void FirmwareUpload()
           server.sendContent("\nidcode: ");
           server.sendContent(String(idcode));
 
+          //Erase until end of flash
+
+          for (int i = addr; i <= addrEnd; i++) {
+            target.apWrite(addr, 0); //zero it
+          }
+
           while (f.available()) {
             //char b = char(f.read());
 
-            server.sendContent("\n0x");
-            server.sendContent(String(addr, HEX));
+            //server.sendContent("\n0x");
+            //server.sendContent(String(addr, HEX));
 
             //uint32_t data = f.read();
             //server.sendContent("=0x");
             //server.sendContent(String(data, HEX));
 
+            //target.debugHalt();
+            //target.memStoreByte(addr, f.read());
             //target.memStore(addr, data);
-            target.memStoreAndVerify(addr, f.read());
+            //target.memStoreAndVerify(addr, f.read());
+            target.apWrite(addr, f.read());
 
             addr++;
           }
+          server.sendContent("\njolly good!"); //st-flash lingo
         } else {
           server.sendContent("\nSWD not connected");
         }

@@ -7,6 +7,13 @@ var serialWDomain = "http://" + window.location.hostname;
 */
 var statusRefreshTimer;
 var os = getCookie("os");
+var hardware = getCookie("hardware");
+var hardware_name = [
+    "Hardware v1.0",
+    "Hardware v2.0",
+    "Hardware v3.0",
+    "Hardware Tesla"
+];
 
 $(document).ready(function () {
 
@@ -47,6 +54,17 @@ $(document).ready(function () {
         });
     }
     titleVersion(version);
+    /*
+    if (hardware == undefined) {
+        $.ajax("serial.php?get=hwver", {
+            success: function success(hwver) {
+                hwver = parseFloat(hwrev);
+                hardware = hwver;
+                setCookie("hardware ", hwrev, 1);
+            }
+        });
+    }
+    */
 
     //DEBUG
     //os = "mobile";
@@ -150,17 +168,25 @@ function titleVersion(version)
         document.title += " ESP8266";
 };
 
-function displayVersion()
+function displayFWVersion(fwrev)
 {
-    getJSONFloatValue("version", function(version) {
-        if(version > 0) {
-            $("#firmwareVersion").empty().append("Firmware v" + version);
-            if(version < 3.59)
-            {
-                $.notify({ message: 'Firmware Update Recommended!' }, { type: 'danger' });
-            }
+    if(fwrev > 0) {
+        $("#fwVersion").empty().append("Firmware v" + fwrev);
+        $("#fwVersion").removeClass("invisible");
+        if(fwrev < 3.59)
+        {
+            $.notify({ message: 'Firmware Update Recommended!' }, { type: 'danger' });
         }
-    });
+    }
+};
+
+function displayHWVersion()
+{
+    if (hardware != undefined) {
+        console.log(hardware + ":" + hardware_name[hardware]);
+        $("#hwVersion").empty().append(hardware_name[hardware]);
+        $("#hwVersion").removeClass("invisible");
+    }
 };
 
 function selectSerial()
@@ -173,6 +199,13 @@ function selectSerial()
             location.reload();
         }
     });
+};
+
+function selectHardware()
+{
+    hardware = $("#hwver").val();
+    setCookie("hardware", hardware, 1);
+    displayHWVersion();
 };
 
 function isInt(n){
@@ -655,12 +688,13 @@ function buildMenu() {
 			
 			nav.append(div);
 
-            var col = $("<div>", { class: "col col-sm-auto", id: "opStatus"});
+            var col = $("<div>", { class: "col-auto mr-auto mb-auto mt-auto", id: "opStatus"});
 			nav.parent().parent().append(col);
 
-            var span = $("<span>", { class: "badge badge-info", id: "firmwareVersion" });
-            var col = $("<div>", { class: "col col-sm-1" });
-            col.append(span);
+            var fwver = $("<span>", { class: "d-none d-md-block d-lg-block badge badge-info border invisible", id: "fwVersion" });
+            var hwver = $("<span>", { class: "d-none d-md-block d-lg-block badge badge-success border invisible", id: "hwVersion" });
+            var col = $("<div>", { class: "col-auto mb-auto mt-auto" });
+            col.append(fwver).append(hwver);
 			nav.parent().parent().append(col);
 			
 			var button = $("<button>", { class: "navbar-toggler navbar-toggler-right", type: "button", "data-toggle":"collapse", "data-target": "#navbarsDefault", "aria-controls": "navbarsDefault", "aria-expanded": false, "aria-label": "Menu" });

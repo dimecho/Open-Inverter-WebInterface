@@ -54,10 +54,11 @@ $(document).ready(function () {
 			
 			$("#can-speed").prop('selectedIndex', data[0]);
 			$("#can-period").prop('selectedIndex', data[1]);
+
+            buildCANParameters();
 		}
     });
-	
-    buildCANParameters();
+    
     buildStatus(false);
 });
 

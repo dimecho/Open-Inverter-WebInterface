@@ -23,7 +23,7 @@ if($args[0] -eq "uninstall") {
     [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
     
     # Download PHP
-    $phpFile = "php-7.2.12-Win32-VC15-x64.zip"
+    $phpFile = "php-7.2.14-Win32-VC15-x64.zip"
     if (-Not (Test-Path "$env:userprofile\Downloads\$phpFile")) {
     	Write-Host "Downloading PHP 7.2"  -ForegroundColor Green
         Write-Host "$env:userprofile\Downloads\$phpFile"

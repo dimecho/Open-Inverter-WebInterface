@@ -1,5 +1,3 @@
-var driverIssues = "";
-
 $(document).ready(function () {
 
     $(".safety").fancybox({
@@ -25,11 +23,12 @@ $(document).ready(function () {
         //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?init=115200", {
         $.ajax("serial.php?init=115200", {
             async: false,
-			timeout:2200,
+			timeout: 2400,
             success: function(data) {
                 console.log(data);
                 if(data.indexOf("Error") != -1)
                 {
+                    $("#com").show();
                     //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
                     $.ajax("serial.php?com=list", {
                         async: false,
@@ -55,17 +54,24 @@ $(document).ready(function () {
                             $(".serial").trigger('click');
                         }
                     });
-				}else if(data.indexOf("test pin") != -1){
-                    $.notify({ message: 'STM32 Test firmware detected.' }, { type: 'danger' });
+                }else if(data.indexOf("2D") != -1) {
+                    $.notify({ message: 'Firmware corrupt or not found' }, { type: 'danger' });
+                    $("#com").show();
+                    setTimeout(function () {
+                        window.location.href = "firmware.php";
+                    }, 2600);
+                }else if(data.indexOf("9600") != -1) {
+                    $.notify({ message: 'Serial speed is 9600 baud' }, { type: 'danger' });
+                    $("#com").show();
+                }else if(data.indexOf("w}") != -1) {
+                    $.notify({ message: 'Serial speed incorrect, try refreshing' }, { type: 'danger' });
+                    $("#com").show();
+				}else if(data.indexOf("test pin") != -1) {
+                    $.notify({ message: 'STM32 Test firmware detected' }, { type: 'danger' });
 					setTimeout(function () {
 						window.location.href = "test.php";
-					}, 2500);
+					}, 2600);
                 }else{
-                    driverIssues = data;
-                    if(data.indexOf("9600") != -1) {
-                        $.notify({ message: 'Serial speed is 9600 baud' }, { type: 'danger' });
-                    }
-
                     buildParameters();
                 }
             }
@@ -75,13 +81,13 @@ $(document).ready(function () {
 
 function basicChecks(json)
 {
-	var fweak = json["fweak"].value;
-	var fslipmax = json["fslipmax"].value;
-    var fslipmin = json["fslipmin"].value;
-	var deadtime = json["deadtime"].value;
-	var udc = json["udc"].value;
-	var udcsw = json["udcsw"].value;
-	
+	var fweak = json.fweak.value;
+	var fslipmax = json.fslipmax.value;
+    var fslipmin = json.fslipmin.value;
+	var deadtime = json.deadtime.value;
+	var udc = json.udc.value;
+	var udcsw = json.udcsw.value;
+
 	if(udc > udcsw) //Get real operating voltage
 	{
 		if((udc < 32 && fweak > 20) ||
@@ -105,6 +111,14 @@ function basicChecks(json)
 	if (deadtime < 28) {
 		$.notify({ message: 'IGBT "deadtime" is dangerously fast' }, { type: 'danger' });
 	}
+    if(json.version != undefined) {
+        displayFWVersion(json.version.value);
+    }
+    if(json.hwver != undefined) {
+        hardware = parseInt(json.hwver.value);
+        setCookie("hardware", hardware, 1);
+        displayHWVersion();
+    }
 };
 
 function buildParameters()
@@ -169,7 +183,6 @@ function buildParameters()
                   }
                 });
             }else{
-                displayVersion();
                 buildStatus();
                 basicChecks(json);
             }

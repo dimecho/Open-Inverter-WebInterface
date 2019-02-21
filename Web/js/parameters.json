@@ -73,8 +73,6 @@
    "canperiod": {"unit":"0=100ms, 1=10ms","value":0.00,"isparam":true,"minimum":0.00,"maximum":1.00,"default":0.00,"category":"Communication"},
    "fslipspnt": {"unit":"Hz","value":0.00,"isparam":true,"minimum":-100.00,"maximum":1000.00,"default":0.00,"category":"Testing"},
    "ampnom": {"unit":"%","value":0.00,"isparam":true,"minimum":0.00,"maximum":100.00,"default":0.00,"category":"Testing"},
-   "version": {"unit":"","value":0.00,"isparam":false},
-   "hwver": {"unit":"0=Rev1, 1=Rev2, 2=Rev3, 3=Tesla","value":0.00,"isparam":false},
    "opmode": {"unit":"0=Off, 1=Run, 2=ManualRun, 3=Boost, 4=Buck, 5=Sine, 6=AcHeat","value":1.00,"isparam":false},
    "udc": {"unit":"V","value":0.00,"isparam":false},
    "idc": {"unit":"A","value":0.00,"isparam":false},
