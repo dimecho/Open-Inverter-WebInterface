@@ -258,7 +258,7 @@ var chart_pwm_datasets = [{
 var activeTab = "";
 var activeTabText = "";
 var syncronizedDelay = 600;
-var syncronizedDelayRatio = 12;
+var syncronizedDelayRatio = 15;
 var syncronizedAccuracy = 0;
 var graphDivision = 60;
 var streamTimer;
@@ -269,6 +269,7 @@ var ctxAxis;
 var ctx;
 var ctxFont = 12;
 var xhr;
+var devmode = false;
 
 $(document).ready(function () {
 
@@ -316,6 +317,11 @@ $(document).ready(function () {
     buildGraphMenu();
 
     initChart();
+
+    $('#devmode a').click(function () {
+		devModeNotify();
+    	devmode = true;
+    });
 	
 	$(".graphPoints").fancybox({
 		afterClose: function(){
@@ -377,6 +383,11 @@ $(document).ready(function () {
 		}
 	});
 });
+
+function devModeNotify() {
+    $.notify({ message: 'Developer Mode Enabled' }, { type: 'success' });
+    $.notify({ message: 'Graph will generate random points' }, { type: 'warning' });
+};
 
 function buildPointsMenu() {
 	var menu = $("#buildPointsMenu"); //.empty();
@@ -448,6 +459,22 @@ function buildGraphMenu() {
     var btn_pdf = $("<button>", { class: "btn btn-warning btn-space", onClick: "exportPDF(true)" }).append("Export PDF");
     var btn_img = $("<button>", { class: "btn btn-info btn-space", onClick: "exportPDF()" }).append("Export Image");
 
+    var z = $("#buildGraphZoom").empty();
+    var input = $("<input>", { id: "zoom", type: "text", "data-provide": "slider"} );
+    z.append(input);
+    input.ionRangeSlider({
+        skin: "big",
+        grid: true,
+        step: 1,
+        min: 100,
+        max: 200,
+        from: 100,
+        postfix: " %",
+        onFinish: function (e) {
+            console.log(e.from);
+        }
+    });
+
     var s = $("#buildGraphSlider").empty();
     var slow_img = "Slow  ";
     var input = $("<input>", { id: "speed", type: "text", "data-provide": "slider"} );
@@ -458,9 +485,9 @@ function buildGraphMenu() {
     //s.append(fast_img);
 
     function speed_prettify (n) {
-        if (n === 1) {
+        if (n == 100) {
             return "Slow";
-        }else if (n === 100) {
+        }else if (n == 1) {
             return "Fast";
         }
         return n;
@@ -479,7 +506,7 @@ function buildGraphMenu() {
             //console.log(e.from);
 
             syncronizedDelay = e.from * syncronizedDelayRatio;
-            //console.log(syncronizedDelay);
+            console.log(syncronizedDelay);
 
             //var t = Math.round(syncronizedDelay / 1000 * 60);
             //console.log(t);
@@ -720,31 +747,44 @@ function startChart() {
     //$.ajax("graph.php?stream=start");
 
     var mode = getJSONFloatValue('opmode');
-
     if (mode === 2 || mode === 5) {
         $("#potentiometer").show();
     }
 
+	var value = [];
+	var autosize = false;
+	var accuracy = 0;
+
     if (activeTab === "#graph0") {
-        //updateChart(idDatasets(chart_motor_datasets), true, 0.8);
-		updateChart(idDatasets(chart_motor_datasets), true);
+        //accuracy = 0.8;
+		autosize = true;
+		value = idDatasets(chart_motor_datasets);
     } else if (activeTab === "#graph1") {
-        updateChart(idDatasets(chart_temp_datasets));
+        value = idDatasets(chart_temp_datasets);
     } else if (activeTab === "#graph2") {
-		updateChart(idDatasets(chart_voltage_datasets), true);
+		autosize = true;
+		value = idDatasets(chart_voltage_datasets);
     } else if (activeTab === "#graph3") {
-        updateChart(idDatasets(chart_amperage_datasets));
+        value = idDatasets(chart_amperage_datasets);
     } else if (activeTab === "#graph4") {
-		updateChart(idDatasets(chart_frequency_datasets));
+		value = idDatasets(chart_frequency_datasets);
     } else if (activeTab === "#graph5") {
 		/*
         if(getJSONFloatValue('opmode') > 0) {
-            updateChart(["pwmfrq", "deadtime"]);
+            updateChart(url, ["pwmfrq", "deadtime"]);
         }else{
             $.notify({ message: 'Inverter is OFF - PWM cannot be generated' }, { type: 'danger' });
         }
 		*/
 	}
+
+	var url = "serial.php?stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay;
+	if(devmode == true) {
+		devModeNotify();
+		url = "graph.php?debug=1&stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay;
+	}
+
+	updateChart(url,value,autosize,accuracy);
 };
 
 function idDatasets(dataset) {
@@ -1002,20 +1042,10 @@ function initPWMChart(duration) {
                 */
             }
         },
-        /*
-        pan: {
-            enabled: true,
-            mode: 'xy'
-        },
         zoom: {
             enabled: true,
-            mode: 'xy',
-            limits: {
-                max: 100,
-                min: 0.5
-            }
+            mode: 'y'
         },
-        */
         animation: {
             duration: duration
         }
@@ -1092,20 +1122,10 @@ function initFrequenciesChart(duration) {
                 }
             }]
         },
-        /*
-        pan: {
-            enabled: true,
-            mode: 'xy'
-        },
         zoom: {
             enabled: true,
-            mode: 'xy',
-            limits: {
-                max: 100,
-                min: 0.5
-            }
+            mode: 'y'
         },
-        */
         animation: {
             duration: duration
         }
@@ -1184,20 +1204,10 @@ function initAmperageChart(duration) {
                 }
             }]
         },
-        /*
-        pan: {
-            enabled: true,
-            mode: 'xy'
-        },
         zoom: {
             enabled: true,
-            mode: 'xy',
-            limits: {
-                max: 100,
-                min: 0.5
-            }
+            mode: 'y'
         },
-        */
         animation: {
             duration: duration
         }
@@ -1264,17 +1274,17 @@ function initMotorChart(duration) {
         /*
         pan: {
             enabled: true,
-            mode: 'xy'
-        },
-        zoom: {
-            enabled: true,
-            mode: 'xy',
-            limits: {
-                max: 100,
-                min: 0.5
-            }
+            mode: 'y'
         },
         */
+        zoom: {
+            enabled: true,
+            mode: 'y',
+            //limits: {
+            //    max: 100,
+            //    min: 0.5
+            //}
+        },
         animation: {
             duration: duration,
 			/*
@@ -1342,20 +1352,10 @@ function initTemperatureChart(duration) {
                 }
             }]
         },
-        /*
-        pan: {
-            enabled: true,
-            mode: 'xy'
-        },
         zoom: {
             enabled: true,
-            mode: 'xy',
-            limits: {
-                max: 100,
-                min: 0.5
-            }
+            mode: 'y'
         },
-        */
         animation: {
             duration: duration
         }
@@ -1426,27 +1426,17 @@ function initVoltageChart(duration) {
                 }
             }]
         },
-        /*
-        pan: {
-            enabled: true,
-            mode: 'xy'
-        },
         zoom: {
             enabled: true,
-            mode: 'xy',
-            limits: {
-                max: 100,
-                min: 0.5
-            }
+            mode: 'y'
         },
-        */
         animation: {
             duration: 0 //duration
         }
     };
 };
 
-function updateChart(value, autosize, accuracy) {
+function updateChart(url, value, autosize, accuracy) {
 
     //clearTimeout(streamTimer);
     
@@ -1455,10 +1445,8 @@ function updateChart(value, autosize, accuracy) {
     var last_response_len = false;
     var last = (value.length - 1);
     var i = 0;
-    //DEBUG
-	//xhr = $.ajax("graph.php?debug=1&stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay, {
-    //LIVE
-	xhr = $.ajax("serial.php?stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay, {
+
+	xhr = $.ajax(url, {
         type: "GET",
         async: true,
         timeout: 2000,
@@ -1607,13 +1595,13 @@ function updateChart(value, autosize, accuracy) {
     }).done(function()
     {
         //streamTimer = setTimeout(function() {
-            updateChart(value, autosize, accuracy);
+            updateChart(url, value, autosize, accuracy);
         //}, syncronizedDelay);
     }).fail(function(jqXHR, textStatus) {
         if(textStatus === "timeout")
         {
             streamTimer = setTimeout(function() {
-                updateChart(value, autosize, accuracy);
+                updateChart(url, value, autosize, accuracy);
             }, 1000);
             //this.timeoutCount++;
         }

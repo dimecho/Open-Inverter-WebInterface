@@ -16,6 +16,7 @@
         <script src="js/potentiometer.js"></script>
         <script src="js/jquery.knob.js"></script>
         <script src="js/chart.js"></script>
+        <script src="js/chartjs-plugin-zoom.js"></script>
         <script src="js/chartjs-plugin-datalabels.js"></script>
 		<script src="js/jscolor.js"></script>
         <script src="js/graph.js"></script>
@@ -25,20 +26,27 @@
             <?php include "menu.php" ?>
             <div class="row">
                 <div class="col">
-                    <table class="table table-active bg-light">
-                        <tr>
-                            <td>
-								<center>
-									<div id="buildGraphMenu"></div>
-									<div id="potentiometer" style="display:none">
-										<input class="knob" data-displayinput="true" data-min="0" data-max="100" data-fgcolor="#222222" data-bgcolor="#FFFFFF" value="0">
-									</div>
-									<br>
-									<div id="buildGraphButtons"></div>
-								</center>
-							</td>
-						</tr>
-                    </table>
+                    <div class="container bg-light">
+                        <div class="row">
+                            <div class="col">
+                                <div id="buildGraphMenu"></div>
+                                <div id="potentiometer" style="display:none">
+                                    <input class="knob" data-displayinput="true" data-min="0" data-max="100" data-fgcolor="#222222" data-bgcolor="#FFFFFF" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4"></div>
+                        <div class="row text-center">
+                            <div class="col">
+                                <div id="buildGraphButtons"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div id="buildGraphZoom"></div>
+                            </div>
+                        </div>
+                    </div>
 					<!-- http://jsfiddle.net/jmpxgufu/100/ -->
 					<div class="chartWrapper bg-light">
 						<div class="chartAreaWrapper">
@@ -48,15 +56,19 @@
 						</div>
 						<canvas id="chartAxis" width="0"></canvas>
 					</div>
-					<table class="table table-active bg-light">
-                        <tr>
-                            <td>
-								<center>
-									<div class="mx-auto" id="buildGraphSlider"></div>
-								</center>
-							</td>
-						</tr>
-                    </table>
+                    <div class="container bg-light">
+                        <div class="row">
+                            <div class="col">
+                                <div class="mx-auto" id="buildGraphSlider"></div>
+                            </div>
+                        </div>
+                        <div class="row mt-4"></div>
+                        <div class="row text-center">
+                            <div class="col">
+                                <code id="devmode"><a href="#">Developer Mode</a></code>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

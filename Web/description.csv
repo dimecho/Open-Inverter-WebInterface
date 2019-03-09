@@ -88,3 +88,5 @@ encmode,,0,4,0,"Single=Async Motor, AB=Async Motor, ABZ=Sync Motor, SPI=Talk to 
 dirchrpm,rpm,0,2000,100,""
 throtramprpm,rpm,0,20000,20000,""
 speedgain,rpm/kHz,0,65535,6000,""
+iftlrise,,,,,"Dampens the response of over current limiting. The higher the value, the slower the reponse."
+iftlfall,,,,,"Dampens how quickly the amplitude is decreased once it overshoots iacmax*80%, ifltrise dampens the recovery."

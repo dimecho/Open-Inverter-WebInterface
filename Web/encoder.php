@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col">
                     <table class="table table-active table-bordered">
-                        <tr>
+                        <tr align="center">
                             <td>
                                 <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('inkscape'))"><i class="icons icon-gear"></i> Inkscape (2D)</button>
                             </td>

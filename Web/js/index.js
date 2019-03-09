@@ -61,10 +61,10 @@ $(document).ready(function () {
                         window.location.href = "firmware.php";
                     }, 2600);
                 }else if(data.indexOf("9600") != -1) {
-                    $.notify({ message: 'Serial speed is 9600 baud' }, { type: 'danger' });
+                    $.notify({ message: 'Serial speed is 9600 baud, Power cycle' }, { type: 'danger' });
                     $("#com").show();
                 }else if(data.indexOf("w}") != -1) {
-                    $.notify({ message: 'Serial speed incorrect, try refreshing' }, { type: 'danger' });
+                    $.notify({ message: 'Serial speed incorrect, Refresh' }, { type: 'danger' });
                     $("#com").show();
 				}else if(data.indexOf("test pin") != -1) {
                     $.notify({ message: 'STM32 Test firmware detected' }, { type: 'danger' });

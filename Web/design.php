@@ -16,8 +16,7 @@
         <div class="container">
             <?php include "menu.php" ?>
             <div class="row">
-                <div class="col">
-                    <center>
+                <div class="col" align="center">
                     <?php if(isset($_GET["id"])){ ?>
                         <script>
                             $(document).ready(function() {
@@ -37,7 +36,6 @@
                         </script>
                         <table class="table table-active table-bordered" id="ideaTable"></table>
                     <?php } ?>
-                    </center>
                 </div>
             </div>
         </div>

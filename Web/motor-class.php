@@ -7,17 +7,11 @@
         <div class="container">
             <?php include "menu.php" ?>
              <div class="row">
-                <div class="col">
-                    <table class="table table-active bg-light table-bordered">
-                        <tr align="center">
-                            <td>
-                                <h2>Electric Motors Classification</h2>
-                                <a data-fancybox href="img/motor-class.png">
-                                    <img src="img/motor-class.png" class="img-thumbnail rounded" />
-                                </a>
-                            </td>
-                        </tr>
-                    </table>
+                <div class="col" align="center">
+                    <h1>Electric Motors Classification</h1><br/>
+                    <a data-fancybox href="img/motor-class.png">
+                        <img src="img/motor-class.png" class="img-thumbnail rounded" />
+                    </a>
                 </div>
             </div>
         </div>

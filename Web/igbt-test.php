@@ -7,11 +7,11 @@
         <div class="container">
             <?php include "menu.php" ?>
             <div class="row">
-                <div class="col">
+                <div class="col" align="center">
+                    <h1>IGBT Finger Test</h1>
                     <table class="table table-active bg-light table-bordered">
                         <tr>
                             <td>
-                                <h2>IGBT Finger Test</h2>
                                 Perform both tests for C1 and E2<br>
                                 <ul>
                                     <li>C1-Collector (Positive) Test</li>
