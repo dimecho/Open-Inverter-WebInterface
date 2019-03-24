@@ -4,5 +4,18 @@ IF NOT EXIST %SYSTEMROOT%\System32\WindowsPowerShell\v1.0\powershell.exe (
     ECHO PowerShell is required for this script but is not installed on your machine.
     PAUSE
 ) ELSE (
-    %SYSTEMROOT%\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File .\Windows\run.ps1
+    goto Run
+)
+
+:Run
+powershell.exe -command "exit $PSVersionTable.PSVersion.Major"
+SET PSVer=%errorlevel%
+ECHO PowerShell Version %PSVer%
+
+IF %PSVer% geq 4 (
+    powershell.exe -ExecutionPolicy Bypass -File .\Windows\run.ps1
+) ELSE (
+    ECHO Download and Install PowerShell 5.1
+    PAUSE
+    START iexplore http://aka.ms/wmf5download
 )

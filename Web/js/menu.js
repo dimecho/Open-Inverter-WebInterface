@@ -262,6 +262,10 @@ function validateInput(id, value, callback)
 						callback(false);
                     return;
                 }
+            }else if(id == 'fmax'){
+                if (parseFloat(value) > 21) {
+                    $.notify({ message: 'fmax is now limited to 21 Hz ' }, { type: 'danger' });
+                }
             }else  if(id == 'polepairs'){
                 if ($.inArray(parseInt(value), [ 1, 2, 3, 4, 5]) == -1)
                 {

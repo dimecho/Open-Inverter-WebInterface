@@ -67,7 +67,7 @@ function startPHP($page) {
 			$serial_json = "$scriptPath\Web\js\serial.json"
 			$json = Get-Content "$serial_json" -Raw | ConvertFrom-Json
 			$json.serial.port = $comPort #+ ":"
-			$json.serial.web = 8081
+			$json.serial.web = 8080
 			$json.serial.speed = 115200
 			$json | ConvertTo-Json  | Set-Content "$serial_json"
 
@@ -90,10 +90,8 @@ function startPHP($page) {
 		}
 
         # Start PHP Webserver
-        Start-Process -FilePath "taskkill.exe" -ArgumentList "/F /IM php.exe /T" -NoNewWindow -Wait
+        Get-Process -Name "php" | Stop-Process -Force
         Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8080 -t ""$scriptPath\\Web""" -NoNewWindow
-        #Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8081 -t ""$scriptPath\\Web""" -NoNewWindow
-		
 		Start-Sleep -s 2
 		
 		# Open Web Browser
@@ -106,13 +104,26 @@ function findPort {
 	DO
 	{
 		checkDrivers
-		$portArray = ([System.IO.Ports.SerialPort]::GetPortNames() | Sort-Object | Select -First 1)
-		ForEach ($item in $portArray)
-		{
-			return $item
-		}
-		Write-Host "... Waiting for RS232-USB"
+		$portArray = ([System.IO.Ports.SerialPort]::GetPortNames() | Sort-Object ) #| Select -First 1)
+		
+        if($portArray.Length -gt 1)
+        {
+            Write-Host "`nMultiple COM detected`n" -ForegroundColor Yellow
+            for ($i=0; $i -lt $portArray.Length; $i++) {
+                Write-Host "$($portArray[$i])`n" -ForegroundColor Green
+            }
+            $portCOM = Read-Host -Prompt "Enter COM (Example: COM2)"
+            ForEach ($item in $portArray) {
+                if($portCOM.ToUpper() -eq $item) {
+                    return $item
+                }
+            }
+            Write-Host "`n$($portCOM) is not a valid value`n" -ForegroundColor Red
+        }else{
+            return $portArray[0]
+        }
 
+		Write-Host "... Waiting for RS232-USB"
 		Start-Sleep -s 4
 		
 		$timeout++

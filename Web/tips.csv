@@ -19,3 +19,4 @@ Current STM32F103 usage: 20% flash, 30% sram, 30% cpu at the highest PWM frequen
 pwmpol is gate 'polarity' Active High = Off, Active Low = On (pulling the gates to ground)
 udcnom configure ONCE for your motor rating - no matter the input voltage. If you configure for 300V the inverter will change fweak and boost it, even if you run at 30V.
 The higher the dead time, the lower achievable AC output voltage.
+Voltage calibration: with no voltage connected set udcgain=1. Then read udc and set udcofs=udc. Then apply a known voltage and set udcgain=udc/u_known
