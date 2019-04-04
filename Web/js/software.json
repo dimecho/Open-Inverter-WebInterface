@@ -18,7 +18,7 @@
         "download": {
             "mac": "https://itunes.apple.com/us/app/xcode/id497799835?ls=1&mt=12",
             "size": 5600,
-            "version" : "10.1"
+            "version" : "10.2"
         },
         "checksum" : {
             "mac" : ""
@@ -90,14 +90,14 @@
     "arduino" : {
         "title" : "Arduino IDE",
         "download" : {
-            "mac" : "https://downloads.arduino.cc/arduino-1.8.7-macosx.zip",
-            "windows" : "https://downloads.arduino.cc/arduino-1.8.7-windows.exe",
+            "mac" : "https://downloads.arduino.cc/arduino-1.8.9-macosx.zip",
+            "windows" : "https://downloads.arduino.cc/arduino-1.8.9-windows.exe",
             "linux" : "",
-            "size" : 150,
-            "version" : "1.8.7"
+            "size" : 180,
+            "version" : "1.8.9"
         },
 		"checksum" : {
-            "mac" : "",
+            "mac" : "26349ab5c746cccb5264779a6a4776d2",
             "windows" : "",
             "linux" : ""
         },
@@ -130,15 +130,15 @@
     "openscad" : {
         "title" : "OpenSCAD - 3D CAD",
         "download" : {
-            "mac" : "http://files.openscad.org/snapshots/OpenSCAD-2018.03.17.dmg",
-            "windows" : "http://files.openscad.org/snapshots/OpenSCAD-2018.10.13.ci145-x86-64-Installer.exe",
+            "mac" : "https://files.openscad.org/snapshots/OpenSCAD-2019.01-RC4.dmg",
+            "windows" : "https://files.openscad.org/snapshots/OpenSCAD-2019.01-RC4-x86-64-Installer.exe",
             "linux" : "",
             "size" : 25,
-            "version" : "2018"
+            "version" : "2019"
         },
 		"checksum" : {
-            "mac" : "",
-            "windows" : "8a949834145d88bb1d91450094ab6b92",
+            "mac" : "bcbb12314f6bf2ccc43400281d09c1be",
+            "windows" : "",
             "linux" : ""
         },
         "path" : {

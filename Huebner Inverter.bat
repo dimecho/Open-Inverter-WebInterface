@@ -8,7 +8,7 @@ IF NOT EXIST %SYSTEMROOT%\System32\WindowsPowerShell\v1.0\powershell.exe (
 )
 
 :Run
-powershell.exe -command "exit $PSVersionTable.PSVersion.Major"
+powershell.exe -ExecutionPolicy Bypass -Command "exit $PSVersionTable.PSVersion.Major"
 SET PSVer=%errorlevel%
 ECHO PowerShell Version %PSVer%
 

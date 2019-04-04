@@ -90,7 +90,7 @@ function startPHP($page) {
 		}
 
         # Start PHP Webserver
-        Get-Process -Name "php" | Stop-Process -Force
+        Get-Process -Name "php" -ErrorAction SilentlyContinue | Stop-Process -Force
         Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8080 -t ""$scriptPath\\Web""" -NoNewWindow
 		Start-Sleep -s 2
 		
@@ -106,13 +106,13 @@ function findPort {
 		checkDrivers
 		$portArray = ([System.IO.Ports.SerialPort]::GetPortNames() | Sort-Object ) #| Select -First 1)
 		
-        if($portArray.Length -gt 1)
+        if($portArray.Count -gt 1)
         {
             Write-Host "`nMultiple COM detected`n" -ForegroundColor Yellow
-            for ($i=0; $i -lt $portArray.Length; $i++) {
-                Write-Host "$($portArray[$i])`n" -ForegroundColor Green
+            for ($i=0; $i -lt $portArray.Count; $i++) {
+                Write-Host "$($portArray[$i])" -ForegroundColor Green
             }
-            $portCOM = Read-Host -Prompt "Enter COM (Example: COM2)"
+            $portCOM = Read-Host -Prompt "`nEnter COM (Example: COM2)"
             ForEach ($item in $portArray) {
                 if($portCOM.ToUpper() -eq $item) {
                     return $item
@@ -120,7 +120,9 @@ function findPort {
             }
             Write-Host "`n$($portCOM) is not a valid value`n" -ForegroundColor Red
         }else{
-            return $portArray[0]
+           	ForEach ($item in $portArray) {
+                return $item
+            }
         }
 
 		Write-Host "... Waiting for RS232-USB"

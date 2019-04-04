@@ -20,3 +20,5 @@ pwmpol is gate 'polarity' Active High = Off, Active Low = On (pulling the gates 
 udcnom configure ONCE for your motor rating - no matter the input voltage. If you configure for 300V the inverter will change fweak and boost it, even if you run at 30V.
 The higher the dead time, the lower achievable AC output voltage.
 Voltage calibration: with no voltage connected set udcgain=1. Then read udc and set udcofs=udc. Then apply a known voltage and set udcgain=udc/u_known
+PMSM motor works with ABZ encoder, ACIM will not work - use AB.
+fslipspnt and ampnom values are not stored and go back to their default state when the inverter is reset.
