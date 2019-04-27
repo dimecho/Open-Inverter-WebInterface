@@ -210,21 +210,21 @@
     "eagle" : {
         "title" : "AutoCAD Eagle - PCB Design Software",
         "download" : {
-            "mac" : "https://eagle-updates.circuits.io/downloads/9_3_0/Autodesk_EAGLE_9.3.0_English_Mac_64bit.pkg",
-            "windows" : "https://eagle-updates.circuits.io/downloads/9_3_0/Autodesk_EAGLE_9.3.0_English_Win_64bit.exe",
-            "linux" : "https://eagle-updates.circuits.io/downloads/9_3_0/Autodesk_EAGLE_9.3.0_English_Linux_64bit.tar.gz",
-            "size" : 140,
-            "version" : "9.3.0"
+            "mac" : "https://eagle-updates.circuits.io/downloads/9_3_2/Autodesk_EAGLE_9.3.2_English_Mac_64bit.pkg",
+            "windows" : "https://eagle-updates.circuits.io/downloads/9_3_2/Autodesk_EAGLE_9.3.2_English_Win_64bit.exe",
+            "linux" : "https://eagle-updates.circuits.io/downloads/9_3_2/Autodesk_EAGLE_9.3.2_English_Linux_64bit.tar.gz",
+            "size" : 160,
+            "version" : "9.3.2"
         },
 		"checksum" : {
-            "mac" : "3a1e5c6cdb65cbffd4f360d2fdce9df5",
+            "mac" : "",
             "windows" : "",
             "linux" : ""
         },
         "path" : {
-            "mac" : "/Applications/EAGLE-9.3.0/Eagle.app/Contents/MacOS/Eagle",
-            "windows" : "C:\\EAGLE 9.3.0\\eagle.exe",
-            "linux" : "/opt/eagle-9.3.0/bin/eagle"
+            "mac" : "/Applications/EAGLE-9.3.2/Eagle.app/Contents/MacOS/Eagle",
+            "windows" : "C:\\EAGLE 9.3.2\\eagle.exe",
+            "linux" : "/opt/Autodesk/eagle-9.3.2/eagle"
         }
     },
     "designsparkpcb" : {

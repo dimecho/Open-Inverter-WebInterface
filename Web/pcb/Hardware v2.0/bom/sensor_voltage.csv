@@ -1,5 +1,5 @@
 Part,Value,Package,PDF
-IC1,OPA344,,http://www.ti.com/lit/ds/symlink/opa345.pdf
+IC1,OPA344/LMC6001R,,http://www.ti.com/lit/ds/symlink/opa345.pdf
 IC2,Si8920BC,,https://www.silabs.com/documents/public/data-sheets/si8920-datasheet.pdf
 DC1,ROE-0505S/BO0505S,,http://www.recom-power.com/pdf/Econoline/ROE.pdf
 R1,470R,,

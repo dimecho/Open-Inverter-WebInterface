@@ -112,7 +112,14 @@ function basicChecks(json)
 		$.notify({ message: 'IGBT "deadtime" is dangerously fast' }, { type: 'danger' });
 	}
     if(json.version != undefined) {
-        displayFWVersion(json.version.value);
+        var v = json.version.value
+        if(json.version.unit != undefined)
+        {
+            var split = json.version.unit.split("=");
+            v = split[1];
+        }
+        displayFWVersion(v);
+        checkFirmwareUpdates(v);
     }
     if(json.hwver != undefined) {
         hardware = parseInt(json.hwver.value);
@@ -310,16 +317,53 @@ function buildParameters()
 		}
 	});
 
-    checkUpdates();
+    checkWebUpdates();
 };
 
-function checkUpdates() {
+function checkFirmwareUpdates(v)
+{
+    var split = v.split(".");
+    var _version = parseFloat(split[0]);
+    var _build = parseFloat(split[1]);
 
     var check = Math.random() >= 0.5;
     if (check === true)
     {
-        var online = Base64.decode("aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3Bvb2Zpay9IdWVibmVyLUludmVydGVyL21hc3Rlci9XZWIvdmVyc2lvbi50eHQ=");
-        $.ajax(online, {
+        $.ajax("https://api.github.com/repos/jsphuebner/stm32-sine/releases/latest", {
+            async: false,
+            dataType: 'json',
+            success: function success(data) {
+                try{
+                    var release = data.tag_name.replace("v","").replace(".R","");
+                    var split = release.split(".");
+                    var version = parseFloat(split[0]);
+                    var build = parseFloat(split[1]);
+
+                    //console.log("Old Firmware:" + _version + " Build:" + _build);
+                    //console.log("New Firmware:" + version + " Build:" + build);
+
+                    if(version > _version || build > _build)
+                    {
+                        $.notify({
+                            icon: "glyphicon glyphicon-download-alt",
+                            title: "New Firmware",
+                            message: "Available <a href='https://github.com/jsphuebner/stm32-sine/releases' target='_blank'>Download</a>"
+                        }, {
+                            type: 'success'
+                        });
+                    }
+                } catch(e) {}
+            }
+        });
+    }
+};
+
+function checkWebUpdates()
+{
+    var check = Math.random() >= 0.5;
+    if (check === true)
+    {
+        $.ajax("https://raw.githubusercontent.com/dimecho/Huebner-Inverter/master/Web/version.txt", {
             async: true,
             success: function success(data) {
                 try {
@@ -335,24 +379,25 @@ function checkUpdates() {
                             var _version = parseFloat(_split[0]);
                             var _build = parseFloat(_split[1]);
 
-                            console.log("Version:" + _version + " Build:" + _build);
+                            //console.log("Old Web Interface:" + _version + " Build:" + _build);
+                            //console.log("New Web Interface:" + version + " Build:" + build);
 
                             if(version > _version || build > _build)
                             {
-                                var url = Base64.decode("aHR0cHM6Ly9naXRodWIuY29tL2RpbWVjaG8vSHVlYm5lci1JbnZlcnRlci9yZWxlYXNlcy9kb3dubG9hZC8=");
+                                var url = "https://github.com/dimecho/Huebner-Inverter/releases/download/";
                                 if(os === "mac"){
-                                    url += version + "/Huebner.Inverter.dmg";
+                                    url += version + "Huebner.Inverter.dmg";
                                 }else if(os === "windows"){
-                                    url += version + "/Huebner.Inverter.Windows.zip";
+                                    url += version + "Huebner.Inverter.Windows.zip";
                                 }else if(os === "linux"){
-                                    url += version + "/Huebner.Inverter.Linux.tgz";
+                                    url += version + "Huebner.Inverter.Linux.tgz";
                                 }else if(os === "esp8266"){
-                                    url += version + "/Huebner.Inverter.ESP8266.zip";
+                                    url += version + "Huebner.Inverter.ESP8266.zip";
                                 }
                                 $.notify({
                                     icon: "glyphicon glyphicon-download-alt",
-                                    title: "New Version",
-                                    message: "Update available <a href='" + url + "'>Download</a>"
+                                    title: "New Web Interface",
+                                    message: "Available <a href='" + url + "' target='_blank'>Download</a>"
                                 }, {
                                     type: 'success'
                                 });
@@ -362,42 +407,5 @@ function checkUpdates() {
                 } catch(e) {}
             }
         });
-    }
-};
-
-var Base64 = {
-
-    _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-
-    decode: function(input) {
-        var output = "";
-        var chr1, chr2, chr3;
-        var enc1, enc2, enc3, enc4;
-        var i = 0;
-
-        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-
-        while (i < input.length) {
-
-            enc1 = this._keyStr.indexOf(input.charAt(i++));
-            enc2 = this._keyStr.indexOf(input.charAt(i++));
-            enc3 = this._keyStr.indexOf(input.charAt(i++));
-            enc4 = this._keyStr.indexOf(input.charAt(i++));
-
-            chr1 = (enc1 << 2) | (enc2 >> 4);
-            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-            chr3 = ((enc3 & 3) << 6) | enc4;
-
-            output = output + String.fromCharCode(chr1);
-
-            if (enc3 != 64) {
-                output = output + String.fromCharCode(chr2);
-            }
-            if (enc4 != 64) {
-                output = output + String.fromCharCode(chr3);
-            }
-        }
-
-        return output;
     }
 };

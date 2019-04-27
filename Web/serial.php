@@ -270,10 +270,10 @@ session_start();
         
         if($uart)
         {
-            if($speed != "921600")
-                $speed = "0";
-
             $cmd = "fastuart " .$speed. "\n";
+
+            if($speed != "921600")
+                $cmd = "fastuart 0\n";
 
             fwrite($uart,$cmd);
             $read = uart_read_echo($uart,$cmd); //echo

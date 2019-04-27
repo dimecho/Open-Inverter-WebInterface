@@ -155,7 +155,7 @@
 
             $md5 = md5_file($destination);
             if(isset($_GET['crc'])) {
-                if($_GET['crc'] == $md5) {
+                if($_GET['crc'] == $md5 || $_GET['crc'] == "undefined") {
                     echo $md5. " OK";
                 }else{
                     echo $md5. " Error";

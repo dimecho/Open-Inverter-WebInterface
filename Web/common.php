@@ -78,13 +78,13 @@
             }
         }else if ($os === "windows") {
             return "powershell.exe -ExecutionPolicy Bypass -File \"" .$_SERVER["DOCUMENT_ROOT"] . "\\..\\Windows\\" .$command. "\" 2>&1";
-        }else if ($GLOBALS["OS"] === "linux") {
+        }else if ($os === "linux") {
             if(is_file("/usr/bin/gnome-terminal")){
                 //More transparent of what's going on
-                return "gnome-terminal -e 'bash -c \"" .$_SERVER["DOCUMENT_ROOT"]. "/../Linux/" .$command. "\";bash' 2>&1";
+                return "gnome-terminal -- bash -c \"" .$_SERVER["DOCUMENT_ROOT"]. "/../Linux/" .$command. ";exec bash\" 2>&1";
             }else{
                 //Process behind the scenes
-                return "\"" .$_SERVER["DOCUMENT_ROOT"]. "/../Linux/" .$command. "\" 2>&1";
+                return "sh -c \"" .$_SERVER["DOCUMENT_ROOT"]. "/../Linux/" .$command. "\" 2>&1";
             }
         }
         return "echo";

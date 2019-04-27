@@ -42,6 +42,24 @@ function openBrowser($url) {
 
 function startPHP($page) {
 
+    $hardwaretype = Get-WmiObject -Class Win32_ComputerSystem -Property PCSystemType
+    $computer = "Laptop"
+
+    if ($hardwaretype.PCSystemType -ne 2) {
+        $computer = "Desktop"
+    }
+
+    if ((Get-WmiObject -Class Win32_ComputerSystem).PartOfDomain -eq $true) {
+        
+        Write-Host "Detected Domain Controller!" -ForegroundColor Red
+        Write-Host "`nYou are using a WORK $($computer)." -ForegroundColor Yellow
+        Write-Host "`nThis app may not work properly due to Group Policy restrictions." -ForegroundColor Yellow
+        Write-Host "`nPlease use a PERSONAL $($computer).`n" -ForegroundColor Yellow
+        
+        Write-Host "Press any key to continue...";
+        [void][System.Console]::ReadKey($true)
+    }
+
 	if (-Not (Test-Path "$env:programfiles\PHP\php.exe")) {
 
 		Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -File ""$PSScriptRoot\php.ps1""" -Wait

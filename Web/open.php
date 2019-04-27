@@ -23,7 +23,7 @@ session_start();
             }else if ($os === "windows") {
                 $command = "cmd.exe /c \"\"C:\\Program Files\\Inkscape\\inkscape.com\"\" " .$args. "";
             }else if ($os === "linux") {
-                $command = "su \$SUDO_USER -c \"inkscape " .$args. "\"";
+                $command = "sh -c \"inkscape" .$args. "\"";
             }
 
         }else if($_GET["app"] == "gcc")
@@ -45,7 +45,7 @@ session_start();
             }else if ($os === "windows") {
 				$command = "C:\\Progra~2\\Arduino\\arduino.exe \"" .$args. "\" > NUL";
             }else if ($os === "linux") {
-                $command = "su \$SUDO_USER -c \"arduino '" .$args. "'\"";
+                $command = "\"arduino '" .$args. "'\"";
             }
         }else if($_GET["app"] == "eagle")
         {
@@ -54,7 +54,7 @@ session_start();
             }else if ($os === "windows") {
                 $command = "explorer.exe \"" .$_SERVER["DOCUMENT_ROOT"]. "\\pcb\"";
             }else if ($os === "linux") {
-                $command = "su \$SUDO_USER -c \"xdg-open '" .$_SERVER["DOCUMENT_ROOT"]. "/pcb'\"";
+                $command = "sh -c \"xdg-open '" .$_SERVER["DOCUMENT_ROOT"]. "/pcb'\"";
             }
 		}else{
             $command = runCommand($_GET["app"],"",$os,0);
@@ -72,12 +72,12 @@ session_start();
 	}else if(isset($_GET["console"])) {
 		
 		if ($os === "windows") {
-			$command = "..\\Windows\\puttytel.exe -serial " .$_SESSION["serial"]. " -sercfg 115200,8,n,2,N";
+			$command = "..\\Windows\\puttytel.exe -serial " .$_SESSION["serial"]. " -sercfg " .$_SESSION["speed"]. ",8,n,1,N";
 		}else if ($os === "mac") {
-            //$command = "open -n -a Terminal --args ../minicom -D " .$_SESSION["serial"]. " -b 115200";
+            //$command = "open -n -a Terminal --args ../minicom -D " .$_SESSION["serial"]. " -b " .$_SESSION["speed"];
             $command = "open -n -a Terminal ../minicom.sh";
 		}else{
-            $command = "minicom --args -D " .$_SESSION["serial"]. " -b 115200";
+            $command = "gnome-terminal -- bash -c \"minicom -D " .$_SESSION["serial"]. " -b " .$_SESSION["speed"]. "\"";
         }
 		
 		echo $command;
@@ -100,7 +100,7 @@ session_start();
         }else if ($os === "windows") {
             $command = "C:\\Progra~1\\Inkscape\\inkscape.com" .$args. " > NUL";
         }else if ($os === "linux") {
-            $command = "su \$SUDO_USER -c \"inkscape" .$args. "\"";
+            $command = "sh -c \"inkscape" .$args. "\"";
         }
 		header("Location:encoder.php");
 		

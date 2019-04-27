@@ -9,7 +9,7 @@ checkUSB()
 echo "{
     \"serial\": {
         \"port\": \"$serial\",
-        \"web\": 8081,
+        \"web\": 8080,
 		\"timeout\": 12,
 		\"speed\": 115200
     }
@@ -39,7 +39,12 @@ if [[ $(type -p php) ]]; then
         chmod +x "$file"
     done
 
-    echo "Running as sudo ..."
+    if [[ $(php -m | grep curl) == "curl" ]]; then
+        echo "PHP Installed"
+    else
+        echo "PHP-CURL not Installed ...Install? [Y/n]"; read
+        ./Linux/php.sh
+    fi
     
     killall php
     php -S 0.0.0.0:8080 -t "$(dirname "$0")/Web/" &

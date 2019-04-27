@@ -16,8 +16,8 @@ if [[ $(type -p openocd) ]]; then
 else
     sudo apt-get update
 	sudo add-apt-repository ppa:team-gcc-arm-embedded/ppa
-	sudo apt-get install gcc-arm-none-eabi
-    sudo apt-get install git build-essential libusb-1.0.0-dev cmake
+	sudo apt-get -y install gcc-arm-none-eabi
+    sudo apt-get -y install git build-essential libusb-1.0.0-dev cmake
 	
 	cd $HOME
 	git clone https://github.com/texane/stlink stlink.git

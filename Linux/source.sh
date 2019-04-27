@@ -10,7 +10,8 @@ else
     cd "$HOME/Documents/stm32-sine-master"
     if [ ! -d libopencm3 ]; then
         if [ ! -f "$HOME/Downloads/libopencm3-master.zip" ]; then
-            wget "https://github.com/libopencm3/libopencm3/archive/master.zip" -O "$HOME/Downloads/libopencm3-master.zip"
+            #wget "https://github.com/libopencm3/libopencm3/archive/master.zip" -O "$HOME/Downloads/libopencm3-master.zip"
+            wget"https://github.com/jsphuebner/libopencm3/archive/master.zip" -O "$HOME/Downloads/libopencm3-master.zip"       
         fi
         unzip "$HOME/Downloads/libopencm3-master.zip" -d ./
         mv ./libopencm3-master ./libopencm3

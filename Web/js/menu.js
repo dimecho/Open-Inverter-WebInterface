@@ -170,13 +170,11 @@ function titleVersion(version)
 
 function displayFWVersion(fwrev)
 {
-    if(fwrev > 0) {
-        $("#fwVersion").empty().append("Firmware v" + fwrev);
-        $("#fwVersion").removeClass("invisible");
-        if(fwrev < 3.59)
-        {
-            $.notify({ message: 'Firmware Update Recommended!' }, { type: 'danger' });
-        }
+    $("#fwVersion").empty().append("Firmware v" + fwrev);
+    $("#fwVersion").removeClass("invisible");
+    if(fwrev < 3.59)
+    {
+        $.notify({ message: 'Firmware Update Recommended!' }, { type: 'danger' });
     }
 };
 
@@ -263,8 +261,8 @@ function validateInput(id, value, callback)
                     return;
                 }
             }else if(id == 'fmax'){
-                if (parseFloat(value) > 21) {
-                    $.notify({ message: 'fmax is now limited to 21 Hz ' }, { type: 'danger' });
+                if (parseFloat(value) < 21) {
+                    $.notify({ message: 'fmax minimum is limited to 21 Hz ' }, { type: 'danger' });
                 }
             }else  if(id == 'polepairs'){
                 if ($.inArray(parseInt(value), [ 1, 2, 3, 4, 5]) == -1)
