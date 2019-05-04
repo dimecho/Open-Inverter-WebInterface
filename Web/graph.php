@@ -36,9 +36,12 @@
                             </div>
                         </div>
                         <div class="row mt-4"></div>
-                        <div class="row text-center">
-                            <div class="col">
+                        <div class="row">
+                            <div class="col-8">
                                 <div id="buildGraphButtons"></div>
+                            </div>
+                            <div class="col-4 text-right">
+                                <div id="buildGraphExport"></div>
                             </div>
                         </div>
                         <div class="row">

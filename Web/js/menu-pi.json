@@ -16,10 +16,6 @@
             "icon": "icon-reset",
             "onClick": "setDefaults()"
         }, {
-            "id": "Motor Database",
-            "icon": "icon-magic",
-            "onClick": "/db.php"
-        }, {
             "id": "-"
         }, {
             "id": "Parameters",
@@ -32,13 +28,9 @@
         }, {
             "id": "-"
         }, {
-            "id": "Upload",
-            "icon": "icon-up",
-            "onClick": "uploadSnapshot()"
-        }, {
-            "id": "Download",
-            "icon": "icon-down",
-            "onClick": "downloadSnapshot()"
+            "id": "Motor Database",
+            "icon": "icon-magic",
+            "onClick": "/db.php"
         }, {
             "id": "-"
         }, {

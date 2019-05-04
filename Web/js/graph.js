@@ -451,13 +451,15 @@ function buildGraphMenu() {
 
     var menu = $("#buildGraphMenu").empty();
     var menu_buttons = $("#buildGraphButtons").empty();
+    var export_buttons = $("#buildGraphExport").empty();
 
 	var btn_points_i = $("<i>", { class: "icons icon-ok" });
 	var btn_points = $("<button>", { class: "btn btn-primary btn-space", onClick: "buildPointsMenu();$('.graphPoints').trigger('click');" }).append(btn_points_i).append(" Select Points");
     var btn_start = $("<button>", { class: "btn btn-success btn-space", onClick: "startChart()" }).append("Start Graph");
     var btn_stop = $("<button>", { class: "btn btn-danger btn-space", onClick: "stopChart()" }).append("Stop Graph");
-    var btn_pdf = $("<button>", { class: "btn btn-warning btn-space", onClick: "exportPDF(true)" }).append("Export PDF");
-    var btn_img = $("<button>", { class: "btn btn-info btn-space", onClick: "exportPDF()" }).append("Export Image");
+    var e_pdf = $("<i>", { class: "icon-status icons icon-pdf p-2", onClick: "exportPDF(true)", "data-toggle": "tooltip", "title": "Export PDF" });
+    var e_img = $("<i>", { class: "icon-status icons icon-png p-2", onClick: "exportPDF()", "data-toggle": "tooltip", "title": "Export Image" });
+    var e_csv = $("<i>", { class: "icon-status icons icon-csv p-2", onClick: "exportCSV()", "data-toggle": "tooltip", "title": "Export CSV" });
 
     var z = $("#buildGraphZoom").empty();
     var input = $("<input>", { id: "zoom", type: "text", "data-provide": "slider"} );
@@ -525,6 +527,12 @@ function buildGraphMenu() {
     menu_buttons.append(btn_start);
     menu_buttons.append(btn_stop);
 
+    $.getScript("js/jspdf.js").done(function(script, textStatus) {
+        export_buttons.append(e_pdf);
+    });
+    export_buttons.append(e_img);
+    export_buttons.append(e_csv);
+
     if (os === "mobile") {
 
         graphDivision = 40;
@@ -573,6 +581,7 @@ function buildGraphMenu() {
         $(".slider-handle").attr("style","width:70px;height:70px;");
         //fast_img.attr("style","width:80px; height:80px;");
         $(".btn").attr("style","font-size: 150%;");
+        $(".icons").attr("style","width:80px; height:80px;");
 
     }else{
 
@@ -612,12 +621,59 @@ function buildGraphMenu() {
             stopChart();
             initChart();
         });
-
-        $.getScript("js/jspdf.js").done(function(script, textStatus) {
-            menu_buttons.append(btn_pdf);
-        });
-        menu_buttons.append(btn_img);
     }
+
+    $('[data-toggle="tooltip"]').tooltip();
+};
+
+function exportCSV() {
+
+    var datasets;
+
+    if (activeTab === "#graph0") {
+        datasets = chart_motor_datasets;
+    } else if (activeTab === "#graph1") {
+        datasets = chart_temp_datasets;
+    } else if (activeTab === "#graph2") {
+        datasets = chart_voltage_datasets;
+    } else if (activeTab === "#graph3") {
+        datasets = chart_amperage_datasets;
+    } else if (activeTab === "#graph4") {
+        datasets = chart_frequency_datasets;
+    } else {
+        return;
+    }
+
+    var points = idDatasets(datasets);
+    var value = csvDatasets(datasets);
+
+    //console.log(value);
+
+    let csvContent = "data:text/csv;charset=utf-8,";
+
+    let row = value[0].length;
+    let col = points.length;
+
+    for (var r = 0; r < row; r++) {
+        if(r == 0) { //first row
+            csvContent += points.join(",") + "\r\n";
+        }
+        for (var c = 0; c < col; c++) {
+            //TODO: get timestamp
+            csvContent += value[c][r] + ",";
+        }
+        csvContent += "\r\n";
+    }
+
+    //var encodedUri = encodeURI(csvContent);
+    //window.open(encodedUri);
+
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "export.csv");
+    document.body.appendChild(link); // Required for FF
+    link.click();
 };
 
 function exportPDF(pdf) {
@@ -795,6 +851,15 @@ function idDatasets(dataset) {
 	}
 	console.log(ids);
 	return ids;
+};
+
+function csvDatasets(dataset) {
+    row = [];
+    for (var i = 0, l = dataset.length; i < l; i++) {
+        row.push(dataset[i].data);
+    }
+    console.log(row);
+    return row;
 };
 
 function stopChart() {

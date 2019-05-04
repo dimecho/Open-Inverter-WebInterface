@@ -307,7 +307,10 @@ function buildParameters()
                 tr.append(td1).append(td2).append(td3).append(td4);
                 tbody.append(tr);
             };
+
             menu.show();
+
+            $("#saveload").show();
             
             $('[data-toggle="tooltip"]').tooltip();
 

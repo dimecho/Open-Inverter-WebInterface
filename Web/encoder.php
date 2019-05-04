@@ -7,17 +7,19 @@
         <div class="container">
 		<?php include "menu.php" ?>
             <div class="row">
-                <div class="col">
-                    <table class="table table-active table-bordered">
-                        <tr align="center">
-                            <td>
-                                <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('inkscape'))"><i class="icons icon-gear"></i> Inkscape (2D)</button>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('openscad'))"><i class="icons icon-gear"></i> OpenSCAD (3D)</button>
-                            </td>
-                        </tr>
-                    </table>
+                <div class="col" align="center">
+                    <hr>
+                    <div class="container table-active table-bordered">
+                        <div class="row p-2">
+                            <div class="col">
+                                <button type="button" class="btn btn-primary" onclick="eval(checkSoftware('inkscape'))"><i class="icons icon-gear"></i> Inkscape (2D)</button>
+                            </div>
+                            <div class="col">
+                                <button type="button" class="btn btn-primary" onclick="eval(checkSoftware('openscad'))"><i class="icons icon-gear"></i> OpenSCAD (3D)</button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
                     <table class="table table-active bg-light table-bordered">
                         <tr>
                             <td>

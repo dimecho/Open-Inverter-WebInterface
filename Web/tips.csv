@@ -1,24 +1,26 @@
-Snubbers caps use 1uF for every 100A on rails.
-fweak applies only to sensor operation.
-Clean flux, it attracts moisture and causes shorts.
-You can use pin18 on main board (v.1) for temperature indicator.<br><img src="pcb/Hardware v1.0/temp_indicator.png" />
-If encoder requires 5V leave out R2 and connect Pin 2 directly to 5V.
-The faster the switching (pwmfrq) the higher the losses in the inverter and the lower the losses in the motor.
-Make ampmin as small as possible to get good economy.
-fslipmin=fslipmax (no slip) useful during debugging.
-Combine film caps (100uF) and elcaps (1500uF) to get optimal current damping.
-Signal from encoder is translated by BC547 transistor - 5V to encoder is OK.
-Measuring Pin3 from encoder 0.8V is normal, it is the Vbe of any bipolar transistor.
-Modifying encoder for high impedance low-pass filtered digital input.<br>Remove R1, R3 and T1 and bridge the base to the collector (bridge two pins of T1 that are NOT connected to the ground).<br><img src="pcb/Hardware v1.0/encoder_lowpass.png" />
-Which phase connects + charging line for boost charger? Use outside phases and do not connect to the middle phase.
-encflt may cause delays in the control loop. Setting it to 0 disables filtering entirely.
-Some STM32 pins are 5V tolerant and all others can take 5V with a simple 10k series resistor.
-CAN gain of 10 (i.e. 100mV resolution)
-Firmware HEX file has the target address already in it.
-Current STM32F103 usage: 20% flash, 30% sram, 30% cpu at the highest PWM frequency.
-pwmpol is gate 'polarity' Active High = Off, Active Low = On (pulling the gates to ground)
-udcnom configure ONCE for your motor rating - no matter the input voltage. If you configure for 300V the inverter will change fweak and boost it, even if you run at 30V.
-The higher the dead time, the lower achievable AC output voltage.
-Voltage calibration: with no voltage connected set udcgain=1. Then read udc and set udcofs=udc. Then apply a known voltage and set udcgain=udc/u_known
-PMSM motor works with ABZ encoder, ACIM will not work - use AB.
-fslipspnt and ampnom values are not stored and go back to their default state when the inverter is reset.
+Firmware,Snubbers caps use 1uF for every 100A on rails.
+Firmware,fweak applies only to sensor operation.
+Hardware,Clean flux, it attracts moisture and causes shorts.
+Hardware v1/2,You can use pin18 on main board for temperature indicator.<br><img src="pcb/Hardware v1.0/temp_indicator.png" />
+Hardware v1/2,If encoder requires 5V leave out R2 and connect Pin 2 directly to 5V.
+Hardware,The faster the switching (pwmfrq) the higher the losses in the inverter and the lower the losses in the motor.
+Firmware,Make ampmin as small as possible to get good economy.
+Firmware,fslipmin=fslipmax (no slip) useful during debugging.
+Hardware,Combine film caps (100uF) and elcaps (1500uF) to get optimal current damping.
+Hardware v1/2,Signal from encoder is translated by BC547 transistor - 5V to encoder is OK.
+Hardware v1/2,Measuring Pin3 from encoder 0.8V is normal, it is the Vbe of any bipolar transistor.
+Hardware v1/2,Modifying encoder for high impedance low-pass filtered digital input.<br>Remove R1, R3 and T1 and bridge the base to the collector (bridge two pins of T1 that are NOT connected to the ground).<br><img src="pcb/Hardware v1.0/encoder_lowpass.png" />
+Hardware,Which phase connects + charging line for boost charger? Use outside phases and do not connect to the middle phase.
+Firmware,encflt may cause delays in the control loop. Setting it to 0 disables filtering entirely.
+Hardware,Some STM32 pins are 5V tolerant and all others can take 5V with a simple 10k series resistor.
+Hardware,CAN gain of 10 (i.e. 100mV resolution)
+Firmware,Firmware HEX file has the target address already in it.
+Firmware,Current STM32F103 usage: 20% flash, 30% sram, 30% cpu at the highest PWM frequency.
+Firmware,pwmpol is gate 'polarity' Active High = Off, Active Low = On (pulling the gates to ground)
+Firmware,udcnom configure ONCE for your motor rating - no matter the input voltage. If you configure for 300V the inverter will change fweak and boost it, even if you run at 30V.
+Firmware,The higher the dead time, the lower achievable AC output voltage.
+Firmware,Voltage calibration: with no voltage connected set udcgain=1. Then read udc and set udcofs=udc. Then apply a known voltage and set udcgain=udc/u_known.
+Hardware,PMSM motor works with ABZ encoder, ACIM will not work - use AB.
+Firmware,fslipspnt and ampnom values are not stored and go back to their default state when the inverter is reset.
+Combi-Board,Combi-Board remove R21 for better performance.
+Hardware v3,Current boards with MLX91205 hall sensor do not populate R50 and R51.
