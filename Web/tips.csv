@@ -1,9 +1,9 @@
-Firmware,Snubbers caps use 1uF for every 100A on rails.
-Firmware,fweak applies only to sensor operation.
+Hardware,Snubbers caps use 1uF for every 100A on rails.
 Hardware,Clean flux, it attracts moisture and causes shorts.
 Hardware v1/2,You can use pin18 on main board for temperature indicator.<br><img src="pcb/Hardware v1.0/temp_indicator.png" />
 Hardware v1/2,If encoder requires 5V leave out R2 and connect Pin 2 directly to 5V.
 Hardware,The faster the switching (pwmfrq) the higher the losses in the inverter and the lower the losses in the motor.
+Firmware,fweak applies only to sensor operation.
 Firmware,Make ampmin as small as possible to get good economy.
 Firmware,fslipmin=fslipmax (no slip) useful during debugging.
 Hardware,Combine film caps (100uF) and elcaps (1500uF) to get optimal current damping.
@@ -13,7 +13,7 @@ Hardware v1/2,Modifying encoder for high impedance low-pass filtered digital inp
 Hardware,Which phase connects + charging line for boost charger? Use outside phases and do not connect to the middle phase.
 Firmware,encflt may cause delays in the control loop. Setting it to 0 disables filtering entirely.
 Hardware,Some STM32 pins are 5V tolerant and all others can take 5V with a simple 10k series resistor.
-Hardware,CAN gain of 10 (i.e. 100mV resolution)
+Hardware,CAN gain of 10 = 100mV resolution
 Firmware,Firmware HEX file has the target address already in it.
 Firmware,Current STM32F103 usage: 20% flash, 30% sram, 30% cpu at the highest PWM frequency.
 Firmware,pwmpol is gate 'polarity' Active High = Off, Active Low = On (pulling the gates to ground)
@@ -24,3 +24,4 @@ Hardware,PMSM motor works with ABZ encoder, ACIM will not work - use AB.
 Firmware,fslipspnt and ampnom values are not stored and go back to their default state when the inverter is reset.
 Combi-Board,Combi-Board remove R21 for better performance.
 Hardware v3,Current boards with MLX91205 hall sensor do not populate R50 and R51.
+Hardware,Never scope both low side and high side IGBTs at the same time unless you are using differential probes.

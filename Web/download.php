@@ -233,9 +233,9 @@
                                     Received Checksum:<br>
                                 </div>
                                 <div class="col" align="left">
-                                    <span class="badge badge-secondary badge-dark" id="checksum_file"><?php echo $destination; ?></span>
-                                    <span class="badge badge-secondary badge-success" id="checksum_good"></span>
-                                    <span class="badge badge-secondary badge-danger" id="checksum_bad"></span>
+                                    <span class="badge badge-secondary bg-dark" id="checksum_file"><?php echo $destination; ?></span>
+                                    <span class="badge badge-secondary bg-success" id="checksum_good"></span>
+                                    <span class="badge badge-secondary bg-danger" id="checksum_bad"></span>
                                 </div>
                             </div>
                             <div class="row"><hr></div>

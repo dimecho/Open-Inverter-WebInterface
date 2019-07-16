@@ -126,7 +126,7 @@
 										</span>
                                     </div>
                                     <br><br><h2 id="jtag-name"></h2>
-									<span class="badge badge-lg badge-warning" id="jtag-txt"></span><br><br>
+									<span class="badge badge-lg bg-warning" id="jtag-txt"></span><br><br>
                                     <img src="" id="jtag-image" class="rounded" />
 									</center>
                                 </td>

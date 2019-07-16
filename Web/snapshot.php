@@ -20,7 +20,7 @@
 		header ("Content-Type: text/json");
 		header ("Content-Disposition: attachment; filename=\"snapshot " .date("F-j-Y g-ia"). ".txt\"");
 
-		$read = readSerial("json");
+		$read = readSerial("json\n");
 		$array = json_decode($read, true);
 		$values = array();
 		foreach ($array as $key => $value) {

@@ -2,7 +2,7 @@
     if(isset($_POST["data"])){
 
         $data = $_POST["data"];
-        $file = fopen(realpath(__DIR__ . "/js/can.json", "w"));
+        $file = fopen(realpath(__DIR__ . "/js/can.json"), "w");
         fwrite($file, $data);
         fclose($file);
 

@@ -255,6 +255,9 @@ var chart_pwm_datasets = [{
 		*/
 	}
 }];
+
+var chart_can_datasets = [];
+
 var activeTab = "";
 var activeTabText = "";
 var syncronizedDelay = 600;
@@ -373,8 +376,8 @@ $(document).ready(function () {
 							chart_amperage_datasets.push(dataset);
 						} else if (activeTab === "#graph4") {
 							chart_frequency_datasets.push(dataset);
-						//} else if (activeTab === "#graph5") {
-						
+                        } else if (activeTab === "#graph5") {
+                            chart_can_datasets.push(dataset);
 						}
 						chart.update();
 					}
@@ -447,7 +450,7 @@ function getRandomColor() {
 function buildGraphMenu() {
     //os = "mobile";
 
-    var tabs = ["Motor", "Temperature", "Voltage", "Amperage", "Frequencies", "PWM"];
+    var tabs = ["Motor", "Temperature", "Voltage", "Amperage", "Frequencies", "CAN", "PWM"];
 
     var menu = $("#buildGraphMenu").empty();
     var menu_buttons = $("#buildGraphButtons").empty();
@@ -773,6 +776,8 @@ function initChart() {
     } else if (activeTab === "#graph4") {
         initFrequenciesChart(duration);
     } else if (activeTab === "#graph5") {
+        initCANChart(duration);
+    } else if (activeTab === "#graph6") {
         initPWMChart(duration);
     }
 
@@ -825,6 +830,8 @@ function startChart() {
     } else if (activeTab === "#graph4") {
 		value = idDatasets(chart_frequency_datasets);
     } else if (activeTab === "#graph5") {
+        value = idDatasets(chart_can_datasets);
+    //} else if (activeTab === "#graph6") {
 		/*
         if(getJSONFloatValue('opmode') > 0) {
             updateChart(url, ["pwmfrq", "deadtime"]);
@@ -1106,6 +1113,83 @@ function initPWMChart(duration) {
 
                 */
             }
+        },
+        zoom: {
+            enabled: true,
+            mode: 'y'
+        },
+        animation: {
+            duration: duration
+        }
+    };
+};
+
+function initCANChart(duration) {
+
+    data = {
+        labels: initTimeAxis(graphDivision),
+        datasets: chart_can_datasets
+    };
+
+
+    options = {
+        legend: {
+            display: true,
+            labels: {
+                fontSize: ctxFont,
+                fontColor: 'rgb(0, 0, 0)'
+            }
+        },
+        elements: {
+            point: {
+                radius: 0
+            }
+        },
+        tooltips: {
+            enabled: false
+        },
+        /*
+        tooltipEvents: [],
+        showTooltips: true,
+        onAnimationComplete: function() {
+            this.showTooltip(this.segments, true);
+        },
+        tooltipTemplate: "<%= label %> - <%= value %>",
+        */
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            xAxes: [{
+                display: true,
+                position: 'bottom',
+                scaleLabel: {
+                    fontSize: ctxFont,
+                    display: true,
+                    labelString: 'Time (hh:mm:ss)'
+                },
+                ticks: {
+                    fontSize: ctxFont,
+                    reverse: false,
+                    maxRotation: 90,
+                    stepSize: 50
+                }
+            }],
+            yAxes: [{
+                display: true,
+                position: 'left',
+                scaleLabel: {
+                    fontSize: ctxFont,
+                    display: true,
+                    labelString: 'Gain (mV)'
+                },
+                ticks: {
+                    fontSize: ctxFont,
+                    reverse: false,
+                    stepSize: 10,
+                    suggestedMin: 0, //important
+                    suggestedMax: 260 //important
+                }
+            }]
         },
         zoom: {
             enabled: true,

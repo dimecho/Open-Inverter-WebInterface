@@ -1,92 +1,105 @@
-Name,Unit,Minimum,Maximum,Default,Description
-boost,dig,0,37813,1700,0 Hz Boost in digit. 1000 digit ~ 2.5%
-fweak,Hz,0,400,67,Frequency where V/Hz reaches its peak
-fpconst,Hz,0,400,400,Frequency where slip frequency is derated to form a constant power region. Only has an effect when < fweak
-fslipmin,Hz,0,100,1,Slip frequency at minimum throttle
-fslipmax,Hz,0,100,3,Slip frequency at maximum throttle
-polepairs,,1,16,2,Pole pairs of motor (4-pole motor: 2 pole pairs)
-ampmin,%,0,100,50,Relative sine amplitude at minimum throttle
-encflt,,0,16,4,Filter constant between pulse encoder and speed calculation. Makes up for slightly uneven pulse distribution
-fmin,Hz,0,400,1,Below this frequency no voltage is generated
-fmax,Hz,0,400,200,At this frequency slip is commanded 0 to avoid further acceleration
-pwmfrq,,0,3,2,"PWM frequency. 0=17.6kHz, 1=8.8kHz, 2=4.4kHz, 3=2.2kHz"
-pwmpol,,0,1,0,"PWM polarity. 0=active high, 1=active low. DO NOT PLAY WITH THIS!"
-deadtime,dig,0,255,28,"Deadtime between highside and lowside pulse. 28=800ns, 56=1.5µs. Not always linear, consult STM32 manual"
-numimp,Imp/rev,8,8192,60,Pulse encoder pulses per turn
-potmin,dig,0,4095,0,"Value of ""pot"" when pot isn't pressed at all"
-potmax,dig,0,4095,4095,"Value of ""pot"" when pot is pushed all the way in"
-pot2min,dig,0,4095,4095,"Value of ""pot2"" when regen pot is in 0 position"
-pot2max,dig,0,4095,4095,"Value of ""pot2"" when regen pot is in full on position"
-idlespeed,rpm,-100,1000,-100,"Motor idle speed. Set to -100 to disable idle function. When idle speed controller is enabled, brake pedal must be pressed on start."
-idlethrotlim,%,0,100,50,Throttle limit of idle speed controller
-idlemode,,0,1,0,"Motor idle speed mode. 0=always run idle speed controller, 1=only run it when brake pedal is released"
-speedkp,Hz,0,100,1,Speed controller gain (Cruise and idle speed). Decrease if speed oscillates. Increase for faster load regulation
-cruisemode,,0,1,0,"0=button (set when button pressed, reset with brake pedal), 1=switch (set when switched on, reset when switched off or brake pedal)"
-speedflt,dig,0,16,1,Filter before cruise controller
-bmslimhigh,%,0,100,50,Positive throttle limit on BMS under voltage
-bmslimlow,%,-100,0,-1,Regen limit on BMS over voltage
-brknompedal,%,-100,0,-50,Foot on break pedal regen torque
-brkpedalramp,%/10ms,1,100,100,"Ramp speed when pressing the brake pedal. E.g. when you set brkmax to 20% and brkpedal to -60% and brkpedalramp to 1, it will take 400ms to arrive at brake force of -60%"
-brknom,%,0,100,30,Regen padel travel
-brkmax,%,0,100,30,Foot-off regen torque
-brkout,%,-100,-1,-50,Activate brake light output (GPIOA7) at this amount of braking force
-brkrampstr,Hz,0,400,10,Below this frequency the regen torque is reduced linearly with the frequency
-udcsw,V,0,1000,330,Voltage at which the DC contactor is allowed to close
-udcmin,V,0,1000,450,Low voltage at which a voltage warning light comes on
-udcmax,V,0,1000,520,High voltage at which a voltage warning light comes on
-udclim,V,0,1000,540,High voltage at which the PWM is shut down
-ocurlim,A,-500,500,100,Hardware over current limit. RMS-current times sqrt(2) + some slack
-minpulse,dig,0,4095,1000,"Narrowest or widest pulse, all other mapped to full off or full on, respectively"
-il1gain,dig/A,0,4095,3.09,Digits per A of current sensor L1
-il2gain,dig/A,0,4095,3.09,Digits per A of current sensor L2
-udcgain,dig/V,0,4095,6.15,Digits per V of DC link
-pwmfunc,,0,2,0,"Quantity that controls the PWM output. 0=tmpm, 1=tmphs, 2=speed"
-pwmgain,dig/C,0,65535,100,Gain of PWM output
-pwmofs,dig,-65535,65535,0,"Offset of PWM output, 4096=full on"
-tripmodes,,,,,"Control of relay reaction to trip event. 0=AllOff, 1=dcswon, 2=prechargeon"
-snshs,,0,2,0,"Heatsink temperature sensor. 0=JCurve, 1=Semikron (Skiip82), 2=MBB600"
-snsm,,12,14,12,"Motor temperature sensor. 12=KTY83-110, 13=KTY84-130, 14=Leaf"
-fslipspnt,Hz,-100,100,0,Slip setpoint in mode 2. Written by software in mode 1
-ampnom,%,0,100,0,Nominal amplitude in mode 2. Written by software in mode 1
-version,,,,,Firmware version
-opmode,,,,,"Operating mode. 0=Off, 1=Run, 2=Manual_run"
-udc,V,,,,DC link voltage
-idc,A,,,,Calculated DC current
-il1,A,,,,AC current L1
-il2,A,,,,AC current L2
-il1rms,A,,,,RMS current L1
-il2rms,A,,,,RMS current L2
-fstat,Hz,,,,Stator frequency
-speed,rpm,,,,Motor speed
-amp,dig,,,,"Sine amplitude, 37813=max"
-pot,dig,,,,"Pot value, 4095=max"
-pot2,dig,,,,"Regen Pot value, 4095=max"
-potnom,%,,,,"Scaled pot value, 0 accel"
-dir,,,,,"Rotation direction. -1=REV, 0=Neutral, 1=FWD"
-tmphs,çC,,,,Heatsink temperature
-tmpm,çC,,,,Motor temperature
-uaux,V,,,,Chargemode voltage accuracy
-din_cruise,,,,,Cruise Control. This pin activates the cruise control with the current speed. Pressing again updates the speed set point.
-din_start,,,,,"State of digital input ""start"". This pin starts inverter operation"
-din_brake,,,,,"State of digital input ""brake"". This pin sets maximum regen torque (brknompedal). Cruise control is disabled."
-din_mprot,,,,,"State of digital input ""motor protection switch"". Shuts down the inverter when =0"
-din_forward,,,,,Direction forward
-din_reverse,,,,,Direction backward
-din_emcystop,,,,,"State of digital input ""emergency stop"". Shuts down the inverter when =0"
-din_ocur,,,,,Over current detected
-din_bms,,,,,BMS over voltage/under voltage
-tm_meas,us,,,,Time taken to calculate new duty cycle in PWM service routine
-idlethrotlim,,,,,Depends on you gearing and motor
-syncofs,,,,,"Experimental: Configure a pin as an input for the north marker. When the interrupt fires, reset the angle"
-chargemode,,,,,"Charging mode. 0=Off, 3=Boost, 4=Buck"
-chargecur,A,,,,Hardware over current limit
-udcnom,V,,,,Scales fweak and boost as DC voltage changes
-fweakcalc,Hz,,,,Calculated value from udcnom
-boostcalc,V,,,,Calculated value from udcnom
-udcswbuck,V,0,1000,540,Precharge voltage in buck mode
-encmode,,0,4,0,"Single=Async Motor, AB=Async Motor, ABZ=Sync Motor, SPI=Talk to AD2S chip via SPI ""Deprecated"" (Sync motor), Resolver=Needs ON state on pin PD2 and expects sin/cos signal on PA6/PA7 (Sync Motor)"
-dirchrpm,rpm,0,2000,100,""
-throtramprpm,rpm,0,20000,20000,""
-speedgain,rpm/kHz,0,65535,6000,""
-iftlrise,,,,,"Dampens the response of over current limiting. The higher the value, the slower the reponse."
-iftlfall,,,,,"Dampens how quickly the amplitude is decreased once it overshoots iacmax*80%, ifltrise dampens the recovery."
+boost,0 Hz Boost in digit. 1000 digit ~ 2.5%
+fweak,Frequency where V/Hz reaches its peak
+fconst,Frequency where slip frequency is derated to form a constant power region. Only has an effect when < fweak
+fslipmin,Slip frequency at minimum throttle
+fslipmax,Slip frequency at maximum throttle
+polepairs,Pole pairs of motor (4-pole motor: 2 pole pairs)
+respolepairs,Pole pairs of resolver
+encflt,Filter constant between pulse encoder and speed calculation. Makes up for slightly uneven pulse distribution
+fmin,Below this frequency no voltage is generated
+fmax,At this frequency slip is commanded 0 to avoid further acceleration
+pwmfrq,"PWM frequency. 0=17.6kHz, 1=8.8kHz, 2=4.4kHz, 3=2.2kHz"
+pwmpol,"PWM polarity. 0=active high, 1=active low. DO NOT PLAY WITH THIS!"
+deadtime,"Deadtime between highside and lowside pulse. 28=800ns, 56=1.5µs. Not always linear, consult STM32 manual"
+numimp,Pulse encoder pulses per turn
+dirchrpm,Motor speed at which direction change is allowed
+dirmode,0=button (momentary pulse selects forward/reverse), 1=switch (forward or reverse signal must be constantly high) 
+syncofs,Phase shift of sine wave after receiving index pulse
+speedflt,Filter before cruise controller
+bmslimhigh,Positive throttle limit on BMS under voltage
+bmslimlow,Regen limit on BMS over voltage
+udcsw,Voltage at which the DC contactor is allowed to close
+udcmin,Low voltage at which a voltage warning light comes on
+udcmax,High voltage at which a voltage warning light comes on
+udclim,High voltage at which the PWM is shut down
+ocurlim,Hardware over current limit. RMS-current times sqrt(2) + some slack
+minpulse,"Narrowest or widest pulse, all other mapped to full off or full on, respectively"
+il1gain,Digits per A of current sensor L1
+il2gain,Digits per A of current sensor L2
+udcgain,Digits per V of DC link
+pwmfunc,"Quantity that controls the PWM output. 0=tmpm, 1=tmphs, 2=speed"
+pwmgain,Gain of PWM output
+pwmofs,"Offset of PWM output, 4096=full on"
+tripmodes,"Control of relay reaction to trip event. 0=AllOff, 1=dcswon, 2=prechargeon"
+snshs,"Heatsink temperature sensor. 0=JCurve, 1=Semikron (Skiip82), 2=MBB600"
+snsm,"Motor temperature sensor. 12=KTY83-110, 13=KTY84-130, 14=Leaf"
+opmode,"Operating mode. 0=Off, 1=Run, 2=Manual_run"
+udc,DC link voltage
+idc,Calculated DC current
+il1,AC current L1
+il2,AC current L2
+il1rms,RMS current L1
+il2rms,RMS current L2
+fstat,Stator frequency
+speed,Motor speed
+amp,"Sine amplitude, 37813=max"
+pot,"Pot value, 4095=max"
+pot2,"Regen Pot value, 4095=max"
+potnom,"Scaled pot value, 0 accel"
+potmin,"Value of ""pot"" when pot isn't pressed at all"
+potmax,"Value of ""pot"" when pot is pushed all the way in"
+pot2min,"Value of ""pot2"" when regen pot is in 0 position"
+pot2max,"Value of ""pot2"" when regen pot is in full on position"
+potmode,"0=Pot 1 is throttle and pot 2 is regen strength preset, 1=Pot 2 is proportional to pot 1 (redundance) 2=Throttle controlled via CAN"
+throtramp,Max positive throttle slew rate
+throtramprpm,No throttle ramping above this speed
+ampmin,Relative sine amplitude at minimum throttle
+slipstart,% positive throttle travel at which slip is increased
+brknompedal,Foot on break pedal regen torque
+brkpedalramp,"Ramp speed when pressing the brake pedal. E.g. when you set brkmax to 20% and brkpedal to -60% and brkpedalramp to 1, it will take 400ms to arrive at brake force of -60%"
+brknom,Regen padel travel
+brkmax,Foot-off regen torque
+brkout,Activate brake light output (GPIOA7) at this amount of braking force
+brkrampstr,Below this frequency the regen torque is reduced linearly with the frequency
+idlespeed,"Motor idle speed. Set to -100 to disable idle function. When idle speed controller is enabled, brake pedal must be pressed on start."
+idlethrotlim,Throttle limit of idle speed controller
+idlemode,"Motor idle speed mode. 0=always run idle speed controller, 1=only run it when brake pedal is released"
+speedkp,Speed controller gain (Cruise and idle speed). Decrease if speed oscillates. Increase for faster load regulation
+cruisemode,"0=button (set when button pressed, reset with brake pedal), 1=switch (set when switched on, reset when switched off or brake pedal)"
+dir,"Rotation direction. -1=REV, 0=Neutral, 1=FWD"
+tmphs,Heatsink temperature
+tmpm,Motor temperature
+uaux,Chargemode voltage accuracy
+din_cruise,Cruise Control. This pin activates the cruise control with the current speed. Pressing again updates the speed set point.
+din_start,"State of digital input ""start"". This pin starts inverter operation"
+din_brake,"State of digital input ""brake"". This pin sets maximum regen torque (brknompedal). Cruise control is disabled."
+din_mprot,"State of digital input ""motor protection switch"". Shuts down the inverter when =0"
+din_forward,Direction forward
+din_reverse,Direction backward
+din_emcystop,"State of digital input ""emergency stop"". Shuts down the inverter when =0"
+din_ocur,Over current detected
+din_bms,BMS over voltage/under voltage
+tm_meas,Time taken to calculate new duty cycle in PWM service routine
+idlethrotlim,Depends on you gearing and motor
+chargemode,"Charging mode. 0=Off, 3=Boost, 4=Buck"
+chargecur,Hardware over current limit
+chargekp,Charge controller gain. Lower if you have oscillation, raise if current set point is not met
+chargeflt,Charge current filtering. Raise if you have oscillations
+chargemax,Charge mode duty cycle limit. Especially in boost mode this makes sure you don't overvolt you IGBTs if there is no battery connected.
+udcnom,Scales fweak and boost as DC voltage changes
+fweakcalc,Calculated value from udcnom
+boostcalc,Calculated value from udcnom
+udcswbuck,Precharge voltage in buck mode
+encmode,"Single=Async Motor, AB=Async Motor, ABZ=Sync Motor, SPI=Talk to AD2S chip via SPI ""Deprecated"" (Sync motor), Resolver=Needs ON state on pin PD2 and expects sin/cos signal on PA6/PA7 (Sync Motor)"
+iftlrise,"Dampens the response of over current limiting. The higher the value, the slower the reponse."
+iftlfall,"Dampens how quickly the amplitude is decreased once it overshoots iacmax*80%, ifltrise dampens the recovery."
+pinswap,"1=Currents12, 2=ResolverSinCos, 4=PWMOutput12"
+angle,Motor rotor angle
+turns,Full rotor turns
+canspeed,Baud rate of CAN interface 0=250k, 1=500k, 2=800k, 3=1M
+canperiod,0=send configured CAN messages every 100ms, 1=every 10ms
+fslipspnt,Slip setpoint in mode 2. Written by software in mode 1
+ampnom,Nominal amplitude in mode 2. Written by software in mode 1
+version,Firmware version
+hwver,Hardware revision
+cpuload,STM32 processor usage

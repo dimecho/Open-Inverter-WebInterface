@@ -99,7 +99,7 @@ function buildCANParameters() {
             var db_canid = "";
             var db_canpos = 0;
             var db_cangain = 1;
-			/*
+			
             for (var k in canDB[0][key])
             {
                 if(canDB[0][key][k].com == "tx"){
@@ -111,7 +111,7 @@ function buildCANParameters() {
                 db_canpos = canDB[0][key][k].position;
                 db_cangain = canDB[0][key][k].gain;
             }
-			*/
+			
 			var canrxid = canMap[key];
 
 			if(canrxid > 0)
@@ -119,38 +119,64 @@ function buildCANParameters() {
 				//console.log(key);
 				var cantx = $("<button>", { class:"btn " + db_cantx + " btn-sm mx-1", id:key + "-cantx" }).append("TX");
 				var canrx = $("<button>", { class:"btn " + db_canrx + " btn-sm mx-1", id:key + "-canrx" }).append("RX");
-				var cantxid = $("<input>", { type:"number", class:"text-center", value:db_canid, id:key + "-cantxid" }).css({width:120});
+				var cantxid = $("<input>", { type:"text", class:"text-center", value:db_canid, id:key + "-cantxid" }).css({width:120});
 				if(db_cantx == "btn-secondary")
 					cantxid.prop('disabled', true);
-				var canpos = $("<input>", { type:"number", class:"text-center", value:db_canpos, id:key }).css({width:120});
+				var canpos = $("<input>", { type:"text", class:"text-center", value:db_canpos, id:key }).css({width:120});
 
 				var div = $("<div>", { class:"input-group" });
-				var cangain = $("<input>", { type:"number", class:"form-control text-center", value:db_cangain, id:key + "-cangain" }).css({width:40});
+				var cangain = $("<input>", { type:"text", class:"text-center", value:db_cangain, id:key + "-cangain" }).css({width:120});
+				var cangain_hex = $("<input>", { type:"text", class:"text-center", value:"0x" + toHex(db_cangain), id:key + "-cangainhex" }).css({width:120});
 				
 				if(os === "mobile") {
+                    cantxid.attr("type","number");
+                    canpos.attr("type","number");
+                    cangain.attr("type","number");
 					div.append(cangain);
 				}else{
 					var cangain_sub = $("<button>", { class:"input-group-addon btn btn-secondary btn-sm" }).append("-");
 					var cangain_add = $("<button>", { class:"input-group-addon btn btn-secondary btn-sm" }).append("+");
-					div.append(cangain_sub).append(cangain).append(cangain_add);
+					
+					//div.append(cangain_sub).append(cangain).append(cangain_add);
+					div.append(cangain);
+					div.append(cangain_hex);
 
 					cangain_sub.click(function(){
 						//console.log($(this).parent().find("input").val());
 						var value = parseInt($(this).parent().find("input").val());
 						if(value > 1){
 							value--;
-							$(this).parent().find("input").val(value);
+							$(this).parent().find("input").filter(':visible:first').val(value);
+                            cangain.change();
 						}
 					});
 
 					cangain_add.click(function(){
 						//console.log($(this).parent().find("input").val());
 						var value = parseInt($(this).parent().find("input").val());
-						if(value < 10){
-							value++;
-							$(this).parent().find("input").val(value);
-						}
+						value++;
+						$(this).parent().find("input").filter(':visible:first').val(value);
+                        cangain.change();
 					});
+
+                    cangain.on('input',function(e){
+                        var value = parseInt($(this).val());
+                        var hex = toHex($(this).val());
+                        console.log("0x" + hex);
+                        cangainLimit(value);
+                        $(this).parent().find("input").filter(':visible:last').val("0x" + hex);
+					});
+
+					cangain_hex.on('input',function(e){
+                        var value = parseInt(("0x" + $(this).val()).replace("0x0x","0x"));
+                        cangainLimit(value);
+                        $(this).parent().find("input").filter(':visible:first').val(value);
+					});
+					function cangainLimit(value) {
+						if(value > 255){
+                            $.notify({ message: "CAN gain max 255 (16-bit), will split into byte-wise" }, { type: "warning" });
+                        }
+					}
 				}
 			   
 				var tr = $("<tr>");
@@ -201,6 +227,13 @@ function buildCANParameters() {
     $(".loader").hide();
 };
 
+function toHex(d) {
+    var n = Number(d).toString(16);
+    if(n.length & 1) //Odd
+        n = "0" + n;
+    return n.toUpperCase();
+}
+
 function saveCANMapping() {
 
 	var v = $("#can-speed").val();
@@ -229,22 +262,26 @@ function saveCANMapping() {
             {
                 if($("#"+key+"-cantx").hasClass("btn-primary") || $("#"+key+"-canrx").hasClass("btn-primary"))
                 {
-                    var canpos = parseInt($("#"+key).val());
-                    var canid = $("#"+key+"-cantxid").val();
+                    var canpos = parseInt($("#"+ key).val());
+                    var canid = parseInt($("#"+key+"-cantxid").val());
                     var cangain = $("#"+key+"-cangain").val();
 
-                    if (isInt(canpos) == false){
+                     if (isInt(canid) == false) {
+                        $.notify({ message: "[" + key + "] CAN TX ID must be a number" }, { type: "danger" });
+                        return;
+                    }
+
+                    if (isInt(canpos) == false) {
                         $.notify({ message: "[" + key + "] CAN bit offset must be a number" }, { type: "danger" });
                         return;
                     }
 
-                    //TODO check for conflict offset
-                    var canbits = json[key].value.toString().length;
+                    cangain = parseInt(cangain);
+                    var canbits = toHex(cangain).toString().length * 2;
 
-                    if(cangain == ""){
+                    if(cangain == 0) {
                         cangain = 1;
                     }else{
-                        cangain = parseInt(cangain);
                         if (isInt(cangain) == false){
                             $.notify({ message: "[" + key + "] CAN gain must be a number" }, { type: "danger" });
                             return;
@@ -264,11 +301,21 @@ function saveCANMapping() {
 
                     if ($("#"+key+"-cantx").hasClass("btn-primary")) {
 
-                        if(canid == ""){
+                        if(canid == "") {
                             $.notify({ message: "[" + key + "] CAN needs Transmit ID" }, { type: "danger" });
                             return;
                         }
-                        cancommand.push("can tx " + key + " " + canid + " " + canpos + " " + canbits + " " + cangain);
+
+                        var can_split = 1;
+
+                        if (cangain > 255) {
+                        	can_split = (canbits/4);
+                        	console.log("CAN Split: " + can_split);
+						}
+
+                        for(var i = 0; i < can_split; i++) {
+                            cancommand.push("can tx " + key + " " + canid + " " + (i * 8) + " " + canbits + " " + cangain);
+                        }
 
                         canjsonitem = {};
                         canjsonitem["com"] = "tx";
@@ -309,17 +356,20 @@ function saveCANMapping() {
                 i++;
             }
 
-            //console.log(JSON.stringify(canjson));
-
             data = sendCommand("save");
 
             if(data.indexOf("stored") != -1)
             {
+            	console.log(JSON.stringify(canjson));
+
                $.ajax("can.php", {
                     type: "POST",
                     async: false,
                     dataType: "json",
                     data: {"data": JSON.stringify(canjson)},
+                    //success: function(data) { 
+					//    console.log(data);
+					//},
                     failure: function(errMsg) {
                         $.notify({ icon: "icons icon-alert", title: "Error", message: errMsg },{ type: "danger" });
                     }

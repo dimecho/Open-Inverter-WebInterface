@@ -693,8 +693,8 @@ function buildMenu() {
             var col = $("<div>", { class: "col-auto mr-auto mb-auto mt-auto", id: "opStatus"});
 			nav.parent().parent().append(col);
 
-            var fwver = $("<span>", { class: "d-none d-md-block d-lg-block badge badge-info border invisible", id: "fwVersion" });
-            var hwver = $("<span>", { class: "d-none d-md-block d-lg-block badge badge-success border invisible", id: "hwVersion" });
+            var fwver = $("<span>", { class: "d-none d-md-block d-lg-block badge bg-info border invisible", id: "fwVersion" });
+            var hwver = $("<span>", { class: "d-none d-md-block d-lg-block badge bg-success border invisible", id: "hwVersion" });
             var col = $("<div>", { class: "col-auto mb-auto mt-auto" });
             col.append(fwver).append(hwver);
 			nav.parent().parent().append(col);

@@ -69,7 +69,7 @@ function buildTable(title, csv, notes) {
         success: function success(data) {
             var div = $("#pcbComponentsTable");
             
-            var label = $("<span>", { class: "badge badge-lg badge-warning", style: "margin-bottom:10px;"}).append("* " + notes);
+            var label = $("<span>", { class: "badge badge-lg bg-warning", style: "margin-bottom:10px;"}).append("* " + notes);
             var table = $("<table>", { class: "table table-active bg-light table-bordered table-striped table-hover" });
             var thead = $("<thead>", { class: "thead-inverse" }).append($("<tr>").append($("<th>").append("Part")).append($("<th>").append("Value")).append($("<th>").append("Package")).append($("<th>").append("Manual")));
             var tbody = $("<tbody>");

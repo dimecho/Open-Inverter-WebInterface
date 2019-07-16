@@ -33,35 +33,25 @@ body {
 .icon-red {
   color:#b52808;
 }
-.circle-grey {
+.circle-size-1 {
   width: 20px;
   height: 20px;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-  border-style: solid;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border: 2px solid;
+}
+.circle-grey {
   border-color: #808080;
-  background: #c0c0c0
+  background-color: #c0c0c0
 }
 .circle-green {
-  width: 20px;
-  height: 20px;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-  border-style: solid;
   border-color: #00cc00;
-  background: #00ff00
+  background-color: #00ff00
 }
 .circle-red {
-  width: 20px;
-  height: 20px;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-  border-style: solid;
   border-color: #e62e00;
-  background: #ff704d
+  background-color: #ff704d
 }
 .nav-tabs > li > a {
   color: #49afcd;

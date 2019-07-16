@@ -69,31 +69,31 @@
                             <div class="row mt-4"></div>
                             <div class="row">
                                 <div class="col">Protection</div>
-                                <div class="col"><div class="circle-grey" id="din_mprot"></div></div>
+                                <div class="col"><div class="circle-size-1 circle-grey" id="din_mprot"></div></div>
                             </div>
                             <div class="row">
                                 <div class="col">Emergency</div>
-                                <div class="col"><div class="circle-grey" id ="din_emcystop"></div></div>
+                                <div class="col"><div class="circle-size-1 circle-grey" id ="din_emcystop"></div></div>
                             </div>
                             <div class="row">
                                 <div class="col">Brake</div>
-                                <div class="col"><div class="circle-grey" id ="din_brake"></div></div>
+                                <div class="col"><div class="circle-size-1 circle-grey" id ="din_brake"></div></div>
                             </div>
                             <div class="row">
                                 <div class="col">Start</div>
-                                <div class="col"><div class="circle-grey" id ="din_start"></div></div>
+                                <div class="col"><div class="circle-size-1 circle-grey" id ="din_start"></div></div>
                             </div>
                             <div class="row">
                                 <div class="col">Forward</div>
-                                <div class="col"><div class="circle-grey" id ="din_forward"></div></div>
+                                <div class="col"><div class="circle-size-1 circle-grey" id ="din_forward"></div></div>
                             </div>
                             <div class="row">
                                 <div class="col">Reverse</div>
-                                <div class="col"><div class="circle-grey" id ="din_reverse"></div></div>
+                                <div class="col"><div class="circle-size-1 circle-grey" id ="din_reverse"></div></div>
                             </div>
                             <div class="row">
                                 <div class="col">Cruise</div>
-                                <div class="col"><div class="circle-grey" id ="din_cruise"></div></div>
+                                <div class="col"><div class="circle-size-1 circle-grey" id ="din_cruise"></div></div>
                             </div>
                             <div class="row">
                                 <div class="col">Potentiometer</div>

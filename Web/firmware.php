@@ -204,7 +204,7 @@
 								<div class="progress progress-striped active">
                                     <div class="progress-bar" style="width:0%" id="progressBar"></div>
                                 </div>
-                                <br><span class="badge badge-lg badge-warning">Tip: If Olimex is bricked, try pressing "reset" button while flashing</span><br><br>
+                                <br><span class="badge badge-lg bg-warning">Tip: If Olimex is bricked, try pressing "reset" button while flashing</span><br><br>
                                 <div id="output"></div>
 							</td>
                         </tr>';
@@ -255,7 +255,7 @@
 									</span>
                                 </div>
                                 <br><br><h2 id="jtag-name"></h2>
-                                <span class="badge badge-lg badge-warning" id="jtag-txt"></span><br><br>
+                                <span class="badge badge-lg bg-warning" id="jtag-txt"></span><br><br>
                                 <img src="" id="jtag-image" class="rounded" />
 								</center>
                             </td>

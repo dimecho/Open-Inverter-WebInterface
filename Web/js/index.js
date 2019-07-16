@@ -142,23 +142,15 @@ function buildParameters()
 
 			var row = data.split("\n");
 
-			for (var i = 1; i < row.length; i++) {
+			for (var i = 0; i < row.length; i++) {
 				
 				var split = row[i].split(",");
-				var d = "";
-
-				if(split.length > 6) { //contains , in decription
-					for (var c = 5; c < split.length; ++c) {
-						d += split[c];
-					}
-				}else{
-					d = split[5];
-				}
+                
                 //console.log(split[0]);
                 //console.log(d.replace(/"/g, ''));
 
 				parameters.push(split[0]);
-				description.push(d.replace(/"/g, ''));
+				description.push(row[i].substring(split[0].length + 1).replace(/"/g, ''));
 			}
 
             var json = sendCommand("json");
@@ -307,7 +299,6 @@ function buildParameters()
                 tr.append(td1).append(td2).append(td3).append(td4);
                 tbody.append(tr);
             };
-
             menu.show();
 
             $("#saveload").show();
@@ -348,7 +339,7 @@ function checkFirmwareUpdates(v)
                     if(version > _version || build > _build)
                     {
                         $.notify({
-                            icon: "glyphicon glyphicon-download-alt",
+                            icon: "icon icon-download",
                             title: "New Firmware",
                             message: "Available <a href='https://github.com/jsphuebner/stm32-sine/releases' target='_blank'>Download</a>"
                         }, {
@@ -398,7 +389,7 @@ function checkWebUpdates()
                                     url += version + "Huebner.Inverter.ESP8266.zip";
                                 }
                                 $.notify({
-                                    icon: "glyphicon glyphicon-download-alt",
+                                    icon: "icon icon-download",
                                     title: "New Web Interface",
                                     message: "Available <a href='" + url + "' target='_blank'>Download</a>"
                                 }, {

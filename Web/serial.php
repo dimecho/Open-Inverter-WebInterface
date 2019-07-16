@@ -73,6 +73,7 @@ session_start();
         }
 
         exec($command, $output, $return);
+        $output = str_replace(" ", "\n", $output); //Windows Fix
 
         foreach ($output as $line) {
             if (strpos($line, "Bluetooth") == false) {
