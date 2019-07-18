@@ -1,17 +1,3 @@
-<?php
-    if(isset($_POST["data"])){
-
-        $data = $_POST["data"];
-        $file = fopen(realpath(__DIR__ . "/js/can.json"), "w");
-        fwrite($file, $data);
-        fclose($file);
-
-    }else if(isset($_GET["clear"])){
-
-        unlink(realpath(__DIR__ . "/js/can.json"));
-        
-    }else{
-?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -71,4 +57,3 @@
         </div>
     </body>
 </html>
-<?php } ?>
