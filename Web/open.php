@@ -25,20 +25,18 @@ session_start();
             }else if ($os === "linux") {
                 $command = "sh -c \"inkscape" .$args. "\"";
             }
-
-        }else if($_GET["app"] == "gcc")
-        {
+        }else if($_GET["app"] == "gcc") {
             header("Location:sourcecode.php");
-        }else if($_GET["app"] == "openocd" || $_GET["app"] == "bootloader")
-        {
+
+        }else if($_GET["app"] == "openocd" || $_GET["app"] == "bootloader") {
             $command = runCommand("openocd","",$os,0);
             header("Location:bootloader.php");
-        }else if($_GET["app"] == "source")
-        {
+
+        }else if($_GET["app"] == "source") {
             //$command = runCommand("source","",$os,1);
             header("Location:sourcecode.php");
-        }else if($_GET["app"] == "arduino")
-        {
+
+        }else if($_GET["app"] == "arduino") {
             $args = $_SERVER["DOCUMENT_ROOT"]. "/dashboard/arduino/lcd_display/lcd_display.ino";
             if ($os === "mac") {
                 $command = "/Applications/Arduino.app/Contents/MacOS/Arduino \"" .$args. "\" > /dev/null 2>&1 &";
@@ -47,8 +45,15 @@ session_start();
             }else if ($os === "linux") {
                 $command = "\"arduino '" .$args. "'\"";
             }
-        }else if($_GET["app"] == "eagle")
-        {
+        }else if($_GET["app"] == "cantact") {
+            if ($os === "mac") {
+                $command = "/Applications/cantact/bin/cantact";
+            }else if ($os === "windows") {
+                $command = "C:\\Program Files\\cantact\\bin\\cantact64.exe";
+            }else if ($os === "linux") {
+                $command = "sh -c \"cantact\"";
+            }
+        }else if($_GET["app"] == "eagle") {
             if ($os === "mac") {
                 $command = "open \"" .$_SERVER["DOCUMENT_ROOT"]. "/pcb\"";
             }else if ($os === "windows") {
