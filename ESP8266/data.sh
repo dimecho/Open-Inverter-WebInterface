@@ -23,7 +23,7 @@ for i in "${array[@]}"; do
     cp -rf ../Web/css/$i data/css
 done
 
-array=(jquery.js jquery.knob.js potentiometer.js jquery.fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js parameters.json graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js chartjs-plugin-zoom.js test.js mobile.js)
+array=(jquery.js jquery.knob.js potentiometer.js jquery.fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-datalabels.js chartjs-plugin-zoom.js test.js mobile.js)
 for i in "${array[@]}"; do
     cp -rf ../Web/js/$i data/js
 done

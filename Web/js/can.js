@@ -58,6 +58,12 @@ function setCANPeriod() {
 	setParameter("canperiod",v,true,true);
 };
 
+function canbitLimit(value) {
+    if(parseInt(value) >= 1000) {
+        $.notify({ message: "Max 16-bit = 03 E7, will split into byte-wise" }, { type: "warning" });
+    }
+};
+
 function buildCANParameters() {
     
     $(".loader").show();
@@ -77,7 +83,7 @@ function buildCANParameters() {
             var db_canrx = "btn-secondary";
             var canid = "";
             var canoffset = 0;
-            var canlength = 4;
+            var canlength = 2;
             var cangain = 1;
 			var canrxid = 0;
 
@@ -94,32 +100,34 @@ function buildCANParameters() {
             if (bitsmax == 0) //Try current value
 				bitsmax = json[key].value;
 
-			if (bitsmax >= 10000) {
-				canlength = 32;
-            }else if (bitsmax >= 1000) {
+			if (bitsmax >= 65536) { //over 16 bit (1111111111111111)
+				canlength = 24;
+            }else if (bitsmax >= 256) { //over 8 bit (11111111)
                 canlength = 16;
-            }else if (bitsmax >= 100) {
+            }else if (bitsmax >= 16) { //over 4 bit (1111)
                 canlength = 8;
+            }else if (bitsmax >= 4) { //over 2 bit (11)
+                canlength = 4;
             }
 
 			//console.log(key);
+			var div_txrx = $("<div>").css({width:90});
 			var cantx = $("<button>", { class:"btn btn-sm mx-1", id:key + "-cantx" }).append("TX");
 			var canrx = $("<button>", { class:"btn btn-sm mx-1", id:key + "-canrx" }).append("RX");
 			
 			var form_canid = $("<form>", { class:"form-inline" });
-            var div_canid = $("<div>", { class:"form-group" });
-            var input_canid = $("<input>", { type:"text", class:"form-control form-control-sm text-center", value:canid, id:key + "-canid" });
-			var input_canid_hex = $("<input>", { type:"text", class:"form-control form-control-sm text-center", value:"0x" + toHex(canid), id:key + "-canidhex" });
+            var input_canid = $("<input>", { type:"text", class:"form-control form-control-sm text-center", value:canid, id:key + "-canid" }).css({width:"50%"});
+			var input_canid_hex = $("<input>", { type:"text", class:"form-control form-control-sm text-center", value:"0x" + toHex(canid), id:key + "-canidhex" }).css({width:"50%"});
             
-            var div_canoffset = $("<div>", { class:"form-group" }).css({width:80});
+            var div_canoffset = $("<div>", { class:"form-group" });
             var input_canoffset = $("<input>", { type:"text", class:"form-control form-control-sm text-center", value:canoffset, id:key });
             
-            var div_canlength = $("<div>", { class:"form-group" }).css({width:80});
+            var div_canlength = $("<div>", { class:"form-group" });
             var input_canlength = $("<input>", { type:"text", class:"form-control form-control-sm text-center", value:canlength, id:key + "-canlength" });
             
             var form_cangain = $("<form>", { class:"form-inline" });
-			var input_cangain = $("<input>", { type:"text", class:"form-control form-control-sm text-center", value:cangain, id:key + "-cangain" });
-			var input_cangain_hex = $("<input>", { type:"text", class:"form-control form-control-sm text-center", value:"0x" + toHex(cangain), id:key + "-cangainhex" });
+			var input_cangain = $("<input>", { type:"text", class:"form-control form-control-sm text-center", value:cangain, id:key + "-cangain" }).css({width:"50%"});
+			var input_cangain_hex = $("<input>", { type:"text", class:"form-control form-control-sm text-center", value:"0x" + toHex(cangain), id:key + "-cangainhex" }).css({width:"50%"});
 			
             if(json[key].isrx == true) { //RX
                 canrx.addClass("btn-primary");
@@ -148,58 +156,53 @@ function buildCANParameters() {
             if(os === "mobile") {
                 input_canid.attr("type","number");
                 input_canoffset.attr("type","number");
+                input_canlength.attr("type","number");
                 input_cangain.attr("type","number");
-				div.append(input_cangain);
 			}else{
-
 				form_canid.append(input_canid_hex);
 				form_cangain.append(input_cangain_hex);
-
-				input_canid.on('input',function(e) {
-                    var value = parseInt($(this).val());
-                    var hex = toHex($(this).val());
-                    //console.log("0x" + hex);
-                    $(this).parent().find("input").filter(':visible:last').val("0x" + hex);
-				});
-
-                input_canid_hex.focusout(function() {
-               		var value = $(this).val();
-                	if(value.substring(0, 2) != "0x")
-                    	value = "0x" + value.toUpperCase();
-                    $(this).val(value);
-                });
-
-                input_cangain.on('input',function(e) {
-                    var value = parseInt($(this).val());
-                    var hex = toHex($(this).val());
-                    //console.log("0x" + hex);
-                    $(this).parent().find("input").filter(':visible:last').val("0x" + hex);
-                    canbitLimit(value);
-				});
-
-				input_cangain_hex.on('input',function(e) {
-                    var value = parseInt(("0x" + $(this).val()).replace("0x0x","0x"));
-                    $(this).parent().find("input").filter(':visible:first').val(value);
-                    canbitLimit(value);
-				});
-
-                input_cangain_hex.focusout(function() {
-                	var value = $(this).val();
-                	if(value.substring(0, 2) != "0x")
-                    	value = "0x" + value.toUpperCase();
-                    $(this).val(value);
-                });
-       
-				function canbitLimit(value) {
-					if(parseInt(value) >= 1000) {
-                        $.notify({ message: "Max 16-bit = 03 E7, will split into byte-wise" }, { type: "warning" });
-                    }
-				}
 			}
-		   
+
+			input_canid.on('input',function(e) {
+                var value = parseInt($(this).val());
+                var hex = toHex($(this).val());
+                //console.log("0x" + hex);
+                $(this).parent().find("input").filter(':visible:last').val("0x" + hex);
+			});
+
+            input_canid_hex.focusout(function() {
+           		var value = $(this).val();
+            	if(value.substring(0, 2) != "0x")
+                	value = "0x" + value.toUpperCase();
+                $(this).val(value);
+            });
+
+            input_cangain.on('input',function(e) {
+                var value = parseInt($(this).val());
+                var hex = toHex($(this).val());
+                //console.log("0x" + hex);
+                $(this).parent().find("input").filter(':visible:last').val("0x" + hex);
+                canbitLimit(value);
+			});
+
+			input_cangain_hex.on('input',function(e) {
+                var value = parseInt(("0x" + $(this).val()).replace("0x0x","0x"));
+                $(this).parent().find("input").filter(':visible:first').val(value);
+                canbitLimit(value);
+			});
+
+            input_cangain_hex.focusout(function() {
+            	var value = $(this).val();
+            	if(value.substring(0, 2) != "0x")
+                	value = "0x" + value.toUpperCase();
+                $(this).val(value);
+            });
+
+            div_txrx.append(cantx).append(canrx);
+
 			var tr = $("<tr>");
 			var td1 = $("<td>").append(key);
-			var td2 = $("<td>").append(cantx).append(canrx);
+			var td2 = $("<td>").append(div_txrx);
 			var td4 = $("<td>").append(form_canid);
 			var td5 = $("<td>").append(div_canoffset);
             var td6 = $("<td>").append(div_canlength);
@@ -255,7 +258,7 @@ function toHex(d) {
     if(n.length & 1) //Odd
         n = "0" + n;
     return n.toUpperCase();
-}
+};
 
 function saveCANMapping() {
 

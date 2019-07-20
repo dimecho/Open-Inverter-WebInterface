@@ -727,7 +727,7 @@ function buildStatus() {
             data = data.replace("\n\n", "\n");
             data = data.split("\n");
 
-            var errors = "No Errors"; //sendCommand("errors");
+            var errors = sendCommand("errors");
 
             //console.log(data);
 

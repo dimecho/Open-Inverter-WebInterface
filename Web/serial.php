@@ -373,8 +373,23 @@ session_start();
                 while (substr($read, -6) !== "}\r\n}\r\n"){
                     $read .= stream_get_contents($uart, 1); //fread($uart,1);
                 }
-            }else if($cmd === "all\n" || $cmd === "errors\n"){
+            }else if($cmd === "all\n"){
                 $read = uart_read_eof($uart,array("\r"));
+            }else if($cmd === "errors\n"){
+                $read = uart_read_eof($uart,array("\r"));
+                //(blocking UART) cheat a little, get last error and loop until found
+                $errorcodes = array("NONE", "OVERCURRENT", "THROTTLE1", "THROTTLE2", "CANTIMEOUT", "EMCYSTOP", "MPROT", "DESAT", "OVERVOLTAGE", "ENCODER", "PRECHARGE", "TMPHSMAX", "CURRENTLIMIT", "PWMSTUCK", "HICUROFS1", "HICUROFS2", "HIRESOFS", "LORESAMP");
+                $cmd = "get lasterr\n";
+                fwrite($uart, $cmd);
+                uart_read_echo($uart,$cmd); //echo
+                $lasterr = uart_read_eof($uart,array("\r"));
+                if($lasterr > 0) {
+                    $lasterrcode = $errorcodes[intval($lasterr)];
+                    $cmd = "errors\n";
+                    fwrite($uart, $cmd);
+                    uart_read_echo($uart,$cmd); //echo
+                    $read = uart_read_eof($uart,array($lasterrcode. "\r"));
+                }
             }else if($cmd === "save\n"){
                 $read = uart_read_line($uart); //fgets($uart); //CRC
                 $read .= uart_read_line($uart); //fgets($uart); //CAN
