@@ -7,13 +7,13 @@ function Elevate() {
 
     # Check to see if we are currently running "as Administrator"
     if (!$myWindowsPrincipal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)){
-        Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -File ""$PSCommandPath""" -verb runas
+        Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -File ""$PSCommandPath"" $args" -verb runas
         exit
     }
 }
 
 if($args[0] -eq "uninstall") {
-	Elevate
+	Elevate $args[0]
 	Remove-Item -Recurse -Force (Split-Path ($openocd) -Parent)
 }else{
     if (-Not (Test-Path $openocd)){

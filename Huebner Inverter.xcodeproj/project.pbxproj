@@ -26,6 +26,7 @@
 		32EBDE5D1D6ADB6A00CF5BEC /* source in Resources */ = {isa = PBXBuildFile; fileRef = 32EBDE5C1D6ADB6A00CF5BEC /* source */; };
 		32F25DD11CF2499F00494B1C /* kext in Resources */ = {isa = PBXBuildFile; fileRef = 32F25DD01CF2499F00494B1C /* kext */; };
 		32F25DD31CF24A2600494B1C /* driver in Resources */ = {isa = PBXBuildFile; fileRef = 32F25DD21CF24A2600494B1C /* driver */; };
+		32FD004D22E7E8CA00D11242 /* dfu in Resources */ = {isa = PBXBuildFile; fileRef = 32FD004C22E7E8CA00D11242 /* dfu */; };
 		32FFA9FC1D18D6FB00E5BBF0 /* openocd in Resources */ = {isa = PBXBuildFile; fileRef = 32FFA9FB1D18D6FB00E5BBF0 /* openocd */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +52,7 @@
 		32EBDE5C1D6ADB6A00CF5BEC /* source */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = source; path = macOS/Resources/source; sourceTree = "<group>"; };
 		32F25DD01CF2499F00494B1C /* kext */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kext; path = macOS/Resources/kext; sourceTree = "<group>"; };
 		32F25DD21CF24A2600494B1C /* driver */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = driver; path = macOS/Resources/driver; sourceTree = "<group>"; };
+		32FD004C22E7E8CA00D11242 /* dfu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = dfu; path = macOS/Resources/dfu; sourceTree = "<group>"; };
 		32FFA9FB1D18D6FB00E5BBF0 /* openocd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = openocd; path = macOS/Resources/openocd; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -101,6 +103,7 @@
 				32DE5F901CF0D03000113FCF /* Web */,
 				3235CA8C219BA856009022D0 /* minicom */,
 				328002001D6AAA4A001C5E4E /* run */,
+				32FD004C22E7E8CA00D11242 /* dfu */,
 				32F25DD21CF24A2600494B1C /* driver */,
 				324C22E71CF429E7003A1AF5 /* eagle */,
 				32D281EF1CF00EF200606B12 /* inkscape */,
@@ -187,6 +190,7 @@
 				32724CE821E1DD7200127D21 /* avr in Resources */,
 				32D5A3431D6AD27C008F9EFB /* arm in Resources */,
 				32724CEA21E1DD9D00127D21 /* arduino in Resources */,
+				32FD004D22E7E8CA00D11242 /* dfu in Resources */,
 				32724CEC21E1DDA800127D21 /* cantact in Resources */,
 				32D281B91CF0066F00606B12 /* Main.storyboard in Resources */,
 				325B6C851DBBE3EC00421596 /* fuse in Resources */,

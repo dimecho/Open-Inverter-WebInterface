@@ -1,4 +1,4 @@
-$cantact = "$env:programfiles\cantact"
+$cangaroo = "$env:programfiles\cangaroo"
 
 function Elevate() {
     # Get the ID and security principal of the current user account
@@ -14,13 +14,14 @@ function Elevate() {
 
 if($args[0] -eq "uninstall") {
 	Elevate $args[0]
-	Remove-Item -Recurse -Force $cantact
+	Remove-Item -Recurse -Force $cangaroo
 }else{
-    if (-Not (Test-Path $cantact)){
+    if (-Not (Test-Path $cangaroo)){
 		Elevate
 		Add-Type -AssemblyName System.IO.Compression.FileSystem
-		[System.IO.Compression.ZipFile]::ExtractToDirectory("$env:userprofile\Downloads\cantact-v0.3.0-alpha.zip", "$env:programfiles")
+		[System.IO.Compression.ZipFile]::ExtractToDirectory("$env:userprofile\Downloads\cangaroo-win32-0363ce7.zip", "$env:programfiles")
+        Rename-Item "$env:programfiles\dist" $cangaroo
 	}
 	
-	Start-Process "$cantact\bin\cantact64.exe"
+    Start-Process "$cangaroo\cangaroo.exe"
 }

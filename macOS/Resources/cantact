@@ -1,6 +1,10 @@
 #!/bin/sh
 if [ "$1" = "uninstall" ] ; then
-    osascript -e "do shell script \"rm -rf /Applications/cantact;\" with administrator privileges"
+    rm -rf /Applications/cantact;
 else
-	tar xzfv ~/Downloads/cantact-v0.3.0-alpha.zip -C /Applications
+    if [ ! -d /Applications/cantact ]; then
+        tar xzfv ~/Downloads/cantact-v0.3.0-alpha.zip -C /Applications
+    else
+        /Applications/cantact/bin/cantact
+    fi
 fi

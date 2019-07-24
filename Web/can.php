@@ -31,14 +31,13 @@
 								</select>
 							</div>
 							<div class="col col-md-4 text-center" id="can-image">
-								<img src="" class="rounded" />
+								<img src="" class="rounded pop" />
                             </div>
                         </div>
                         <div class="row"><hr></div>
                         <div class="row">
-                            <div class="col" id="open-cantact">
-                                <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('cantact'))"><i class="icons icon-list"></i> Open CANtact App</button>
-                            </div>
+                            <div class="col" id="can-app"></div>
+                            <div class="col" id="can-firmware"></div>
                             <div class="col">
                                 <button type="button" class="btn btn-danger" onClick="setCANDefaults()"><i class="icons icon-reset"></i> Reset CAN</button>
                             </div>

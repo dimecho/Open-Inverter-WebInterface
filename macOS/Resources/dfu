@@ -1,0 +1,12 @@
+#!/bin/sh
+if [ "$1" = "uninstall" ] ; then
+    brew uninstall dfu-util
+else
+    dfu_path="/usr/local/Cellar/dfu-util/0.9/bin/dfu-util"
+    
+    if [ ! -f $dfu_path ]; then
+        brew install dfu-util
+    fi
+    cd "$(dirname "$0")"
+    osascript -e "do shell script \"$dfu_path -d 0483:df11 -D Web/firmware/can/$1.dfu\" with administrator privileges"
+fi

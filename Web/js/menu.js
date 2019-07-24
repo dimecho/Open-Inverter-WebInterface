@@ -214,10 +214,10 @@ function isFloat(n){
     return Number(n) === n && n % 1 !== 0;
 };
 
-function checkSoftware(app){
+function checkSoftware(app,args){
 
     var result;
-    $.ajax("install.php?check=" + app, {
+    $.ajax("install.php?check=" + app + "&args=" + args, {
         async: false,
         success: function success(data) {
             console.log(data);
@@ -418,7 +418,7 @@ function uploadSnapshot() {
     $('.fileUpload').trigger('click');
 };
 
-function openExternalApp(app) {
+function openExternalApp(app,args) {
 
     //console.log(app);
     
@@ -429,7 +429,15 @@ function openExternalApp(app) {
     } else if (app === "avr") {
         window.location.href = "attiny.php";
     } else {
-        $.ajax("open.php?app=" + app);
+        data = "";
+        $.ajax("open.php?app=" + app + "&args=" + args, {
+            async: false,
+            success: function success(d) {
+                //console.log(d);
+                data = d;
+            }
+        });
+        return data;
     }
 };
 

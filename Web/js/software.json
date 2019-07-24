@@ -234,7 +234,7 @@
             "windows" : "https://pcb.designspark.info/DesignSparkPCB_v8.1.2.exe",
             "linux" : "https://pcb.designspark.info/DesignSparkPCB_v8.1.2.exe",
             "size" : 65,
-            "version" : "8.1.1"
+            "version" : "8.1.2"
         },
         "checksum" : {
             "mac" : "c6a6b952be6843a8f3dc0ab97b29bd70",
@@ -252,18 +252,58 @@
         "download" : {
             "mac" : "https://github.com/linklayer/cantact-app/releases/download/v0.3.0-alpha/cantact-v0.3.0-alpha.zip",
             "windows" : "https://github.com/linklayer/cantact-app/releases/download/v0.3.0-alpha/cantact-v0.3.0-alpha.zip",
-            "linux" : "",
+            "linux" : "https://github.com/linklayer/cantact-app/releases/download/v0.3.0-alpha/cantact-v0.3.0-alpha.zip",
             "size" : 15,
             "version" : "0.3.0"
         },
 		"checksum" : {
             "mac" : "c8855450f0287527599d73ca8836d44b",
             "windows" : "c8855450f0287527599d73ca8836d44b",
-            "linux" : ""
+            "linux" : "c8855450f0287527599d73ca8836d44b"
         },
         "path" : {
             "mac" : "/Applications/cantact/bin/cantact",
             "windows" : "C:\\Program Files\\cantact\\bin\\cantact64.exe",
+            "linux" : "sh -c cantact"
+        }
+    },
+    "cangaroo" : {
+        "title" : "cangaroo - Open Source Can Bus Analyzer",
+        "download" : {
+            "mac" : "",
+            "windows" : "https://canable.io/utilities/cangaroo-win32-0363ce7.zip",
+            "linux" : "",
+            "size" : 190,
+            "version" : "0.2.2"
+        },
+        "checksum" : {
+            "mac" : "",
+            "windows" : "3b7e04ad52cb591ec68657676705c009",
+            "linux" : ""
+        },
+        "path" : {
+            "mac" : "",
+            "windows" : "C:\\Program Files\\cangaroo\\cangaroo.exe",
+            "linux" : ""
+        }
+    },
+    "dfu" : {
+        "title" : "DFU Utility - USB Device Firmware Upgrade",
+        "download" : {
+            "mac" : "",
+            "windows" : "https://www.connectsystems.com/software/CSBFD/en.stsw-stm32080.zip",
+            "linux" : "",
+            "size" : 18,
+            "version" : "3.0.6"
+        },
+        "checksum" : {
+            "mac" : "",
+            "windows" : "712eb2ed0de6ffd231ab88e0ec67ff56",
+            "linux" : ""
+        },
+        "path" : {
+            "mac" : "/usr/local/Cellar/dfu-util/0.9/bin/dfu-util",
+            "windows" : "C:\\Program Files (x86)\\STMicroelectronics\\Software\\DfuSe v3.0.6\\Bin\\DfuSeDemo.exe",
             "linux" : ""
         }
     },

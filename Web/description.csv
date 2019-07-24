@@ -93,7 +93,7 @@ udcswbuck,Precharge voltage in buck mode
 encmode,"Single=Async Motor, AB=Async Motor, ABZ=Sync Motor, SPI=Talk to AD2S chip via SPI ""Deprecated"" (Sync motor), Resolver=Needs ON state on pin PD2 and expects sin/cos signal on PA6/PA7 (Sync Motor)"
 iftlrise,"Dampens the response of over current limiting. The higher the value, the slower the reponse."
 iftlfall,"Dampens how quickly the amplitude is decreased once it overshoots iacmax*80%, ifltrise dampens the recovery."
-pinswap,"1=Currents12, 2=ResolverSinCos, 4=PWMOutput12"
+pinswap,"1=Currents 1 and 2 (FOC only), 2=Resolver Sin/Cos, 4=PWM Output 1 and 2"
 angle,Motor rotor angle
 turns,Full rotor turns
 canspeed,Baud rate of CAN interface 0=250k, 1=500k, 2=800k, 3=1M

@@ -26,7 +26,7 @@ session_start();
     {
         $uname = strtolower(php_uname('s'));
         if (strpos($uname, "darwin") !== false) {
-            echo "osx";
+            echo "mac";
         }else if (strpos($uname, "win") !== false) {
             echo "windows";
         }else if (strpos(php_uname('m'), "arm") !== false) {

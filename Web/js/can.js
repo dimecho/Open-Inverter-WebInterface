@@ -2,24 +2,33 @@ var json = {};
 
 var can_interface = [
 	"firmware/img/canable.jpg",
-	"firmware/img/usb2can.png",
+    "firmware/img/uccb.jpg",
+    "firmware/img/usb2can.png",
 	"firmware/img/can-mcp2515.jpg"
+];
+
+var can_order = [
+    "https://store.protofusion.org/product/canable",
+    "https://www.tindie.com/products/lll7/can-usb-converter-uccb",
+    "https://github.com/roboterclubaachen/usb2can",
+    "#",
 ];
 
 var can_name = [
 	"CANable",
-	"USB2CAN",
+    "uCCB",
+    "USB2CAN",
 	"MCP2515"
 ];
 
 $(document).ready(function () {
 
     if(os == "esp8266") {
-        $("#open-cantact").remove();
-		$("#can-interface").append($("<option>",{value:can_interface[2]}).append("CAN over ESP8266 with MCP2515"));
+        //$("#open-can-app").remove();
+		$("#can-interface").append($("<option>",{value:can_interface.length}).append("CAN over ESP8266 with MCP2515"));
     }else{
-    	for (var i = 0; i < can_interface.length; i++) {
-    		$("#can-interface").append($("<option>",{value:can_interface[i]}).append(can_name[i]));
+    	for (var i = 0; i < can_interface.length-1; i++) {
+    		$("#can-interface").append($("<option>",{value:i}).append(can_name[i]));
     	}
         setCANImage();
     }
@@ -43,7 +52,65 @@ $(document).ready(function () {
 });
 
 function setCANImage() {
-	$("#can-image img").attr("src", $("#can-interface").val());
+
+    var img = $("#can-image img");
+    var v = $("#can-interface").val();
+
+	img.attr("src", can_interface[v]);
+    img.attr("data-toggle", "popover");
+    img.attr("data-placement", "left");
+    img.attr("data-content", "<a href='" + can_order[v] + "' target=_blank>Order Here</a>");
+
+    $(".pop").popover({ trigger: "manual" , html: true, animation:false})
+        .on("mouseenter", function () {
+            var _this = this;
+            $(this).popover("show");
+            $(".popover").on("mouseleave", function () {
+                $(_this).popover('hide');
+            });
+        }).on("mouseleave", function () {
+            var _this = this;
+            setTimeout(function () {
+                if (!$(".popover:hover").length) {
+                    $(_this).popover("hide");
+                }
+        }, 300);
+    });
+
+    if(os != "esp8266") {
+        var can_app = "Cantact";
+	    var can_app_button = $("<button>", {class:"btn btn-primary"}).append($("<i>", {class:"icons icon-list"}));
+        var can_firmware_button = $("<button>", {class:"btn btn-warning"}).append($("<i>", {class:"icons icon-chip"}));
+
+	    if(can_name[v] == "USB2CAN") {
+            can_app = "Cangaroo";
+	    }
+
+        can_app_button.attr("onClick", "eval(checkSoftware('" + can_app.toLowerCase() + "'))");
+        can_app_button.append(" Open " + can_app + " App");
+
+		$("#can-app").empty().append(can_app_button);
+
+        if(os != "mobile") {
+            can_firmware_button.append(" Update Firmware");
+            $("#can-firmware").empty().append(can_firmware_button);
+
+            can_firmware_button.click(function()
+            {
+                callback = eval(checkSoftware('dfu',can_name[v].toLowerCase()));
+                console.log(callback);
+
+                if(os == "mac" && callback.indexOf("User canceled") != -1) {
+                    $.notify({ message: "macOS requires privilege escalation" }, { type: "danger" });
+                }else if(callback.indexOf("No DFU") != -1) {
+                    $.notify({ message: "No DFU capable USB device available" }, { type: "danger" });
+                    $.notify({ message: "Set BOOT jumper and plug-in USB device" }, { type: "warning" });
+                }else{
+                    $.notify({ message: callback }, { type: "success" });
+                }
+            });
+        }
+	}
 };
 
 function setCANSpeed() {
@@ -59,7 +126,7 @@ function setCANPeriod() {
 };
 
 function canbitLimit(value) {
-    if(parseInt(value) >= 1000) {
+    if(parseInt(value) >= 256) {
         $.notify({ message: "Max 16-bit = 03 E7, will split into byte-wise" }, { type: "warning" });
     }
 };

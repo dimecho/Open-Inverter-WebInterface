@@ -12,7 +12,12 @@ session_start();
 
     if(isset($_GET["app"]))
     {
-        $command = "echo";
+        $command = "";
+        $args = "";
+
+        if($_GET["args"]) {
+            $args = $_GET["args"];
+        }
         
         if($_GET["app"] == "inkscape")
         {
@@ -45,14 +50,6 @@ session_start();
             }else if ($os === "linux") {
                 $command = "\"arduino '" .$args. "'\"";
             }
-        }else if($_GET["app"] == "cantact") {
-            if ($os === "mac") {
-                $command = "/Applications/cantact/bin/cantact";
-            }else if ($os === "windows") {
-                $command = "C:\\Program Files\\cantact\\bin\\cantact64.exe";
-            }else if ($os === "linux") {
-                $command = "sh -c \"cantact\"";
-            }
         }else if($_GET["app"] == "eagle") {
             if ($os === "mac") {
                 $command = "open \"" .$_SERVER["DOCUMENT_ROOT"]. "/pcb\"";
@@ -61,17 +58,24 @@ session_start();
             }else if ($os === "linux") {
                 $command = "sh -c \"xdg-open '" .$_SERVER["DOCUMENT_ROOT"]. "/pcb'\"";
             }
+        //}else if($_GET["app"] == "dfu" && $os === "windows") {
+            //$command = "powershell.exe -ExecutionPolicy Bypass -Command \"Start-Process '" .$software[$_GET["app"]]["path"][$os]. "' -ArgumentList '-c -d --v --fn " .$_SERVER["DOCUMENT_ROOT"]. "\\firmware\\can\\" .$args. ".dfu'\"";
+            //$command = runCommand($_GET["app"],$args,$os,1);
 		}else{
-            $command = runCommand($_GET["app"],"",$os,0);
+        	$command = runCommand($_GET["app"],$args,$os,0);
         }
         
-		echo $command;
+        $output = shell_exec($command);
+
+        echo $output;
+
+        //echo $command;
 		
-        exec($command,$op);
+        //exec($command,$output);
         
         //Timeout
         //exec("timeout ". $timeout_in_sec. "s ". $cmd);
-        //$pid = (int)$op[0];
+        //$pid = (int)$output[0];
         //echo $pid;
 
 	}else if(isset($_GET["console"])) {

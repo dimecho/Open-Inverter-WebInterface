@@ -20,8 +20,6 @@
     else if(isset($_GET["remove"]))
     {
         exec(runCommand($_GET["remove"],"uninstall",$os,0));
-        
-        //echo runCommand($_GET["remove"],"uninstall",$os,0);
         echo $_GET["remove"];
     }
     else if(isset($_GET["check"]))
@@ -44,6 +42,7 @@
     function checkSoftware($software,$os,$app,$quite)
     {
         $path = $software[$app]["path"][$os];
+        $args = "";
 		
 		if ($os === "windows") {
 			$path = str_replace("~",getenv("USERPROFILE"),$path);
@@ -72,8 +71,10 @@
         }
 
 		if(is_file($path)) {
+            if($_GET["args"])
+                $args = $_GET["args"];
             if(!$quite)
-                echo "openExternalApp('" .$app. "')";
+                echo "openExternalApp('" .$app. "','" . $args . "')";
             return true;
         }else{
             if(!$quite)
