@@ -58,9 +58,6 @@ session_start();
             }else if ($os === "linux") {
                 $command = "sh -c \"xdg-open '" .$_SERVER["DOCUMENT_ROOT"]. "/pcb'\"";
             }
-        //}else if($_GET["app"] == "dfu" && $os === "windows") {
-            //$command = "powershell.exe -ExecutionPolicy Bypass -Command \"Start-Process '" .$software[$_GET["app"]]["path"][$os]. "' -ArgumentList '-c -d --v --fn " .$_SERVER["DOCUMENT_ROOT"]. "\\firmware\\can\\" .$args. ".dfu'\"";
-            //$command = runCommand($_GET["app"],$args,$os,1);
 		}else{
         	$command = runCommand($_GET["app"],$args,$os,0);
         }

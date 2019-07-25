@@ -24,7 +24,6 @@ var can_name = [
 $(document).ready(function () {
 
     if(os == "esp8266") {
-        //$("#open-can-app").remove();
 		$("#can-interface").append($("<option>",{value:can_interface.length}).append("CAN over ESP8266 with MCP2515"));
     }else{
     	for (var i = 0; i < can_interface.length-1; i++) {
@@ -102,11 +101,11 @@ function setCANImage() {
 
                 if(os == "mac" && callback.indexOf("User canceled") != -1) {
                     $.notify({ message: "macOS requires privilege escalation" }, { type: "danger" });
-                }else if(callback.indexOf("No DFU") != -1) {
+                }else if(callback.indexOf("No DFU") != -1 || callback.indexOf("0 Device(s) found") != -1) {
                     $.notify({ message: "No DFU capable USB device available" }, { type: "danger" });
                     $.notify({ message: "Set BOOT jumper and plug-in USB device" }, { type: "warning" });
-                }else{
-                    $.notify({ message: callback }, { type: "success" });
+                }else if (callback != "Download done") {
+                    $.notify({ message: "DFU Firmware Updated"}, { type: "success" });
                 }
             });
         }

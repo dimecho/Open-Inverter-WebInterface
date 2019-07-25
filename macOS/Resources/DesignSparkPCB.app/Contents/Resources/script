@@ -2,9 +2,9 @@
 
 if [ ! -d "/Applications/Wine Staging.app" ]; then
     cd ~/Downloads
-    echo "Downloading Wine 4.0 for Mac ..."
-    curl -k -L -O -C - https://dl.winehq.org/wine-builds/macosx/pool/winehq-staging-4.0-rc3.pkg
-    osascript -e "do shell script \"installer -pkg ~/Downloads/winehq-staging-4.0-rc3.pkg -target /\" with administrator privileges"
+    echo "Downloading Wine 4.12 for Mac ..."
+    curl -k -L -O -C - https://dl.winehq.org/wine-builds/macosx/pool/winehq-staging-4.12.1.pkg
+    osascript -e "do shell script \"installer -pkg ~/Downloads/winehq-staging-4.12.1.pkg -target /\" with administrator privileges"
 fi
 export DISPLAY=:0.0
 export PATH=$PATH:/Applications/Wine\ Staging.app/Contents/Resources/wine/bin/

@@ -78,6 +78,10 @@ for /R "%~dp0\data" %%F in (*.js) do (
 	powershell -ExecutionPolicy Bypass -Command "(Get-Content %%F).replace('pcb/Hardware v3.0/diagrams/', 'pcb/v3.0/') | Set-Content %%F"
 )
 
+for /R "%~dp0\data" %%F in (*.php) do (
+	powershell -ExecutionPolicy Bypass -Command "For ($i=0; $i -le $(Get-content %%F | Measure-Object -Line | Select -ExpandProperty Lines); $i++) {(Get-Content %%F).replace(\"  \", \" \") | Set-Content %%F} ; (Get-Content %%F).replace(\"`t\", \"\").replace(\"`r\", \"\").replace(\"`n \", \"`n\") | Set-Content %%F"
+)
+
 ::====================
 ::Download Compressors
 ::====================

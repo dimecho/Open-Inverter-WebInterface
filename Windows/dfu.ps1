@@ -11,6 +11,12 @@ if($args[0] -eq "uninstall") {
         }
         Start-Process $dfu_install -Wait
 	}else{
-        powershell.exe -ExecutionPolicy Bypass -Command "Start-Process ""$dfu\Bin\DfuSeDemo.exe"" -ArgumentList ""-c -d --v --fn '$PSScriptRoot\..\Web\firmware\can\$($args[0]).dfu'"""
+
+        Start-Job -Name "dfu" -ScriptBlock {
+            Start-Process "$($args[0])\Bin\DfuSeCommand.exe" -ArgumentList "-c -d --v --fn $($args[1])\Web\firmware\can\$($args[2]).dfu" -PassThru #-RedirectStandardOutput "$env:temp\dfu.log"
+        } -ArgumentList $dfu, $(Split-Path $PSScriptRoot -Parent), $args[0] | Wait-Job -Timeout 4 | Out-Null
+
+        #Start-Sleep -Seconds 1
+        #Get-Content -Path "$env:temp\dfu.log"
     }
 }

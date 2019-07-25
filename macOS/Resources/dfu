@@ -8,5 +8,5 @@ else
         brew install dfu-util
     fi
     cd "$(dirname "$0")"
-    osascript -e "do shell script \"$dfu_path -d 0483:df11 -D Web/firmware/can/$1.dfu\" with administrator privileges"
+    osascript -e "do shell script \"$dfu_path -a 0 -d 0483:df11 -D ./Web/firmware/can/$1.dfu\" with administrator privileges"
 fi
