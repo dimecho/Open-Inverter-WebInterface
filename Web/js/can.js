@@ -4,6 +4,7 @@ var can_interface = [
 	"firmware/img/canable.jpg",
     "firmware/img/uccb.jpg",
     "firmware/img/usb2can.png",
+    "firmware/img/usbtincan.jpg",
 	"firmware/img/can-mcp2515.jpg"
 ];
 
@@ -11,6 +12,7 @@ var can_order = [
     "https://store.protofusion.org/product/canable",
     "https://www.tindie.com/products/lll7/can-usb-converter-uccb",
     "https://github.com/roboterclubaachen/usb2can",
+    "https://www.fischl.de/order",
     "#",
 ];
 
@@ -18,7 +20,24 @@ var can_name = [
 	"CANable",
     "uCCB",
     "USB2CAN",
+    "USBtinCAN",
 	"MCP2515"
+];
+
+var can_app = [
+    "Cantact",
+    "Cantact",
+    "Cangaroo",
+    "USBtinViewer",
+    ""
+];
+
+var can_firmware = [
+    "dfu",
+    "dfu",
+    "dfu",
+    "mphidflash",
+    ""
 ];
 
 $(document).ready(function () {
@@ -77,26 +96,25 @@ function setCANImage() {
     });
 
     if(os != "esp8266") {
-        var can_app = "Cantact";
-	    var can_app_button = $("<button>", {class:"btn btn-primary"}).append($("<i>", {class:"icons icon-list"}));
-        var can_firmware_button = $("<button>", {class:"btn btn-warning"}).append($("<i>", {class:"icons icon-chip"}));
 
-	    if(can_name[v] == "USB2CAN") {
-            can_app = "Cangaroo";
-	    }
+        if(can_app[v] != "")
+        {
+            var can_app_button = $("<button>", {class:"btn btn-primary"}).append($("<i>", {class:"icons icon-list"}));
+            can_app_button.attr("onClick", "eval(checkSoftware('" + can_app[v].toLowerCase() + "'))");
+            can_app_button.append(" Open " + can_app[v] + " App");
+            $("#can-app").empty().append(can_app_button);
+        }
 
-        can_app_button.attr("onClick", "eval(checkSoftware('" + can_app.toLowerCase() + "'))");
-        can_app_button.append(" Open " + can_app + " App");
-
-		$("#can-app").empty().append(can_app_button);
-
-        if(os != "mobile") {
+        if(can_firmware[v] != "" && os != "mobile")
+        {
+            var can_firmware_button = $("<button>", {class:"btn btn-warning"}).append($("<i>", {class:"icons icon-chip"}));
             can_firmware_button.append(" Update Firmware");
+
             $("#can-firmware").empty().append(can_firmware_button);
 
             can_firmware_button.click(function()
             {
-                callback = eval(checkSoftware('dfu',can_name[v].toLowerCase()));
+                callback = eval(checkSoftware(can_firmware[v], can_name[v].toLowerCase()));
                 console.log(callback);
 
                 if(os == "mac" && callback.indexOf("User canceled") != -1) {
@@ -104,8 +122,10 @@ function setCANImage() {
                 }else if(callback.indexOf("No DFU") != -1 || callback.indexOf("0 Device(s) found") != -1) {
                     $.notify({ message: "No DFU capable USB device available" }, { type: "danger" });
                     $.notify({ message: "Set BOOT jumper and plug-in USB device" }, { type: "warning" });
-                }else if (callback != "Download done") {
+                }else if (callback.indexOf("Download done") != -1) {
                     $.notify({ message: "DFU Firmware Updated"}, { type: "success" });
+                }else if (callback != "") {
+                    $.notify({ message: callback}, { type: "danger" });
                 }
             });
         }
@@ -162,9 +182,10 @@ function buildCANParameters() {
             if(json[key].cangain)
                 cangain = json[key].cangain;
             
-            var bitsmax = parseInt(json[key].maximum);
-            if (bitsmax == 0) //Try current value
-				bitsmax = json[key].value;
+            var bitsmax = parseInt(json[key].maximum) || 0;
+            if (bitsmax == 0) { //Try current value
+				bitsmax = parseInt(json[key].value);
+			}
 
 			if (bitsmax >= 65536) { //over 16 bit (1111111111111111)
 				canlength = 24;
@@ -317,13 +338,6 @@ function buildCANParameters() {
     }
 
     $(".loader").hide();
-};
-
-function toHex(d) {
-    var n = Number(d).toString(16);
-    if(n.length & 1) //Odd
-        n = "0" + n;
-    return n.toUpperCase();
 };
 
 function saveCANMapping() {

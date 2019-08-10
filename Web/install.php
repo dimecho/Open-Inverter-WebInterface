@@ -9,7 +9,8 @@
 
     if(!isset($_GET["url"]) && isset($_GET["app"]))
     {
-        exec(runCommand($_GET["app"],"",$os,0), $output, $return);
+        $app = $_GET["app"];
+        exec(runCommand($app,$software[$app]["download"]["version"],$os,0), $output, $return);
         
         //echo "$command\n";
         
@@ -19,8 +20,9 @@
     }
     else if(isset($_GET["remove"]))
     {
-        exec(runCommand($_GET["remove"],"uninstall",$os,0));
-        echo $_GET["remove"];
+        $app = $_GET["remove"];
+        exec(runCommand($app,"uninstall " .$software[$app]["download"]["version"],$os,0));
+        echo $app;
     }
     else if(isset($_GET["check"]))
     {
@@ -41,16 +43,10 @@
 
     function checkSoftware($software,$os,$app,$quite)
     {
-        $path = $software[$app]["path"][$os];
         $args = "";
-		
-		if ($os === "windows") {
-			$path = str_replace("~",getenv("USERPROFILE"),$path);
-        }else if ($os === "mac" || $os === "linux") {
-            $path = str_replace("~",getenv("HOME"),$path);
-        }
-		
-        if($app == "arm"){
+        $path = checkHomePath($software[$app]["path"][$os],$os);
+        
+        if($app == "arm") {
             checkARMCompiler($software,$os,$path,false);
 			return false;
         }else if($app == "inkscape") {

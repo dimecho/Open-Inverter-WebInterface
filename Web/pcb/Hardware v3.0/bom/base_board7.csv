@@ -64,8 +64,8 @@ R46,10k,'0603,
 R47,10k,'0603,
 R48,3k3,'0603,
 R49,3k3,'0603,
-R50,4k7,'0603,
-R51,4k7,'0603,
+R50,4k7,'0603,(with MLX91205 do not populate)
+R51,4k7,'0603,(with MLX91205 do not populate)
 R52,10R,'0603,
 C1,10uF,'0805 (Resolver),
 C2,10uF,'0805,

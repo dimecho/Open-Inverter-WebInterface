@@ -27,6 +27,6 @@ R15,500R,1/4W,
 R16,500R,1/4W,
 R17,10k,1/4W,
 L1,10uH,1/4W,https://www.protostack.com.au/download/sp0203.pdf
-TMPHS,JCurve,10k,
+TMPHS,10k (JCurve),NTCALUG02A103G,http://www.vishay.com/docs/29094/ntcalug02a.pdf
 U1*,LEMHTFS/L01Z_S05/L06P800S05,,https://www.tamuracorp.com/clientuploads/pdfs/engineeringdocs/L06PXXXS05.pdf
 U2*,LEMHTFS/L01Z_S05/L06P800S05,,https://www.tamuracorp.com/clientuploads/pdfs/engineeringdocs/L06PXXXS05.pdf

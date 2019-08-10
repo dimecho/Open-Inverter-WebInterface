@@ -128,7 +128,9 @@ function findPort {
         {
             Write-Host "`nMultiple COM detected`n" -ForegroundColor Yellow
             for ($i=0; $i -lt $portArray.Count; $i++) {
-                Write-Host "$($portArray[$i])" -ForegroundColor Green
+                $portName = (Get-WmiObject -query "SELECT * FROM Win32_PnPEntity" | Where {$_.Name -Match $portArray[$i]}).Name
+                $portName = $portName -Replace "\($($portArray[$i])\)",""
+                Write-Host "$($portArray[$i]) $portName" -ForegroundColor Green
             }
             $portCOM = Read-Host -Prompt "`nEnter COM (Example: COM2)"
             ForEach ($item in $portArray) {
@@ -159,7 +161,7 @@ function findPort {
 
 function checkProlificDriver {
 	
-	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "Prolific"}
+	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and ($_.Name -match "Prolific" -or $_.Name -match "USB-Serial") }
 	if ($Driver)
 	{
 		if ([System.Diagnostics.FileVersionInfo]::GetVersionInfo("C:\Windows\System32\drivers\ser2pl64.sys").FileVersion -ne "3.3.2.102")
@@ -210,11 +212,24 @@ function checkLibUSBDriver {
 	}
 }
 
+function checkCANtactDriver {
+    
+    $Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "CANtact" }
+    if ($Driver)
+    {
+        Elevate
+        Write-Host "...Installing Driver"
+        pnputil -a "$($PSScriptRoot)\driver\CANtact\cantact.inf"
+        InfDefaultInstall "$($PSScriptRoot)\driver\CANtact\cantact.inf"
+    }
+}
+
 function checkDrivers {
 
     checkProlificDriver
     checkCP2102Driver
     checkLibUSBDriver
+    checkCANtactDriver
 }
 
 startPHP "index.php"

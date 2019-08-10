@@ -23,7 +23,7 @@
 											<button type="button" class="btn btn-primary" onClick="eval(checkSoftware('avr'))"><i class="icons icon-magic"></i> Install AVR</button>
 										</div>
 										<div class="col">
-											<button type="button" class="btn btn-primary" onClick="window.open('firmware/attiny13.zip')"><i class="icons icon-download"></i> Download ATTiny13 Code</button>
+											<button type="button" class="btn btn-primary" onClick="window.open('pcb/Hardware v1.0/firmware/attiny13/volt-pwm-attiny13.c')"><i class="icons icon-download"></i> Download ATTiny13 Code</button>
 										</div>
 									</div>
                   <br><br>
@@ -64,7 +64,7 @@ int __attribute__((OS_main)) main(void)
                                     </pre>
                                     <center>
                                         Use Raspberry Pi to flash ATTiny13.<br><br>
-                                        <img src="firmware/img/attiny_programmer_pi.png" /><br><br>
+                                        <img src="pcb/Hardware v1.0/diagrams/attiny_programmer_pi.png" /><br><br>
                                     </center>
                                     SSH to Pi and run AVRDude installation.
                                     <pre>
@@ -92,7 +92,7 @@ int __attribute__((OS_main)) main(void)
                                     </pre>
                                     Flash firmware.
                                     <pre>
-<code>sudo avrdude -p t13 -c linuxgpio -U flash:w:volt-pwm-attiny13.bin</code>
+<code>sudo avrdude -p t13 -c linuxgpio -U flash:w:volt-pwm-attiny13.hex:i</code>
                                     </pre>
                                     Backup firmware.
                                     <pre>

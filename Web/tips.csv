@@ -25,3 +25,5 @@ Firmware,fslipspnt and ampnom values are not stored and go back to their default
 Combi-Board,Combi-Board remove R21 for better performance.
 Hardware v3,Current boards with MLX91205 hall sensor do not populate R50 and R51.
 Hardware,Never scope both low side and high side IGBTs at the same time unless you are using differential probes.
+Hardware v3,If the encoder (AB quadrature) has a push-pull output you need to do nothing at all. Leave JP2.2 and JP2.4 unconnected and find power for the encoder somewhere else. If the encoder is open-collector you need to populate R17 and R18. ABZ and single channel it's a bit more changes check schematics.
+Hardware v3,To find syncofs you set throtid=1, throtiq=0.05. Now find a syncofs where the motor won't move at all, even at full throttle. Careful, the motor can spin up uncontrolled! Disabling regen helps.

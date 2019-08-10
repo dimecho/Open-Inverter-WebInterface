@@ -12,14 +12,17 @@ session_start();
 
     if(isset($_GET["app"]))
     {
+        $app = "";
         $command = "";
         $args = "";
 
-        if($_GET["args"]) {
-            $args = $_GET["args"];
-        }
-        
-        if($_GET["app"] == "inkscape")
+        if($_GET["app"])
+            $app = $_GET["app"];
+
+        if($_GET["args"])
+            $args = " " .$_GET["args"];
+
+        if($app == "inkscape")
         {
     		$args = " --verb dgkelectronics.com.encoder.disk.generator";
             if ($os === "mac") {
@@ -30,18 +33,18 @@ session_start();
             }else if ($os === "linux") {
                 $command = "sh -c \"inkscape" .$args. "\"";
             }
-        }else if($_GET["app"] == "gcc") {
+        }else if($app == "gcc") {
             header("Location:sourcecode.php");
 
-        }else if($_GET["app"] == "openocd" || $_GET["app"] == "bootloader") {
+        }else if($app == "openocd" || $app == "bootloader") {
             $command = runCommand("openocd","",$os,0);
             header("Location:bootloader.php");
 
-        }else if($_GET["app"] == "source") {
+        }else if($app == "source") {
             //$command = runCommand("source","",$os,1);
             header("Location:sourcecode.php");
 
-        }else if($_GET["app"] == "arduino") {
+        }else if($app == "arduino") {
             $args = $_SERVER["DOCUMENT_ROOT"]. "/dashboard/arduino/lcd_display/lcd_display.ino";
             if ($os === "mac") {
                 $command = "/Applications/Arduino.app/Contents/MacOS/Arduino \"" .$args. "\" > /dev/null 2>&1 &";
@@ -50,7 +53,7 @@ session_start();
             }else if ($os === "linux") {
                 $command = "\"arduino '" .$args. "'\"";
             }
-        }else if($_GET["app"] == "eagle") {
+        }else if($app == "eagle") {
             if ($os === "mac") {
                 $command = "open \"" .$_SERVER["DOCUMENT_ROOT"]. "/pcb\"";
             }else if ($os === "windows") {
@@ -59,7 +62,7 @@ session_start();
                 $command = "sh -c \"xdg-open '" .$_SERVER["DOCUMENT_ROOT"]. "/pcb'\"";
             }
 		}else{
-        	$command = runCommand($_GET["app"],$args,$os,0);
+        	$command = runCommand($app,$software[$app]["download"]["version"].$args,$os,0);
         }
         
         $output = shell_exec($command);

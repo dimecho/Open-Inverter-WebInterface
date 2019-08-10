@@ -89,4 +89,14 @@
         }
         return "echo";
     }
+
+    function checkHomePath($path,$os)
+    {
+        if ($os === "windows") {
+            $path = str_replace("~",getenv("USERPROFILE"),$path);
+        }else if ($os === "mac" || $os === "linux") {
+            $path = str_replace("~",getenv("HOME"),$path);
+        }
+        return $path;
+    }
 ?>

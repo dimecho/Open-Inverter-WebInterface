@@ -845,6 +845,13 @@ function buildStatus() {
     });
 };
 
+function toHex(d) {
+    var n = Number(d).toString(16);
+    if(n.length & 1) //Odd
+        n = "0" + n;
+    return n.toUpperCase();
+};
+
 function deleteCookie(name, path, domain) {
 
   if(getCookie(name)) {

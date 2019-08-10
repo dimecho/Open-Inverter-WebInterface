@@ -114,7 +114,7 @@
             "windows" : "https://www.python.org/ftp/python/3.7.2/python-3.7.2-amd64.exe",
             "linux" : "",
             "size" : 26,
-            "version" : ""
+            "version" : "3.7.2"
         },
 		"checksum" : {
             "mac" : "",
@@ -130,15 +130,15 @@
     "openscad" : {
         "title" : "OpenSCAD - 3D CAD",
         "download" : {
-            "mac" : "https://files.openscad.org/snapshots/OpenSCAD-2019.01-RC4.dmg",
+            "mac" : "https://files.openscad.org/snapshots/OpenSCAD-2019.03.03.dmg",
             "windows" : "https://files.openscad.org/snapshots/OpenSCAD-2019.01-RC4-x86-64-Installer.exe",
             "linux" : "",
             "size" : 25,
-            "version" : "2019"
+            "version" : "2019.01-RC4"
         },
 		"checksum" : {
-            "mac" : "bcbb12314f6bf2ccc43400281d09c1be",
-            "windows" : "",
+            "mac" : "7ba501f10b596f5608c3c5894c378844",
+            "windows" : "f713143440fec886474adb1ee626724b",
             "linux" : ""
         },
         "path" : {
@@ -178,7 +178,7 @@
         },
 		"checksum" : {
             "mac" : "988356079905f1d1c3945c366e4d3812",
-            "windows" : "",
+            "windows" : "5948bfab2f26e622e9b87472a5546bb7",
             "linux" : ""
         },
         "path" : {
@@ -210,21 +210,21 @@
     "eagle" : {
         "title" : "AutoCAD Eagle - PCB Design Software",
         "download" : {
-            "mac" : "https://eagle-updates.circuits.io/downloads/9_3_2/Autodesk_EAGLE_9.3.2_English_Mac_64bit.pkg",
-            "windows" : "https://eagle-updates.circuits.io/downloads/9_3_2/Autodesk_EAGLE_9.3.2_English_Win_64bit.exe",
-            "linux" : "https://eagle-updates.circuits.io/downloads/9_3_2/Autodesk_EAGLE_9.3.2_English_Linux_64bit.tar.gz",
+            "mac" : "https://eagle-updates.circuits.io/downloads/9_4_2/Autodesk_EAGLE_9.4.2_English_Mac_64bit.pkg",
+            "windows" : "https://eagle-updates.circuits.io/downloads/9_4_2/Autodesk_EAGLE_9.4.2_English_Win_64bit.exe",
+            "linux" : "https://eagle-updates.circuits.io/downloads/9_4_2/Autodesk_EAGLE_9.4.2_English_Linux_64bit.tar.gz",
             "size" : 160,
-            "version" : "9.3.2"
+            "version" : "9.4.2"
         },
 		"checksum" : {
             "mac" : "",
-            "windows" : "",
+            "windows" : "513f58898f6feae26a891518f305dec7",
             "linux" : ""
         },
         "path" : {
-            "mac" : "/Applications/EAGLE-9.3.2/Eagle.app/Contents/MacOS/Eagle",
-            "windows" : "C:\\EAGLE 9.3.2\\eagle.exe",
-            "linux" : "/opt/Autodesk/eagle-9.3.2/eagle"
+            "mac" : "/Applications/EAGLE-9.4.2/Eagle.app/Contents/MacOS/Eagle",
+            "windows" : "C:\\EAGLE 9.4.2\\eagle.exe",
+            "linux" : "/opt/Autodesk/eagle-9.4.2/eagle"
         }
     },
     "designsparkpcb" : {
@@ -264,7 +264,7 @@
         "path" : {
             "mac" : "/Applications/cantact/bin/cantact",
             "windows" : "C:\\Program Files\\cantact\\bin\\cantact64.exe",
-            "linux" : "sh -c cantact"
+            "linux" : "/usr/share/applications/cantact.desktop"
         }
     },
     "cangaroo" : {
@@ -287,6 +287,26 @@
             "linux" : ""
         }
     },
+    "usbtinviewer" : {
+        "title" : "USBtinViewer - Simple GUI for USBtin",
+        "download" : {
+            "mac" : "https://www.fischl.de/usbtin/downloads/USBtinViewer_v1.3.jar",
+            "windows" : "https://www.fischl.de/usbtin/downloads/USBtinViewer_v1.3.jar",
+            "linux" : "https://www.fischl.de/usbtin/downloads/USBtinViewer_v1.3.jar",
+            "size" : 0.2,
+            "version" : "1.3"
+        },
+        "checksum" : {
+            "mac" : "7f1b7cde801094ca0d579758f99c1dfa",
+            "windows" : "7f1b7cde801094ca0d579758f99c1dfa",
+            "linux" : "7f1b7cde801094ca0d579758f99c1dfa"
+        },
+        "path" : {
+            "mac" : "~/Downloads/USBtinViewer_v1.3.jar",
+            "windows" : "~/Downloads/USBtinViewer_v1.3.jar",
+            "linux" : "~/Downloads/USBtinViewer_v1.3.jar"
+        }
+    },
     "dfu" : {
         "title" : "DFU Utility - USB Device Firmware Upgrade",
         "download" : {
@@ -305,6 +325,26 @@
             "mac" : "/usr/local/Cellar/dfu-util/0.9/bin/dfu-util",
             "windows" : "C:\\Program Files (x86)\\STMicroelectronics\\Software\\DfuSe v3.0.6\\Bin\\DfuSeDemo.exe",
             "linux" : ""
+        }
+    },
+    "mphidflash" : {
+        "title" : "mphidflash - Client for Microchip USB HID Bootloader",
+        "download" : {
+            "mac" : "https://github.com/jebr224/USBtin/raw/master/firmware/util/mphidflash-1.6-osx-64",
+            "windows" : "https://github.com/jebr224/USBtin/raw/master/firmware/util/mphidflash-1.6-win-32.exe",
+            "linux" : "https://github.com/jebr224/USBtin/raw/master/firmware/util/mphidflash-1.6-linux-64",
+            "size" : 0.1,
+            "version" : "1.6"
+        },
+        "checksum" : {
+            "mac" : "773eb8f9aa6b34222c4eb1b6dd1fb9be",
+            "windows" : "8023aa895af602e06e1d86e69eec558a",
+            "linux" : ""
+        },
+        "path" : {
+            "mac" : "~/Downloads/mphidflash-1.6-osx-64",
+            "windows" : "~/Downloads/mphidflash-1.6-win-32.exe",
+            "linux" : "~/Downloads/mphidflash-1.6-linux-64"
         }
     },
     "source" : {

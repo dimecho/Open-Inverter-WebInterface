@@ -1,12 +1,21 @@
 {
     "motors": [{
+        "model": "Leaf Gen2",
+        "manufacturer": "Nissan",
+        "voltage": 400,
+        "amperage": 125,
+        "image": "img/Nissan-Leaf.jpg",
+        "tune": [{
+            "file": "Leaf_Gen2_FOC.json"
+        }]
+    },{
         "model": "AC-35",
         "manufacturer": "HPEVS",
         "voltage": 72,
         "amperage": 500,
         "image": "img/AC-35.jpg",
         "tune": [{
-            "file": "AC-35.txt"
+            "file": "AC-35.json"
         }]
     },{
         "model": "Ansaldo",
@@ -15,7 +24,7 @@
         "amperage": 100,
         "image": "img/Ansaldo.jpg",
         "tune": [{
-            "file": "Ansaldo.txt"
+            "file": "Ansaldo.json"
         }]
     },{
         "model": "P90",
@@ -24,7 +33,7 @@
         "amperage": 250,
         "image": "img/Enova_P90.jpg",
         "tune": [{
-            "file": "Enova_P90.txt"
+            "file": "Enova_P90.json"
         }]
     },{
         "model": "ZPM112M4",
@@ -33,7 +42,7 @@
         "amperage": 500,
         "image": "img/Stoja_ZPM112M4.jpg",
         "tune": [{
-            "file": "Stoja_ZPM112M4.txt"
+            "file": "Stoja_ZPM112M4.json"
         }]
     },{
         "model": "1PV5135",
@@ -42,9 +51,9 @@
         "amperage": 400,
         "image": "img/Siemens_1PV5135.jpg",
         "tune": [{
-            "file": "Siemens_1PV5135_hv1.txt"
+            "file": "Siemens_1PV5135_hv1.json"
         },{
-            "file": "Siemens_1PV5135_lv1.txt"
+            "file": "Siemens_1PV5135_lv1.json"
         }]
     },{
         "model": "BY152FGF2A4",
@@ -53,7 +62,7 @@
         "amperage": 3,
         "image": "img/Toshiba_BY152FGF2A4.jpg",
         "tune": [{
-            "file": "Toshiba_BY152FGF2A4.txt"
+            "file": "Toshiba_BY152FGF2A4.json"
         }]
     },{
         "model": "Model S (Front)",
@@ -62,9 +71,9 @@
         "amperage": 300,
         "image": "img/Tesla_FDU.jpg",
         "tune": [{
-            "file": "Tesla_FDU_hv3.txt"
+            "file": "Tesla_FDU_hv3.json"
         },{
-            "file": "Tesla_FDU_lv1.txt"
+            "file": "Tesla_FDU_lv1.json"
         }]
     },{
         "model": "Model S (Rear)",
@@ -73,9 +82,9 @@
         "amperage": 300,
         "image": "img/Tesla_RDU.jpg",
         "tune": [{
-            "file": "Tesla_RDU_hv1.txt"
+            "file": "Tesla_RDU_hv1.json"
         },{
-            "file": "Tesla_RDU_lv1.txt"
+            "file": "Tesla_RDU_lv1.json"
         }]
     }]
 }

@@ -2,8 +2,12 @@
 if [ "$1" = "uninstall" ] ; then
     brew uninstall dfu-util
 else
-    dfu_path="/usr/local/Cellar/dfu-util/0.9/bin/dfu-util"
-    
+	if [ ! -f "/usr/local/bin/brew" ]; then
+		/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    fi
+
+ 	dfu_path="/usr/local/Cellar/dfu-util/0.9/bin/dfu-util"
+
     if [ ! -f $dfu_path ]; then
         brew install dfu-util
     fi

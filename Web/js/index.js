@@ -26,7 +26,7 @@ $(document).ready(function () {
 			timeout: 2400,
             success: function(data) {
                 console.log(data);
-                if(data.indexOf("Error") != -1)
+                if(data.toUpperCase().indexOf("ERROR") != -1)
                 {
                     $("#com").show();
                     //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
@@ -47,11 +47,30 @@ $(document).ready(function () {
                                 closeEffect : 'none'
                             });
                             var s = data.split('\n');
-                            for (var i = 0; i < s.length; i++) {
-                                if(s[i] != "")
-                                    $("#serial-interface").append($("<option>",{value:s[i]}).append(s[i]));
+                            if(s.length == 2) {
+                                $.notify({ message: "Try swapping TX <-> RX" }, { type: "warning" });
+                            }else if(s.length > 1) {
+                                for (var i = 0; i < s.length; i++) {
+                                    if(s[i] != "")
+                                        $("#serial-interface").append($("<option>",{value:s[i]}).append(s[i]));
+                                }
+                                $(".serial").trigger('click');
+                            }else if (os === "mac") {
+                                $(".macdrivers").fancybox({
+                                    maxWidth    : 800,
+                                    maxHeight   : 640,
+                                    fitToView   : false,
+                                    width       : '80%',
+                                    height      : '80%',
+                                    autoSize    : false,
+                                    closeClick  : false,
+                                    openEffect  : 'none',
+                                    closeEffect : 'none'
+                                });
+                                $(".macdrivers").trigger('click');
+                            }else{
+                                $.notify({ message: "Serial not found" }, { type: "danger" });
                             }
-                            $(".serial").trigger('click');
                         }
                     });
                 }else if(data.indexOf("2D") != -1) {
@@ -128,6 +147,66 @@ function basicChecks(json)
     }
 };
 
+function syncofsCalculator()
+{
+    var div = $("<div>",{class:"container"});
+    var row = $("<div>",{class:"row"});
+    var col2 = $("<div>",{class:"col"});
+
+    var p = $("<p>").append("Nissan Leaf Resolver Offsets");
+    var input1 = $("<input>",{ class:"form-control my-3", type:"text"});
+    var input2 = $("<input>",{ class:"form-control my-3", type:"text"});
+    var input3 = $("<input>",{ class:"form-control my-3", type:"text", disabled:true});
+    var btn = $("<button>",{ class:"btn btn-primary", type:"button"});
+
+    if(os != "esp8266" && os != "mobile")
+    {
+        var img = $("<img>",{ class:"img-thumbnail rounded", src:"img/leaf-resolver-offsets.jpg"});
+        var col1 = $("<div>",{class:"col", align:"center"});
+        col1.append(img);
+        row.append(col1);
+    }
+
+    col2.append(p).append(input1).append(input2).append(input3);
+    col2.append(btn.append("Save"));
+    div.append(row.append(col2));
+
+    input1.on("input",function(e) {
+        var value = $(this).val();
+        var hex = parseInt("0x" + value.substring(0, 2));
+
+        var a = ((hex + 0x80) * 2 % 256) * 256; //((hex - 0x80) * 2) / 256 * 65536;
+        a = Math.round(a / 1000) * 1000;
+        
+        var b = a * 360 / 65536;
+        b = 360/Math.floor(360 / b); //degree round
+        b = Math.round(b * 10) / 10; //digit round
+        b = Math.ceil(b * 20) / 20; //nearest 0.5
+        
+        input3.val(a + " @ " + b + "°");
+	});
+
+    btn.click(function() {
+        $.fancybox.close();
+        var split = input3.val().split(" ");
+        setParameter("syncofs",split[0],true,true);
+    });
+
+	/*
+	82 00 DF 00 5D
+
+	1000 means 1000*360/65536=5.5°.
+	If we assume 360° is 256 in Nissans world then syncofs_256=1000*256/65536 = 0x4.
+	If we further assume that they phase shift their calibration by 180° for some reason
+	then 0x2 would be perfect since 0x2 + 0x80 = 0x82.
+	*/
+	//console.log(((0x82 + 0x80) % 256) * 256);
+
+    $("#syncofs_calculator").empty();
+    $("#syncofs_calculator").append(div);
+    $(".syncofs_calculator").trigger("click");
+};
+
 function buildParameters()
 {
     $(".loader").show();
@@ -158,20 +237,6 @@ function buildParameters()
 
             if(Object.keys(json).length == 0)
             {
-                if (os === "mac") {
-                    $(".macdrivers").fancybox({
-                        maxWidth    : 800,
-                        maxHeight   : 640,
-                        fitToView   : false,
-                        width       : '80%',
-                        height      : '80%',
-                        autoSize    : false,
-                        closeClick  : false,
-                        openEffect  : 'none',
-                        closeEffect : 'none'
-                    });
-                    $(".macdrivers").trigger('click');
-                }
                 $.ajax("js/parameters.json", {
                   async: false,
                   dataType: "json",
@@ -287,7 +352,16 @@ function buildParameters()
                 var td1 = $("<td>").append(category_icon);
                 var td2 = $("<td>").append(key);
                 var td3 = $("<td>").append(a);
-                var td4 = $("<td>").append(json[key].unit.replace("","°"));
+                var td4 = $("<td>");
+
+                if(key == "syncofs")
+                {
+                    var syncofs_btn = $("<button>", {type:"button", class:"btn btn-primary", onclick:" syncofsCalculator()"});
+                    var syncofs_calc = $("<i>", {class:"icons icon-magic"}).append(" Calculate");
+                    td4.append(syncofs_btn.append(syncofs_calc));
+                }else{
+                    td4.append(json[key].unit.replace("","°"));
+                }
 
                 if(tooltip != "")
                 {

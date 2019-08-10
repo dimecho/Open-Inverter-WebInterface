@@ -22,6 +22,9 @@
                             </div>
                         </div>
                     </div>
+                    <a class="syncofs_calculator" data-fancybox data-src="#syncofs_calculator" href="javascript:;"></a>
+                    <div class="hidden" id="syncofs_calculator" style="width:60%;border-radius:5px">
+                    </div>
                     <hr>
                     <table class="table table-active table-bordered bg-light table-striped table-hover" id="parameters"></table>
                 </div>

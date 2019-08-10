@@ -26,7 +26,7 @@
                             {
 								if(isset($item["path"][$os]))
 								{
-									if(is_file($item["path"][$os])) //Filter only installed software
+									if(is_file(checkHomePath($item["path"][$os],$os))) //Filter only installed software
 									{
 										$disabled = "";
 										$builtin = "";

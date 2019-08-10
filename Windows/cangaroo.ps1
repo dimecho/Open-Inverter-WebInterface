@@ -17,7 +17,7 @@ if($args[0] -eq "uninstall") {
 	Remove-Item -Recurse -Force $cangaroo
 }else{
     if (-Not (Test-Path $cangaroo)){
-		Elevate
+		Elevate $args[0]
 		Add-Type -AssemblyName System.IO.Compression.FileSystem
 		[System.IO.Compression.ZipFile]::ExtractToDirectory("$env:userprofile\Downloads\cangaroo-win32-0363ce7.zip", "$env:programfiles")
         Rename-Item "$env:programfiles\dist" $cangaroo
