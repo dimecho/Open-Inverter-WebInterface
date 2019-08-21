@@ -11,7 +11,6 @@
 		3235CA8D219BA856009022D0 /* minicom in Resources */ = {isa = PBXBuildFile; fileRef = 3235CA8C219BA856009022D0 /* minicom */; };
 		3249F2A21D599E3900ECF5B4 /* openscad in Resources */ = {isa = PBXBuildFile; fileRef = 3249F2A11D599E3900ECF5B4 /* openscad */; };
 		324C22E81CF429E7003A1AF5 /* eagle in Resources */ = {isa = PBXBuildFile; fileRef = 324C22E71CF429E7003A1AF5 /* eagle */; };
-		325B6C851DBBE3EC00421596 /* fuse in Resources */ = {isa = PBXBuildFile; fileRef = 325B6C841DBBE3EC00421596 /* fuse */; };
 		32724CE821E1DD7200127D21 /* avr in Resources */ = {isa = PBXBuildFile; fileRef = 32724CE721E1DD7200127D21 /* avr */; };
 		32724CEA21E1DD9D00127D21 /* arduino in Resources */ = {isa = PBXBuildFile; fileRef = 32724CE921E1DD9D00127D21 /* arduino */; };
 		32724CEC21E1DDA800127D21 /* cantact in Resources */ = {isa = PBXBuildFile; fileRef = 32724CEB21E1DDA700127D21 /* cantact */; };
@@ -36,7 +35,6 @@
 		3235CA8C219BA856009022D0 /* minicom */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = minicom; path = macOS/Resources/minicom; sourceTree = "<group>"; };
 		3249F2A11D599E3900ECF5B4 /* openscad */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = openscad; path = macOS/Resources/openscad; sourceTree = "<group>"; };
 		324C22E71CF429E7003A1AF5 /* eagle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = eagle; path = macOS/Resources/eagle; sourceTree = "<group>"; };
-		325B6C841DBBE3EC00421596 /* fuse */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = fuse; path = macOS/Resources/fuse; sourceTree = "<group>"; };
 		32724CE721E1DD7200127D21 /* avr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = avr; path = macOS/Resources/avr; sourceTree = "<group>"; };
 		32724CE921E1DD9D00127D21 /* arduino */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = arduino; path = macOS/Resources/arduino; sourceTree = "<group>"; };
 		32724CEB21E1DDA700127D21 /* cantact */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = cantact; path = macOS/Resources/cantact; sourceTree = "<group>"; };
@@ -109,7 +107,6 @@
 				32724CEB21E1DDA700127D21 /* cantact */,
 				32FD004C22E7E8CA00D11242 /* dfu */,
 				32F25DD21CF24A2600494B1C /* driver */,
-				325B6C841DBBE3EC00421596 /* fuse */,
 				324C22E71CF429E7003A1AF5 /* eagle */,
 				32D281EF1CF00EF200606B12 /* inkscape */,
 				3235CA8C219BA856009022D0 /* minicom */,
@@ -196,7 +193,6 @@
 				32FD004D22E7E8CA00D11242 /* dfu in Resources */,
 				32724CEC21E1DDA800127D21 /* cantact in Resources */,
 				32D281B91CF0066F00606B12 /* Main.storyboard in Resources */,
-				325B6C851DBBE3EC00421596 /* fuse in Resources */,
 				32D281F51CF00EF200606B12 /* inkscape in Resources */,
 				32836C6B21C9F09D0009C3D5 /* stlink in Resources */,
 				32FFA9FC1D18D6FB00E5BBF0 /* openocd in Resources */,

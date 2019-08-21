@@ -189,6 +189,7 @@ function syncofsCalculator()
     btn.click(function() {
         $.fancybox.close();
         var split = input3.val().split(" ");
+        setParameter("canspeed",1,false,false); //500kbps
         setParameter("syncofs",split[0],true,true);
     });
 

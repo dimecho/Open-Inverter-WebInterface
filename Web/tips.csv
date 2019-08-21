@@ -10,6 +10,7 @@ Hardware,Combine film caps (100uF) and elcaps (1500uF) to get optimal current da
 Hardware v1/2,Signal from encoder is translated by BC547 transistor - 5V to encoder is OK.
 Hardware v1/2,Measuring Pin3 from encoder 0.8V is normal, it is the Vbe of any bipolar transistor.
 Hardware v1/2,Modifying encoder for high impedance low-pass filtered digital input.<br>Remove R1, R3 and T1 and bridge the base to the collector (bridge two pins of T1 that are NOT connected to the ground).<br><img src="pcb/Hardware v1.0/encoder_lowpass.png" />
+Hardware v2,If getting error LORESAMP with resolver (LM386) remove R4, short R6 and remove C3.
 Hardware,Which phase connects + charging line for boost charger? Use outside phases and do not connect to the middle phase.
 Firmware,encflt may cause delays in the control loop. Setting it to 0 disables filtering entirely.
 Hardware,Some STM32 pins are 5V tolerant and all others can take 5V with a simple 10k series resistor.
@@ -27,3 +28,5 @@ Hardware v3,Current boards with MLX91205 hall sensor do not populate R50 and R51
 Hardware,Never scope both low side and high side IGBTs at the same time unless you are using differential probes.
 Hardware v3,If the encoder (AB quadrature) has a push-pull output you need to do nothing at all. Leave JP2.2 and JP2.4 unconnected and find power for the encoder somewhere else. If the encoder is open-collector you need to populate R17 and R18. ABZ and single channel it's a bit more changes check schematics.
 Hardware v3,To find syncofs you set throtid=1, throtiq=0.05. Now find a syncofs where the motor won't move at all, even at full throttle. Careful, the motor can spin up uncontrolled! Disabling regen helps.
+Hardware v3,WARN - HICUROFS1 - It means when at idle the voltage delivered by the current sensor is outside the window of 1.25-2.08V. A voltage divider for 5->3V3 in place? For V3 this means R50/51 populated with 4k7?
+Hardware v3, IPM type motor needs some demagnetizing current for most torque per ampere. A rough tuning with a ratio -3/2 (e.g. throtiq=3, throtid=-2).

@@ -43,8 +43,8 @@ $(document).ready(function () {
     }
     */
 
-    var version = getCookie("version");
-    if (version == undefined) {
+    var version = getCookie("version") || 0;
+    if (version == 0) {
         $.ajax("version.txt", {
             success: function(version) {
 				version = version.replace("\n", ".");

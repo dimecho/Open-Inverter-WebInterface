@@ -43,6 +43,8 @@ var can_firmware = [
 $(document).ready(function () {
 
     if(os == "esp8266") {
+    	$("#can-app").remove();
+        $("#can-firmware").remove();
 		$("#can-interface").append($("<option>",{value:can_interface.length}).append("CAN over ESP8266 with MCP2515"));
     }else{
     	for (var i = 0; i < can_interface.length-1; i++) {
@@ -95,41 +97,38 @@ function setCANImage() {
         }, 300);
     });
 
-    if(os != "esp8266") {
+    if(can_app[v] != "")
+    {
+        var can_app_button = $("<button>", {class:"btn btn-primary"}).append($("<i>", {class:"icons icon-list"}));
+        can_app_button.attr("onClick", "eval(checkSoftware('" + can_app[v].toLowerCase() + "'))");
+        can_app_button.append(" Open " + can_app[v] + " App");
+        $("#can-app").empty().append(can_app_button);
+    }
 
-        if(can_app[v] != "")
+    if(can_firmware[v] != "" && os != "mobile")
+    {
+        var can_firmware_button = $("<button>", {class:"btn btn-warning"}).append($("<i>", {class:"icons icon-chip"}));
+        can_firmware_button.append(" Update Firmware");
+
+        $("#can-firmware").empty().append(can_firmware_button);
+
+        can_firmware_button.click(function()
         {
-            var can_app_button = $("<button>", {class:"btn btn-primary"}).append($("<i>", {class:"icons icon-list"}));
-            can_app_button.attr("onClick", "eval(checkSoftware('" + can_app[v].toLowerCase() + "'))");
-            can_app_button.append(" Open " + can_app[v] + " App");
-            $("#can-app").empty().append(can_app_button);
-        }
+            callback = eval(checkSoftware(can_firmware[v], can_name[v].toLowerCase()));
+            console.log(callback);
 
-        if(can_firmware[v] != "" && os != "mobile")
-        {
-            var can_firmware_button = $("<button>", {class:"btn btn-warning"}).append($("<i>", {class:"icons icon-chip"}));
-            can_firmware_button.append(" Update Firmware");
-
-            $("#can-firmware").empty().append(can_firmware_button);
-
-            can_firmware_button.click(function()
-            {
-                callback = eval(checkSoftware(can_firmware[v], can_name[v].toLowerCase()));
-                console.log(callback);
-
-                if(os == "mac" && callback.indexOf("User canceled") != -1) {
-                    $.notify({ message: "macOS requires privilege escalation" }, { type: "danger" });
-                }else if(callback.indexOf("No DFU") != -1 || callback.indexOf("0 Device(s) found") != -1) {
-                    $.notify({ message: "No DFU capable USB device available" }, { type: "danger" });
-                    $.notify({ message: "Set BOOT jumper and plug-in USB device" }, { type: "warning" });
-                }else if (callback.indexOf("Download done") != -1) {
-                    $.notify({ message: "DFU Firmware Updated"}, { type: "success" });
-                }else if (callback != "") {
-                    $.notify({ message: callback}, { type: "danger" });
-                }
-            });
-        }
-	}
+            if(os == "mac" && callback.indexOf("User canceled") != -1) {
+                $.notify({ message: "macOS requires privilege escalation" }, { type: "danger" });
+            }else if(callback.indexOf("No DFU") != -1 || callback.indexOf("0 Device(s) found") != -1) {
+                $.notify({ message: "No DFU capable USB device available" }, { type: "danger" });
+                $.notify({ message: "Set BOOT jumper and plug-in USB device" }, { type: "warning" });
+            }else if (callback.indexOf("Download done") != -1) {
+                $.notify({ message: "DFU Firmware Updated"}, { type: "success" });
+            }else if (callback != "") {
+                $.notify({ message: callback}, { type: "danger" });
+            }
+        });
+    }
 };
 
 function setCANSpeed() {

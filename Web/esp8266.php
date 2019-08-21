@@ -59,6 +59,7 @@
 			//Format SPIFFS
 			$.ajax("/format", {
 		        success: function success(data) {
+		        	deleteCookie("version");
 		            $.notify({ message: data }, { type: "success" });
 		            $.ajax("/reset");
 		            clearInterval(timer);

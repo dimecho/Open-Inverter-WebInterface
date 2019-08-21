@@ -53,6 +53,7 @@ pot2max,"Value of ""pot2"" when regen pot is in full on position"
 potmode,"0=Pot 1 is throttle and pot 2 is regen strength preset, 1=Pot 2 is proportional to pot 1 (redundance) 2=Throttle controlled via CAN"
 throtramp,Max positive throttle slew rate
 throtramprpm,No throttle ramping above this speed
+throtid,Sets the amount of magnetizing current per % of potnom. To demagnetize (i.e. field weaken) it must be negative.
 ampmin,Relative sine amplitude at minimum throttle
 slipstart,% positive throttle travel at which slip is increased
 brknompedal,Foot on break pedal regen torque

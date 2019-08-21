@@ -3,7 +3,7 @@
 	
 	if(isset($_GET["db"])){
 		
-		setParameters(getcwd() ."/db/" .$_GET["db"]. ".txt");
+		setParameters(getcwd() ."/db/" .$_GET["db"]. ".json");
 		echo "ok";
 		
 	}else if (count($_FILES)){
@@ -18,7 +18,7 @@
 		ini_set("display_errors", 1);
 		
 		header ("Content-Type: text/json");
-		header ("Content-Disposition: attachment; filename=\"snapshot " .date("F-j-Y g-ia"). ".txt\"");
+		header ("Content-Disposition: attachment; filename=\"snapshot " .date("F-j-Y g-ia"). ".json\"");
 
 		$read = readSerial("json\n");
 		$array = json_decode($read, true);

@@ -20,6 +20,8 @@
                                 badge.addClass("bg-success");
                             }else if(r[0].indexOf("v1") != -1) {
                                 badge.addClass("bg-info");
+                            }else if(r[0].indexOf("v2") != -1) {
+                                badge.addClass("bg-info");
                             }else if(r[0].indexOf("Hardware") != -1) {
                                 badge.addClass("bg-danger");
                             }else if(r[0].indexOf("Firmware") != -1) {
