@@ -12,35 +12,18 @@ function Elevate() {
 	}
 }
 
-function openBrowser($url) {
-	
-	$firefox = "$env:programfiles\Mozilla Firefox\firefox.exe"
-    $edge = "$env:windir\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe"
+function openBrowser {
 
-	If (Test-Path $firefox){
-        # Open FireFox
-		$app = Get-Process firefox -ErrorAction SilentlyContinue
-		if (!$app) {
-			Start-Process $firefox $url
-		}
-    }ElseIf (Test-Path $edge){
-        # Open Edge
-        $app = Get-Process MicrosoftEdge -ErrorAction SilentlyContinue
-        if (!$app) {
-            Start-Process $edge $url
-        }
-	}Else{
-		# Open Internet Explorer
-		$app = Get-Process iexplore -ErrorAction SilentlyContinue
-		if (!$app) {
-			$ie = New-Object -com InternetExplorer.Application;
-			$ie.visible = $true;
-			$ie.navigate($url);
-		}
-	}
+    $firefox = Get-Process firefox -ErrorAction SilentlyContinue
+    $edge = Get-Process MicrosoftEdge -ErrorAction SilentlyContinue
+    $ie = Get-Process iexplore -ErrorAction SilentlyContinue
+
+    if (-Not($firefox) -And -Not($edge) -And -Not($ie)) {
+        Start-Process -FilePath "http://127.0.0.1:8080" 
+    }
 }
 
-function startPHP($page) {
+function startPHP {
 
     $hardwaretype = Get-WmiObject -Class Win32_ComputerSystem -Property PCSystemType
     $computer = "Laptop"
@@ -109,15 +92,18 @@ function startPHP($page) {
 
         # Start PHP Webserver
         Get-Process -Name "php" -ErrorAction SilentlyContinue | Stop-Process -Force
-        Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 0.0.0.0:8080 -t ""$scriptPath\\Web""" -NoNewWindow
+        Start-Process -FilePath "$env:programfiles\PHP\php.exe" -ArgumentList "-S 127.0.0.1:8080 -t ""$scriptPath\\Web""" -NoNewWindow
 		Start-Sleep -s 2
 		
 		# Open Web Browser
-		openBrowser "http://127.0.0.1:8080/$page"
+        openBrowser
 	}
 }
 
 function findPort {
+
+    Write-Host "`nUse RS232-TTL adapter, USB-RS232 is not enough`n" -ForegroundColor Red
+
 	$timeout = 0
 	DO
 	{
@@ -145,7 +131,7 @@ function findPort {
             }
         }
 
-		Write-Host "... Waiting for RS232-USB"
+		Write-Host "... Waiting for USB-RS232-TTL"
 		Start-Sleep -s 4
 		
 		$timeout++
@@ -232,4 +218,4 @@ function checkDrivers {
     checkCANtactDriver
 }
 
-startPHP "index.php"
+startPHP

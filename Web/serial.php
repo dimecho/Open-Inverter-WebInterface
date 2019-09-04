@@ -383,12 +383,14 @@ session_start();
                 fwrite($uart, $cmd);
                 uart_read_echo($uart,$cmd); //echo
                 $lasterr = uart_read_eof($uart,array("\r"));
-                if($lasterr > 0) {
-                    $lasterrcode = $errorcodes[intval($lasterr)];
-                    $cmd = "errors\n";
-                    fwrite($uart, $cmd);
-                    uart_read_echo($uart,$cmd); //echo
-                    $read = uart_read_eof($uart,array($lasterrcode. "\r"));
+                if (php_uname('s') != "Windows NT") { //TODO: make it work windowz
+                    if($lasterr > 0) {
+                        $lasterrcode = $errorcodes[intval($lasterr)];
+                        $cmd = "errors\n";
+                        fwrite($uart, $cmd);
+                        uart_read_echo($uart,$cmd); //echo
+                        $read = uart_read_eof($uart,array($lasterrcode. "\r"));
+                    }
                 }
             }else if($cmd === "save\n"){
                 $read = uart_read_line($uart); //fgets($uart); //CRC

@@ -30,9 +30,12 @@ if($args[0] -eq "uninstall") {
         Invoke-WebRequest -Uri "https://windows.php.net/downloads/releases/archives/$phpFile" -OutFile "$env:userprofile\Downloads\$phpFile" -Debug
     }
 
-    # Visual C++ Redistributable for Visual Studio 2015
+    # Visual C++ Redistributable for Visual Studio
 	$vcFile = "vc_redist.x64.exe"
-    if (-Not (Test-Path "HKLM:\SOFTWARE\Classes\Installer\Dependencies\{d992c12e-cab2-426f-bde3-fb8c53950b0d}")) {
+    $vc2015 = "HKLM:SOFTWARE\Classes\Installer\Dependencies\{d992c12e-cab2-426f-bde3-fb8c53950b0d}"
+    $vc2017 = "HKLM:SOFTWARE\Classes\Installer\Dependencies\,,amd64,14.0,bundle\Dependents\{e2ee15e2-a480-4bc5-bfb7-e9803d1d9823}"
+
+    if (-Not (Test-Path vc2015) -And -Not (Test-Path vc2017)) {
     	if (-Not (Test-Path "$env:userprofile\Downloads\$vcFile")) {
 			Write-Host "Downloading C++ Redistributable for Visual Studio 2015"  -ForegroundColor Green
 			Write-Host "$env:userprofile\Downloads\$vcFile"

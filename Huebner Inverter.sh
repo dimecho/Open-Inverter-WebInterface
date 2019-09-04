@@ -2,6 +2,8 @@
 
 checkUSB()
 {
+    echo "\nReminder: Use RS232-TTL adapter, USB-RS232 is not enough\n"
+
     shopt -s nocasematch
     for i in {0..30} ; do
         serial=$(ls /dev/ttyUSB* | tail -n 1) || echo ""
@@ -17,7 +19,7 @@ echo "{
             /usr/bin/firefox http://localhost:8080;bash
             return
         fi
-        echo "... Waiting for RS232-USB"
+        echo "... Waiting for USB-RS232-TTL"
         if [[ $i -eq 1 ]]; then
             /usr/bin/firefox http://localhost:8080/connect.html;bash
         fi
