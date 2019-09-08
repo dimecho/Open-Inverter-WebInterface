@@ -75,7 +75,7 @@ $(document).ready(function () {
                     });
                 }else if(data.indexOf("2D") != -1) {
                     $.notify({ message: 'Firmware corrupt or not found' }, { type: 'danger' });
-                    $("#com").show();
+                    //$("#com").show();
                     setTimeout(function () {
                         window.location.href = "firmware.php";
                     }, 2600);

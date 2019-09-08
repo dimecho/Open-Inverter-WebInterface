@@ -14,13 +14,34 @@ function Elevate() {
 
 function openBrowser {
 
-    $firefox = Get-Process firefox -ErrorAction SilentlyContinue
-    $edge = Get-Process MicrosoftEdge -ErrorAction SilentlyContinue
-    $ie = Get-Process iexplore -ErrorAction SilentlyContinue
+    $httpURL = "http://127.0.0.1:8080"
+    $httpKey = (Get-Item -Path Registry::HKEY_CLASSES_ROOT\http\shell\open\command)
 
-    if (-Not($firefox) -And -Not($edge) -And -Not($ie)) {
-        Start-Process -FilePath "http://127.0.0.1:8080" 
+    if ($httpKey -ne $null)
+    {
+        $command = $httpKey.GetValue("", "iexplore.exe")
+        $exeIndex = $command.ToLower().IndexOf(".exe")
+        if ($exeIndex -gt -1)
+        {
+            $endOfCommand = $command.IndexOf('"', $exeIndex)
+            $startOfCommand = $command.LastIndexOf('"', $exeIndex - 1)
+            if ($startOfCommand -gt -1 -And $endOfCommand -gt -1)
+            {
+                $command = $command.Substring($startOfCommand + 1, $endOfCommand - 1)
+                $browser = Get-Process | Where Path -eq $command
+                
+                if ($browser -eq $null) {
+                    Start-Process $command $httpURL
+                }
+                return
+            }
+        }
     }
+
+    #Start-Process -FilePath $httpURL
+    $ie = New-Object -com InternetExplorer.Application
+    $ie.visible = $true
+    $ie.navigate($httpURL)
 }
 
 function startPHP {
@@ -79,12 +100,15 @@ function startPHP {
 			#================================================
 			#Quick Fix [give it a kick] - Prolific Driver Bug or Windows?
 			#================================================
+            $timeouted = $null
 			$process = Start-Process -FilePath "$PSScriptRoot\puttytel.exe" -ArgumentList "-serial $($comPort) -sercfg 115200,8,n,1,N" -PassThru -WindowStyle Hidden
-			try{
-				$process | Wait-Process -Timeout 5 -ErrorAction Stop
-			}catch{
-				$process | Stop-Process -Force
-			}
+			$process | Wait-Process -Timeout 4 -ErrorAction SilentlyContinue -ErrorVariable timeouted
+			if ($timeouted) {
+                Get-Process -Name putty -ErrorAction SilentlyContinue | Stop-Process
+                Get-Process -Name puttytel -ErrorAction SilentlyContinue | Stop-Process
+                Start-Sleep -s 2
+            }
+			
 			#Somehow Putty fix sets maximum buffer size
 			#================================================
 			Start-Process -FilePath "cmd.exe" -ArgumentList "/c mode $($comPort):/status" -NoNewWindow -Wait
@@ -102,7 +126,7 @@ function startPHP {
 
 function findPort {
 
-    Write-Host "`nUse RS232-TTL adapter, USB-RS232 is not enough`n" -ForegroundColor Red
+    Write-Host "`nUse RS232-TTL adapter, USB-RS232 is not enough`n" -ForegroundColor Yellow
 
 	$timeout = 0
 	DO

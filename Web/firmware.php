@@ -22,7 +22,7 @@
 			}
 		}else{
 		
-			$uart = fopen($interface, "r+"); //Read & Write
+			$uart = fopen($interface, "rb+"); //Read & Write
 			//stream_set_blocking($uart, 1); //O_NONBLOCK
 			//stream_set_timeout($uart, 30);
 			
@@ -44,10 +44,12 @@
 			
 			$pages = round(($len + $PAGE_SIZE_BYTES - 1) / $PAGE_SIZE_BYTES);
 			
+            print "File length is " .$len. " bytes/" .$pages. " pages\n";
+
 			while((count($data) % $PAGE_SIZE_BYTES) > 0) //Fill remaining bytes with zeros, prevents corrupted endings
 				array_push($data, 0);
 
-			print "File length is " .$len. " bytes/" .$pages. " pages\n";
+            print "Adjusted ending with zeros to " .count($data). " bytes\n";
 			
 			print "Resetting device...\n";
 			
@@ -88,8 +90,9 @@
 				print "Sending page " .$page. " ...\n";
 				
 				$crc = calcStmCrc($data, $idx, $PAGE_SIZE_BYTES);
+                print "Checksum " .$crc. "\n";
+
 				$c = "";
-				
 				while ($c != "C")
 				{
 					$idx = $page * $PAGE_SIZE_BYTES;
@@ -98,7 +101,7 @@
 					while ($cnt < $PAGE_SIZE_BYTES)
 					{
 						fwrite($uart, chr($data[$idx]));
-						//print chr($data[$idx]);
+						//print unpack("H*", chr($data[$idx]));
 						$idx++;
 						$cnt++;
 					}
@@ -191,8 +194,12 @@
                                                     $.notify({ message: "Flash Complete" },{ type: "success" });
                                                 }
                                                 if(data.indexOf("shutdown command invoked") !=-1 || data.indexOf("jolly good") !=-1){
-                                                    $.notify({ message: "Plugin USB-RS232" },{ type: "warning" });
+                                                    $.notify({ message: "Plugin USB-RS232-TTL" },{ type: "warning" });
                                                     $.notify({ message: "Unlug JTAG Programmer" },{ type: "danger" });
+                                                }else if(data.indexOf("Transmission Error") !=-1){
+                                                    $.notify({ message: "USB power insufficeint, plug inverter to 12V" },{ type: "danger" });
+                                                }else if(data.indexOf("timeout") !=-1){
+                                                    $.notify({ message: "If Olimex is bricked, press reset button while flashing" },{ type: "warning" });
                                                 }
                                                 setTimeout( function (){
                                                     window.location.href = "index.php";
@@ -204,7 +211,7 @@
 								<div class="progress progress-striped active">
                                     <div class="progress-bar" style="width:0%" id="progressBar"></div>
                                 </div>
-                                <br><span class="badge badge-lg bg-warning">Tip: If Olimex is bricked, try pressing "reset" button while flashing</span><br><br>
+                                <br><br>
                                 <div id="output"></div>
 							</td>
                         </tr>';
