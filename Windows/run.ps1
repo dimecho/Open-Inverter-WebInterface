@@ -29,7 +29,6 @@ function openBrowser {
             {
                 $command = $command.Substring($startOfCommand + 1, $endOfCommand - 1)
                 $browser = Get-Process | Where Path -eq $command
-                
                 if ($browser -eq $null) {
                     Start-Process $command $httpURL
                 }
@@ -171,7 +170,7 @@ function findPort {
 
 function checkProlificDriver {
 	
-	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and ($_.Name -match "Prolific" -or $_.Name -match "USB-Serial") }
+	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ ($_.Status -match "Error" -or $_.Name -match "CONTACT YOUR SUPPLIER") -and ($_.Name -match "Prolific" -or $_.Name -match "PL2303" -or $_.Name -match "USB-Serial") }
 	if ($Driver)
 	{
 		if ([System.Diagnostics.FileVersionInfo]::GetVersionInfo("C:\Windows\System32\drivers\ser2pl64.sys").FileVersion -ne "3.3.2.102")

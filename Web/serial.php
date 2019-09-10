@@ -16,11 +16,14 @@ session_start();
 
     if(isset($_GET["init"]))
     {
-        //if($_GET["init"] !== $_SESSION["speed"]) {
-            $_SESSION = array();
+        /*
+        if($_GET["init"] !== $_SESSION["speed"]) {
             session_unset();
-
-            echo serialDevice($_GET["init"]);
+            session_destroy();
+            session_start();
+        }
+        */
+        echo serialDevice($_GET["init"]);
     }
     else if(isset($_GET["os"]))
     {
@@ -44,9 +47,9 @@ session_start();
     }
     else if(isset($_GET["serial"]))
     {
-        $json = json_decode(file_get_contents("js/serial.json"), true);
+        $json = json_decode(file_get_contents($_SERVER["DOCUMENT_ROOT"]. "/js/serial.json"), true);
         $json['serial']['port'] = $_GET["serial"];
-        file_put_contents("js/serial.json", json_encode($json));
+        file_put_contents($_SERVER["DOCUMENT_ROOT"]. "/js/serial.json", json_encode($json));
         
         $_SESSION = array();
         session_unset();
@@ -144,7 +147,7 @@ session_start();
         $com = $_SESSION["serial"];
 
         if(!isset($com)) {
-            $json = json_decode(file_get_contents("js/serial.json"), true);
+            $json = json_decode(file_get_contents($_SERVER["DOCUMENT_ROOT"]. "/js/serial.json"), true);
             $_SESSION["serial"] = $json['serial']['port'];
             $_SESSION["timeout"] = $json['serial']['timeout'];
             $_SESSION["speed"] = $json['serial']['speed'];

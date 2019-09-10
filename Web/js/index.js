@@ -56,6 +56,7 @@ $(document).ready(function () {
                                 }
                                 $(".serial").trigger('click');
                             }else if (os === "mac") {
+                                $("#macdrivers img").attr("src","img/mojave-logo.png");
                                 $(".macdrivers").fancybox({
                                     maxWidth    : 800,
                                     maxHeight   : 640,

@@ -17,7 +17,7 @@
 <a class="macdrivers" data-fancybox data-src="#macdrivers" href="javascript:;"></a>
 <div class="hidden" id="macdrivers" style="width:60%;border-radius:5px">
 	<center>
-		<img src="img/majove-logo.png" />
+		<img src="" />
 		<br><br>
 		<p>Recommended Mac Drivers: <a href="#">mac-usb-serial.com</a></p>
 		<br>
