@@ -16,13 +16,10 @@ session_start();
 
     if(isset($_GET["init"]))
     {
-        /*
-        if($_GET["init"] !== $_SESSION["speed"]) {
-            session_unset();
-            session_destroy();
-            session_start();
-        }
-        */
+        session_unset();
+        session_destroy();
+        session_start();
+
         echo serialDevice($_GET["init"]);
     }
     else if(isset($_GET["os"]))
@@ -152,6 +149,10 @@ session_start();
             $_SESSION["timeout"] = $json['serial']['timeout'];
             $_SESSION["speed"] = $json['serial']['speed'];
             $com = $_SESSION["serial"];
+        }
+
+        if(isset($speed)) {
+            $_SESSION["speed"] = $speed;
         }
         
         $read = fastUART($com,$speed);

@@ -210,15 +210,15 @@
     "eagle" : {
         "title" : "AutoCAD Eagle - PCB Design Software",
         "download" : {
-            "mac" : "https://eagle-updates.circuits.io/downloads/9_4_2/Autodesk_EAGLE_9.4.2_English_Mac_64bit.pkg",
-            "windows" : "https://eagle-updates.circuits.io/downloads/9_4_2/Autodesk_EAGLE_9.4.2_English_Win_64bit.exe",
-            "linux" : "https://eagle-updates.circuits.io/downloads/9_4_2/Autodesk_EAGLE_9.4.2_English_Linux_64bit.tar.gz",
+            "mac" : "https://eagle-updates.circuits.io/downloads/9_5_0/Autodesk_EAGLE_9.5.0_English_Mac_64bit.pkg",
+            "windows" : "https://eagle-updates.circuits.io/downloads/9_5_0/Autodesk_EAGLE_9.5.0_English_Win_64bit.exe",
+            "linux" : "https://eagle-updates.circuits.io/downloads/9_5_0/Autodesk_EAGLE_9.5.0_English_Linux_64bit.tar.gz",
             "size" : 160,
-            "version" : "9.4.2"
+            "version" : "9.5.0"
         },
 		"checksum" : {
             "mac" : "",
-            "windows" : "513f58898f6feae26a891518f305dec7",
+            "windows" : "ff019caf218c6c8da5fd2dae8ee1a0e4",
             "linux" : ""
         },
         "path" : {

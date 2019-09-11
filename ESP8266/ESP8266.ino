@@ -385,6 +385,14 @@ void setup()
   //===============
   /*
     -------------------------
+    Experimental CAN-Bus
+    -------------------------
+  */
+  server.on("/can/read", []() {
+    server.send(200, text_plain, msgString);
+  });
+  /*
+    -------------------------
     Experimental SWD Debugger
     -------------------------
   */
@@ -585,7 +593,7 @@ void loop()
 
     if ((rxId & 0x40000000) == 0x40000000) {
       sprintf(msgString, " REMOTE REQUEST FRAME");
-      Debug.print(msgString);
+      //Debug.print(msgString);
     } else {
       for (byte i = 0; i < len; i++) {
         //sprintf(msgString, " 0x%.2X", rxBuf[i]);
@@ -1097,7 +1105,7 @@ void FirmwareUpload()
 
         server.sendContent("File length is " + String(len) + " bytes/" + String(pages) + " pages\n");
 
-        Serial.begin(115200);
+        Serial.begin(115200, SERIAL_8N1);
         while (Serial.available())
           Serial.read();
 
@@ -1112,11 +1120,13 @@ void FirmwareUpload()
 
         do {
           c = Serial.read();
-          //server.sendContent(String(c));
+          /*
+          server.sendContent(String(c));
           delay(10);
           timeout++;
-        } while (c != 'S' && c != '2' && timeout < 255);
-
+          */
+        } while (c != 'S' && c != '2'); // && timeout < 255);
+        
         server.sendContent("\n" + String(timeout) + "\n");
 
         if (c == '2')
