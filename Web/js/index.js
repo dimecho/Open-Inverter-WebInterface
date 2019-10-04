@@ -101,12 +101,12 @@ $(document).ready(function () {
 
 function basicChecks(json)
 {
-	var fweak = json.fweak.value;
-	var fslipmax = json.fslipmax.value;
-    var fslipmin = json.fslipmin.value;
-	var deadtime = json.deadtime.value;
-	var udc = json.udc.value;
-	var udcsw = json.udcsw.value;
+	var fweak = setDefaultValue(json.fweak, 0);
+	var fslipmax = setDefaultValue(json.fslipmax, 0);
+    var fslipmin = setDefaultValue(json.fslipmin, 0);
+	var deadtime = setDefaultValue(json.deadtime, 0);
+	var udc = setDefaultValue(json.udc, 0);
+	var udcsw = setDefaultValue(json.udcsw, 0);
 
 	if(udc > udcsw) //Get real operating voltage
 	{
@@ -148,6 +148,199 @@ function basicChecks(json)
     }
 };
 
+function _boostSlipCalculator(fslipconstmax,fslipmax,fconst,boost,fweak,udcnom,udc)
+{
+    var udc_diff = (udc-udcnom);
+    var adj_factor_calc = 1+(udc_diff/udcnom);
+    var boost_calc = (boost/adj_factor_calc);
+    var fweak_calc = (fweak*adj_factor_calc);
+    var fslip_change_calc = (fweak-fweak_calc)*(fslipconstmax-fslipmax)/(fconst-fweak);
+    /*
+    console.log(udc_diff);
+    console.log(adj_factor_calc);
+    console.log(boost_calc);
+    console.log(fweak_calc);
+    console.log(fslip_change_calc);
+    */
+    return [boost_calc, fweak_calc];
+};
+
+function boostSlipCalculator()
+{
+    var fslipconstmax = parseInt($("#fslipconstmax").val());
+    var fslipmax = parseInt($("#fslipmax").val());
+    var fconst = parseInt($("#fconst").val());
+    var boost = parseInt($("#boost").val());
+    var fweak = parseInt($("#fweak").val());
+    var udcnom = parseInt($("#udcnom").val());
+    var udc = parseInt($("#udc").val());
+
+    //_boostSlipCalculator(fslipconstmax,fslipmax,fconst,boost,fweak,udcnom,udc);
+    //_boostSlipCalculator(5.5,3.6,350,2000,100,500,480);
+
+    var boost_n = Math.round(boost/1000)*1000;
+
+    if(udcnom == 0) {
+        $.notify({ message: 'Set udcnom higher than zero.' }, { type: 'danger' });
+        return;
+    }
+
+    var div = $("<div>",{class:"container"});
+    var row = $("<div>",{class:"row"});
+    var col = $("<div>",{class:"col", align:"center"});
+    var loader = $("<div>",{ class:"loader"});
+    var canvas = $("<canvas>");
+
+    col.append(loader);
+    col.append(canvas);
+    row.append(col);
+    div.append(row);
+
+    $("#calculator").empty();
+    $("#calculator").append(div);
+    $(".calculator").trigger("click");
+
+    $.getScript("js/chart.js").done(function(script, textStatus) {
+        
+        var ctxFont = 16;
+        var chart_boost_datasets = {
+            type: "line",
+            label: "boost",
+            fill: false,
+            backgroundColor: "rgba(255,99,132, 0.5)",
+            borderColor: "rgba(255,99,132)",
+            borderWidth: 2,
+            data: [boost],
+            yAxisID: "y-axis-1",
+        };
+
+        var chart_fweak_datasets = {
+            type: "line",
+            label: "fweak",
+            fill: false,
+            backgroundColor: "rgba(51, 153, 255, 0.5)",
+            borderColor: "rgba(51, 153, 255)",
+            borderWidth: 2,
+            data: [fweak],
+            yAxisID: "y-axis-2",
+        };
+
+        var chart_udc_datasets = {
+            type: "line",
+            label: "udc",
+            lineTension: 0,
+            backgroundColor: "rgba(102, 255, 51, 0.4)",
+            borderColor: "rgba(102, 255, 51)",
+            borderWidth: 2,
+            data: [] //udc representation
+        };
+
+        var udc_segment = 6;
+        var boost_segment = 500;
+        var fweak_segment = 10;
+        var udc_drop = 5;
+        var udc_variable = []; //udc actual
+        var udc_n = Math.round(udc/100)*100;
+
+        if(udc > 55) {
+            udc_drop = 10;
+        }else if(udc > 100) {
+            udc_drop = 20;
+        }else if(udc > 300) {
+            udc_drop = 50;
+        }
+
+        for (var i = 0; i < udc_segment; i++) {
+            udc_variable.push(udc-(i*udc_drop));
+        }
+
+        for (var i = 0; i < udc_segment; i++) {
+            chart_udc_datasets.data.push(boost_n-(i*boost_segment/2)); //graph somewhere in the middle
+        }
+
+        for (var i = 1; i <= udc_segment; i++) {
+            var calc = _boostSlipCalculator(fslipconstmax,fslipmax,fconst,boost,fweak,udcnom,udc_variable[i]);
+            chart_boost_datasets.data.push(calc[0]);
+            chart_fweak_datasets.data.push(calc[1]);
+        }
+
+        data = {
+            labels: udc_variable,
+            datasets: [chart_boost_datasets,chart_fweak_datasets,chart_udc_datasets]
+        };
+
+        options = {
+            //responsive: true,
+            legend: {
+                display: true,
+                labels: {
+                    fontSize: ctxFont,
+                    fontColor: 'rgb(0, 0, 0)'
+                }
+            },
+            tooltips: {
+                enabled: false
+            },
+            scales: {
+                xAxes: [{
+                    position: 'bottom',
+                    scaleLabel: {
+                        fontSize: ctxFont,
+                        display: true,
+                        labelString: 'udc (Volt)'
+                    },
+                }],
+                yAxes: [{
+                    id: "y-axis-1",
+                    position: 'right',
+                    scaleLabel: {
+                        fontSize: ctxFont,
+                        display: true,
+                        labelString: 'boost',
+                        fontColor: chart_boost_datasets.borderColor
+                    },
+                    ticks: {
+                        fontSize: ctxFont,
+                        stepSize: boost_segment,
+                        min: 0,
+                        max: boost_n + (boost_segment*2)
+                    },
+                    gridLines: {
+                        drawOnChartArea: true
+                    }
+                },{
+                    id: "y-axis-2",
+                    position: 'left',
+                    scaleLabel: {
+                        fontSize: ctxFont,
+                        display: true,
+                        labelString: 'fweak (Hz)',
+                        fontColor: chart_fweak_datasets.borderColor
+                    },
+                    ticks: {
+                        fontSize: ctxFont,
+                        stepSize: fweak_segment,
+                        min: 0,
+                        max: (fweak + (fweak_segment*2))
+                    },
+                    gridLines: {
+                        drawOnChartArea: true
+                    }
+                }]
+            }
+        };
+
+        loader.hide();
+
+        var chart = new Chart(canvas, {
+            type: 'line',
+            data: data,
+            options: options
+        });
+    });
+
+};
+
 function syncofsCalculator()
 {
     var div = $("<div>",{class:"container"});
@@ -156,8 +349,7 @@ function syncofsCalculator()
 
     var p = $("<p>").append("Nissan Leaf Resolver Offsets");
     var input1 = $("<input>",{ class:"form-control my-3", type:"text"});
-    var input2 = $("<input>",{ class:"form-control my-3", type:"text"});
-    var input3 = $("<input>",{ class:"form-control my-3", type:"text", disabled:true});
+    var input2 = $("<input>",{ class:"form-control my-3", type:"text", disabled:true});
     var btn = $("<button>",{ class:"btn btn-primary", type:"button"});
 
     if(os != "esp8266" && os != "mobile")
@@ -168,7 +360,7 @@ function syncofsCalculator()
         row.append(col1);
     }
 
-    col2.append(p).append(input1).append(input2).append(input3);
+    col2.append(p).append(input1).append(input2);
     col2.append(btn.append("Save"));
     div.append(row.append(col2));
 
@@ -176,21 +368,19 @@ function syncofsCalculator()
         var value = $(this).val();
         var hex = parseInt("0x" + value.substring(0, 2));
 
-        var a = ((hex + 0x80) * 2 % 256) * 256; //((hex - 0x80) * 2) / 256 * 65536;
-        a = Math.round(a / 1000) * 1000;
-        
-        var b = a * 360 / 65536;
+        var a = ((hex - 0x80) * 256);
+        var b = (a * 360 / 65536) * 2;
         b = 360/Math.floor(360 / b); //degree round
         b = Math.round(b * 10) / 10; //digit round
         b = Math.ceil(b * 20) / 20; //nearest 0.5
-        
-        input3.val(a + " @ " + b + "°");
+
+        input2.val((a/2) + " @ " + b + "°");
 	});
 
     btn.click(function() {
         $.fancybox.close();
-        var split = input3.val().split(" ");
-        setParameter("canspeed",1,false,false); //500kbps
+        var split = input2.val().split(" ");
+        $("#syncofs").val(split[0]);
         setParameter("syncofs",split[0],true,true);
     });
 
@@ -204,9 +394,9 @@ function syncofsCalculator()
 	*/
 	//console.log(((0x82 + 0x80) % 256) * 256);
 
-    $("#syncofs_calculator").empty();
-    $("#syncofs_calculator").append(div);
-    $(".syncofs_calculator").trigger("click");
+    $("#calculator").empty();
+    $("#calculator").append(div);
+    $(".calculator").trigger("click");
 };
 
 function buildParameters()
@@ -358,9 +548,13 @@ function buildParameters()
 
                 if(key == "syncofs")
                 {
-                    var syncofs_btn = $("<button>", {type:"button", class:"btn btn-primary", onclick:" syncofsCalculator()"});
+                    var syncofs_btn = $("<button>", {type:"button", class:"btn btn-primary", onclick:"syncofsCalculator()"});
                     var syncofs_calc = $("<i>", {class:"icons icon-magic"}).append(" Calculate");
                     td4.append(syncofs_btn.append(syncofs_calc));
+                } else if(key == "fweak") {
+                    var fweak_btn = $("<button>", {type:"button", class:"btn btn-primary", onclick:"boostSlipCalculator()"});
+                    var fweak_calc = $("<i>", {class:"icons icon-magic"}).append(" Calculate");
+                    td4.append(fweak_btn.append(fweak_calc));
                 }else{
                     td4.append(json[key].unit.replace("","°"));
                 }

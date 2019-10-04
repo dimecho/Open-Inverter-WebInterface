@@ -57,7 +57,8 @@ throtid,Sets the amount of magnetizing current per % of potnom. To demagnetize (
 ampmin,Relative sine amplitude at minimum throttle
 slipstart,% positive throttle travel at which slip is increased
 brknompedal,Foot on break pedal regen torque
-brkpedalramp,"Ramp speed when pressing the brake pedal. E.g. when you set brkmax to 20% and brkpedal to -60% and brkpedalramp to 1, it will take 400ms to arrive at brake force of -60%"
+brkpedalramp,"Renamed to regenramp"
+regenramp,"Ramp speed when pressing the brake pedal. E.g. when you set brkmax to 20% and brkpedal to -60% and regenramp to 1, it will take 400ms to arrive at brake force of -60%"
 brknom,Regen padel travel
 brkmax,Foot-off regen torque
 brkout,Activate brake light output (GPIOA7) at this amount of braking force
@@ -104,3 +105,5 @@ fslipspnt,Slip setpoint in mode 2. Written by software in mode 1
 ampnom,Nominal amplitude in mode 2. Written by software in mode 1
 version,Firmware version
 hwver,Hardware revision
+ifltfall,Resolver - dampens how quickly the amplitude is decreased once it overshoots iacmax*80%
+ifltrise,Resolver - recovers how quickly the amplitude is increased once it overshoots iacmax*80%

@@ -577,34 +577,35 @@ void loop()
   //====================
   //Experimental CAN-Bus
   //====================
-  //if (!digitalRead(CAN0_INT))
-  if (CAN0.checkReceive() == CAN_MSGAVAIL)
-  {
-    CAN0.readMsgBuf(&rxId, &len, rxBuf);      // Read data: len = data length, buf = data byte(s)
+  if (ENABLE_CAN == 1) {
+    //if (!digitalRead(CAN0_INT))
+    if (CAN0.checkReceive() == CAN_MSGAVAIL)
+    {
+      CAN0.readMsgBuf(&rxId, &len, rxBuf);      // Read data: len = data length, buf = data byte(s)
 
-    Debug.print("<"); Debug.print(rxId); Debug.print(",");
+      Debug.print("<"); Debug.print(rxId); Debug.print(",");
 
-    if ((rxId & 0x80000000) == 0x80000000)
-      sprintf(msgString, "Extended ID: 0x%.8lX  DLC: %1d  Data:", (rxId & 0x1FFFFFFF), len);
-    else
-      sprintf(msgString, "Standard ID: 0x%.3lX       DLC: %1d  Data:", rxId, len);
+      if ((rxId & 0x80000000) == 0x80000000)
+        sprintf(msgString, "Extended ID: 0x%.8lX  DLC: %1d  Data:", (rxId & 0x1FFFFFFF), len);
+      else
+        sprintf(msgString, "Standard ID: 0x%.3lX       DLC: %1d  Data:", rxId, len);
 
-    //Debug.print(msgString);
-
-    if ((rxId & 0x40000000) == 0x40000000) {
-      sprintf(msgString, " REMOTE REQUEST FRAME");
       //Debug.print(msgString);
-    } else {
-      for (byte i = 0; i < len; i++) {
-        //sprintf(msgString, " 0x%.2X", rxBuf[i]);
-        //Debug.println(msgString);
-        Debug.print(rxBuf[i]); Debug.print(",");
-      }
-      Debug.print(">");
-    }
-    Debug.println();
-  }
 
+      if ((rxId & 0x40000000) == 0x40000000) {
+        sprintf(msgString, " REMOTE REQUEST FRAME");
+        //Debug.print(msgString);
+      } else {
+        for (byte i = 0; i < len; i++) {
+          //sprintf(msgString, " 0x%.2X", rxBuf[i]);
+          //Debug.println(msgString);
+          Debug.print(rxBuf[i]); Debug.print(",");
+        }
+        Debug.print(">");
+      }
+      Debug.println();
+    }
+  }
   /*
     if (CAN0.checkError() == CAN_CTRLERROR) {
     Serial.print("Error register value: ");
@@ -1121,12 +1122,12 @@ void FirmwareUpload()
         do {
           c = Serial.read();
           /*
-          server.sendContent(String(c));
-          delay(10);
-          timeout++;
+            server.sendContent(String(c));
+            delay(10);
+            timeout++;
           */
         } while (c != 'S' && c != '2'); // && timeout < 255);
-        
+
         server.sendContent("\n" + String(timeout) + "\n");
 
         if (c == '2')

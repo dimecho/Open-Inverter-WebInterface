@@ -31,9 +31,13 @@ for %%a in (%array%) do (
 )
 copy ..\Web\js\menu-esp8266.json data\js\menu.json
 
-set array=background.png safety.png
+set array=background.jpg safety.png
 for %%a in (%array%) do (
   copy ..\Web\img\%%a data\img
+)
+
+for /R "%~dp0\data" %%F in (*.css) do (
+	powershell -ExecutionPolicy Bypass -Command "(Get-Content %%F).replace('background.png', 'background.jpg') | Set-Content %%F"
 )
 
 copy "..\Web\pcb\Hardware v1.0\diagrams\test.png" data\pcb\v1.0
@@ -147,9 +151,10 @@ FOR /R .\data %%I IN (*) DO (
 echo Size: %fs%
 echo Size on disk: %fs_ondisk%
 
-::"%~dp0\tools\mkspiffs.exe" -c .\data\  -b 8192 -p 256 -s %fs_ondisk% flash-spiffs.bin
-"%~dp0\tools\mkspiffs.exe" -c .\data\  -b 8192 -p 256 -s 643072 flash-spiffs.bin
-::"%~dp0\tools\mkspiffs.exe" -c .\data\  -b 8192 -p 256 -s 1028096 flash-spiffs.bin
+::"%~dp0\tools\mkspiffs.exe" -c .\data\ -b 8192 -p 256 -s %fs_ondisk% flash-spiffs.bin
+::"%~dp0\tools\mkspiffs.exe" -c .\data\ -b 8192 -p 256 -s 643072 flash-spiffs.bin
+"%~dp0\tools\mkspiffs.exe" -c .\data\ -b 8192 -p 256 -s 580000 flash-spiffs.bin
+::"%~dp0\tools\mkspiffs.exe" -c .\data\ -b 8192 -p 256 -s 1028096 flash-spiffs.bin
 ::"%~dp0\tools\mkspiffs.exe" -i flash-spiffs.bin
 pause
 GOTO:EOF

@@ -187,6 +187,10 @@ function displayHWVersion()
     }
 };
 
+function setDefaultValue(value, defaultValue){
+   return (value === undefined) ? defaultValue : value.value;
+};
+
 function selectSerial()
 {
     //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?serial=" + $("#serial-interface").val(), {
