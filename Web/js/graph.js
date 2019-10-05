@@ -1,3 +1,5 @@
+
+var show_data_labels = false;
 var chart_motor_datasets = [{
 	type: "line",
 	id: "speed",
@@ -9,8 +11,9 @@ var chart_motor_datasets = [{
 	hoverBorderColor: "rgba(255,99,132,1)",
 	data: [0],
 	datalabels: {
-		display: false
-	}
+		display: show_data_labels
+	},
+	//yAxisID: "y-axis-0",
 }, {
 	type: "line",
 	id: "potnom",
@@ -22,8 +25,9 @@ var chart_motor_datasets = [{
 	hoverBorderColor: "rgba(0,0,0,0.5)",
 	data: [0],
 	datalabels: {
-		display: false
-	}
+		display: show_data_labels
+	},
+	//yAxisID: "y-axis-1",
 }];
 var chart_temp_datasets = [{
 	type: "line",
@@ -36,7 +40,7 @@ var chart_temp_datasets = [{
 	hoverBorderColor: "rgba(0,0,0,0.5)",
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }, {
 	type: "line",
@@ -49,7 +53,7 @@ var chart_temp_datasets = [{
 	hoverBorderColor: "rgba(0,0,0,0.5)",
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }];
 var chart_voltage_datasets = [{
@@ -63,7 +67,7 @@ var chart_voltage_datasets = [{
 	hoverBorderColor: "rgba(0,0,0,0.5)",
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }, {
 	type: "line",
@@ -76,7 +80,7 @@ var chart_voltage_datasets = [{
 	hoverBorderColor: "rgba(255,99,132,1)",
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }];
 var chart_amperage_datasets = [{
@@ -90,7 +94,7 @@ var chart_amperage_datasets = [{
 	hoverBorderColor: "rgba(0,0,0,0.5)",
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }, {
 	type: "line",
@@ -103,7 +107,7 @@ var chart_amperage_datasets = [{
 	hoverBorderColor: "rgba(0,0,0,0.5)",
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }];
 
@@ -118,7 +122,7 @@ var chart_frequency_datasets = [{
 	hoverBorderColor: "#ff0000",
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }, {
 	type: "line",
@@ -131,7 +135,7 @@ var chart_frequency_datasets = [{
 	hoverBorderColor: "#33b5e5",
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }, {
 	type: "line",
@@ -144,7 +148,7 @@ var chart_frequency_datasets = [{
 	hoverBorderColor: "#bdbdbd",
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }, {
 	type: "line",
@@ -156,7 +160,7 @@ var chart_frequency_datasets = [{
 	hoverBorderColor: "#FF8800",
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }];
 
@@ -168,7 +172,7 @@ var chart_pwm_datasets = [{
 	borderWidth: 1,
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }, {
 	hidden: true,
@@ -179,7 +183,7 @@ var chart_pwm_datasets = [{
 	borderWidth: 1,
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }, {
 	hidden: true,
@@ -190,7 +194,7 @@ var chart_pwm_datasets = [{
 	borderWidth: 1,
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }, {
 	type: "line",
@@ -200,7 +204,7 @@ var chart_pwm_datasets = [{
 	borderWidth: 1,
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }, {
 	type: "line",
@@ -210,7 +214,7 @@ var chart_pwm_datasets = [{
 	borderWidth: 1,
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }, {
 	type: "line",
@@ -220,7 +224,7 @@ var chart_pwm_datasets = [{
 	borderWidth: 1,
 	data: [0],
 	datalabels: {
-		display: false
+		display: show_data_labels
 	}
 }, {
 	type: "line",
@@ -228,7 +232,7 @@ var chart_pwm_datasets = [{
 	backgroundColor: "rgba(0, 0, 0, 0)",
 	//borderColor: "#39e600",
 	borderWidth: 1,
-	data: Array(1000).fill(0),
+	data: [0], //Array(1000).fill(0),
 	//borderDash: [10,5],
 	datalabels: {
 		//display: false,
@@ -244,7 +248,7 @@ var chart_pwm_datasets = [{
 	backgroundColor: "rgba(0, 0, 0, 0)",
 	//borderColor: "#39e600",
 	borderWidth: 1,
-	data: Array(1000).fill(0),
+	data: [0], //Array(1000).fill(0),
 	//borderDash: [10,5],
 	datalabels: {
 		//display: false,
@@ -257,16 +261,18 @@ var chart_pwm_datasets = [{
 }];
 
 var chart_can_datasets = [];
-
+var updateURL = "";
 var activeTab = "";
 var activeTabText = "";
 var syncronizedDelay = 600;
 var syncronizedDelayRatio = 15;
 var syncronizedAccuracy = 0;
 var graphDivision = 60;
+var pageLimit = 4;
+var zoomFactor = 1;
 var streamTimer;
-var data;
-var options;
+var data = {};
+var options = {};
 var chart;
 var ctxAxis;
 var ctx;
@@ -460,14 +466,16 @@ function buildGraphMenu() {
 	var btn_points = $("<button>", { class: "btn btn-primary btn-space", onClick: "buildPointsMenu();$('.graphPoints').trigger('click');" }).append(btn_points_i).append(" Select Points");
     var btn_start = $("<button>", { class: "btn btn-success btn-space", onClick: "startChart()" }).append("Start Graph");
     var btn_stop = $("<button>", { class: "btn btn-danger btn-space", onClick: "stopChart()" }).append("Stop Graph");
+    var e_settings = $("<i>", { class: "icon-status icons icon-settings p-2", onClick: "$('.graphSettings').trigger('click');", "data-toggle": "tooltip", "title": "Settings" });
     var e_pdf = $("<i>", { class: "icon-status icons icon-pdf p-2", onClick: "exportPDF(true)", "data-toggle": "tooltip", "title": "Export PDF" });
     var e_img = $("<i>", { class: "icon-status icons icon-png p-2", onClick: "exportPDF()", "data-toggle": "tooltip", "title": "Export Image" });
     var e_csv = $("<i>", { class: "icon-status icons icon-csv p-2", onClick: "exportCSV()", "data-toggle": "tooltip", "title": "Export CSV" });
 
     var z = $("#buildGraphZoom").empty();
-    var input = $("<input>", { id: "zoom", type: "text", "data-provide": "slider"} );
-    z.append(input);
-    input.ionRangeSlider({
+    var input_zoom = $("<input>", { id: "zoom", type: "text", "data-provide": "slider"} );
+    z.append(input_zoom);
+
+    input_zoom.ionRangeSlider({
         skin: "big",
         grid: true,
         step: 1,
@@ -476,17 +484,37 @@ function buildGraphMenu() {
         from: 100,
         postfix: " %",
         onFinish: function (e) {
-            console.log(e.from);
+
+            if(zoomFactor < e.from)
+            {
+                console.log("ZoomIn");
+            }else{
+                console.log("ZoomOut");
+            }
+
+            //var pt = canvas.getBoundingClientRect();
+            //console.log(pt);
+
+            zoomFactor = e.from/100;
+
+            ctx.save();
+            ctx.scale(zoomFactor,zoomFactor);
+            //ctx.translate(0,0);
+            chart.update();
+            ctx.restore();
+
+            console.log(zoomFactor);
         }
     });
 
     var s = $("#buildGraphSlider").empty();
     var slow_img = "Slow  ";
-    var input = $("<input>", { id: "speed", type: "text", "data-provide": "slider"} );
+
+    var input_speed = $("<input>", { id: "speed", type: "text", "data-provide": "slider"} );
     var fast_img = "  Fast";
     
     //s.append(slow_img);
-    s.append(input);
+    s.append(input_speed);
     //s.append(fast_img);
 
     function speed_prettify (n) {
@@ -498,7 +526,7 @@ function buildGraphMenu() {
         return n;
     };
     
-    input.ionRangeSlider({
+    input_speed.ionRangeSlider({
         skin: "big",
         grid: true,
         step: 1,
@@ -509,8 +537,10 @@ function buildGraphMenu() {
         //postfix: " %",
         onFinish: function (e) {
             //console.log(e.from);
+            var sync_delay = e.from * syncronizedDelayRatio;
+            updateURL = updateURL.replace("&delay=" + syncronizedDelay,"&delay=" + sync_delay);
 
-            syncronizedDelay = e.from * syncronizedDelayRatio;
+            syncronizedDelay = sync_delay;
             console.log(syncronizedDelay);
 
             //var t = Math.round(syncronizedDelay / 1000 * 60);
@@ -530,11 +560,8 @@ function buildGraphMenu() {
     menu_buttons.append(btn_start);
     menu_buttons.append(btn_stop);
 
-    $.getScript("js/jspdf.js").done(function(script, textStatus) {
-        export_buttons.append(e_pdf);
-    });
+    export_buttons.append(e_settings);
     export_buttons.append(e_img);
-    export_buttons.append(e_csv);
 
     if (os === "mobile") {
 
@@ -588,6 +615,11 @@ function buildGraphMenu() {
 
     }else{
 
+        $.getScript("js/jspdf.js").done(function(script, textStatus) {
+            export_buttons.append(e_pdf);
+        });
+        export_buttons.append(e_csv);
+
         var ul = $("<ul>", { class: "nav nav-tabs", role: "tablist"});
         var tabcontent = $("<div>", { class: "tab-content" });
 
@@ -625,6 +657,8 @@ function buildGraphMenu() {
             initChart();
         });
     }
+
+    pageLimit = graphDivision * pageLimit;
 
     $('[data-toggle="tooltip"]').tooltip();
 };
@@ -784,13 +818,13 @@ function initChart() {
     if (chart) chart.destroy();
     
     chart = new Chart(ctx, {
-        //type: 'line',
-        type: 'bar',
+        type: 'line',
+        //type: 'bar',
         data: data,
         options: options
     });
     //chart.update();
-	
+    
 	$("#buildPointsMenu").empty();
 
     $('.chartAreaWrapper2').width($('.chartAreaWrapper').width());
@@ -834,20 +868,20 @@ function startChart() {
     //} else if (activeTab === "#graph6") {
 		/*
         if(getJSONFloatValue('opmode') > 0) {
-            updateChart(url, ["pwmfrq", "deadtime"]);
+            updateChart(["pwmfrq", "deadtime"]);
         }else{
             $.notify({ message: 'Inverter is OFF - PWM cannot be generated' }, { type: 'danger' });
         }
 		*/
 	}
 
-	var url = "serial.php?stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay;
+	updateURL = "serial.php?stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay;
 	if(devmode == true) {
 		devModeNotify();
-		url = "graph.php?debug=1&stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay;
+		updateURL = "graph.php?debug=1&stream=" + value.toString() + "&loop=1&delay=" + syncronizedDelay;
 	}
 
-	updateChart(url,value,autosize,accuracy);
+	updateChart(value,autosize,accuracy);
 };
 
 function idDatasets(dataset) {
@@ -1114,12 +1148,8 @@ function initPWMChart(duration) {
                 */
             }
         },
-        zoom: {
-            enabled: true,
-            mode: 'y'
-        },
         animation: {
-            duration: duration
+            duration: 0 //duration
         }
     };
 };
@@ -1191,12 +1221,8 @@ function initCANChart(duration) {
                 }
             }]
         },
-        zoom: {
-            enabled: true,
-            mode: 'y'
-        },
         animation: {
-            duration: duration
+            duration: 0 //duration
         }
     };
 };
@@ -1271,12 +1297,8 @@ function initFrequenciesChart(duration) {
                 }
             }]
         },
-        zoom: {
-            enabled: true,
-            mode: 'y'
-        },
         animation: {
-            duration: duration
+            duration: 0 //duration
         }
     };
 };
@@ -1337,7 +1359,7 @@ function initAmperageChart(duration) {
                 }
             }],
             yAxes: [{
-                display: true,
+            	id: "y-axis-1",
                 position: 'left',
                 scaleLabel: {
                     fontSize: ctxFont,
@@ -1353,12 +1375,8 @@ function initAmperageChart(duration) {
                 }
             }]
         },
-        zoom: {
-            enabled: true,
-            mode: 'y'
-        },
         animation: {
-            duration: duration
+            duration: 0 //duration
         }
     };
 };
@@ -1371,6 +1389,7 @@ function initMotorChart(duration) {
     };
 
     options = {
+        responsive: false,
         legend: {
             display: true,
             labels: {
@@ -1390,7 +1409,6 @@ function initMotorChart(duration) {
         maintainAspectRatio: false,
         scales: {
             xAxes: [{
-                display: true,
                 position: 'bottom',
                 scaleLabel: {
                     fontSize: ctxFont,
@@ -1404,7 +1422,7 @@ function initMotorChart(duration) {
                 }
             }],
             yAxes: [{
-                display: true,
+                id: "y-axis-0",
                 position: 'left',
                 scaleLabel: {
                     fontSize: ctxFont,
@@ -1413,35 +1431,45 @@ function initMotorChart(duration) {
                 },
                 ticks: {
                     fontSize: ctxFont,
-                    reverse: false,
                     stepSize: 500,
                     suggestedMin: 0, //important
                     suggestedMax: 5000 //important
                 }
             }]
         },
-        /*
-        pan: {
-            enabled: true,
-            mode: 'y'
-        },
-        */
-        zoom: {
-            enabled: true,
-            mode: 'y',
-            //limits: {
-            //    max: 100,
-            //    min: 0.5
-            //}
-        },
         animation: {
-            duration: duration,
+            duration: 0 //duration,
 			/*
 			onComplete: function(animation) {
 			}
 			*/
         }
     };
+    /*
+    if(chart_motor_datasets.length > 1) //double y-Axis
+    {
+    	var y_axis = {
+	        id: "y-axis-1",
+	        position: 'left',
+	        scaleLabel: {
+	            fontSize: ctxFont,
+	            display: true,
+	            labelString: chart_motor_datasets[1].label
+	        },
+	        ticks: {
+	            fontSize: ctxFont,
+	            stepSize: 10,
+	            suggestedMin: 0,
+	            suggestedMax: 100
+	        },
+	        gridLines: {
+	            drawOnChartArea: true
+	        }
+	    };
+    	options.scales.yAxes.push(y_axis);
+    	//console.log(options);
+    }
+    */
 };
 
 function initTemperatureChart(duration) {
@@ -1501,12 +1529,8 @@ function initTemperatureChart(duration) {
                 }
             }]
         },
-        zoom: {
-            enabled: true,
-            mode: 'y'
-        },
         animation: {
-            duration: duration
+            duration: 0 //duration
         }
     };
 };
@@ -1575,17 +1599,13 @@ function initVoltageChart(duration) {
                 }
             }]
         },
-        zoom: {
-            enabled: true,
-            mode: 'y'
-        },
         animation: {
             duration: 0 //duration
         }
     };
 };
 
-function updateChart(url, value, autosize, accuracy) {
+function updateChart(value, autosize, accuracy) {
 
     //clearTimeout(streamTimer);
     
@@ -1595,7 +1615,7 @@ function updateChart(url, value, autosize, accuracy) {
     var last = (value.length - 1);
     var i = 0;
 
-	xhr = $.ajax(url, {
+	xhr = $.ajax(updateURL, {
         type: "GET",
         async: true,
         timeout: 2000,
@@ -1614,18 +1634,20 @@ function updateChart(url, value, autosize, accuracy) {
                     last_response_len = response.length;
                 }
                 //console.log(this_response);
-
-                var split = this_response.slice(0, -1).split("\n");
+                var split = this_response.trim().split("\n");
+                //console.log(split);
 				
-                for (var d = 0; d < split.length; d++)
+                for (var d = 0; d < split.length; d++) //stream is unpredictable - can get all-at-once or partial array
                 {
 					var v = value[i];
+                    var point = parseFloat(split[d]);
+
+                    //console.log(v + ":" + point);
 					//console.log(i + "-" + last);
 					
                     if (v === "pwmfrq")
                     {
-                        var pwmfrq = parseFloat(split[d]);
-                        var deadtime = parseFloat(split[d+1]);
+                        //var deadtime = parseFloat(split[d+1]);
                         var waveGraphRatio = 0.01;
 
                         data.datasets[0].data = sinePWM(4,-2.25,waveGraphRatio); //red
@@ -1636,90 +1658,73 @@ function updateChart(url, value, autosize, accuracy) {
                         //data.datasets[4].data = sineWave(4,1,2.0,waveGraphRatio); //green
                         //data.datasets[5].data = sineWave(4,1,0,waveGraphRatio); //blue
                         
-                        break;
-                    }else if (v !== "fweak") {
-                        var point = parseFloat(split[d]);
-                        //console.log(v + ":" + point);
+                        continue; //break;
+                    }else if (v === "ampnom") {
+                        var max = Math.max.apply(null, data.datasets[i].data);
+                        data.datasets[i + 1].data = sineWave(2,(max * point / 100),0,0.1);
+                    } else {
 
-                        if (v === "ampnom") {
-                            var max = Math.max.apply(Math, data.datasets[i].data);
-                            data.datasets[i + 1].data = sineWave(2,(max * point / 100),0,0.1);
-                        } else {
+                        if (accuracy) {
+                            var p = data.datasets[i].data[l - 1];
+                            var c = p * accuracy;
+                            console.log("Last point:" + p + ">" +c);
 
-							l = data.datasets[i].data.length;
-							
-                            if (accuracy) {
-                                var p = data.datasets[i].data[l - 1];
-                                var c = p * accuracy;
-                                //console.log("Last point:" + p + ">" +c);
-
-                                if (syncronizedAccuracy < 3 && point < c) {
-									console.log("Correct: " + v + " " + point + " > " + p);
-                                    point = p;
-                                    //if (p != c)
-										syncronizedAccuracy++;
-                                } else {
-                                    syncronizedAccuracy = 0;
-                                }
+                            if (syncronizedAccuracy < 3 && point < c) {
+								console.log("Correct: " + v + " " + point + " > " + p);
+                                point = p;
+                                //if (p != c)
+									syncronizedAccuracy++;
+                            } else {
+                                syncronizedAccuracy = 0;
                             }
-
-                            if(i == 0)
-                            {
-                                //Scroll
-                                if (l == data.labels.length) {
-                                    initTimeAxis(graphDivision, data.labels);
-                                    var newwidth = $('.chartAreaWrapper').width() + chart.width;
-                                    $('.chartAreaWrapper2').width(newwidth);
-                                    $('.chartAreaWrapper').animate({scrollLeft:newwidth}, 1000);
-									
-									var copyWidth = chart.scales['y-axis-0'].width - 10;
-									var copyHeight = chart.scales['y-axis-0'].height + chart.scales['y-axis-0'].top + 10;
-									ctxAxis.canvas.height = copyHeight;
-									ctxAxis.canvas.width = copyWidth;
-									ctxAxis.drawImage(chart.chart.canvas, 0, 0, copyWidth, copyHeight, 0, 0, copyWidth, copyHeight);
-
-                                }else if (l > (graphDivision * 5)){
-									//console.log("Max scroll pages ...reset");
-                                    data.datasets[i].data = []; //empty
-                                    data.labels = initTimeAxis(graphDivision);
-                                    $('.chartAreaWrapper2').width($('.chartAreaWrapper').width());
-                                }
-								
-                                //Time-stamp
-                                if (l / 10 % 1 == 0)
-                                {
-                                    var d = new Date();
-                                    var hr = d.getHours();
-                                    /*
-                                    var ampm = "am";
-                                    if( hr > 12 ) {
-                                        hr -= 12;
-                                        ampm = "pm";
-                                    }
-                                    */
-                                    //console.log(l);
-                                    data.labels[l] = hr + ":" + d.getMinutes() + ":" + d.getSeconds();
-                                }
-                            }
-
-                            data.datasets[i].data.push(point);
-                            //console.log(data.datasets[i].data);
                         }
+
+                        data.datasets[i].data.push(point);
+                        //console.log(data.datasets[i].data);
                     }
-                    
-                    if (i == last)
-                    {
+                    //To keep track of segmented stream
+                    if (i == last) {
                         i = 0;
-                    }
-                    else
-                    {
+                    } else {
                         i++;
                     }
+                }
+
+                l = data.datasets[last].data.length;
+                //Scroll
+                if (l == data.labels.length) {
+                    initTimeAxis(graphDivision, data.labels);
+                    var newwidth = $('.chartAreaWrapper').width() + chart.width;
+                    $('.chartAreaWrapper2').width(newwidth);
+                    $('.chartAreaWrapper').animate({scrollLeft:newwidth}, 1000);
+                    
+                    var copyWidth = chart.scales['y-axis-0'].width - 10;
+                    var copyHeight = chart.scales['y-axis-0'].height + chart.scales['y-axis-0'].top + 10;
+                    ctxAxis.canvas.height = copyHeight;
+                    ctxAxis.canvas.width = copyWidth;
+                    ctxAxis.drawImage(chart.chart.canvas, 0, 0, copyWidth, copyHeight, 0, 0, copyWidth, copyHeight);
+
+                }else if (l > pageLimit) {
+                    //console.log("Max scroll pages ...reset");
+                    for (var x = 0; x <= last; x++) {
+                        data.datasets[x].data = []; //empty
+                    }
+                    data.labels = initTimeAxis(graphDivision);
+                    $('.chartAreaWrapper2').width($('.chartAreaWrapper').width());
+                }
+                
+                //Time-stamp
+                if (l / 10 % 1 == 0)
+                {
+                    var d = new Date();
+                    var hr = d.getHours();
+                    //console.log(l);
+                    data.labels[l] = hr + ":" + d.getMinutes() + ":" + d.getSeconds();
                 }
                 
                 if (autosize) { //&& l == 1) //do it at start
 
-                    var largest = Math.max.apply(Math, data.datasets[0].data);
+                    var largest = Math.max.apply(null, data.datasets[0].data);
                     //console.log("yAxes Sale:" + largest);
 
                     var step = 50;
@@ -1744,13 +1749,13 @@ function updateChart(url, value, autosize, accuracy) {
     }).done(function()
     {
         //streamTimer = setTimeout(function() {
-            updateChart(url, value, autosize, accuracy);
+            updateChart(value, autosize, accuracy);
         //}, syncronizedDelay);
     }).fail(function(jqXHR, textStatus) {
         if(textStatus === "timeout")
         {
             streamTimer = setTimeout(function() {
-                updateChart(url, value, autosize, accuracy);
+                updateChart(value, autosize, accuracy);
             }, 1000);
             //this.timeoutCount++;
         }

@@ -107,6 +107,7 @@ function basicChecks(json)
 	var deadtime = setDefaultValue(json.deadtime, 0);
 	var udc = setDefaultValue(json.udc, 0);
 	var udcsw = setDefaultValue(json.udcsw, 0);
+    var udcnom = setDefaultValue(json.udcnom, 0);
 
 	if(udc > udcsw) //Get real operating voltage
 	{
@@ -119,6 +120,9 @@ function basicChecks(json)
 			$.notify({ message: 'Field weakening "fweak" might be too high' }, { type: 'warning' });
 		}
 	}
+    if (udcnom > udc) {
+        $.notify({ message: '"udcnom" is higher than detected voltage "udc"' }, { type: 'warning' });
+    }
 	if(fweak === 0) {
 		$.notify({ message: 'Field weakening "fweak" is dangerously low. Motor may jump on startup' }, { type: 'danger' });
 	}
@@ -154,13 +158,14 @@ function _boostSlipCalculator(fslipconstmax,fslipmax,fconst,boost,fweak,udcnom,u
     var adj_factor_calc = 1+(udc_diff/udcnom);
     var boost_calc = (boost/adj_factor_calc);
     var fweak_calc = (fweak*adj_factor_calc);
-    var fslip_change_calc = (fweak-fweak_calc)*(fslipconstmax-fslipmax)/(fconst-fweak);
+    var fslip_change_calc = (fweak-fweak_calc)*((fslipconstmax-fslipmax)/(fconst-fweak));
     /*
-    console.log(udc_diff);
-    console.log(adj_factor_calc);
-    console.log(boost_calc);
-    console.log(fweak_calc);
-    console.log(fslip_change_calc);
+    console.log("udc " + udc);
+    console.log("udc_diff " + udc_diff);
+    console.log("adj_factor_calc " + adj_factor_calc);
+    console.log("boost_calc " + boost_calc);
+    console.log("fweak_calc " + fweak_calc);
+    console.log("fslip_change_calc " + fslip_change_calc);
     */
     return [boost_calc, fweak_calc];
 };
@@ -201,144 +206,177 @@ function boostSlipCalculator()
     $(".calculator").trigger("click");
 
     $.getScript("js/chart.js").done(function(script, textStatus) {
-        
-        var ctxFont = 16;
-        var chart_boost_datasets = {
-            type: "line",
-            label: "boost",
-            fill: false,
-            backgroundColor: "rgba(255,99,132, 0.5)",
-            borderColor: "rgba(255,99,132)",
-            borderWidth: 2,
-            data: [boost],
-            yAxisID: "y-axis-1",
-        };
+        $.getScript("js/chartjs-plugin-annotation.js").done(function(script, textStatus) {
 
-        var chart_fweak_datasets = {
-            type: "line",
-            label: "fweak",
-            fill: false,
-            backgroundColor: "rgba(51, 153, 255, 0.5)",
-            borderColor: "rgba(51, 153, 255)",
-            borderWidth: 2,
-            data: [fweak],
-            yAxisID: "y-axis-2",
-        };
+            var ctxFont = 16;
+            var chart_boost_datasets = {
+                type: "line",
+                label: "boost",
+                fill: false,
+                backgroundColor: "rgba(255,99,132, 0.5)",
+                borderColor: "rgba(255,99,132)",
+                borderWidth: 2,
+                tooltipHidden: false,
+                data: [],
+                yAxisID: "y-axis-0",
+            };
 
-        var chart_udc_datasets = {
-            type: "line",
-            label: "udc",
-            lineTension: 0,
-            backgroundColor: "rgba(102, 255, 51, 0.4)",
-            borderColor: "rgba(102, 255, 51)",
-            borderWidth: 2,
-            data: [] //udc representation
-        };
+            var chart_fweak_datasets = {
+                type: "line",
+                label: "fweak",
+                fill: false,
+                backgroundColor: "rgba(51, 153, 255, 0.5)",
+                borderColor: "rgba(51, 153, 255)",
+                borderWidth: 2,
+                tooltipHidden: false,
+                data: [],
+                yAxisID: "y-axis-1",
+            };
 
-        var udc_segment = 6;
-        var boost_segment = 500;
-        var fweak_segment = 10;
-        var udc_drop = 5;
-        var udc_variable = []; //udc actual
-        var udc_n = Math.round(udc/100)*100;
+            var chart_udc_datasets = {
+                type: "line",
+                label: "udc",
+                lineTension: 0,
+                backgroundColor: "rgba(102, 255, 51, 0.4)",
+                borderColor: "rgba(102, 255, 51)",
+                borderWidth: 2,
+                tooltipHidden: true,
+                data: [], //udc representation
+                xAxisID: "x-axis-0"
+            };
 
-        if(udc > 55) {
-            udc_drop = 10;
-        }else if(udc > 100) {
-            udc_drop = 20;
-        }else if(udc > 300) {
-            udc_drop = 50;
-        }
+            var udc_segment = 8;
+            var boost_segment = 500;
+            var fweak_segment = 10;
+            var udc_drop = Math.round((udc-udcnom)/(udc_segment/1.8));
+            var udc_variable = []; //udc actual
+            var udc_n = Math.round(udc/100)*100;
 
-        for (var i = 0; i < udc_segment; i++) {
-            udc_variable.push(udc-(i*udc_drop));
-        }
-
-        for (var i = 0; i < udc_segment; i++) {
-            chart_udc_datasets.data.push(boost_n-(i*boost_segment/2)); //graph somewhere in the middle
-        }
-
-        for (var i = 1; i <= udc_segment; i++) {
-            var calc = _boostSlipCalculator(fslipconstmax,fslipmax,fconst,boost,fweak,udcnom,udc_variable[i]);
-            chart_boost_datasets.data.push(calc[0]);
-            chart_fweak_datasets.data.push(calc[1]);
-        }
-
-        data = {
-            labels: udc_variable,
-            datasets: [chart_boost_datasets,chart_fweak_datasets,chart_udc_datasets]
-        };
-
-        options = {
-            //responsive: true,
-            legend: {
-                display: true,
-                labels: {
-                    fontSize: ctxFont,
-                    fontColor: 'rgb(0, 0, 0)'
+            var udcnom_line = false;
+            for (var i = 0; i < udc_segment; i++) {
+                var u = udc-(i*udc_drop);
+                if(u < udcnom && udcnom_line == false) //insert udcnom as part of X-Axis
+                {
+                    udcnom_line = true;
+                    udc_variable.pop();
+                    udc_variable.push(udcnom);
+                }else{
+                    udc_variable.push(u);
                 }
-            },
-            tooltips: {
-                enabled: false
-            },
-            scales: {
-                xAxes: [{
-                    position: 'bottom',
-                    scaleLabel: {
-                        fontSize: ctxFont,
-                        display: true,
-                        labelString: 'udc (Volt)'
-                    },
-                }],
-                yAxes: [{
-                    id: "y-axis-1",
-                    position: 'right',
-                    scaleLabel: {
-                        fontSize: ctxFont,
-                        display: true,
-                        labelString: 'boost',
-                        fontColor: chart_boost_datasets.borderColor
-                    },
-                    ticks: {
-                        fontSize: ctxFont,
-                        stepSize: boost_segment,
-                        min: 0,
-                        max: boost_n + (boost_segment*2)
-                    },
-                    gridLines: {
-                        drawOnChartArea: true
-                    }
-                },{
-                    id: "y-axis-2",
-                    position: 'left',
-                    scaleLabel: {
-                        fontSize: ctxFont,
-                        display: true,
-                        labelString: 'fweak (Hz)',
-                        fontColor: chart_fweak_datasets.borderColor
-                    },
-                    ticks: {
-                        fontSize: ctxFont,
-                        stepSize: fweak_segment,
-                        min: 0,
-                        max: (fweak + (fweak_segment*2))
-                    },
-                    gridLines: {
-                        drawOnChartArea: true
-                    }
-                }]
             }
-        };
 
-        loader.hide();
+            //representation of udc using boost axis
+            var udc_graph = []; //show always positive
+            for (var i = 1; i <= udc_variable.length; i++) {
+                udc_graph.push(i*boost_segment/2); //graph somewhere in the middle
+            }
+            chart_udc_datasets.data = udc_graph.reverse();
 
-        var chart = new Chart(canvas, {
-            type: 'line',
-            data: data,
-            options: options
+            for (var i = 0; i < udc_variable.length; i++) {
+                var calc = _boostSlipCalculator(fslipconstmax,fslipmax,fconst,boost,fweak,udcnom,udc_variable[i]);
+                chart_boost_datasets.data.push(calc[0]);
+                chart_fweak_datasets.data.push(calc[1]);
+            }
+
+            data = {
+                labels: udc_variable,
+                datasets: [chart_boost_datasets,chart_fweak_datasets,chart_udc_datasets]
+            };
+
+            options = {
+                //responsive: true,
+                legend: {
+                    display: true,
+                    labels: {
+                        fontSize: ctxFont,
+                        fontColor: 'rgb(0, 0, 0)'
+                    }
+                },
+                tooltips: {
+                    //enabled: true,
+                    filter: function(tooltipItem, data) {
+                        return !data.datasets[tooltipItem.datasetIndex].tooltipHidden; // custom added prop to dataset
+                    }
+                },
+                scales: {
+                    xAxes: [{
+                        position: 'bottom',
+                        scaleLabel: {
+                            fontSize: ctxFont,
+                            display: true,
+                            labelString: 'udc (Volt)'
+                        },
+                    }],
+                    yAxes: [{
+                        id: "y-axis-0",
+                        position: 'right',
+                        scaleLabel: {
+                            fontSize: ctxFont,
+                            display: true,
+                            labelString: 'boost',
+                            fontColor: chart_boost_datasets.borderColor
+                        },
+                        ticks: {
+                            fontSize: ctxFont,
+                            stepSize: boost_segment,
+                            suggestedMin: 0,
+                            suggestedMax: boost_n + (boost_segment*2)
+                        },
+                        gridLines: {
+                            drawOnChartArea: true
+                        }
+                    },{
+                        id: "y-axis-1",
+                        position: 'left',
+                        scaleLabel: {
+                            fontSize: ctxFont,
+                            display: true,
+                            labelString: 'fweak (Hz)',
+                            fontColor: chart_fweak_datasets.borderColor
+                        },
+                        ticks: {
+                            fontSize: ctxFont,
+                            stepSize: fweak_segment,
+                            suggestedMin: 0,
+                            suggestedMax: fweak + (fweak_segment*2)
+                        },
+                        gridLines: {
+                            drawOnChartArea: true
+                        }
+                    }]
+                },
+                annotation: {
+                    annotations: [{
+                        type: "line",
+                        id: "a-line-0",
+                        mode: "vertical",
+                        scaleID: "x-axis-0",
+                        value: udcnom,
+                        borderColor: "black",
+                        borderWidth: 1,
+                        borderDash: [4, 4],
+                        label: {
+                          content: "udcnom",
+                          enabled: true,
+                          position: "top"
+                        }
+                    }
+                ]}
+            };
+
+            loader.hide();
+            
+            var chart = new Chart(canvas, {
+                type: 'line',
+                data: data,
+                options: options
+            });
+
+            if(chart_fweak_datasets.data[chart_fweak_datasets.data.length-1] < 0){
+                alert("udcnom is too low, adjust and re-calculate.");
+            }
         });
     });
-
 };
 
 function syncofsCalculator()
@@ -551,7 +589,7 @@ function buildParameters()
                     var syncofs_btn = $("<button>", {type:"button", class:"btn btn-primary", onclick:"syncofsCalculator()"});
                     var syncofs_calc = $("<i>", {class:"icons icon-magic"}).append(" Calculate");
                     td4.append(syncofs_btn.append(syncofs_calc));
-                } else if(key == "fweak") {
+                } else if(key == "udcnom") {
                     var fweak_btn = $("<button>", {type:"button", class:"btn btn-primary", onclick:"boostSlipCalculator()"});
                     var fweak_calc = $("<i>", {class:"icons icon-magic"}).append(" Calculate");
                     td4.append(fweak_btn.append(fweak_calc));

@@ -86,6 +86,7 @@ body {
 }
 .chartAreaWrapper {
   overflow-x: scroll;
+  overflow-y: scroll;
   position: relative;
   width: 100%;
 }

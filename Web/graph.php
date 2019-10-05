@@ -16,7 +16,7 @@
         <script src="js/potentiometer.js"></script>
         <script src="js/jquery.knob.js"></script>
         <script src="js/chart.js"></script>
-        <script src="js/chartjs-plugin-zoom.js"></script>
+        <script src="js/chartjs-plugin-annotation.js"></script>
         <script src="js/chartjs-plugin-datalabels.js"></script>
 		<script src="js/jscolor.js"></script>
         <script src="js/graph.js"></script>
@@ -76,6 +76,9 @@
             </div>
         </div>
         <br>
+        <a class="graphSettings" data-fancybox data-src="#graphSettings" href="javascript:;"></a>
+        <div class="hidden" id="graphSettings" style="width:60%;border-radius:5px">
+        </div>
 		<a class="graphPoints" data-fancybox data-src="#graphPoints" href="javascript:;"></a>
         <div class="hidden" id="graphPoints" style="width:60%;border-radius:5px">
             <center>
