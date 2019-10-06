@@ -78,14 +78,60 @@
         <br>
         <a class="graphSettings" data-fancybox data-src="#graphSettings" href="javascript:;"></a>
         <div class="hidden" id="graphSettings" style="width:60%;border-radius:5px">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <fieldset class="form-group">
+                            <legend>Chart Settings:</legend>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" onclick="" enabled> Round Sharp Edges
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" onclick=""> Show Data Labels
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" onclick=""> Show Animation
+                                </label>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="row"><hr></div>
+                <div class="row">
+                    <div class="col">Data Segments</div>
+                    <div class="col">
+                        <input type="text" name="dataSegments" class="form-control" value=1000>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">Max Scroll Pages</div>
+                    <div class="col">
+                        <input type="text" name="maxScroll" class="form-control" value=4>
+                    </div>
+                </div>
+                <div class="row"><hr></div>
+                <div class="row text-center">
+                    <div class="col">
+                        <button class="browse btn btn-primary" type="button" onClick="$.fancybox.close();"><i class="icons icon-ok"></i> OK</button>
+                    </div>
+                </div>
+            </div>
         </div>
 		<a class="graphPoints" data-fancybox data-src="#graphPoints" href="javascript:;"></a>
         <div class="hidden" id="graphPoints" style="width:60%;border-radius:5px">
-            <center>
-                <div id="buildPointsMenu"></div>
-                <br>
-                <button class="browse btn btn-primary" type="button" onClick="$.fancybox.close();"><i class="icons icon-ok"></i> OK</button>
-            </center>
+            <div class="container" id="buildPointsMenu"></div>
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col">
+                        <button class="browse btn btn-primary" type="button" onClick="$.fancybox.close();"><i class="icons icon-ok"></i> OK</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>

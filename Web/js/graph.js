@@ -1,4 +1,10 @@
-
+// Internet Explorer Fix
+function fill(size, content) {
+    for (; size--; this.push(content));
+    return this;
+}
+// ---------------------
+var json = {};
 var show_data_labels = false;
 var chart_motor_datasets = [{
 	type: "line",
@@ -13,7 +19,7 @@ var chart_motor_datasets = [{
 	datalabels: {
 		display: show_data_labels
 	},
-	//yAxisID: "y-axis-0",
+	yAxisID: "y-axis-0"
 }, {
 	type: "line",
 	id: "potnom",
@@ -27,7 +33,7 @@ var chart_motor_datasets = [{
 	datalabels: {
 		display: show_data_labels
 	},
-	//yAxisID: "y-axis-1",
+	yAxisID: "y-axis-1"
 }];
 var chart_temp_datasets = [{
 	type: "line",
@@ -41,7 +47,8 @@ var chart_temp_datasets = [{
 	data: [0],
 	datalabels: {
 		display: show_data_labels
-	}
+	},
+    yAxisID: "y-axis-0"
 }, {
 	type: "line",
 	id: "tmphs",
@@ -54,7 +61,8 @@ var chart_temp_datasets = [{
 	data: [0],
 	datalabels: {
 		display: show_data_labels
-	}
+	},
+    yAxisID: "y-axis-1"
 }];
 var chart_voltage_datasets = [{
 	type: "line",
@@ -68,7 +76,8 @@ var chart_voltage_datasets = [{
 	data: [0],
 	datalabels: {
 		display: show_data_labels
-	}
+	},
+    yAxisID: "y-axis-0"
 }, {
 	type: "line",
 	id: "uac",
@@ -81,7 +90,8 @@ var chart_voltage_datasets = [{
 	data: [0],
 	datalabels: {
 		display: show_data_labels
-	}
+	},
+    yAxisID: "y-axis-1"
 }];
 var chart_amperage_datasets = [{
 	type: "line",
@@ -95,7 +105,8 @@ var chart_amperage_datasets = [{
 	data: [0],
 	datalabels: {
 		display: show_data_labels
-	}
+	},
+    yAxisID: "y-axis-0"
 }, {
 	type: "line",
 	id: "idc",
@@ -108,7 +119,8 @@ var chart_amperage_datasets = [{
 	data: [0],
 	datalabels: {
 		display: show_data_labels
-	}
+	},
+    yAxisID: "y-axis-1"
 }];
 
 var chart_frequency_datasets = [{
@@ -123,7 +135,8 @@ var chart_frequency_datasets = [{
 	data: [0],
 	datalabels: {
 		display: show_data_labels
-	}
+	},
+    yAxisID: "y-axis-0"
 }, {
 	type: "line",
 	id: "fstat",
@@ -136,7 +149,8 @@ var chart_frequency_datasets = [{
 	data: [0],
 	datalabels: {
 		display: show_data_labels
-	}
+	},
+    yAxisID: "y-axis-1"
 }, {
 	type: "line",
 	id: "ampnom",
@@ -149,7 +163,8 @@ var chart_frequency_datasets = [{
 	data: [0],
 	datalabels: {
 		display: show_data_labels
-	}
+	},
+    yAxisID: "y-axis-2"
 }, {
 	type: "line",
 	label: "Amplitude Nominal",
@@ -161,7 +176,8 @@ var chart_frequency_datasets = [{
 	data: [0],
 	datalabels: {
 		display: show_data_labels
-	}
+	},
+    yAxisID: "y-axis-3"
 }];
 
 var chart_pwm_datasets = [{
@@ -232,7 +248,7 @@ var chart_pwm_datasets = [{
 	backgroundColor: "rgba(0, 0, 0, 0)",
 	//borderColor: "#39e600",
 	borderWidth: 1,
-	data: [0], //Array(1000).fill(0),
+	data: fill.call([],1000,0), //Array(1000).fill(0),
 	//borderDash: [10,5],
 	datalabels: {
 		//display: false,
@@ -248,7 +264,7 @@ var chart_pwm_datasets = [{
 	backgroundColor: "rgba(0, 0, 0, 0)",
 	//borderColor: "#39e600",
 	borderWidth: 1,
-	data: [0], //Array(1000).fill(0),
+	data: fill.call([],1000,0), //Array(1000).fill(0),
 	//borderDash: [10,5],
 	datalabels: {
 		//display: false,
@@ -260,6 +276,7 @@ var chart_pwm_datasets = [{
 	}
 }];
 
+var paramReadable = [];
 var chart_can_datasets = [];
 var updateURL = "";
 var activeTab = "";
@@ -299,6 +316,22 @@ $(document).ready(function () {
             xhr.abort();
     });
     */
+
+    json = sendCommand("json");
+    if(Object.keys(json).length == 0)
+    {
+        $.ajax("js/parameters.json", {
+          async: false,
+          dataType: "json",
+          success: function(data) {
+            json = data;
+            devmode = true;
+            devModeNotify();
+          }
+        });
+    }
+
+    paramReadable = {"speed":"Speed", "potnom":"Throttle", "tmpm":"Degree", "tmphs":"Degree", "udc":"Voltage", "uac":"Voltage", "idc":"DC Current"};
 
     var canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
@@ -340,58 +373,127 @@ $(document).ready(function () {
 				$.notify({ message: 'Too many points selected, 10 max' }, { type: 'warning' });
 			}else{
 				n.each(function(){
-					var cl = $("#" + this.id + "-jscolor");
-					console.log(this.id + " > #" + cl.val());
-					
-					var c = cl[0].style["background-color"];
-					console.log(c);
-					
-					var arrayHas = false;
+                    if(this.id != "") {
+    					var cl = $("#" + this.id + "-jscolor");
+    					console.log(this.id + " > #" + cl.val());
+    					
+    					var c = cl[0].style["background-color"];
+    					console.log(c);
+    					
+    					var arrayHas = false;
+                        var datasets = activeDatasets();
 
-					for (var i = 0, l = chart_motor_datasets.length; i < l; i++) {
-						//console.log(chart_motor_datasets[i].id);
-						if(chart_motor_datasets[i].id == this.id){
-							arrayHas = true;
-							break;
-						}
-					}
-					if(!arrayHas) {
-						var d = new Array(chart_motor_datasets[0].data.length).fill(0);
-						var dataset = {
-							type: "line",
-							id: this.id,
-							label: this.id,
-							backgroundColor: c.replace(")",", 0.2)"),
-							borderColor: c.replace(")",", 1)"),
-							borderWidth: 2,
-							//hoverBackgroundColor: "rgba(255,99,132,0.4)",
-							//hoverBorderColor: "rgba(255,99,132,1)",
-							data: d,
-							datalabels: {
-								display: false
-							}
-						};
-						//console.log(dataset);
-						if (activeTab === "#graph0") {
-							chart_motor_datasets.push(dataset);
-						} else if (activeTab === "#graph1") {
-							chart_temp_datasets.push(dataset);
-						} else if (activeTab === "#graph2") {
-							chart_voltage_datasets.push(dataset);
-						} else if (activeTab === "#graph3") {
-							chart_amperage_datasets.push(dataset);
-						} else if (activeTab === "#graph4") {
-							chart_frequency_datasets.push(dataset);
-                        } else if (activeTab === "#graph5") {
-                            chart_can_datasets.push(dataset);
-						}
-						chart.update();
-					}
+    					for (var i = 0, l = datasets.length; i < l; i++) { // Check if in graph list
+    						//console.log(chart_motor_datasets[i].id);
+    						if(datasets[i].id == this.id){
+    							arrayHas = true;
+    							break;
+    						}
+    					}
+    					if(!arrayHas) { // Do not double graph
+    						var d = fill.call([],datasets[0].data.length,0); //new Array(datasets[0].data.length).fill(0);
+    						var dataset = {
+    							type: "line",
+    							id: this.id,
+    							label: this.id,
+    							backgroundColor: c.replace(")",", 0.2)"),
+    							borderColor: c.replace(")",", 1)"),
+    							borderWidth: 2,
+    							//hoverBackgroundColor: "rgba(255,99,132,0.4)",
+    							//hoverBorderColor: "rgba(255,99,132,1)",
+    							data: d,
+                                datalabels: {
+                                    display: show_data_labels
+                                },
+                                yAxisID: "y-axis-" + (datasets.length-1)
+    						};
+    						//console.log(dataset);
+                            datasets.push(dataset);
+                            newYAxis(this.id,(datasets.length-1),chart.options,"left",true);
+                            //newYAxis(this.id,(datasets.length-1),chart.options,"left",false);
+
+    						chart.update();
+    					}
+                    }
 				});
 			}
 		}
 	});
 });
+
+function activeDatasets() {
+
+    if (activeTab === "#graph0") {
+        return chart_motor_datasets;
+    } else if (activeTab === "#graph1") {
+        return chart_temp_datasets;
+    } else if (activeTab === "#graph2") {
+        return chart_voltage_datasets;
+    } else if (activeTab === "#graph3") {
+        return chart_amperage_datasets;
+    } else if (activeTab === "#graph4") {
+        return chart_frequency_datasets;
+    } else if (activeTab === "#graph5") {
+        return chart_can_datasets
+    } else {
+        return;
+    }
+};
+
+function addYAxis(datasets,options) {
+
+    for (var i = 0, l = datasets.length; i < l; i++) {
+        if(i == 0) {
+            newYAxis(datasets[i].id,i,options,"left",true);
+        }else if (i == 1) {
+            newYAxis(datasets[i].id,i,options,"right",true);
+        }else{
+            newYAxis(datasets[i].id,i,options,"left",false);
+        }
+    }
+};
+
+function newYAxis(key,id,options,side,visible) {
+
+    var min = -1;
+    var max = 1;
+    var step = 0.1;
+
+    if(key != undefined) {
+        var label = paramReadable[key] || key;
+        if(json[key].unit != "" && json[key].unit != "dig") {
+            label += " (" + json[key].unit.toUpperCase() + ")";
+        }
+        if(json[key].unit != "Hz") {
+            min = json[key].minimum || 0;
+            max = json[key].maximum || 100;
+            step = Math.round(max/10);
+        }
+    }
+
+    var y_axis = {
+        display: visible,
+        id: "y-axis-" + id,
+        position: side,
+        scaleLabel: {
+            fontSize: ctxFont,
+            display: true,
+            labelString: label //datasets[1].label
+        },
+        ticks: {
+            fontSize: ctxFont,
+            stepSize: step,
+            suggestedMin: min, //auto scale
+            suggestedMax: max //auto scale
+        },
+        gridLines: {
+            drawOnChartArea: visible
+        }
+    };
+
+    options.scales.yAxes.push(y_axis);
+    //console.log(options);
+};
 
 function devModeNotify() {
     $.notify({ message: 'Developer Mode Enabled' }, { type: 'success' });
@@ -399,26 +501,12 @@ function devModeNotify() {
 };
 
 function buildPointsMenu() {
-	var menu = $("#buildPointsMenu"); //.empty();
+	var menu = $("#buildPointsMenu");
 	if (isEmpty(menu))
 	{
-		var json = {}; //sendCommand("json");
-		if(Object.keys(json).length == 0)
-		{
-			$.ajax("js/parameters.json", {
-			  async: false,
-			  dataType: "json",
-			  success: function(data) {
-				json = data;
-			  }
-			});
-		}
-		
-		var div = $("<div>", { class: "container" });
-		for(var key in json)
-		{
+		for(var key in json) {
+            
 			//console.log(key);
-			
 			var row = $("<div>", { class: "row" });
 			var col = $("<div>", { class: "col" });
 			
@@ -436,10 +524,8 @@ function buildPointsMenu() {
 			col.append(cl);
 			row.append(col);
 
-			div.append(row);
+            menu.append(row);
 		}
-
-		menu.append(div);
 		jscolor.installByClassName("jscolor");
 	}
 };
@@ -485,16 +571,6 @@ function buildGraphMenu() {
         postfix: " %",
         onFinish: function (e) {
 
-            if(zoomFactor < e.from)
-            {
-                console.log("ZoomIn");
-            }else{
-                console.log("ZoomOut");
-            }
-
-            //var pt = canvas.getBoundingClientRect();
-            //console.log(pt);
-
             zoomFactor = e.from/100;
 
             ctx.save();
@@ -508,14 +584,9 @@ function buildGraphMenu() {
     });
 
     var s = $("#buildGraphSlider").empty();
-    var slow_img = "Slow  ";
 
     var input_speed = $("<input>", { id: "speed", type: "text", "data-provide": "slider"} );
-    var fast_img = "  Fast";
-    
-    //s.append(slow_img);
     s.append(input_speed);
-    //s.append(fast_img);
 
     function speed_prettify (n) {
         if (n == 100) {
@@ -665,22 +736,7 @@ function buildGraphMenu() {
 
 function exportCSV() {
 
-    var datasets;
-
-    if (activeTab === "#graph0") {
-        datasets = chart_motor_datasets;
-    } else if (activeTab === "#graph1") {
-        datasets = chart_temp_datasets;
-    } else if (activeTab === "#graph2") {
-        datasets = chart_voltage_datasets;
-    } else if (activeTab === "#graph3") {
-        datasets = chart_amperage_datasets;
-    } else if (activeTab === "#graph4") {
-        datasets = chart_frequency_datasets;
-    } else {
-        return;
-    }
-
+    var datasets = activeDatasets();
     var points = idDatasets(datasets);
     var value = csvDatasets(datasets);
 
@@ -1216,7 +1272,7 @@ function initCANChart(duration) {
                     fontSize: ctxFont,
                     reverse: false,
                     stepSize: 10,
-                    suggestedMin: 0, //important
+                    suggestedMin: -260, //important
                     suggestedMax: 260 //important
                 }
             }]
@@ -1280,27 +1336,13 @@ function initFrequenciesChart(duration) {
                     stepSize: 50
                 }
             }],
-            yAxes: [{
-                display: true,
-                position: 'left',
-                scaleLabel: {
-                    fontSize: ctxFont,
-                    display: true,
-                    labelString: 'Frequency (Hz)'
-                },
-                ticks: {
-                    fontSize: ctxFont,
-                    reverse: false,
-                    stepSize: step,
-                    suggestedMin: 0, //important
-                    suggestedMax: fmax + step //important
-                }
-            }]
+            yAxes: [] //Dynamically added
         },
         animation: {
             duration: 0 //duration
         }
     };
+    addYAxis(chart_frequency_datasets,options);
 };
 
 function initAmperageChart(duration) {
@@ -1358,27 +1400,13 @@ function initAmperageChart(duration) {
                     stepSize: 50
                 }
             }],
-            yAxes: [{
-            	id: "y-axis-1",
-                position: 'left',
-                scaleLabel: {
-                    fontSize: ctxFont,
-                    display: true,
-                    labelString: 'Current (A)'
-                },
-                ticks: {
-                    fontSize: ctxFont,
-                    reverse: false,
-                    stepSize: step,
-                    suggestedMin: 0, //important
-                    suggestedMax: ocurlim + step //important
-                }
-            }]
+            yAxes: [] //Dynamically added
         },
         animation: {
             duration: 0 //duration
         }
     };
+    addYAxis(chart_amperage_datasets,options);
 };
 
 function initMotorChart(duration) {
@@ -1421,21 +1449,7 @@ function initMotorChart(duration) {
                     reverse: false
                 }
             }],
-            yAxes: [{
-                id: "y-axis-0",
-                position: 'left',
-                scaleLabel: {
-                    fontSize: ctxFont,
-                    display: true,
-                    labelString: 'Speed (RPM)'
-                },
-                ticks: {
-                    fontSize: ctxFont,
-                    stepSize: 500,
-                    suggestedMin: 0, //important
-                    suggestedMax: 5000 //important
-                }
-            }]
+            yAxes: [] //Dynamically added
         },
         animation: {
             duration: 0 //duration,
@@ -1445,31 +1459,8 @@ function initMotorChart(duration) {
 			*/
         }
     };
-    /*
-    if(chart_motor_datasets.length > 1) //double y-Axis
-    {
-    	var y_axis = {
-	        id: "y-axis-1",
-	        position: 'left',
-	        scaleLabel: {
-	            fontSize: ctxFont,
-	            display: true,
-	            labelString: chart_motor_datasets[1].label
-	        },
-	        ticks: {
-	            fontSize: ctxFont,
-	            stepSize: 10,
-	            suggestedMin: 0,
-	            suggestedMax: 100
-	        },
-	        gridLines: {
-	            drawOnChartArea: true
-	        }
-	    };
-    	options.scales.yAxes.push(y_axis);
-    	//console.log(options);
-    }
-    */
+
+    addYAxis(chart_motor_datasets,options);
 };
 
 function initTemperatureChart(duration) {
@@ -1512,27 +1503,14 @@ function initTemperatureChart(duration) {
                     reverse: false
                 }
             }],
-            yAxes: [{
-                display: true,
-                position: 'left',
-                scaleLabel: {
-                    fontSize: ctxFont,
-                    display: true,
-                    labelString: 'Degree °C'
-                },
-                ticks: {
-                    fontSize: ctxFont,
-                    reverse: false,
-                    stepSize: 10,
-                    suggestedMin: 0, //important
-                    suggestedMax: 110 //important
-                }
-            }]
+            yAxes: [] //Dynamically added
         },
         animation: {
             duration: 0 //duration
         }
     };
+
+    addYAxis(chart_temp_datasets,options);
 };
 
 function initVoltageChart(duration) {
@@ -1582,27 +1560,14 @@ function initVoltageChart(duration) {
                     reverse: false
                 }
             }],
-            yAxes: [{
-                display: true,
-                position: 'left',
-                scaleLabel: {
-                    fontSize: ctxFont,
-                    display: true,
-                    labelString: 'Voltage'
-                },
-                ticks: {
-                    fontSize: ctxFont,
-                    reverse: false,
-                    stepSize: step,
-                    suggestedMin: 0, //important
-                    suggestedMax: udclim //important
-                }
-            }]
+            yAxes: [] //Dynamically added
         },
         animation: {
             duration: 0 //duration
         }
     };
+
+    addYAxis(chart_voltage_datasets,options);
 };
 
 function updateChart(value, autosize, accuracy) {

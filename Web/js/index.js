@@ -167,7 +167,7 @@ function _boostSlipCalculator(fslipconstmax,fslipmax,fconst,boost,fweak,udcnom,u
     console.log("fweak_calc " + fweak_calc);
     console.log("fslip_change_calc " + fslip_change_calc);
     */
-    return [boost_calc, fweak_calc];
+    return [Math.round(boost_calc), Math.round(fweak_calc)];
 };
 
 function boostSlipCalculator()
@@ -317,6 +317,7 @@ function boostSlipCalculator()
                             fontColor: chart_boost_datasets.borderColor
                         },
                         ticks: {
+                            precision: 0,
                             fontSize: ctxFont,
                             stepSize: boost_segment,
                             suggestedMin: 0,
@@ -335,6 +336,8 @@ function boostSlipCalculator()
                             fontColor: chart_fweak_datasets.borderColor
                         },
                         ticks: {
+                            precision: 0,
+                            fixedStepSize: 1,
                             fontSize: ctxFont,
                             stepSize: fweak_segment,
                             suggestedMin: 0,
