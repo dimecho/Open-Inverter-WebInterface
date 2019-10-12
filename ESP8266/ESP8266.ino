@@ -482,8 +482,34 @@ void setup()
     else if (server.hasArg("stream"))
     {
       String l = server.arg("loop");
-      String t = server.arg("delay");
-      readStream("get " + server.arg("stream"), l.toInt(), t.toInt());
+      String d = server.arg("delay");
+      readStream("get " + server.arg("stream"), l.toInt(), d.toInt());
+    }
+  });
+  server.on("/graph.php", HTTP_GET, []() {
+
+    if (server.hasArg("debug"))
+    {
+      server.sendHeader("Cache-Control", "no-cache");
+      server.setContentLength(CONTENT_LENGTH_UNKNOWN);
+      server.send(200, text_plain, "");
+
+      char* s = string2char(server.arg("stream"));
+      int l = server.arg("loop").toInt();
+      int d = server.arg("delay").toInt();
+
+      for (uint16_t i = 0; i < l; i++)
+      {
+        String response = ""; //String(c);
+        for (uint16_t x = 0; s[x]; s[x] == ',' ? x++ : *s++) {
+          response += String(random(50, 100));
+          response += "\n";
+        }
+        server.sendContent(response);
+        delay(d);
+      }
+    } else {
+      HTTPServer("/graph.php");
     }
   });
   server.on("/snapshot.php", HTTP_GET, []() {
@@ -566,6 +592,13 @@ void setup()
   }
 
   pinMode(LED_BUILTIN, OUTPUT);
+}
+
+char* string2char(String command) {
+  if (command.length() != 0) {
+    char *p = const_cast<char*>(command.c_str());
+    return p;
+  }
 }
 
 void loop()
@@ -758,7 +791,7 @@ String PHP(String line, int i)
         while (f.available()) {
           l = f.readStringUntil('\n');
           line += PHP(l, x);
-          line += "\n";
+          //line += "\n";
         }
         f.close();
       }
@@ -803,7 +836,7 @@ bool HTTPServer(String file)
         while (f.available()) {
           l = f.readStringUntil('\n');
           response += PHP(l, 0);
-          response += "\n";
+          //response += "\n";
         }
         server.send(200, contentType, response);
       } else {

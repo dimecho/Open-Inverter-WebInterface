@@ -13,12 +13,12 @@
                         <div class="row"><hr></div>
                         <div class="row">
                             <div class="col col-md-4">
-                                <p>CAN Interface:</p>
+                                <p class="hidden" id="can-interface-label">CAN Interface:</p>
                                 <p>Inverter CAN Speed:</p>
 								<p>Inverter CAN Period:</p>
                             </div>
 							<div class="col col-md-4 text-center">
-								<select name="interface" class="form-control" onchange="setCANImage()" id="can-interface"></select>
+								<select name="interface" class="form-control" onchange="setCANImage()" id="can-interface" style="display: none;"></select>
 								<select name="speed" class="form-control" onchange="setCANSpeed()" id="can-speed">
 									<option value="0">250kbps</option>
 									<option value="1">500kbps</option>

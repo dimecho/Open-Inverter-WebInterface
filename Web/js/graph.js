@@ -2,23 +2,21 @@
 function fill(size, content) {
     for (; size--; this.push(content));
     return this;
-}
+};
 // ---------------------
 var json = {};
-var show_data_labels = false;
+var lineWidth = getCookie("graph.border") || 1;
+
 var chart_motor_datasets = [{
 	type: "line",
 	id: "speed",
 	label: "Motor RPM",
 	backgroundColor: "rgba(255,99,132,0.2)",
 	borderColor: "rgba(255,99,132,1)",
-	borderWidth: 2,
+	borderWidth: lineWidth,
 	hoverBackgroundColor: "rgba(255,99,132,0.4)",
 	hoverBorderColor: "rgba(255,99,132,1)",
 	data: [0],
-	datalabels: {
-		display: show_data_labels
-	},
 	yAxisID: "y-axis-0"
 }, {
 	type: "line",
@@ -26,13 +24,10 @@ var chart_motor_datasets = [{
 	label: "Throttle",
 	backgroundColor: "rgba(102, 255, 51, 0.2)",
 	borderColor: "rgba(0,0,0,0.2)",
-	borderWidth: 2,
+	borderWidth: lineWidth,
 	hoverBackgroundColor: "rgba(102, 255, 51, 0.4)",
 	hoverBorderColor: "rgba(0,0,0,0.5)",
 	data: [0],
-	datalabels: {
-		display: show_data_labels
-	},
 	yAxisID: "y-axis-1"
 }];
 var chart_temp_datasets = [{
@@ -41,13 +36,10 @@ var chart_temp_datasets = [{
 	label: "Motor",
 	backgroundColor: "rgba(51, 153, 255,0.2)",
 	borderColor: "rgba(0,0,0,0.2)",
-	borderWidth: 2,
+	borderWidth: lineWidth,
 	hoverBackgroundColor: "rgba(51, 153, 255,0.4)",
 	hoverBorderColor: "rgba(0,0,0,0.5)",
 	data: [0],
-	datalabels: {
-		display: show_data_labels
-	},
     yAxisID: "y-axis-0"
 }, {
 	type: "line",
@@ -55,13 +47,10 @@ var chart_temp_datasets = [{
 	label: "Inverter",
 	backgroundColor: "rgba(102, 255, 51,0.2)",
 	borderColor: "rgba(0,0,0,0.2)",
-	borderWidth: 2,
+	borderWidth: lineWidth,
 	hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
 	hoverBorderColor: "rgba(0,0,0,0.5)",
 	data: [0],
-	datalabels: {
-		display: show_data_labels
-	},
     yAxisID: "y-axis-1"
 }];
 var chart_voltage_datasets = [{
@@ -70,13 +59,10 @@ var chart_voltage_datasets = [{
 	label: "Battery",
 	backgroundColor: "rgba(102, 255, 51,0.2)",
 	borderColor: "rgba(0,0,0,0.2)",
-	borderWidth: 2,
+	borderWidth: lineWidth,
 	hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
 	hoverBorderColor: "rgba(0,0,0,0.5)",
 	data: [0],
-	datalabels: {
-		display: show_data_labels
-	},
     yAxisID: "y-axis-0"
 }, {
 	type: "line",
@@ -84,13 +70,10 @@ var chart_voltage_datasets = [{
 	label: "Inverter",
 	backgroundColor: "rgba(255,99,132,0.2)",
 	borderColor: "rgba(255,99,132,1)",
-	borderWidth: 2,
+	borderWidth: lineWidth,
 	hoverBackgroundColor: "rgba(255,99,132,0.4)",
 	hoverBorderColor: "rgba(255,99,132,1)",
 	data: [0],
-	datalabels: {
-		display: show_data_labels
-	},
     yAxisID: "y-axis-1"
 }];
 var chart_amperage_datasets = [{
@@ -99,13 +82,10 @@ var chart_amperage_datasets = [{
 	label: "AC Current",
 	backgroundColor: "rgba(51, 153, 255, 0.2)",
 	borderColor: "rgba(0,0,0,0.2)",
-	borderWidth: 2,
+	borderWidth: lineWidth,
 	hoverBackgroundColor: "rgba(51, 153, 255, 0.4)",
 	hoverBorderColor: "rgba(0,0,0,0.5)",
 	data: [0],
-	datalabels: {
-		display: show_data_labels
-	},
     yAxisID: "y-axis-0"
 }, {
 	type: "line",
@@ -113,13 +93,10 @@ var chart_amperage_datasets = [{
 	label: "DC Current",
 	backgroundColor: "rgba(102, 255, 51, 0.2)",
 	borderColor: "rgba(0,0,0,0.2)",
-	borderWidth: 2,
+	borderWidth: lineWidth,
 	hoverBackgroundColor: "rgba(102, 255, 51, 0.4)",
 	hoverBorderColor: "rgba(0,0,0,0.5)",
 	data: [0],
-	datalabels: {
-		display: show_data_labels
-	},
     yAxisID: "y-axis-1"
 }];
 
@@ -134,7 +111,7 @@ var chart_frequency_datasets = [{
 	hoverBorderColor: "#ff0000",
 	data: [0],
 	datalabels: {
-		display: show_data_labels
+		display: false
 	},
     yAxisID: "y-axis-0"
 }, {
@@ -143,13 +120,10 @@ var chart_frequency_datasets = [{
 	label: "Stator Frequency",
 	backgroundColor: "#90caf9",
 	borderColor: "#33b5e5",
-	borderWidth: 2,
+	borderWidth: lineWidth,
 	hoverBackgroundColor: "#90caf9",
 	hoverBorderColor: "#33b5e5",
 	data: [0],
-	datalabels: {
-		display: show_data_labels
-	},
     yAxisID: "y-axis-1"
 }, {
 	type: "line",
@@ -157,12 +131,12 @@ var chart_frequency_datasets = [{
 	label: "Amplitude Max",
 	backgroundColor: "rgba(0, 0, 0, 0)",
 	borderColor: "#bdbdbd",
-	borderWidth: 2,
+	borderWidth: lineWidth,
 	hoverBackgroundColor: "rgba(0, 0, 0, 0)",
 	hoverBorderColor: "#bdbdbd",
 	data: [0],
 	datalabels: {
-		display: show_data_labels
+		display: false
 	},
     yAxisID: "y-axis-2"
 }, {
@@ -170,13 +144,10 @@ var chart_frequency_datasets = [{
 	label: "Amplitude Nominal",
 	backgroundColor: "rgba(0, 0, 0, 0)",
 	borderColor: "#FF8800",
-	borderWidth: 2,
+	borderWidth: lineWidth,
 	hoverBackgroundColor: "rgba(102, 255, 51,0.4)",
 	hoverBorderColor: "#FF8800",
 	data: [0],
-	datalabels: {
-		display: show_data_labels
-	},
     yAxisID: "y-axis-3"
 }];
 
@@ -186,10 +157,7 @@ var chart_pwm_datasets = [{
 	backgroundColor: "rgba(0, 0, 0, 0)",
 	borderColor: "#ff3300",
 	borderWidth: 1,
-	data: [0],
-	datalabels: {
-		display: show_data_labels
-	}
+	data: [0]
 }, {
 	hidden: true,
 	type: "line",
@@ -197,10 +165,7 @@ var chart_pwm_datasets = [{
 	backgroundColor: "rgba(0, 0, 0, 0)",
 	borderColor: "#39e600",
 	borderWidth: 1,
-	data: [0],
-	datalabels: {
-		display: show_data_labels
-	}
+	data: [0]
 }, {
 	hidden: true,
 	type: "line",
@@ -208,84 +173,59 @@ var chart_pwm_datasets = [{
 	backgroundColor: "rgba(0, 0, 0, 0)",
 	borderColor: "#0066ff",
 	borderWidth: 1,
-	data: [0],
-	datalabels: {
-		display: show_data_labels
-	}
+	data: [0]
 }, {
 	type: "line",
 	label: "L1 Analog", //red
 	borderColor: "#ff3300",
 	backgroundColor: "rgba(0, 0, 0, 0)",
 	borderWidth: 1,
-	data: [0],
-	datalabels: {
-		display: show_data_labels
-	}
+	data: [0]
 }, {
 	type: "line",
 	label: "L2 Analog", //green
 	backgroundColor: "rgba(0, 0, 0, 0)",
 	borderColor: "#39e600",
 	borderWidth: 1,
-	data: [0],
-	datalabels: {
-		display: show_data_labels
-	}
+	data: [0]
 }, {
 	type: "line",
 	label: "L3 Analog", //blue
 	backgroundColor: "rgba(0, 0, 0, 0)",
 	borderColor: "#0066ff",
 	borderWidth: 1,
-	data: [0],
-	datalabels: {
-		display: show_data_labels
-	}
+	data: [0]
 }, {
 	type: "line",
 	label: "Angle",
 	backgroundColor: "rgba(0, 0, 0, 0)",
 	//borderColor: "#39e600",
 	borderWidth: 1,
-	data: fill.call([],1000,0), //Array(1000).fill(0),
-	//borderDash: [10,5],
-	datalabels: {
-		//display: false,
-		/*
-		align: function(context) {
-			return context.active ? 'end' : 'center';
-		}
-		*/
-	}
+	data: fill.call([],1000,0) //Array(1000).fill(0)
 }, {
 	type: "line",
 	label: "Slip",
 	backgroundColor: "rgba(0, 0, 0, 0)",
 	//borderColor: "#39e600",
 	borderWidth: 1,
-	data: fill.call([],1000,0), //Array(1000).fill(0),
-	//borderDash: [10,5],
-	datalabels: {
-		//display: false,
-		/*
-		align: function(context) {
-			return context.active ? 'end' : 'center';
-		}
-		*/
-	}
+	data: fill.call([],1000,0) //Array(1000).fill(0)
 }];
 
-var paramReadable = [];
 var chart_can_datasets = [];
+var paramReadable = [];
+var can_bin_flipflop = false;
 var updateURL = "";
 var activeTab = "";
 var activeTabText = "";
 var syncronizedDelay = 600;
 var syncronizedDelayRatio = 15;
 var syncronizedAccuracy = 0;
-var graphDivision = 60;
-var pageLimit = 4;
+var roundEdges = (getCookie("graph.roundedges") == 'true') || true;
+var showDataLabels = (getCookie("graph.datalabels") == 'true') || true;
+var showAnimation = (getCookie("graph.animation") == 'true') || false;
+var graphDivision = getCookie("graph.division") || 60;
+var streamLoop = getCookie("graph.stream") || 1;
+var pageLimit = getCookie("graph.pages") || 4;
 var zoomFactor = 1;
 var streamTimer;
 var data = {};
@@ -325,15 +265,16 @@ $(document).ready(function () {
           dataType: "json",
           success: function(data) {
             json = data;
-            devmode = true;
-            devModeNotify();
+            devModeFlip();
           }
         });
     }
 
+    graphSettings();
+
     paramReadable = {"speed":"Speed", "potnom":"Throttle", "tmpm":"Degree", "tmphs":"Degree", "udc":"Voltage", "uac":"Voltage", "idc":"DC Current"};
 
-    var canvas = document.getElementById("canvas");
+    var canvas = document.getElementById("chartCanvas");
     ctx = canvas.getContext("2d");
 	
 	ctxAxis = document.getElementById("chartAxis").getContext("2d");
@@ -360,9 +301,8 @@ $(document).ready(function () {
 
     initChart();
 
-    $('#devmode a').click(function () {
-		devModeNotify();
-    	devmode = true;
+    $("#devmode a").click(function () {
+    	devModeFlip();
     });
 	
 	$(".graphPoints").fancybox({
@@ -398,19 +338,16 @@ $(document).ready(function () {
     							label: this.id,
     							backgroundColor: c.replace(")",", 0.2)"),
     							borderColor: c.replace(")",", 1)"),
-    							borderWidth: 2,
+    							borderWidth: lineWidth,
     							//hoverBackgroundColor: "rgba(255,99,132,0.4)",
     							//hoverBorderColor: "rgba(255,99,132,1)",
     							data: d,
-                                datalabels: {
-                                    display: show_data_labels
-                                },
                                 yAxisID: "y-axis-" + (datasets.length-1)
     						};
     						//console.log(dataset);
                             datasets.push(dataset);
-                            newYAxis(this.id,(datasets.length-1),chart.options,"left",true);
-                            //newYAxis(this.id,(datasets.length-1),chart.options,"left",false);
+                            newYAxis(this.id,dataset.yAxisID,chart.options,"left",true);
+                            //newYAxis(this.id,dataset.yAxisID,chart.options,"left",false);
 
     						chart.update();
     					}
@@ -420,6 +357,38 @@ $(document).ready(function () {
 		}
 	});
 });
+
+function graphSettings(save) {
+
+	if(save){
+		roundEdges = $("input[name*='roundEdges']").is(":checked");
+		showDataLabels = $("input[name*='showDataLabels']").is(":checked");
+		showAnimation = $("input[name*='showAnimation']").is(":checked");
+		graphDivision = $("input[name*='graphDivision']").val();
+		lineWidth = $("input[name*='lineWidth']").val();
+		streamLoop = $("input[name*='streamLoop']").val();
+		pageLimit = $("input[name*='pageLimit']").val();
+		
+		setCookie("graph.roundedges", roundEdges, 1);
+		setCookie("graph.datalabels", showDataLabels, 1);
+		setCookie("graph.animation", showAnimation, 1);
+		setCookie("graph.division", graphDivision, 1);
+		setCookie("graph.border", lineWidth, 1);
+		setCookie("graph.stream", streamLoop, 1);
+		setCookie("graph.pages", pageLimit, 1);
+	}else{
+		$("input[name*='roundEdges']").prop('checked', roundEdges);
+		$("input[name*='showDataLabels']").prop('checked', showDataLabels);
+		$("input[name*='showAnimation']").prop('checked', showAnimation);
+		$("input[name*='graphDivision']").val(graphDivision);
+		$("input[name*='lineWidth']").val(lineWidth);
+		$("input[name*='streamLoop']").prop('checked', streamLoop);
+		$("input[name*='pageLimit']").prop('checked', pageLimit);
+	}
+	if(showDataLabels == true) {
+		showDataLabels = "auto";
+	}
+};
 
 function activeDatasets() {
 
@@ -444,11 +413,12 @@ function addYAxis(datasets,options) {
 
     for (var i = 0, l = datasets.length; i < l; i++) {
         if(i == 0) {
-            newYAxis(datasets[i].id,i,options,"left",true);
+            newYAxis(datasets[i].id,datasets[i].yAxisID,options,"left",true);
         }else if (i == 1) {
-            newYAxis(datasets[i].id,i,options,"right",true);
+            newYAxis(datasets[i].id,datasets[i].yAxisID,options,"right",true);
         }else{
-            newYAxis(datasets[i].id,i,options,"left",false);
+        	//newYAxis(datasets[i].id,datasets[i].yAxisID,options,"left",true); //DEBUG
+            newYAxis(datasets[i].id,datasets[i].yAxisID,options,"left",false);
         }
     }
 };
@@ -456,24 +426,30 @@ function addYAxis(datasets,options) {
 function newYAxis(key,id,options,side,visible) {
 
     var min = -1;
-    var max = 1;
-    var step = 0.1;
+	var max = 1;
+	var step = 0.1;
 
     if(key != undefined) {
         var label = paramReadable[key] || key;
         if(json[key].unit != "" && json[key].unit != "dig") {
             label += " (" + json[key].unit.toUpperCase() + ")";
         }
-        if(json[key].unit != "Hz") {
-            min = json[key].minimum || 0;
-            max = json[key].maximum || 100;
-            step = Math.round(max/10);
+        
+    	min = json[key].minimum || 0;
+        max = json[key].maximum || 100;
+        if (max >= 1000) {
+        	step = 100;
+        }else if (max >= 500) {
+        	step = 50;
+        }else{
+        	step = 10; //Math.round(max/step);
         }
+        //console.log(key + " (min:" + min + " max:" + max + " step:" + step + ")");
     }
 
     var y_axis = {
         display: visible,
-        id: "y-axis-" + id,
+        id: id,
         position: side,
         scaleLabel: {
             fontSize: ctxFont,
@@ -498,6 +474,18 @@ function newYAxis(key,id,options,side,visible) {
 function devModeNotify() {
     $.notify({ message: 'Developer Mode Enabled' }, { type: 'success' });
     $.notify({ message: 'Graph will generate random points' }, { type: 'warning' });
+};
+
+function devModeFlip() {
+
+    if(devmode == false) {
+    	devmode = true;
+    	$("#devmode a").empty().append("Developer Mode is ON");
+    	devModeNotify();
+    }else{
+    	devmode = false;
+    	$("#devmode a").empty().append("Developer Mode is OFF");
+    }
 };
 
 function buildPointsMenu() {
@@ -539,6 +527,15 @@ function getRandomColor() {
   return color;
 };
 
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+};
+
 function buildGraphMenu() {
     //os = "mobile";
 
@@ -549,10 +546,10 @@ function buildGraphMenu() {
     var export_buttons = $("#buildGraphExport").empty();
 
 	var btn_points_i = $("<i>", { class: "icons icon-ok" });
-	var btn_points = $("<button>", { class: "btn btn-primary btn-space", onClick: "buildPointsMenu();$('.graphPoints').trigger('click');" }).append(btn_points_i).append(" Select Points");
+	var btn_points = $("<button>", { class: "btn btn-primary btn-space", onClick: "buildPointsMenu();$(\".graphPoints\").trigger(\"click\");" }).append(btn_points_i).append(" Select Points");
     var btn_start = $("<button>", { class: "btn btn-success btn-space", onClick: "startChart()" }).append("Start Graph");
     var btn_stop = $("<button>", { class: "btn btn-danger btn-space", onClick: "stopChart()" }).append("Stop Graph");
-    var e_settings = $("<i>", { class: "icon-status icons icon-settings p-2", onClick: "$('.graphSettings').trigger('click');", "data-toggle": "tooltip", "title": "Settings" });
+    var e_settings = $("<i>", { class: "icon-status icons icon-settings p-2", onClick: "$(\".graphSettings\").trigger(\"click\");", "data-toggle": "tooltip", "title": "Settings" });
     var e_pdf = $("<i>", { class: "icon-status icons icon-pdf p-2", onClick: "exportPDF(true)", "data-toggle": "tooltip", "title": "Export PDF" });
     var e_img = $("<i>", { class: "icon-status icons icon-png p-2", onClick: "exportPDF()", "data-toggle": "tooltip", "title": "Export Image" });
     var e_csv = $("<i>", { class: "icon-status icons icon-csv p-2", onClick: "exportCSV()", "data-toggle": "tooltip", "title": "Export CSV" });
@@ -573,12 +570,22 @@ function buildGraphMenu() {
 
             zoomFactor = e.from/100;
 
+            console.log("Before " + chart.width + ":" + chart.height);
             ctx.save();
             ctx.scale(zoomFactor,zoomFactor);
             //ctx.translate(0,0);
             chart.update();
             ctx.restore();
+            console.log("After " + (chart.width * zoomFactor) + ":" + (chart.height * zoomFactor));
+            //chart.chart.canvas
 
+            var newwidth = $('.chartAreaWrapper').width() + chart.width * zoomFactor;
+            //var newheight = $('.chartAreaWrapper').height() + chart.heighth;
+            //$('.chartAreaWrapper2').width(newwidth);
+            //$('.chartAreaWrapper2').height(newheight);
+
+            //ctxAxis.canvas.height = ctxAxis.canvas.height * zoomFactor;
+            //ctxAxis.canvas.width = ctxAxis.canvas.height * zoomFactor;
             console.log(zoomFactor);
         }
     });
@@ -685,10 +692,11 @@ function buildGraphMenu() {
         $(".icons").attr("style","width:80px; height:80px;");
 
     }else{
-
-        $.getScript("js/jspdf.js").done(function(script, textStatus) {
-            export_buttons.append(e_pdf);
-        });
+    	if(os != "esp8266") {
+	        $.getScript("js/jspdf.js").done(function(script, textStatus) {
+	            export_buttons.append(e_pdf);
+	        });
+    	}
         export_buttons.append(e_csv);
 
         var ul = $("<ul>", { class: "nav nav-tabs", role: "tablist"});
@@ -870,9 +878,15 @@ function initChart() {
     } else if (activeTab === "#graph6") {
         initPWMChart(duration);
     }
-
     if (chart) chart.destroy();
-    
+
+    if(roundEdges == false) {
+		Chart.defaults.global.elements.line.tension = 0;
+	}
+	if(showAnimation == true) {
+		Chart.defaults.global.animation.duration = 800;
+	}
+   	
     chart = new Chart(ctx, {
         type: 'line',
         //type: 'bar',
@@ -971,7 +985,7 @@ function stopChart() {
     $("#potentiometer").hide();
 };
 
-function initTimeAxis(seconds, labels) {
+function initTimeAxis(seconds, labels, stamp) {
 
     var xaxis = [];
 
@@ -979,7 +993,21 @@ function initTimeAxis(seconds, labels) {
         xaxis = labels;
 
     for (var i = 0; i < seconds; i++) {
-        xaxis.push("");
+    	if (stamp != undefined) {
+    		if (stamp == 0) {
+	    		xaxis.push(i);
+	    	}else{
+	    		if (i % 10 == 0) {
+		    		if (stamp == 1) {
+		    			xaxis.push(i);
+		    		}else{
+		    			xaxis.push(i + " " + stamp);
+		    		}
+	    		}
+    		}
+    	}else{
+    		xaxis.push("");
+    	}
         /*
         if (i / 10 % 1 != 0) {
             xaxis.push("");
@@ -1067,8 +1095,8 @@ function sinePWM(phase, start, waveGraphRatio) {
 function initPWMChart(duration) {
 
     data = {
-        labels: initTimeAxis(750),
-        backgroundColor: "#ffffff",
+        labels: initTimeAxis(750,[],0),
+        //backgroundColor: "#ffffff",
         datasets: chart_pwm_datasets
     };
 
@@ -1081,26 +1109,6 @@ function initPWMChart(duration) {
     data.datasets[3].data = sineWave(2,1,-2.25,waveGraphRatio); //red
     data.datasets[4].data = sineWave(3.5,1,2.25,waveGraphRatio); //green
     data.datasets[5].data = sineWave(2.5,1,0,waveGraphRatio); //blue
-
-    //Angle
-    var p = (data.datasets[6].data.length - 368) / 4;
-    for (i = 1; i <= 4; i++) {
-        var x = p * i;
-        data.datasets[6].data[x] = 1.2;
-        data.datasets[6].data[x + 1] = -1.2;
-        //console.log(x);
-    }
-
-    //Rotor
-    /*
-    var p = (data.datasets[7].data.length - 380) / 4;
-    for (i = 1; i <= 4; i++) {
-        var x = p * i;
-        data.datasets[7].data[x] = 1.2;
-        data.datasets[7].data[x + 1] = -1.2;
-        //console.log(x);
-    }
-    */
 
     options = {
         //scaleUse2Y: true,
@@ -1132,7 +1140,7 @@ function initPWMChart(duration) {
                 scaleLabel: {
                     fontSize: ctxFont,
                     display: true,
-                    labelString: 'Time (Millisecond)'
+                    labelString: 'Time (ms)'
                 },
                 /*
                 ticks: {
@@ -1145,78 +1153,223 @@ function initPWMChart(duration) {
                 */
             }],
             yAxes: [{
-                display: true,
                 position: 'left',
                 //stacked: true,
                 scaleLabel: {
                     fontSize: ctxFont,
-                    display: true,
                     labelString: 'Pulse'
                 },
                 ticks: {
                     fontSize: ctxFont,
-                    beginAtZero:true,
-                    reverse: false,
+                    //beginAtZero:true,
+                    //reverse: false,
                     stepSize: 0.5,
                     suggestedMin: -1.5, //important
                     suggestedMax: 1.5 //important
                 }
             }]
         },
+        annotation: {
+    		drawTime: 'afterDraw',
+			annotations: [{
+                type: "line",
+                id: "a-line-0",
+                mode: "vertical",
+                scaleID: "x-axis-0",
+                value: 160,
+                borderColor: "black",
+                borderWidth: 1,
+                borderDash: [4, 4],
+                label: {
+                  content: "90°",
+                  enabled: true,
+                  position: "top"
+                }
+            },{
+                type: "line",
+                id: "a-line-1",
+                mode: "vertical",
+                scaleID: "x-axis-0",
+                value: 320,
+                borderColor: "black",
+                borderWidth: 1,
+                borderDash: [4, 4],
+                label: {
+                  content: "180°",
+                  enabled: true,
+                  position: "top"
+                }
+            },{
+                type: "line",
+                id: "a-line-2",
+                mode: "vertical",
+                scaleID: "x-axis-0",
+                value: 480,
+                borderColor: "black",
+                borderWidth: 1,
+                borderDash: [4, 4],
+                label: {
+                  content: "270°",
+                  enabled: true,
+                  position: "top"
+                }
+            },{
+                type: "line",
+                id: "a-line-3",
+                mode: "vertical",
+                scaleID: "x-axis-0",
+                value: 640,
+                borderColor: "black",
+                borderWidth: 1,
+                borderDash: [4, 4],
+                label: {
+                  content: "360°",
+                  enabled: true,
+                  position: "top"
+                }
+            }]
+		},
         plugins: {
             datalabels: {
-                //color: "#39e600",
-                display: function(context) {
-                    return context.dataset.data[context.dataIndex] != 0; //hide zeros
-                },
-                formatter: function(value, context) {
-                    var p = (context.dataset.data.length - 368) / 4;
-                    /*
-                    console.log(p);
-                    console.log(p*2);
-                    console.log(p*3);
-                    console.log(p*4);
-                    */
-
-                    if(context.dataIndex === p || context.dataIndex === p + 1) {
-                        return "90°";
-                    }else if(context.dataIndex === (p * 2) || context.dataIndex === (p * 2) + 1) {
-                        return "180°";
-                    }else if(context.dataIndex === (p * 3) || context.dataIndex === (p * 3) + 1) {
-                        return "270°";
-                    }else if(context.dataIndex === (p * 4) || context.dataIndex === (p * 4) + 1) {
-                        return "360°";
-                    }
-                },
-                //offset: 8,
-                textAlign: 'center'
-                /*
-                font: {
-                    weight: 'bold'
-                },
-                borderWidth: 1,
-                borderRadius: 4,
-                backgroundColor: function(context) {
-                    return context.dataset.backgroundColor;
-                },
-                formatter: Math.round
-
-                */
+        		display: false
             }
-        },
-        animation: {
-            duration: 0 //duration
         }
     };
 };
 
-function initCANChart(duration) {
+var flipbits = function flipbits(str) {
+  return str.split('').map(function (b) {
+    return (1 - b).toString();
+  }).join('');
+};
 
-    data = {
-        labels: initTimeAxis(graphDivision),
-        datasets: chart_can_datasets
+function genCANpulse(value,speed,gain)
+{
+	var data = [2.50,2.50];
+	gain = (gain / 100);
+
+	var byte = (Math.abs(value)).toString(2);
+
+	//if(value < 0) {
+	//	byte = flipbits(byte);
+	//}
+	console.log(byte);
+	
+	for (var i = 1; i <= byte.length; i++)
+    {
+    	var bit = byte.substring(i,i-1);
+    	//var bit_n = byte.substring(i+1,i);
+
+    	var b = bit * gain;
+    	if(value > 0)
+		{
+			b = 2.501 + b; //H
+		}else{
+			b = 2.499 - b; //L
+		}
+    	data.push(b);
+    	data.push(b);
+    	/*
+    	if(bit != bit_n){
+    		data.push(b);
+    	}
+    	*/
+    	//console.log("[" + i + "] " + bit + ">" + bit_n + "=" + b);
+    }
+    //data.push(2.50);
+    //data.push(2.50);
+	//console.log(data);
+	return data;
+}
+
+function addCANdataset(key,gain,value) {
+
+	var color_h = ["CCE5FF", "99CCFF", "66B2FF", "3399FF","0080FF","0066CC"];
+	var color_l = ["FFCCCC", "FF9999", "FF6666", "FF3333","FF0000","CC0000"];
+	var can_frame_control = []; //Control
+	var can_frame_data = []; //Data
+	var can_frame_crc = []; //CRC
+	var can_frame_eof = []; //End Of Frame
+	var color = [];
+
+	color = hexToRgb(color_h[2]);
+	var color_h_rgb = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+	color = hexToRgb(color_l[2]);
+	var color_l_rgb = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+	//console.log(color_h_rgb + " " + color_l_rgb);
+
+	can_frame_control = genCANpulse(10,1,gain);
+	can_frame_data = genCANpulse(value,1,gain);
+	can_frame_crc = genCANpulse(2,1,gain);
+	can_frame_eof = fill.call([],10,2.501);
+    var can_h = {
+        type: "line",
+        label: key + " (CAN H)",
+        gain: gain,
+        fill: false,
+		backgroundColor: color_h_rgb.replace(")",", 0.4)"),
+		borderColor: color_h_rgb.replace(")",", 1)"),
+        borderWidth: 2,
+        data: can_frame_control.concat(can_frame_data).concat(can_frame_crc).concat(can_frame_eof),
+        datalabels: {
+        	align: 'top',
+			//anchor: 'end',
+            //display: 'auto',
+        }
     };
 
+    can_frame_control = genCANpulse(-10,1,gain);
+	can_frame_data = genCANpulse((0-value),1,gain);
+	can_frame_crc = genCANpulse(-2,1,gain);
+	can_frame_eof = fill.call([],10,2.499);
+    var can_l = {
+        type: "line",
+        label: key + " (CAN L)",
+        gain: gain,
+        fill: false,
+		backgroundColor: color_l_rgb.replace(")",", 0.4)"),
+		borderColor: color_l_rgb.replace(")",", 1)"),
+        borderWidth: 2,
+        data: can_frame_control.concat(can_frame_data).concat(can_frame_crc).concat(can_frame_eof),
+        datalabels: {
+            align: 'bottom',
+            //display: 'auto',
+        }
+    };
+    chart_can_datasets.push(can_h);
+    chart_can_datasets.push(can_l);
+};
+
+function initCANChart(duration) {
+
+	chart_can_datasets = [];
+
+    $.notify({ message: "CAN graph is \"simulated\" how the signals look." }, { type: "success" });
+
+    for(var key in json)
+    {
+        if(json[key].canid != "")
+        {
+            if(json[key].isrx == false) //TX
+            {
+            	addCANdataset(key,json[key].cangain,json[key].value);
+            	break;
+            }
+        }
+    }
+
+    if(chart_can_datasets.length == 0){
+        $.notify({ message: "<a href='can.php'>CAN Mapping</a> (TX) signal not configured." }, { type: "warning" });
+        if(devmode == true)
+        {
+        	addCANdataset("test",10,200);
+        }
+    }
+
+    data = {
+        labels: initTimeAxis(graphDivision,[],0),
+        datasets: chart_can_datasets
+    };
 
     options = {
         legend: {
@@ -1224,34 +1377,47 @@ function initCANChart(duration) {
             labels: {
                 fontSize: ctxFont,
                 fontColor: 'rgb(0, 0, 0)'
+                /*
+                filter: function(item, chart) {
+		          return !item.text.includes('CAN L');
+		        }
+		        */
             }
         },
         elements: {
             point: {
                 radius: 0
-            }
+            },
+            line: {
+      			tension: 0
+        	}
         },
         tooltips: {
-            enabled: false
+            enabled: false,
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    var value  = tooltipItem.yLabel;
+                    if(value == 2.50) {
+                		return "";
+                	}else if(value == 2.499 || value == 2.501) {
+                		return "0";
+                	}else{
+                		return "1";
+                	}
+                }
+            }
         },
-        /*
-        tooltipEvents: [],
-        showTooltips: true,
-        onAnimationComplete: function() {
-            this.showTooltip(this.segments, true);
-        },
-        tooltipTemplate: "<%= label %> - <%= value %>",
-        */
         responsive: true,
         maintainAspectRatio: false,
         scales: {
             xAxes: [{
-                display: true,
+            	display: false,
+                id: "x-axis-0",
                 position: 'bottom',
                 scaleLabel: {
                     fontSize: ctxFont,
                     display: true,
-                    labelString: 'Time (hh:mm:ss)'
+                    labelString: 'Time (μs)'
                 },
                 ticks: {
                     fontSize: ctxFont,
@@ -1261,8 +1427,22 @@ function initCANChart(duration) {
                 }
             }],
             yAxes: [{
-                display: true,
+     			id: "y-axis-0",
                 position: 'left',
+                scaleLabel: {
+                    fontSize: ctxFont,
+                    display: true,
+                    labelString: 'Volts'
+                },
+                ticks: {
+                    fontSize: ctxFont,
+                    stepSize: 0.1,
+                    suggestedMin: 2.4, //important
+                    suggestedMax: 2.7 //important
+                }
+            }, {
+                id: "y-axis-1",
+                position: 'right',
                 scaleLabel: {
                     fontSize: ctxFont,
                     display: true,
@@ -1270,15 +1450,131 @@ function initCANChart(duration) {
                 },
                 ticks: {
                     fontSize: ctxFont,
-                    reverse: false,
                     stepSize: 10,
-                    suggestedMin: -260, //important
-                    suggestedMax: 260 //important
+                    suggestedMin: -200, //important
+                    suggestedMax: 200 //important
+                },
+                gridLines: {
+                    drawOnChartArea: true
                 }
             }]
         },
-        animation: {
-            duration: 0 //duration
+        annotation: {
+    		drawTime: 'afterDraw',
+			annotations: [/*{
+				drawTime: 'beforeDatasetsDraw',
+				type: 'box',
+				id: 'a-box-0',
+				xScaleID: 'x-axis-0',
+				yScaleID: 'y-axis-0',
+				xMin: 1,
+				xMax: 16,
+				yMin: 2.38,
+				yMax: 2.62,
+				backgroundColor: 'rgba(192,192,192,0.5)',
+				borderColor: 'rgb(190,190,190)',
+				borderWidth: 1,
+				/
+				label: {
+					position: 'bottom',
+					//yAdjust: -20,
+					backgroundColor: 'red',
+					content: 'label',
+					enabled: true
+				}
+				/
+			},*/{
+                type: "line",
+                id: "a-line-0",
+                mode: "vertical",
+                scaleID: "x-axis-0",
+                value: 10,
+                borderColor: "black",
+                borderWidth: 1,
+                borderDash: [4, 4],
+                label: {
+                  content: "Control:", //8
+                  enabled: true,
+                  position: "top"
+                }
+            },{
+                type: "line",
+                id: "a-line-1",
+                mode: "vertical",
+                scaleID: "x-axis-0",
+                value: 28,
+                borderColor: "black",
+                borderWidth: 1,
+                borderDash: [4, 4],
+                label: {
+                  content: "Data: 200", //8
+                  enabled: true,
+                  position: "top"
+                }
+            },{
+                type: "line",
+                id: "a-line-2",
+                mode: "vertical",
+                scaleID: "x-axis-0",
+                value: 33,
+                borderColor: "black",
+                borderWidth: 1,
+                borderDash: [4, 4],
+                label: {
+                  content: "CRC:", //15
+                  enabled: true,
+                  position: "top"
+                }
+            },{
+                type: "line",
+                id: "a-line-3",
+                mode: "vertical",
+                scaleID: "x-axis-0",
+                value: 44,
+                borderColor: "black",
+                borderWidth: 1,
+                borderDash: [4, 4],
+                label: {
+                  content: "End of Frame:", //10
+                  enabled: true,
+                  position: "top"
+                }
+            }]
+		},
+        plugins: {
+            datalabels: {
+		        /*
+				align: function(context) {
+					return context.active ? 'end' : 'center';
+				}
+				*/
+            	backgroundColor: function(context) {
+					return context.dataset.backgroundColor;
+				},
+            	display: function(context) {
+            		var display = false;
+            		var point = context.dataset.data[context.dataIndex];
+            		if(point != 2.5) {
+            			if(can_bin_flipflop == true){
+            				can_bin_flipflop = false;
+            			}else{
+            				can_bin_flipflop = true;
+            				display = true;
+            			}
+            		}
+					return display;
+		        },
+                formatter: function(value, context) {
+                	if(value == 2.5) {
+                		return "";
+                	}else if(value == 2.499 || value == 2.501) {
+                		return 0;
+                	}else{
+                		return 1;
+                	}
+                    //return context.chart.data.labels[context.dataIndex];
+                }
+            }
         }
     };
 };
@@ -1290,8 +1586,8 @@ function initFrequenciesChart(duration) {
         datasets: chart_frequency_datasets
     };
 
-    var fweak = getJSONFloatValue("fweak");
-    var fmax = getJSONFloatValue("fmax");
+    var fweak = json.fweak.value || 0;
+    var fmax = json.fmax.value || 0;
     var step = fmax / 10;
 
     for (var i = 0; i < 62; i++) {
@@ -1338,8 +1634,14 @@ function initFrequenciesChart(duration) {
             }],
             yAxes: [] //Dynamically added
         },
-        animation: {
-            duration: 0 //duration
+        plugins: {
+            datalabels: {
+	            align: 'top',
+	            display: showDataLabels,
+	            backgroundColor: function(context) {
+					return context.dataset.backgroundColor;
+				}
+            }
         }
     };
     addYAxis(chart_frequency_datasets,options);
@@ -1353,7 +1655,7 @@ function initAmperageChart(duration) {
         datasets: chart_amperage_datasets
     };
 
-    var ocurlim = getJSONFloatValue("ocurlim");
+    var ocurlim = json.ocurlim.value;
     if (ocurlim === 0) ocurlim = 100;
 
     var step = ocurlim / 10;
@@ -1402,8 +1704,14 @@ function initAmperageChart(duration) {
             }],
             yAxes: [] //Dynamically added
         },
-        animation: {
-            duration: 0 //duration
+        plugins: {
+            datalabels: {
+	            align: 'top',
+	            display: showDataLabels,
+	            backgroundColor: function(context) {
+					return context.dataset.backgroundColor;
+				}
+            }
         }
     };
     addYAxis(chart_amperage_datasets,options);
@@ -1451,12 +1759,14 @@ function initMotorChart(duration) {
             }],
             yAxes: [] //Dynamically added
         },
-        animation: {
-            duration: 0 //duration,
-			/*
-			onComplete: function(animation) {
-			}
-			*/
+        plugins: {
+            datalabels: {
+	            align: 'top',
+	            display: showDataLabels,
+	            backgroundColor: function(context) {
+					return context.dataset.backgroundColor;
+				}
+            }
         }
     };
 
@@ -1505,8 +1815,14 @@ function initTemperatureChart(duration) {
             }],
             yAxes: [] //Dynamically added
         },
-        animation: {
-            duration: 0 //duration
+        plugins: {
+            datalabels: {
+	            align: 'top',
+	            display: showDataLabels,
+	            backgroundColor: function(context) {
+					return context.dataset.backgroundColor;
+				}
+            }
         }
     };
 
@@ -1520,7 +1836,7 @@ function initVoltageChart(duration) {
         datasets: chart_voltage_datasets
     };
 
-    var udclim = getJSONFloatValue("udclim");
+    var udclim = json.udclim.value;
     var step = 50;
 
     if (udclim === 0) udclim = 300;
@@ -1562,8 +1878,14 @@ function initVoltageChart(duration) {
             }],
             yAxes: [] //Dynamically added
         },
-        animation: {
-            duration: 0 //duration
+        plugins: {
+            datalabels: {
+	            align: 'top',
+	            display: showDataLabels,
+	            backgroundColor: function(context) {
+					return context.dataset.backgroundColor;
+				}
+            }
         }
     };
 
@@ -1676,6 +1998,7 @@ function updateChart(value, autosize, accuracy) {
                     }
                     data.labels = initTimeAxis(graphDivision);
                     $('.chartAreaWrapper2').width($('.chartAreaWrapper').width());
+                    //$('.chartAreaWrapper2').height($('.chartAreaWrapper').height());
                 }
                 
                 //Time-stamp

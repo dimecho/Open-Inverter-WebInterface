@@ -222,9 +222,9 @@
             "linux" : ""
         },
         "path" : {
-            "mac" : "/Applications/EAGLE-9.4.2/Eagle.app/Contents/MacOS/Eagle",
-            "windows" : "C:\\EAGLE 9.4.2\\eagle.exe",
-            "linux" : "/opt/Autodesk/eagle-9.4.2/eagle"
+            "mac" : "/Applications/EAGLE-9.5.0/Eagle.app/Contents/MacOS/Eagle",
+            "windows" : "C:\\EAGLE 9.5.0\\eagle.exe",
+            "linux" : "/opt/Autodesk/eagle-9.5.0/eagle"
         }
     },
     "designsparkpcb" : {

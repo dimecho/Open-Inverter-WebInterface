@@ -45,11 +45,22 @@ $(document).ready(function () {
     if(os == "esp8266") {
     	$("#can-app").remove();
         $("#can-firmware").remove();
-		$("#can-interface").append($("<option>",{value:can_interface.length}).append("CAN over ESP8266 with MCP2515"));
+        $.ajax("/nvram", {
+            dataType: 'json',
+	        success: function success(data) {
+                if (data["nvram6"] == "1") {
+                	$("#can-interface").append($("<option>",{value:can_interface.length}).append("CAN over ESP8266 with MCP2515"));
+                	$("#can-interface-label").show();
+                	$("#can-interface").show();
+                }
+	        }
+	    });
     }else{
     	for (var i = 0; i < can_interface.length-1; i++) {
     		$("#can-interface").append($("<option>",{value:i}).append(can_name[i]));
     	}
+    	$("#can-interface-label").show();
+    	$("#can-interface").show();
         setCANImage();
     }
 
@@ -67,7 +78,11 @@ $(document).ready(function () {
             buildCANParameters();
 		}
     });
-    
+
+    if (hardware == 0) {
+		$.notify({ message: "No CAN support for " + hardware_name[hardware] }, { type: "danger" });
+    }
+	
     buildStatus(false);
 });
 

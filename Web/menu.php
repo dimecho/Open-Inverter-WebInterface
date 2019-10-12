@@ -14,7 +14,7 @@
 	<input type="file" name="file" class="fileUpload" hidden onchange="javascript:this.form.submit();" accept=".txt">
 	<input type="submit" hidden>
 </form>
-<a class="macdrivers" data-fancybox data-src="#macdrivers" href="javascript:;"></a>
+<a class="macdrivers" data-fancybox data-src="#macdrivers" href="#"></a>
 <div class="hidden" id="macdrivers" style="width:60%;border-radius:5px">
 	<center>
 		<img src="" />
@@ -24,14 +24,14 @@
 		<button class="btn btn-primary" type="button" onClick="$.fancybox.close();window.open('https://www.mac-usb-serial.com','_blank');"><i class="icons icon-download"></i> Download</button>
 	</center>
 </div>
-<a class="serial" data-fancybox data-src="#serial" href="javascript:;"></a>
+<a class="serial" data-fancybox data-src="#serial" href="#"></a>
 <div class="hidden" id="serial" style="width:60%;border-radius:5px">
 	<p>Select Serial Interface:</p>
 	<select name="interface" class="form-control" form="serialForm" id="serial-interface"></select>
 	<br>
 	<button class="btn btn-primary" type="button" onClick="selectSerial();$.fancybox.close();"><i class="icons icon-save"></i> Save</button>
 </div>
-<a class="hardware" data-fancybox data-src="#hardware" href="javascript:;"></a>
+<a class="hardware" data-fancybox data-src="#hardware" href="#"></a>
 <div class="hidden" id="hardware" style="width:60%;border-radius:5px">
 	<p>Select Hardware Version:</p>
 	<select name="hardware" class="form-control" form="hardwareForm" id="hwver">
@@ -42,7 +42,7 @@
 	<br>
 	<button class="btn btn-primary" type="button" onClick="selectHardware();$.fancybox.close();"><i class="icons icon-save"></i> Save</button>
 </div>
-<a class="safety" data-fancybox data-src="#warning" href="javascript:;"></a>
+<a class="safety" data-fancybox data-src="#warning" href="#"></a>
 <div class="hidden" id="warning" style="width:60%;border-radius:5px">
 	<center>
 		<img src="img/safety.png" />

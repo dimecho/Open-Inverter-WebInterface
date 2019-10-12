@@ -7,7 +7,7 @@ var serialWDomain = "http://" + window.location.hostname;
 */
 var statusRefreshTimer;
 var os = getCookie("os");
-var hardware = getCookie("hardware");
+var hardware = getCookie("hardware") || 0;
 var hardware_name = [
     "Hardware v1.0",
     "Hardware v2.0",
@@ -164,8 +164,11 @@ $(document).ready(function () {
 function titleVersion(version)
 {
     document.title = "Inverter Console (" + version + ")"
-    if(os == "esp8266")
+    if(os == "esp8266") {
         document.title += " ESP8266";
+    }else{
+        $.getScript("js/download.js");
+    }
 };
 
 function displayFWVersion(fwrev)

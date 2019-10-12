@@ -7,7 +7,6 @@
 <link rel="stylesheet" type="text/css" href="css/jquery.fancybox.css" media="screen"/>
 <script src="js/jquery.js"></script>
 <script src="js/alertify.js"></script>
-<script src="js/download.js"></script>
 <script src="js/jquery.fancybox.js"></script>
 <script src="js/bootstrap.js"></script>
 <script src="js/bootstrap-notify.js"></script>
