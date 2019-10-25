@@ -1,95 +1,104 @@
+<?php
+    include_once("common.php");
+	$os = detectOS();
+
+    if(isset($_GET["ajax"]))
+    {
+    	set_time_limit(100);
+    	$file = urldecode($_GET["file"]);
+        $cmd = urldecode($_GET["cmd"]);
+        $interface = urldecode($_GET["interface"]);
+
+        if (strpos($cmd, "100") !== false) {
+        	$command = runCommand("esptool", $file. " " .$interface. " spiffs", $os, 0);
+        }else{
+            $command = runCommand("esptool", $file. " " .$interface, $os, 0);
+        }
+		exec($command, $output, $return);
+		foreach ($output as $line) {
+			$line = str_replace("... (", "...\n(", $line);
+			echo "$line\n";
+		}
+	}else{
+?>
 <!DOCTYPE html>
 <html>
  <head>
 	<?php include "header.php" ?>
-	<script>
-	var i = 1;
-	var timer;
-	var formName;
-	
-	function progressTimer() {
-		var progressBar = $("#progressBar");
-		progressBar.css("width", i + "%");
-		i++;
-		if(i == 100) {
-			clearInterval(timer);
-			$(formName).submit();
-		}
-	};
-
-	function HiddenCheck(id,element) {
-		if(element.checked) {
-			$("#" + id).val("1");
-		}else{
-			$("#" + id).val("0");
-		}
-	};
-	
-	$(document).ready(function() {
-
-		$.ajax("/nvram", {
-            dataType: 'json',
-	        success: function success(data) {
-                console.log(data);
-                if(data["nvram0"] == "0") {
-                	$("#WiFiModeAP").prop("checked", true);
-                }else{
-                	$("#WiFiModeClient").prop("checked", true);
-                }
-                var bool_value = data["nvram1"] == "1" ? true : false;
-                $("#WiFiHidden").val(data["nvram1"]);
-                $("#WiFiHiddenCheckbox").prop("checked", bool_value);
-                $("#WiFiChannel").val(data["nvram2"]);
-                $("#WiFiSSID").val(data["nvram3"]);
-                bool_value = data["nvram5"] == "1" ? true : false;
-                $("#EnableSWD").val(data["nvram5"]);
-                $("#EnableSWDCheckbox").prop("checked", bool_value);
-                bool_value = data["nvram6"] == "1" ? true : false;
-                $("#EnableCAN").val(data["nvram6"]);
-                $("#EnableCANCheckbox").prop("checked", bool_value);
-                $(".loader").hide();
-                $("#parameters").show();
-	        }
-	    });
-
-		$("#fileSPIFFS").change(function() {
-			i = 1;
-			formName = "#formSPIFFS";
-			timer = setInterval(progressTimer, 250);
-			//Format SPIFFS
-			$.ajax("/format", {
-		        success: function success(data) {
-		        	deleteCookie("version");
-		            $.notify({ message: data }, { type: "success" });
-		            $.ajax("/reset");
-		            clearInterval(timer);
-		            timer = setInterval(progressTimer, 50);
-		        }
-		    });
-		});
-
-		$("#fileSketch").change(function() {
-			i = 1;
-			formName = "#formSketch";
-			timer = setInterval(progressTimer, 40);
-		});
-
-		$("#browseSPIFFS").click(function(){
-			$("#fileSPIFFS").trigger("click");
-		});
-		
-		$("#browseSketch").click(function(){
-			$("#fileSketch").trigger("click");
-		});
-	});
-	</script>
+	<script src="js/esp8266.js"></script>
  </head>
  <body>
+ 	<?php include "menu.php" ?>
 	<div class="container">
-		<?php include "menu.php" ?>
 		<div class="row">
 			<div class="col">
-			    <table class="table table-active table-bordered">
+				<table class="table table-active bg-light table-bordered hidden" id="esp8266-download-firmware">
+                    <tr>
+                        <td>
+                            <button type="button" class="btn btn-primary" onClick="window.open('https://github.com/dimecho/Huebner-Inverter/releases/download/1.0/Huebner.Inverter.ESP8266.zip')"><i class="icons icon-download"></i> Download Firmware</button>
+                        </td>
+                    </tr>
+                </table>
+                <table class="table table-active bg-light table-bordered hidden" id="esp8266-flash-firmware">
+                	<tr>
+                        <td>
+	            		<?php
+						if(isset($_FILES["spiffs"]) || isset($_FILES["firmware"])){
+							require "upload-status.php";
+	                    }else{
+	                	?>
+	                	<script>
+								$(document).ready(function() {
+									if(os != "esp8266") {
+
+										unblockSerial();
+
+										$.ajax("serial.php?com=list", {
+											async: false,
+											success: function(data) {
+												//console.log(data);
+												var s = data.split('\n');
+												for (var i = 0; i < s.length; i++) {
+													if(s[i] != "")
+														$("#firmware-interface").append($("<option>",{value:s[i]}).append(s[i]));
+												}
+											}
+										});
+									}
+									$("#firmware-interface").prop('selectedIndex', 0);
+									$(".loader").hide();
+									$(".input-group-addon").show();
+								});
+	                        </script>
+                    	<center>
+                        	<div class="loader"></div>
+                            <div class="input-group w-100">
+                                <span class="input-group-addon w-100">
+									<select name="interface" class="form-control" id="firmware-interface"></select>
+								</span>
+                            </div>
+                            <br/><br/><span class="badge badge-lg bg-danger">Solder <b>GPIO-0</b> to <b>0</b> and connect UART Pin 3 & 4 (USB-RS232-TTL)</span><br><br>
+                            <img src="" class="img-thumbnail rounded" /><br/><br/>
+                            </center>
+                            <div class="input-group">
+                            	<span class="input-group-addon w-100">
+	                            	<div class="row w-100">
+	                            		<div class="col"></div>
+	                            		<div class="col">
+	                            		WiFi SSID: Inverter<br>
+	                                	WiFi Password: inverter123 <br>
+	                                	Web Interface: http://192.168.4.1</div>
+	                            		<div class="col"></div>
+	                            	</div>
+	                            </span>
+                            </div>
+	                    <?php
+							} 
+						?>
+					    </td>
+                    </tr>
+                </table>
+			    <table class="table table-active table-bordered hidden" id="esp8266-nvram">
                     <tr>
                         <td>
                         	<center><div class="loader"></div></center>
@@ -173,7 +182,7 @@
                         </td>
                     </tr>
                 </table>
-				<table class="table table-active table-bordered">
+				<table class="table table-active table-bordered hidden" id="esp8266-flash-select">
 					<tr align="center">
 						<td align="center">
 							<button class="btn btn-primary" type="button" id="browseSPIFFS"><i class="icons icon-chip"></i> Flash SPIFFS</button>
@@ -184,7 +193,7 @@
 					</tr>
 					<tr align="center">
 						<td colspan="2">
-							<div class="progress progress-striped active">
+							<div class="progress progress-striped active hidden">
 								<div class="progress-bar" style="width:1%" id="progressBar"></div>
 							</div>
 						</td>
@@ -194,14 +203,19 @@
 		</div>
 	</div>
 	<form method="POST" action="/update?cmd=0" enctype="multipart/form-data" id="formSketch">
-		<input type='hidden' name='cmd' value='0'>
+		<input type="hidden" name="cmd" value="0" />
+		<input type="hidden" name="interface" />
 		<input type="file" name="firmware" id="fileSketch" hidden />
 		<input type="submit" hidden />
 	</form>
 	<form method="POST" action="/update?cmd=100" enctype="multipart/form-data" id="formSPIFFS">
-		<input type='hidden' name='cmd' value='100'>
+		<input type="hidden" name="cmd" value="100" />
+		<input type="hidden" name="interface" />
 		<input type="file" name="spiffs" id="fileSPIFFS" hidden />
 		<input type="submit" hidden />
 	</form>
 </body>
 </html>
+<?php
+	}
+?>

@@ -47,6 +47,10 @@
         "icon": "icon-inverter",
         "onClick": "",
         "dropdown": [{
+            "id": "Flash ESP8266",
+            "icon": "icon-wifi",
+            "onClick": "eval(checkSoftware(\"esptool\"))"
+        }, {
             "id": "Flash Bootloader",
             "icon": "icon-chip",
             "onClick": "/bootloader.php"
@@ -91,6 +95,10 @@
             "id": "Motor Classification",
             "icon": "icon-list",
             "onClick": "/motor-class.php"
+        }, {
+            "id": "DC Wire Selection",
+            "icon": "icon-plug",
+            "onClick": "http://assets.bluesea.com/files/resources/newsletter/images/DC_wire_selection_chartlg.jpg"
         }, {
             "id": "IGBT Test",
             "icon": "icon-point-down",

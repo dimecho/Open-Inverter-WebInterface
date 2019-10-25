@@ -111,19 +111,19 @@
         "title" : "Python",
         "download" : {
             "mac" : "",
-            "windows" : "https://www.python.org/ftp/python/3.7.2/python-3.7.2-amd64.exe",
+            "windows" : "https://www.python.org/ftp/python/3.8.0/python-3.8.0-amd64.exe",
             "linux" : "",
             "size" : 26,
-            "version" : "3.7.2"
+            "version" : "3.8"
         },
 		"checksum" : {
             "mac" : "",
-            "windows" : "ff258093f0b3953c886192dec9f52763",
+            "windows" : "29ea87f24c32f5e924b7d63f8a08ee8d",
             "linux" : ""
         },
         "path" : {
             "mac" : "/usr/bin/python",
-            "windows" : "~\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
+            "windows" : "~\\AppData\\Local\\Programs\\Python\\Python38\\python.exe",
             "linux" : "/usr/bin/python"
         }
     },
@@ -167,23 +167,43 @@
             "linux" : "/usr/share/applications/inkscape.desktop"
         }
     },
-    "openocd" : {
-        "title" : "OpenOCD Debugger",
+    "esptool" : {
+        "title" : "ESP8266 ROM Bootloader Utility",
         "download" : {
-            "mac" : "https://github.com/gnu-mcu-eclipse/openocd/releases/download/v0.10.0-10-20181020/gnu-mcu-eclipse-openocd-0.10.0-10-20181020-0522-macos.tgz",
-            "windows" : "https://github.com/gnu-mcu-eclipse/openocd/releases/download/v0.10.0-10-20181020/gnu-mcu-eclipse-openocd-0.10.0-10-20181020-0522-win64.zip",
-            "linux" : "",
-            "size" : 2.5,
-            "version" : "0.10.0-10-20181020"
+            "mac" : "https://raw.githubusercontent.com/espressif/esptool/master/esptool.py",
+            "windows" : "https://dl.espressif.com/dl/esptool-4dab24e-windows.zip",
+            "linux" : "https://raw.githubusercontent.com/espressif/esptool/master/esptool.py",
+            "size" : 1,
+            "version" : "2.8"
         },
-		"checksum" : {
-            "mac" : "988356079905f1d1c3945c366e4d3812",
-            "windows" : "5948bfab2f26e622e9b87472a5546bb7",
+        "checksum" : {
+            "mac" : "",
+            "windows" : "",
             "linux" : ""
         },
         "path" : {
-            "mac" : "/usr/local/share/gnu-mcu-eclipse/openocd/0.10.0-10-20181020-0522/bin/openocd",
-            "windows" : "C:\\Program Files\\GNU MCU Eclipse\\OpenOCD\\0.10.0-10-20181020-0522\\bin\\openocd.exe",
+            "mac" : "/usr/local/share/esptool/esptool.py",
+            "windows" : "~\\Downloads\\esptool.exe",
+            "linux" : "~/Downloads/esptool.py"
+        }
+    },
+    "openocd" : {
+        "title" : "xPack OpenOCD Debugger",
+        "download" : {
+            "mac" : "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.10.0-13/xpack-openocd-0.10.0-13-darwin-x64.tgz",
+            "windows" : "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.10.0-13/xpack-openocd-0.10.0-13-win32-x64.zip",
+            "linux" : "",
+            "size" : 2.5,
+            "version" : "0.10.0-13"
+        },
+		"checksum" : {
+            "mac" : "d96c0b278108a5332c2980b2d0a7f268",
+            "windows" : "b5d8024b2cebdbdf92067462036b2cda",
+            "linux" : ""
+        },
+        "path" : {
+            "mac" : "/usr/local/share/xPacks/openocd/0.10.0-13/bin/openocd",
+            "windows" : "C:\\Program Files\\xPack\\OpenOCD\\0.10.0-13\\bin\\openocd.exe",
             "linux" : "/usr/share/openocd/bin/openocd"
         }
     },
@@ -303,7 +323,7 @@
         },
         "path" : {
             "mac" : "~/Downloads/USBtinViewer_v1.3.jar",
-            "windows" : "~/Downloads/USBtinViewer_v1.3.jar",
+            "windows" : "~\\Downloads\\USBtinViewer_v1.3.jar",
             "linux" : "~/Downloads/USBtinViewer_v1.3.jar"
         }
     },
@@ -343,7 +363,7 @@
         },
         "path" : {
             "mac" : "~/Downloads/mphidflash-1.6-osx-64",
-            "windows" : "~/Downloads/mphidflash-1.6-win-32.exe",
+            "windows" : "~\\Downloads\\mphidflash-1.6-win-32.exe",
             "linux" : "~/Downloads/mphidflash-1.6-linux-64"
         }
     },

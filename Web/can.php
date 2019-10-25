@@ -5,8 +5,8 @@
         <script src="js/can.js"></script>
     </head>
     <body>
+    	<?php include "menu.php" ?>
         <div class="container">
-            <?php include "menu.php" ?>
             <div class="row">
                 <div class="col">
                     <div class="container bg-light">
@@ -31,7 +31,7 @@
 								</select>
 							</div>
 							<div class="col col-md-4 text-center" id="can-image">
-								<img src="" class="rounded pop" />
+								<img src="" class="img-thumbnail rounded pop" />
                             </div>
                         </div>
                         <div class="row"><hr></div>

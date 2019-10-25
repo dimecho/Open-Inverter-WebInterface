@@ -22,8 +22,8 @@
         <script src="js/graph.js"></script>
     </head>
     <body>
+    	<?php include "menu.php" ?>
         <div class="container">
-            <?php include "menu.php" ?>
             <div class="row">
                 <div class="col">
                     <div class="container bg-light">
@@ -77,7 +77,7 @@
         </div>
         <br>
         <a class="graphSettings" data-fancybox data-src="#graphSettings" href="#"></a>
-        <div class="hidden" id="graphSettings" style="width:60%;border-radius:5px">
+        <div class="hidden bg-light" id="graphSettings" style="width:60%;border-radius:5px">
             <div class="container">
                 <div class="row">
                     <div class="col">
@@ -135,7 +135,7 @@
             </div>
         </div>
 		<a class="graphPoints" data-fancybox data-src="#graphPoints" href="#"></a>
-        <div class="hidden" id="graphPoints" style="width:60%;border-radius:5px">
+        <div class="hidden bg-light" id="graphPoints" style="width:60%;border-radius:5px">
             <div class="container" id="buildPointsMenu"></div>
             <div class="container">
                 <div class="row text-center">

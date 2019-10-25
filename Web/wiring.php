@@ -6,9 +6,9 @@
         <script src="js/wiring.js"></script>
     </head>
     <body>
+    	<?php include "menu.php" ?>
         <div class="container">
-            <?php include "menu.php" ?>
-             <div class="row">
+            <div class="row">
                 <div class="col">
                     <div class="container bg-light">
                         <div class="row"><hr></div>
@@ -132,7 +132,7 @@
                                 <td colspan="3">
 									<center>
                                     <a data-fancybox href="<?php echo $wiring; ?>">
-                                        <img src="<?php echo $wiring; ?>" class="img-thumbnail rounded" />
+                                        <img src="<?php echo $wiring; ?>" class="rounded" />
                                     </a>
 									</center>
                                 </td>

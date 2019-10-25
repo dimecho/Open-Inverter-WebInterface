@@ -234,6 +234,8 @@ var chart;
 var ctxAxis;
 var ctx;
 var ctxFont = 12;
+var ctxFontColor = "black";
+var ctxGridColor = "#BEBEBE";
 var xhr;
 var devmode = false;
 
@@ -269,7 +271,7 @@ $(document).ready(function () {
           }
         });
     }
-
+    graphTheme();
     graphSettings();
 
     paramReadable = {"speed":"Speed", "potnom":"Throttle", "tmpm":"Degree", "tmphs":"Degree", "udc":"Voltage", "uac":"Voltage", "idc":"DC Current"};
@@ -357,6 +359,14 @@ $(document).ready(function () {
 		}
 	});
 });
+
+function graphTheme() {
+
+	if(theme == ".slate") {
+        ctxFontColor = "white";
+        ctxGridColor = "#707070";           
+    }
+};
 
 function graphSettings(save) {
 
@@ -452,18 +462,20 @@ function newYAxis(key,id,options,side,visible) {
         id: id,
         position: side,
         scaleLabel: {
+        	fontColor: ctxFontColor,
             fontSize: ctxFont,
-            display: true,
             labelString: label //datasets[1].label
         },
         ticks: {
+        	fontColor: ctxFontColor,
             fontSize: ctxFont,
             stepSize: step,
             suggestedMin: min, //auto scale
             suggestedMax: max //auto scale
         },
         gridLines: {
-            drawOnChartArea: visible
+            drawOnChartArea: visible,
+			color: ctxGridColor
         }
     };
 
@@ -1115,8 +1127,8 @@ function initPWMChart(duration) {
         legend: {
             display: true,
             labels: {
+            	fontColor: ctxFontColor,
                 fontSize: ctxFont,
-                fontColor: "#000000",
             }
         },
         elements: {
@@ -1138,8 +1150,8 @@ function initPWMChart(duration) {
                 position: 'bottom',
                 //stacked: true,
                 scaleLabel: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
-                    display: true,
                     labelString: 'Time (ms)'
                 },
                 /*
@@ -1156,17 +1168,22 @@ function initPWMChart(duration) {
                 position: 'left',
                 //stacked: true,
                 scaleLabel: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     labelString: 'Pulse'
                 },
                 ticks: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     //beginAtZero:true,
                     //reverse: false,
                     stepSize: 0.5,
                     suggestedMin: -1.5, //important
                     suggestedMax: 1.5 //important
-                }
+                },
+                gridLines: {
+				  color: ctxGridColor
+				}
             }]
         },
         annotation: {
@@ -1177,7 +1194,7 @@ function initPWMChart(duration) {
                 mode: "vertical",
                 scaleID: "x-axis-0",
                 value: 160,
-                borderColor: "black",
+                borderColor: ctxFontColor,
                 borderWidth: 1,
                 borderDash: [4, 4],
                 label: {
@@ -1191,7 +1208,7 @@ function initPWMChart(duration) {
                 mode: "vertical",
                 scaleID: "x-axis-0",
                 value: 320,
-                borderColor: "black",
+                borderColor: ctxFontColor,
                 borderWidth: 1,
                 borderDash: [4, 4],
                 label: {
@@ -1205,7 +1222,7 @@ function initPWMChart(duration) {
                 mode: "vertical",
                 scaleID: "x-axis-0",
                 value: 480,
-                borderColor: "black",
+                borderColor: ctxFontColor,
                 borderWidth: 1,
                 borderDash: [4, 4],
                 label: {
@@ -1219,7 +1236,7 @@ function initPWMChart(duration) {
                 mode: "vertical",
                 scaleID: "x-axis-0",
                 value: 640,
-                borderColor: "black",
+                borderColor: ctxFontColor,
                 borderWidth: 1,
                 borderDash: [4, 4],
                 label: {
@@ -1373,10 +1390,9 @@ function initCANChart(duration) {
 
     options = {
         legend: {
-            display: true,
             labels: {
-                fontSize: ctxFont,
-                fontColor: 'rgb(0, 0, 0)'
+            	fontColor: ctxFontColor,
+                fontSize: ctxFont
                 /*
                 filter: function(item, chart) {
 		          return !item.text.includes('CAN L');
@@ -1415,26 +1431,31 @@ function initCANChart(duration) {
                 id: "x-axis-0",
                 position: 'bottom',
                 scaleLabel: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
-                    display: true,
                     labelString: 'Time (μs)'
                 },
                 ticks: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     reverse: false,
                     maxRotation: 90,
                     stepSize: 50
-                }
+                },
+                gridLines: {
+				  color: ctxGridColor
+				}
             }],
             yAxes: [{
      			id: "y-axis-0",
                 position: 'left',
                 scaleLabel: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
-                    display: true,
                     labelString: 'Volts'
                 },
                 ticks: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     stepSize: 0.1,
                     suggestedMin: 2.4, //important
@@ -1444,18 +1465,20 @@ function initCANChart(duration) {
                 id: "y-axis-1",
                 position: 'right',
                 scaleLabel: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
-                    display: true,
                     labelString: 'Gain (mV)'
                 },
                 ticks: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     stepSize: 10,
                     suggestedMin: -200, //important
                     suggestedMax: 200 //important
                 },
                 gridLines: {
-                    drawOnChartArea: true
+                    drawOnChartArea: true,
+                    color: ctxGridColor
                 }
             }]
         },
@@ -1489,7 +1512,7 @@ function initCANChart(duration) {
                 mode: "vertical",
                 scaleID: "x-axis-0",
                 value: 10,
-                borderColor: "black",
+                borderColor: ctxFontColor,
                 borderWidth: 1,
                 borderDash: [4, 4],
                 label: {
@@ -1503,7 +1526,7 @@ function initCANChart(duration) {
                 mode: "vertical",
                 scaleID: "x-axis-0",
                 value: 28,
-                borderColor: "black",
+                borderColor: ctxFontColor,
                 borderWidth: 1,
                 borderDash: [4, 4],
                 label: {
@@ -1517,7 +1540,7 @@ function initCANChart(duration) {
                 mode: "vertical",
                 scaleID: "x-axis-0",
                 value: 33,
-                borderColor: "black",
+                borderColor: ctxFontColor,
                 borderWidth: 1,
                 borderDash: [4, 4],
                 label: {
@@ -1531,7 +1554,7 @@ function initCANChart(duration) {
                 mode: "vertical",
                 scaleID: "x-axis-0",
                 value: 44,
-                borderColor: "black",
+                borderColor: ctxFontColor,
                 borderWidth: 1,
                 borderDash: [4, 4],
                 label: {
@@ -1600,10 +1623,9 @@ function initFrequenciesChart(duration) {
     options = {
         //scaleUse2Y: true,
         legend: {
-            display: true,
             labels: {
-                fontSize: ctxFont,
-                fontColor: 'rgb(0, 0, 0)'
+            	fontColor: ctxFontColor,
+                fontSize: ctxFont
             }
         },
         elements: {
@@ -1618,19 +1640,22 @@ function initFrequenciesChart(duration) {
         maintainAspectRatio: false,
         scales: {
             xAxes: [{
-                display: true,
                 position: 'bottom',
                 scaleLabel: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
-                    display: true,
                     labelString: 'Time (hh:mm:ss)'
                 },
                 ticks: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     reverse: false,
                     maxRotation: 90,
                     stepSize: 50
-                }
+                },
+                gridLines: {
+					color: ctxGridColor
+				}
             }],
             yAxes: [] //Dynamically added
         },
@@ -1662,10 +1687,9 @@ function initAmperageChart(duration) {
 
     options = {
         legend: {
-            display: true,
             labels: {
-                fontSize: ctxFont,
-                fontColor: 'rgb(0, 0, 0)'
+            	fontColor: ctxFontColor,
+                fontSize: ctxFont
             }
         },
         elements: {
@@ -1688,19 +1712,22 @@ function initAmperageChart(duration) {
         maintainAspectRatio: false,
         scales: {
             xAxes: [{
-                display: true,
                 position: 'bottom',
                 scaleLabel: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
-                    display: true,
                     labelString: 'Time (hh:mm:ss)'
                 },
                 ticks: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     reverse: false,
                     maxRotation: 90,
                     stepSize: 50
-                }
+                },
+                gridLines: {
+					color: ctxGridColor
+				}
             }],
             yAxes: [] //Dynamically added
         },
@@ -1727,10 +1754,9 @@ function initMotorChart(duration) {
     options = {
         responsive: false,
         legend: {
-            display: true,
             labels: {
-                fontSize: ctxFont,
-                fontColor: 'rgb(0, 0, 0)'
+            	fontColor: ctxFontColor,
+                fontSize: ctxFont
             }
         },
         elements: {
@@ -1747,15 +1773,19 @@ function initMotorChart(duration) {
             xAxes: [{
                 position: 'bottom',
                 scaleLabel: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
-                    display: true,
                     labelString: 'Time (hh:mm:ss)'
                 },
                 ticks: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     maxRotation: 90,
                     reverse: false
-                }
+                },
+                gridLines: {
+				  color: ctxGridColor
+				}
             }],
             yAxes: [] //Dynamically added
         },
@@ -1782,10 +1812,9 @@ function initTemperatureChart(duration) {
 
     options = {
         legend: {
-            display: true,
             labels: {
-                fontSize: ctxFont,
-                fontColor: 'rgb(0, 0, 0)'
+            	fontColor: ctxFontColor,
+                fontSize: ctxFont
             }
         },
         elements: {
@@ -1800,18 +1829,21 @@ function initTemperatureChart(duration) {
         maintainAspectRatio: false,
         scales: {
             xAxes: [{
-                display: true,
                 position: 'bottom',
                 scaleLabel: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
-                    display: true,
                     labelString: 'Time (hh:mm:ss)'
                 },
                 ticks: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     maxRotation: 90,
                     reverse: false
-                }
+                },
+                gridLines: {
+					color: ctxGridColor
+				}
             }],
             yAxes: [] //Dynamically added
         },
@@ -1845,10 +1877,9 @@ function initVoltageChart(duration) {
 
     options = {
         legend: {
-            display: true,
             labels: {
-                fontSize: ctxFont,
-                fontColor: 'rgb(0, 0, 0)'
+            	fontColor: ctxFontColor,
+                fontSize: ctxFont
             }
         },
         elements: {
@@ -1863,18 +1894,21 @@ function initVoltageChart(duration) {
         maintainAspectRatio: false,
         scales: {
             xAxes: [{
-                display: true,
                 position: 'bottom',
                 scaleLabel: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
-                    display: true,
                     labelString: 'Time (hh:mm:ss)'
                 },
                 ticks: {
+                	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     maxRotation: 90,
                     reverse: false
-                }
+                },
+                gridLines: {
+				  color: ctxGridColor
+				}
             }],
             yAxes: [] //Dynamically added
         },

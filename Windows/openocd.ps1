@@ -1,4 +1,4 @@
-$openocd = "$env:programfiles\GNU MCU Eclipse\OpenOCD\0.10.0-10-20181020-0522"
+$openocd = "$env:programfiles\xPack\OpenOCD\0.10.0-13"
 
 function Elevate() {
     # Get the ID and security principal of the current user account
@@ -18,9 +18,8 @@ if($args[0] -eq "uninstall") {
 }else{
     if (-Not (Test-Path $openocd)){
 		Elevate
-		Add-Type -AssemblyName System.IO.Compression.FileSystem
-		[System.IO.Compression.ZipFile]::ExtractToDirectory("$env:userprofile\Downloads\gnu-mcu-eclipse-openocd-0.10.0-10-20181020-0522-win64.zip", "$env:programfiles")
-	}else{
+        Expand-Archive -Path "$env:userprofile\Downloads\xpack-openocd-0.10.0-13-win32-x64.zip" -DestinationPath "$env:programfiles" -Force -Verbose
+  	}else{
         Set-Location "$openocd\bin"
 		$FILE = $($args[0]).Replace("\","\\")
         $ADDRESS=" 0x08000000"

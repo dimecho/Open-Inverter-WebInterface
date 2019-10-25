@@ -26,8 +26,9 @@ function setMotorImage(motorDB)
                 //console.log(data);
                 var json = JSON.parse(data);
                 var btn = $("<button>", {class:"btn btn-success", id:motorDB.motors[i].tune[t].file});
+                var icon = $("<i>", {class:"icons icon-motor"}).append(" Set Motor for " + TryParseInt(json.udc, "(?)") + " V");
                 var tr = $("<tr>");
-                var td = $("<td>").append(btn.append("[" + t + "] Set Motor for " + TryParseInt(json.udc, "(?)") + " V"));
+                var td = $("<td>").append(btn.append(icon));
                 tr.append(td);
                 table.append(tr);
 

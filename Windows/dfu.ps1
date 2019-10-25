@@ -5,8 +5,7 @@ if($args[0] -eq "uninstall") {
     if (-Not (Test-Path $dfu)){
 		$dfu_install = "$env:userprofile\Downloads\DfuSe_Demo_V$($args[0])_Setup.exe"
         if (-Not (Test-Path $dfu_install)){
-		  Add-Type -AssemblyName System.IO.Compression.FileSystem
-		  [System.IO.Compression.ZipFile]::ExtractToDirectory("$env:userprofile\Downloads\en.stsw-stm32080.zip", "$env:userprofile\Downloads")
+            Expand-Archive -Path "$env:userprofile\Downloads\en.stsw-stm32080.zip" -DestinationPath "$env:userprofile\Downloads"
         }
         Start-Process $dfu_install -Wait
 	}else{

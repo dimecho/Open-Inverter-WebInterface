@@ -46,10 +46,11 @@
         </script>
     </head>
     <body>
+    	<?php include "menu.php" ?>
         <div class="container">
-            <?php include "menu.php" ?>
              <div class="row">
-                <div class="col">
+                <div class="col" align="center">
+                    <div class="text-dark"><h1>Tips</h1></div>
                     <table class="table table-active bg-light table-bordered table-striped" width="100%">
                         <tr>
                             <td><ul id="tips"></ul></td>

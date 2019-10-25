@@ -4,12 +4,12 @@
         <?php include "header.php" ?>
     </head>
     <body>
+        <?php include "menu.php" ?>
         <div class="container">
-            <?php include "menu.php" ?>
             <div class="row">
                 <div class="col" align="center">
-                    <h1>IGBT Finger Test</h1>
-                    <table class="table table-active bg-light table-bordered">
+                    <div class="text-dark"><h1>IGBT Finger Test</h1></div>
+                    <table class="container table-active bg-light table-bordered">
                         <tr>
                             <td>
                                 Perform both tests for C1 and E2<br>

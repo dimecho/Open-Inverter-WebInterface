@@ -76,6 +76,10 @@
             "icon": "icon-list",
             "onClick": "/motor-class.php"
         }, {
+            "id": "DC Wire Selection",
+            "icon": "icon-plug",
+            "onClick": "http://assets.bluesea.com/files/resources/newsletter/images/DC_wire_selection_chartlg.jpg"
+        }, {
             "id": "IGBT Test",
             "icon": "icon-point-down",
             "onClick": "/igbt-test.php"

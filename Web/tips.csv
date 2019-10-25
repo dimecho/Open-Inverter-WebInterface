@@ -31,3 +31,5 @@ Hardware v3,To find syncofs you set throtid=1, throtiq=0.05. Now find a syncofs 
 Hardware v3,WARN - HICUROFS1 - It means when at idle the voltage delivered by the current sensor is outside the window of 1.25-2.08V. A voltage divider for 5->3V3 in place? For V3 this means R50/51 populated with 4k7?
 Hardware v3, IPM type motor needs some demagnetizing current for most torque per ampere. A rough tuning with a ratio -3/2 (e.g. throtiq=3, throtid=-2).
 Hardware v3,The cruise function will oscillate when there is no load on the motor because of filtering. Try setting speedflt=0. When running a vehicle set speedflt=4.
+Firmware,The symptom of the motor turning slowly is almost certainly caused by a missing or inverted encoder signal. Try to swap A and B channels.
+Battery, Put fuse in the middle of the pack. If there is a short circuit, your battery is immediately split into half voltage.

@@ -181,7 +181,7 @@ function fill3DTable() {
         success: function success(data) {
             $.each(data.list, function () {
                 var a = $("<a>", { href: "design.php?id=" + this.id });
-                var img = $("<img>", { src: "3d/" + this.id + ".png", class: "rounded", style: "margin:10px;width:400px;height:220px"});
+                var img = $("<img>", { src: "3d/" + this.id + ".png", class: "img-thumbnail rounded", style: "margin:10px;width:400px;height:220px"});
                 td.append(a.append(img));
             });
         },

@@ -10,6 +10,13 @@ body {
   -o-background-size: cover;
   background-size: cover;
 }
+[class^="icon-"]:before, [class*=" icon-"]:before {
+  margin-right: .5em !important;
+}
+.navbar {
+  padding: 0 !important;
+  line-height: 0 !important;
+}
 .hidden {
   display: none;
 }
@@ -22,16 +29,9 @@ body {
 .icon-status {
   font-size: 2em;
   margin: 8px auto;
-  padding: 10px;
 }
-.icon-green {
-  color:#569e26;
-}
-.icon-yellow {
-  color:#efc411;
-}
-.icon-red {
-  color:#b52808;
+.icon-theme {
+  font-size: 1.5em;
 }
 .circle-size-1 {
   width: 20px;
@@ -100,4 +100,12 @@ canvas {
 }
 .badge {
   font-weight: normal !important;
+  padding: 0.25em 0.5em !important;
+  margin: 2px auto !important;
+}
+.btn {
+  padding: 0.375rem 0.75rem !important;
+}
+.form-control {
+  padding: 0.375rem 0.75rem !important;
 }

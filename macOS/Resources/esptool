@@ -1,0 +1,42 @@
+#!/bin/sh
+if [ "$1" = "uninstall" ] ; then
+    rm -rf ~/Downloads/esptool.py;
+else
+	if [ ! -f "/usr/local/share/esptool/esptool.py" ]; then
+        #MacOS 10.15
+        if [ ! -d "/usr/local/share" ]; then
+        	osascript -e "do shell script \"mkdir /usr/local/share; chown -R $(whoami) /usr/local/share;\" with administrator privileges"
+    	fi
+        mkdir /usr/local/share/esptool
+        cp ~/Downloads/esptool.py /usr/local/share/esptool
+    else
+
+	    if [[ ! $(type -p pip) ]]; then
+	    	cd ~/Downloads
+		    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+		    python get-pip.py --user --no-warn-script-location
+
+		    os_ver=$(sw_vers -productVersion)
+		    if [[ $os_ver == 10.15* ]]; then
+			   echo "PATH=$PATH:$HOME/Library/Python/2.7/bin" > ~/.zshrc
+			else
+			   echo "PATH=$PATH:$HOME/Library/Python/2.7/bin" > ~/.bashrc
+			fi
+		fi
+
+		if [ ! -d ~/Library/Python/2.7/lib/python/site-packages/serial ] && [ ! -d /Library/Python/2.7/site-packages/serial]; then
+			pip install pyserial --user
+		fi
+
+		cd /usr/local/share/esptool
+
+		PATH=$PATH:$HOME/Library/Python/2.7/bin
+
+		ADDRESS="0x000000"
+		if [ "$3" = "spiffs" ]; then
+	        ADDRESS="0x100000"
+	    fi
+
+	    python esptool.py --chip esp8266 --port "$2" --baud 115200 write_flash $ADDRESS "$1"
+	fi
+fi

@@ -212,7 +212,7 @@ function buildCANParameters() {
             }
 
 			//console.log(key);
-			var div_txrx = $("<div>").css({width:90});
+			var div_txrx = $("<div>", { class:"btn-group", role:"group" });
 			var cantx = $("<button>", { class:"btn btn-sm mx-1", id:key + "-cantx" }).append("TX");
 			var canrx = $("<button>", { class:"btn btn-sm mx-1", id:key + "-canrx" }).append("RX");
 			
@@ -220,10 +220,10 @@ function buildCANParameters() {
             var input_canid = $("<input>", { type:"text", class:"form-control form-control-sm text-center", value:canid, id:key + "-canid" }).css({width:"50%"});
 			var input_canid_hex = $("<input>", { type:"text", class:"form-control form-control-sm text-center", value:"0x" + toHex(canid), id:key + "-canidhex" }).css({width:"50%"});
             
-            var div_canoffset = $("<div>", { class:"form-group" });
+            var div_canoffset = $("<div>", { class:"input-group" });
             var input_canoffset = $("<input>", { type:"text", class:"form-control form-control-sm text-center", value:canoffset, id:key });
             
-            var div_canlength = $("<div>", { class:"form-group" });
+            var div_canlength = $("<div>", { class:"input-group" });
             var input_canlength = $("<input>", { type:"text", class:"form-control form-control-sm text-center", value:canlength, id:key + "-canlength" });
             
             var form_cangain = $("<form>", { class:"form-inline" });

@@ -3,6 +3,10 @@ if [ "$1" = "uninstall" ] ; then
     rm -rf "/usr/local/share/gcc-arm-none-eabi-8-2018-q4-major"
 else
     if [ ! -f "/usr/local/share/gcc-arm-none-eabi-8-2018-q4-major/bin/arm-none-eabi-gcc" ]; then
+    	#MacOS 10.15
+        if [ ! -d "/usr/local/share" ]; then
+            osascript -e "do shell script \"mkdir /usr/local/share; chown -R $(whoami) /usr/local/share\" with administrator privileges"
+        fi
         tar xzfv ~/Downloads/gcc-arm-none-eabi-8-2018-q4-major-mac.tar.bz2 -C /usr/local/share
     fi
 fi

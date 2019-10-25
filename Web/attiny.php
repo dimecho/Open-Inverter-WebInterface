@@ -9,8 +9,8 @@
         </script>
     </head>
     <body>
+    	<?php include "menu.php" ?>
         <div class="container">
-		<?php include "menu.php" ?>
             <div class="row">
                 <div class="col">
                     <table class="table table-active bg-faded table-bordered">

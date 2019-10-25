@@ -13,8 +13,8 @@
 		</style>
     </head>
     <body>
+        <?php include "menu.php" ?>
         <div class="container">
-            <?php include "menu.php" ?>
             <div class="row">
                 <div class="col" align="center">
                     <?php if(isset($_GET["id"])){ ?>
@@ -28,7 +28,8 @@
                         <br><br>
                         <canvas id="canvas"></canvas>
                     <?php }else{ ?>
-                    <h1>Power Stage - Design Ideas</h1><br>
+                    <div class="text-dark"><h1>Power Stage - Design Ideas</h1></div>
+                    <br>
                         <script>
                             $(document).ready(function() {
                                 fill3DTable()

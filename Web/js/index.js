@@ -1,41 +1,66 @@
+var boot  = getCookie("boot");
+
 $(document).ready(function () {
 
-    $(".safety").fancybox({
-        maxWidth    : 800,
-        maxHeight   : 640,
-        fitToView   : false,
-        width       : '80%',
-        height      : '80%',
-        autoSize    : false,
-        closeClick  : false,
-        openEffect  : 'none',
-        closeEffect : 'none'
-    });
-
     var safety = getCookie("safety");
-    
     if (safety === undefined) {
+        $(".safety").fancybox({
+            maxWidth    : 800,
+            maxHeight   : 640,
+            fitToView   : false,
+            width       : '80%',
+            height      : '80%',
+            autoSize    : false,
+            closeClick  : false,
+            openEffect  : 'none',
+            closeEffect : 'none'
+        });
         $(".safety").trigger('click');
-    }else{
-        var path = window.location.pathname;
-        var page = path.split("/").pop();
+    }
+});
 
-        //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?init=115200", {
-        $.ajax("serial.php?init=115200", {
-            async: false,
-			timeout: 2400,
-            success: function(data) {
-                console.log(data);
-                if(data.toUpperCase().indexOf("ERROR") != -1)
-                {
-                    $("#com").show();
-                    //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
-                    $.ajax("serial.php?com=list", {
-                        async: false,
-						timeout:2000,
-                        success: function(data) {
-                           //console.log(data);
-                           $(".serial").fancybox({
+function initializeSerial() {
+
+    $.ajax("serial.php?init=115200", {
+        async: true,
+        timeout: 6400,
+        success: function(data) {
+            console.log(data);
+
+            deleteCookie("serial.block");
+
+            if(data.toUpperCase().indexOf("ERROR") != -1)
+            {
+                $("#com").show();
+                //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
+                $.ajax("serial.php?com=list", {
+                    async: false,
+                    timeout:2000,
+                    success: function(data) {
+                       //console.log(data);
+                       $(".serial").fancybox({
+                            maxWidth    : 800,
+                            maxHeight   : 640,
+                            fitToView   : false,
+                            width       : '80%',
+                            height      : '80%',
+                            autoSize    : false,
+                            closeClick  : false,
+                            openEffect  : 'none',
+                            closeEffect : 'none'
+                        });
+                        var s = data.split('\n');
+                        if(s.length == 2) {
+                            $.notify({ message: "Try swapping TX <-> RX" }, { type: "warning" });
+                        }else if(s.length > 1) {
+                            for (var i = 0; i < s.length; i++) {
+                                if(s[i] != "")
+                                    $("#serial-interface").append($("<option>",{value:s[i]}).append(s[i]));
+                            }
+                            $(".serial").trigger('click');
+                        }else if (os === "mac") {
+                            $("#macdrivers img").attr("src","img/catalina-logo.png");
+                            $(".macdrivers").fancybox({
                                 maxWidth    : 800,
                                 maxHeight   : 640,
                                 fitToView   : false,
@@ -46,58 +71,50 @@ $(document).ready(function () {
                                 openEffect  : 'none',
                                 closeEffect : 'none'
                             });
-                            var s = data.split('\n');
-                            if(s.length == 2) {
-                                $.notify({ message: "Try swapping TX <-> RX" }, { type: "warning" });
-                            }else if(s.length > 1) {
-                                for (var i = 0; i < s.length; i++) {
-                                    if(s[i] != "")
-                                        $("#serial-interface").append($("<option>",{value:s[i]}).append(s[i]));
-                                }
-                                $(".serial").trigger('click');
-                            }else if (os === "mac") {
-                                $("#macdrivers img").attr("src","img/mojave-logo.png");
-                                $(".macdrivers").fancybox({
-                                    maxWidth    : 800,
-                                    maxHeight   : 640,
-                                    fitToView   : false,
-                                    width       : '80%',
-                                    height      : '80%',
-                                    autoSize    : false,
-                                    closeClick  : false,
-                                    openEffect  : 'none',
-                                    closeEffect : 'none'
-                                });
-                                $(".macdrivers").trigger('click');
-                            }else{
-                                $.notify({ message: "Serial not found" }, { type: "danger" });
-                            }
+                            $(".macdrivers").trigger('click');
+                        }else{
+                            $.notify({ message: "Serial not found" }, { type: "danger" });
                         }
-                    });
-                }else if(data.indexOf("2D") != -1) {
+                    }
+                });
+            }else if(data.indexOf("2D") != -1) {
+                if (boot == undefined) { // Two try - prevents false-positive ESP8266
+                    setCookie("boot", 1, 1);
+                    location.reload();
+                }else{
+                    deleteCookie("boot");
                     $.notify({ message: 'Firmware corrupt or not found' }, { type: 'danger' });
                     //$("#com").show();
                     setTimeout(function () {
                         window.location.href = "firmware.php";
                     }, 2600);
-                }else if(data.indexOf("9600") != -1) {
-                    $.notify({ message: 'Serial speed is 9600 baud, Power cycle' }, { type: 'danger' });
-                    $("#com").show();
-                }else if(data.indexOf("w}") != -1) {
-                    $.notify({ message: 'Serial speed incorrect, Refresh' }, { type: 'danger' });
-                    $("#com").show();
-				}else if(data.indexOf("test pin") != -1) {
-                    $.notify({ message: 'STM32 Test firmware detected' }, { type: 'danger' });
-					setTimeout(function () {
-						window.location.href = "test.php";
-					}, 2600);
-                }else{
-                    buildParameters();
                 }
+            }else if(data.indexOf("9600") != -1) {
+                $.notify({ message: 'Serial speed is 9600 baud, Power cycle' }, { type: 'danger' });
+                $("#com").show();
+            }else if(data.indexOf("w}") != -1) {
+                $.notify({ message: 'Serial speed incorrect, Refresh' }, { type: 'danger' });
+                $("#com").show();
+            }else if(data.indexOf("test pin") != -1) {
+                $.notify({ message: 'STM32 Test firmware detected' }, { type: 'danger' });
+                setTimeout(function () {
+                    window.location.href = "test.php";
+                }, 2600);
+            }else{
+                buildParameters();
             }
-        });
-    }
-});
+        }, error: function (data, textStatus, errorThrown) { //only for Windows (blocking UART)
+        	console.log(textStatus);
+        	console.log(data);
+            if (os === "windows"){
+                $.notify({ message: "Serial blocked ...Un-plug it!" }, { type: "danger" });
+            }
+            $.notify({ message: "Try swapping TX <-> RX" }, { type: "warning" });
+            $("#com").show();
+            setCookie("serial.block", 1, 1);
+        }
+    });
+};
 
 function basicChecks(json)
 {
@@ -209,6 +226,14 @@ function boostSlipCalculator()
         $.getScript("js/chartjs-plugin-annotation.js").done(function(script, textStatus) {
 
             var ctxFont = 16;
+            var ctxFontColor = "#808080";
+            var ctxDashColor = "black";
+
+            if(theme == ".slate") {
+                ctxFontColor = "#aaa";
+                ctxDashColor = "white";              
+            }
+
             var chart_boost_datasets = {
                 type: "line",
                 label: "boost",
@@ -286,10 +311,9 @@ function boostSlipCalculator()
             options = {
                 //responsive: true,
                 legend: {
-                    display: true,
                     labels: {
-                        fontSize: ctxFont,
-                        fontColor: 'rgb(0, 0, 0)'
+                        fontColor: ctxFontColor,
+                        fontSize: ctxFont
                     }
                 },
                 tooltips: {
@@ -302,49 +326,60 @@ function boostSlipCalculator()
                     xAxes: [{
                         position: 'bottom',
                         scaleLabel: {
+                            fontColor: ctxFontColor,
                             fontSize: ctxFont,
-                            display: true,
                             labelString: 'udc (Volt)'
                         },
+                        ticks: {
+                            fontColor: ctxFontColor,
+                            fontSize: ctxFont
+                        },
+                        gridLines: {
+                            color: ctxFontColor
+                        }
                     }],
                     yAxes: [{
                         id: "y-axis-0",
                         position: 'right',
                         scaleLabel: {
+                            fontColor: ctxFontColor,
                             fontSize: ctxFont,
-                            display: true,
                             labelString: 'boost',
                             fontColor: chart_boost_datasets.borderColor
                         },
                         ticks: {
                             precision: 0,
+                            fontColor: ctxFontColor,
                             fontSize: ctxFont,
                             stepSize: boost_segment,
                             suggestedMin: 0,
                             suggestedMax: boost_n + (boost_segment*2)
                         },
                         gridLines: {
-                            drawOnChartArea: true
+                            drawOnChartArea: true,
+                            color: ctxFontColor
                         }
                     },{
                         id: "y-axis-1",
                         position: 'left',
                         scaleLabel: {
+                            fontColor: ctxFontColor,
                             fontSize: ctxFont,
-                            display: true,
                             labelString: 'fweak (Hz)',
                             fontColor: chart_fweak_datasets.borderColor
                         },
                         ticks: {
                             precision: 0,
                             fixedStepSize: 1,
+                            fontColor: ctxFontColor,
                             fontSize: ctxFont,
                             stepSize: fweak_segment,
                             suggestedMin: 0,
                             suggestedMax: fweak + (fweak_segment*2)
                         },
                         gridLines: {
-                            drawOnChartArea: true
+                            drawOnChartArea: true,
+                            color: ctxFontColor
                         }
                     }]
                 },
@@ -355,7 +390,7 @@ function boostSlipCalculator()
                         mode: "vertical",
                         scaleID: "x-axis-0",
                         value: udcnom,
-                        borderColor: "black",
+                        borderColor: ctxDashColor,
                         borderWidth: 1,
                         borderDash: [4, 4],
                         label: {

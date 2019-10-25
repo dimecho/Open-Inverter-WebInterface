@@ -94,8 +94,6 @@ fweakcalc,Calculated value from udcnom
 boostcalc,Calculated value from udcnom
 udcswbuck,Precharge voltage in buck mode
 encmode,"Single=Async Motor, AB=Async Motor, ABZ=Sync Motor, SPI=Talk to AD2S chip via SPI ""Deprecated"" (Sync motor), Resolver=Needs ON state on pin PD2 and expects sin/cos signal on PA6/PA7 (Sync Motor)"
-iftlrise,"Dampens the response of over current limiting. The higher the value, the slower the reponse."
-iftlfall,"Dampens how quickly the amplitude is decreased once it overshoots iacmax*80%, ifltrise dampens the recovery."
 pinswap,"1=Currents 1 and 2 (FOC only), 2=Resolver Sin/Cos, 4=PWM Output 1 and 2"
 angle,Motor rotor angle
 turns,Full rotor turns
@@ -105,5 +103,9 @@ fslipspnt,Slip setpoint in mode 2. Written by software in mode 1
 ampnom,Nominal amplitude in mode 2. Written by software in mode 1
 version,Firmware version
 hwver,Hardware revision
-ifltfall,Resolver - dampens how quickly the amplitude is decreased once it overshoots iacmax*80%
-ifltrise,Resolver - recovers how quickly the amplitude is increased once it overshoots iacmax*80%
+ifltfall,"Resolver - Dampens how quickly the amplitude is decreased once it overshoots iacmax*80% (over current limiting)"
+ifltrise,"Resolver - Dampens ""recovery"" how quickly the amplitude is increased once it overshoots iacmax*80% (higher value, slower the reponse)"
+id,Direct axis stator current - Produces reluctance torque in conjunction with quadrature axis currents. Negative in order to produce any positive torque (when ld is smaller than lq) a positive id is never desired.
+iq,Quadrature axis stator current - Produces only magnetic torque but do not contribute in producing reluctance torque
+ld,Inductance along Direct axis - Inductance along the d-axis is usually lower than that along the q-axis (ld is smaller than lq)
+lq,Inductance along Quadrature axis - Permanent magnets have higher reluctance than iron (lq is greater than ld)

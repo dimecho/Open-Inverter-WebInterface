@@ -58,8 +58,8 @@ if(isset($_GET["find"])) {
         </style>
     </head>
     <body>
+    	<?php include "menu.php" ?>
         <div class="container">
-            <?php include "menu.php" ?>
              <div class="row">
                 <div class="col">
                     <div class="container bg-light" id="pcbList" style="display:none">

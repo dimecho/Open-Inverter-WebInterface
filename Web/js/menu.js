@@ -1,19 +1,23 @@
-var serialTimeout = 12000;
+var theme = detectTheme();
+loadTheme();
 /*
 var serialPort = getCookie("serial");
-var serialWeb = getCookie("serial_web");
-var serialTimeout = getCookie("serial_timeout");
+var serialWeb = getCookie("serial.web");
+var serialTimeout = getCookie("serial.timeout");
 var serialWDomain = "http://" + window.location.hostname;
 */
-var statusRefreshTimer;
+var serialTimeout = 12000;
+var serialBlock = getCookie("serial.block");
+
 var os = getCookie("os");
-var hardware = getCookie("hardware") || 0;
+var hardware = getCookie("hardware");
 var hardware_name = [
     "Hardware v1.0",
     "Hardware v2.0",
     "Hardware v3.0",
     "Hardware Tesla"
 ];
+var statusRefreshTimer;
 
 $(document).ready(function () {
 
@@ -60,7 +64,7 @@ $(document).ready(function () {
             success: function success(hwver) {
                 hwver = parseFloat(hwrev);
                 hardware = hwver;
-                setCookie("hardware ", hwrev, 1);
+                setCookie("hardware", hwrev, 1);
             }
         });
     }
@@ -192,6 +196,15 @@ function displayHWVersion()
 
 function setDefaultValue(value, defaultValue){
    return (value === undefined) ? defaultValue : value.value;
+};
+
+function unblockSerial()
+{
+	if (os === "windows" && serialBlock != undefined) {
+        $.notify({ message: "Detected blocked Serial" }, { type: "warning" });
+        $.notify({ message: "#Plug-it-Back and Refresh this page" }, { type: "success" });
+        deleteCookie("serial.block");
+    }
 };
 
 function selectSerial()
@@ -378,7 +391,7 @@ function setParameter(cmd, value, save, notify) {
 
                         $.notify({ message: data },{ type: 'success' });
                     }else{
-                        $.notify({ icon: 'icons icon-alert', title: 'Error', message: data },{ type: 'danger' });
+                        $.notify({ icon: 'icon-alert', title: 'Error', message: data },{ type: 'danger' });
                     }
                 }
             }
@@ -435,6 +448,8 @@ function openExternalApp(app,args) {
         window.location.href = "sourcecode.php";
     } else if (app === "avr") {
         window.location.href = "attiny.php";
+    } else if (app === "esptool") {
+        window.location.href = "esp8266.php";
     } else {
         data = "";
         $.ajax("open.php?app=" + app + "&args=" + args, {
@@ -504,7 +519,7 @@ function startInverter(mode) {
         */
     } else {
         $.notify({
-            icon: "icons icon-warning", title: "Error", message: data
+            icon: "icon-warning", title: "Error", message: data
         }, {
             type: "danger"
         });
@@ -521,7 +536,7 @@ function stopInverter() {
         setParameter("chargemode", "0", false, false);
     } else {
         $.notify({
-            icon: "icons icon-warning", title: "Error", message: data
+            icon: "icon-warning", title: "Error", message: data
         }, {
             type: "danger"
         });
@@ -551,7 +566,7 @@ function setDefaults() {
             $.notify({ message: "Inverter reset to Default" }, { type: "success" });
         } else {
             $.notify({
-                icon: "icons icon-warning", title: "Error", message: data
+                icon: "icon-warning", title: "Error", message: data
             }, {
                 type: "danger"
             });
@@ -602,7 +617,7 @@ function buildTips() {
 
                 for (var i = 0; i < row.length; i++) {
                     if (i === n) {
-                        img = $("<img>", { class: "icons icon-light", "data-toggle": "tooltip", "data-html": "true", "title": "<h8>Tip: " + row[i] + "</h8>" });
+                        img = $("<img>", { class: "icon-light", "data-toggle": "tooltip", "data-html": "true", "title": "<h8>Tip: " + row[i] + "</h8>" });
                         opStatus.append(img);
                         break;
                     }
@@ -629,17 +644,24 @@ function buildMenu() {
 
             //console.log(json);
 
-            var nav = $("#buildNav").empty();
-            var div = $("<div>", { class: "collapse navbar-collapse", id:"navbarsDefault" });
-			
+            var nav = $("#mainMenu");
+            var wrap = $("<div>", { class: "container" });
+            
+            var button = $("<button>", { class: "navbar-toggler navbar-toggler-right", type: "button", "data-toggle":"collapse", "data-target": "#navbarResponsive", "aria-controls": "navbarResponsive", "aria-expanded": false, "aria-label": "Menu" });
+            var span = $("<span>", { class: "navbar-toggler-icon" });
+            button.append(span);
+			wrap.append(button);
+
+			var div = $("<div>", { class: "collapse navbar-collapse", id:"navbarResponsive" });
+
             for(var key in json.menu)
             {
                 //console.log(json.menu[key].id);
 
                 var ul = $("<ul>", { class: "navbar-nav" });
                 var li = $("<li>", { class: "nav-item" });
-                var a = $("<a>", { class: "nav-link bg-inverse", href: "#" });
-                var _i = $("<i>", { class: "icons " +  json.menu[key].icon });
+                var a = $("<a>", { class: "nav-link", href: "#" });
+                var _i = $("<i>", { class: json.menu[key].icon });
                 
                 a.append(_i);
                 a.append($("<b>").append(" " + json.menu[key].id));
@@ -669,7 +691,7 @@ function buildMenu() {
                             
                             var dropdown_item = $("<a>", { class: "dropdown-item", href: "#" });
 
-                            var icon = $("<i>", { class: "icons " + json.menu[key].dropdown[d].icon });
+                            var icon = $("<i>", { class: json.menu[key].dropdown[d].icon });
                             var item = $("<span>");
 
                             if (onclick.indexOf("/") != -1 && onclick.indexOf("alertify") == -1)
@@ -702,39 +724,103 @@ function buildMenu() {
                 ul.append(li);
                 div.append(ul);
             }
-			
-			nav.append(div);
+			wrap.append(div);
 
-            var col = $("<div>", { class: "col-auto mr-auto mb-auto mt-auto", id: "opStatus"});
-			nav.parent().parent().append(col);
+            var col = $("<div>", { class: "col-auto mr-auto mb-auto mt-auto", id: "opStatus" });
+			wrap.append(col);
 
-            var fwver = $("<span>", { class: "d-none d-md-block d-lg-block badge bg-info border invisible", id: "fwVersion" });
-            var hwver = $("<span>", { class: "d-none d-md-block d-lg-block badge bg-success border invisible", id: "hwVersion" });
-            var col = $("<div>", { class: "col-auto mb-auto mt-auto" });
+			var col = $("<div>", { class: "col-auto mb-auto mt-auto" });
+            var fwver = $("<span>", { class: "d-none d-md-block d-lg-block badge bg-info border text-white invisible", id: "fwVersion" });
+            var hwver = $("<span>", { class: "d-none d-md-block d-lg-block badge bg-success border text-white invisible", id: "hwVersion" });
             col.append(fwver).append(hwver);
-			nav.parent().parent().append(col);
+			wrap.append(col);
+
+            var col = $("<div>", { class: "col-auto mb-auto mt-auto" });
+            var theme_icon = $("<i>", { class: "d-none d-md-block icon-status icon-day-and-night text-dark", "data-toggle": "tooltip", "data-html": "true" });
+            theme_icon.click(function() {
+                if(theme == ".slate") {
+                    theme = "";
+                }else{
+                    theme = ".slate";
+                }
+                setCookie("theme", theme, 1);
+                location.reload();
+                //setTheme();
+            });
+            col.append(theme_icon);
+            wrap.append(col);
+
+			nav.append(wrap);
 			
-			var button = $("<button>", { class: "navbar-toggler navbar-toggler-right", type: "button", "data-toggle":"collapse", "data-target": "#navbarsDefault", "aria-controls": "navbarsDefault", "aria-expanded": false, "aria-label": "Menu" });
-            var span = $("<span>", { class: "navbar-toggler-icon icons icon-menu" }); //text-white display-3
-            button.append(span);
-			nav.append(button);
-			
-			if (os === "mobile") {
-                //nav.addClass("navbar-toggleable-md navbar-inverse bg-inverse");
-                //nav.attr("style","background-color: #000;");
-				span.attr("style","font-size: 125%;");
-            }else{
-                nav.addClass("navbar-expand-md navbar-light bg-light");
+            if (os === "mobile") {
+                span.attr("style","font-size: 125%;");
+            }
+            setTheme();
+            $('[data-toggle="tooltip"]').tooltip();
+
+            //Build the Menu before we get frozen with serial.php
+            var path = window.location.pathname;
+            var page = path.split("/").pop();
+            if(page == "" || page == "index.php") {
+                setTimeout(function () { //wait for icons to load
+                    initializeSerial();
+                }, 1000);
             }
         }
     });
+};
+
+function detectTheme()
+{
+    var t = getCookie("theme");
+    if(t == undefined) {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            return ".slate";
+        }else{
+            return ""
+        }
+    }
+    return t;
+};
+
+function switchTheme(element,dark,light) {
+	 if(theme == "") {
+		var e = $(element + "." + dark);
+	    e.removeClass(dark);
+	    e.addClass(light);
+	}else{
+		var e = $(element + "." + light);
+    	e.removeClass(light);
+    	e.addClass(dark);
+	}
+};
+
+function setTheme() {
+	loadTheme();
+	if(theme == ".slate") {
+        $(".icon-day-and-night").attr("data-original-title", "<h6 class='text-white'>Light Theme</h6>");
+    }else{
+    	$(".icon-day-and-night").attr("data-original-title", "<h6 class='text-white'>Dark Theme</h6>");
+    }
+    switchTheme("i.icon-status","text-white","text-dark");
+    switchTheme("div","navbar-dark","navbar-light");
+    switchTheme("div","bg-primary","bg-light");
+    switchTheme("div","text-white","text-dark");
+	switchTheme("table","bg-primary","bg-light");
+};
+
+function loadTheme() {
+	if(theme == ".slate") {
+        $('link[title="main"]').attr('href', "css/bootstrap.slate.css");
+    }else{
+    	$('link[title="main"]').attr('href', "css/bootstrap.css");
+    }
 };
 
 function buildStatus() {
 
     clearTimeout(statusRefreshTimer);
 
-    //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
     $.ajax("serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode", {
         //async: sync,
         success: function success(data)
@@ -749,32 +835,32 @@ function buildStatus() {
             $('.tooltip').remove();
 
             var opStatus = $("<div>");
-            var img = $("<i>", { class: "icon-status icons icon-key", "data-toggle": "tooltip", "data-html": "true" });
+            var img = $("<i>", { class: "icon-status icon-key", "data-toggle": "tooltip", "data-html": "true" });
 
             if(data[0] !== "") {
 
                 //$("#potentiometer").hide();
 
                 if (parseFloat(data[15]) === 3) {
-                    img.attr("title", "<h6>Boost Mode</h6>");
-                    img.addClass("icon-yellow");
+                    img.attr("data-original-title", "<h6>Boost Mode</h6>");
+                    img.addClass("text-warning");
                 } else if (parseFloat(data[15]) === 4) {
-                    img.attr("title", "<h6>Buck Mode</h6>");
-                    img.addClass("icon-yellow");
+                    img.attr("data-original-title", "<h6>Buck Mode</h6>");
+                    img.addClass("text-warning");
                 }else if (parseFloat(data[0]) === 0) {
-                    img.attr("title", "<h6>Off</h6>");
-                    img.addClass("icon-red");
+                    img.attr("data-original-title", "<h6>Off</h6>");
+                    img.addClass("text-danger");
                 } else if (parseFloat(data[0]) === 1) {
                     if (parseFloat(data[6]) === 1) {
-                        img.attr("title", "<h6>Pulse Only - Do not leave ON</h6>");
-                        img.addClass("icon-yellow");
+                        img.attr("data-original-title", "<h6>Pulse Only - Do not leave ON</h6>");
+                        img.addClass("text-warning");
                     } else {
-                        img.attr("title", "<h6>Running</h6>");
-                        img.addClass("icon-green");
+                        img.attr("data-original-title", "<h6>Running</h6>");
+                        img.addClass("text-success");
                     }
                 } else if (parseFloat(data[0]) === 2) {
-                    img.attr("title", "<h6>Manual Mode</h6>");
-                    img.addClass("icon-green");
+                    img.attr("data-original-title", "<h6>Manual Mode</h6>");
+                    img.addClass("text-success");
                     $("#potentiometer").show();
                 }
                 opStatus.append(img);
@@ -786,51 +872,54 @@ function buildStatus() {
                 opStatus.append(div);
                 */
                 //========================
-                img = $("<i>", { class: "icon-status icons icon-battery", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[1] + "V</h6>" });
+                img = $("<i>", { class: "icon-status icon-battery", "data-toggle": "tooltip", "data-html": "true", "data-original-title": "<h6>" + data[1] + "V</h6>" });
                 if (parseFloat(data[1]) > parseFloat(data[2]) && parseFloat(data[1]) > 10 && parseFloat(data[1]) < 520) { // && parseFloat(data[15]) !== 0) {
-                    img.addClass("icon-green");
+                    img.addClass("text-success");
                 } else {
-                    img.addClass("icon-red");
+                    img.addClass("text-danger");
                 }
                 opStatus.append(img);
                 //========================
-                img = $("<i>", { class: "icon-status icons icon-temp", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[3] + "&#8451;</h6>"});
+                img = $("<i>", { class: "icon-status icon-temp", "data-toggle": "tooltip", "data-html": "true", "data-original-title": "<h6>" + data[3] + "&#8451;</h6>"});
                 if (parseFloat(data[3]) > 150 || parseFloat(data[4]) > 150) {
-                    img.addClass("icon-red");
+                    img.addClass("text-danger");
                     opStatus.append(img);
                 } else if (parseFloat(data[3]) < 0 || parseFloat(data[4]) < 0 || parseFloat(data[3]) > 100 || parseFloat(data[4]) > 100) {
-                    img.addClass("icon-yellow");
+                    img.addClass("text-warning");
                     opStatus.append(img);
                 }
                 //========================
-                img = $("<i>", { class: "icon-status icons icon-magnet", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + data[5] + "ms</h6>" });
+                img = $("<i>", { class: "icon-status icon-magnet", "data-toggle": "tooltip", "data-html": "true", "data-original-title": "<h6>" + data[5] + "ms</h6>" });
                 if(parseFloat(data[5]) < 22){
-                    img.addClass("icon-red");
+                    img.addClass("text-danger");
                     opStatus.append(img);
                 }
                 //========================
                 /*
-                img = $("<i>", { class: "icon-status icons icon-speedometer", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + speed + "RPM</h6>" });
+                img = $("<i>", { class: "icon-status icon-speedometer", "data-toggle": "tooltip", "data-html": "true", "data-original-title": "<h6>" + speed + "RPM</h6>" });
                 if (speed > 6000) {
-                    img.addClass("icon-red");
+                    img.addClass("text-danger");
                     opStatus.append(img);
                 } else if (speed > 3000) {
-                    img.addClass("icon-yellow");
+                    img.addClass("text-warning");
                     opStatus.append(img);
                 }
                 */
                 //========================
                 if (parseFloat(data[7]) != 1 && parseFloat(data[15]) === 0) {
-                    img = $("<i>", { class: "icon-status icons icon-alert", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Probably forgot PIN 11 to 12V</h6>" });
+                    img = $("<i>", { class: "icon-status icon-alert", "data-toggle": "tooltip", "data-html": "true", "data-original-title": "<h6>Probably forgot PIN 11 to 12V</h6>" });
+                    img.addClass("text-warning");
                     opStatus.append(img);
                 }
                 //========================
                 if (errors.indexOf("No Errors") === -1) {
-                    img = $("<i>", { class: "icon-status icons icon-alert", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>" + errors + "</h6>" });
+                    img = $("<i>", { class: "icon-status icon-alert", "data-toggle": "tooltip", "data-html": "true", "data-original-title": "<h6>" + errors + "</h6>" });
+                    img.addClass("text-warning");
                     opStatus.append(img);
                 }
             }else{
-                img = $("<i>", { class: "icon-status icons icon-alert", "data-toggle": "tooltip", "data-html": "true", "title": "<h6>Inverter Disconnected</h6>" });
+                img = $("<i>", { class: "icon-status icon-alert", "data-toggle": "tooltip", "data-html": "true", "data-original-title": "<h6>Inverter Disconnected</h6>" });
+                img.addClass("text-warning");
                 opStatus.append(img);
             }
             

@@ -1,12 +1,16 @@
 #!/bin/sh
 if [ "$1" = "uninstall" ]; then
-    rm -rf "/usr/local/share/gnu-mcu-eclipse"
+    rm -rf "/usr/local/share/xPacks"
 else
-    if [ ! -f "/usr/local/share/gnu-mcu-eclipse/openocd/0.10.0-10-20181020-0522/bin/openocd" ]; then
-        tar xzfv ~/Downloads/gnu-mcu-eclipse-openocd-0.10.0-10-20181020-0522-macos.tgz -C /usr/local/share
+    if [ ! -f "/usr/local/share/xPacks/openocd/0.10.0-13/bin/openocd" ]; then
+        #MacOS 10.15
+        if [ ! -d "/usr/local/share" ]; then
+            osascript -e "do shell script \"mkdir /usr/local/share; chown -R $(whoami) /usr/local/share\" with administrator privileges"
+        fi
+        tar xzfv ~/Downloads/xpack-openocd-0.10.0-13-darwin-x64.tgz -C /usr/local/share
     else
-        export PATH="$PATH:/usr/local/share/gnu-mcu-eclipse/openocd/0.10.0-10-20181020-0522/bin/"
-        cd /usr/local/share/gnu-mcu-eclipse/openocd/0.10.0-10-20181020-0522/scripts/
+        export PATH="$PATH:/usr/local/share/xPacks/openocd/0.10.0-13/bin/"
+        cd /usr/local/share/xPacks/openocd/0.10.0-13/scripts/
         
         #halt
         #flash erase_sector 0 0 last

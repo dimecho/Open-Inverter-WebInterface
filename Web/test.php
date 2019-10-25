@@ -42,8 +42,8 @@
         <script src="js/test.js"></script>
     </head>
     <body>
+        <?php include "menu.php" ?>
         <div class="container">
-		<?php include "menu.php" ?>
             <div class="row">
                 <div class="col">
                     <div class="container bg-light">
@@ -191,7 +191,7 @@
                                 <div class="col">
 									<div class="container" id="hardware-results"></div>
                                     <center>
-                                        <img src="" id="hardware-image" class="rounded" />
+                                        <img src="" id="hardware-image" class="img-thumbnail rounded" />
                                     </center>
                                 </div>
                             </div>

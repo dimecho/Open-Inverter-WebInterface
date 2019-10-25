@@ -16,14 +16,13 @@ if($args[0] -eq "uninstall") {
 	Elevate $args[0]
 	Remove-Item -Recurse -Force $cantact
 }else{
-    if (-Not (Test-Path $cantact)){
+    if (-Not (Test-Path $cantact))
+    {
 		Elevate $args[0]
-		Add-Type -AssemblyName System.IO.Compression.FileSystem
-		[System.IO.Compression.ZipFile]::ExtractToDirectory("$env:userprofile\Downloads\cantact-v$($args[0])-alpha.zip", "$env:programfiles")
-	}
+        $zip = Start-Job -ScriptBlock {Expand-Archive -Path "$env:userprofile\Downloads\cantact-v0.3.0-alpha.zip" -DestinationPath "$env:programfiles" -Force} -ArgumentList $args[0]
+	    Wait-Job $zip
+    }
 
-	#fixes java updates
-    #Remove-Item –Path "$env:userprofile\AppData\Roaming\.cantact" –Recurse –Force
-    
+    Start-Process "cmd" -ArgumentList "/c ""del /q '\\?\$env:userprofile\AppData\Roaming\.cantact\'"""
 	Start-Process "$cantact\bin\cantact64.exe"
 }

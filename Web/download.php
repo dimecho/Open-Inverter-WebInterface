@@ -173,13 +173,15 @@
         <?php include "header.php"; ?>
         <script>
             $(document).ready(function() {
-                download(<?php echo "\"" .$_GET['start']. "\",\"" .$_GET['crc']. "\""; ?>);
+                $.getScript("js/download.js").done(function(script, textStatus) {
+                    download(<?php echo "\"" .$_GET['start']. "\",\"" .$_GET['crc']. "\""; ?>);
+                });
             });
         </script>
     </head>
     <body>
+        <?php include "menu.php" ?>
         <div class="container">
-            <?php include "menu.php"; ?>
             <br><br>
             <div class="row">
                 <div class="col">

@@ -15,8 +15,9 @@ function Elevate() {
 function openBrowser {
 
     $httpURL = "http://127.0.0.1:8080"
-    $httpKey = (Get-Item -Path Registry::HKEY_CLASSES_ROOT\http\shell\open\command)
-
+    $progID = (Get-ItemProperty HKCU:\Software\Microsoft\windows\Shell\Associations\UrlAssociations\http\UserChoice).Progid
+    $httpKey = (Get-Item -Path Registry::HKLM\SOFTWARE\Classes\$progID\shell\open\command)
+    
     if ($httpKey -ne $null)
     {
         $command = $httpKey.GetValue("", "iexplore.exe")
@@ -37,7 +38,6 @@ function openBrowser {
         }
     }
 
-    #Start-Process -FilePath $httpURL
     $ie = New-Object -com InternetExplorer.Application
     $ie.visible = $true
     $ie.navigate($httpURL)

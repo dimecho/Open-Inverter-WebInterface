@@ -1,6 +1,5 @@
 <?php
     include_once("common.php");
-    error_reporting(E_ERROR | E_PARSE);
 	$os = detectOS();
 
     if(isset($_GET["ajax"]))
@@ -143,8 +142,8 @@
         <script src="js/firmware.js"></script>
     </head>
     <body>
+    	<?php include "menu.php" ?>
         <div class="container">
-            <?php include "menu.php" ?>
             <div class="row">
                 <div class="col">
 					<table class="table table-active bg-light table-bordered">
@@ -155,121 +154,64 @@
                         </tr>
                     </table>
                     <table class="table table-active bg-light table-bordered">
-						<?php
-                        if(isset($_FILES["firmware"])){
-                        echo '
-                        <tr>
+                    	<tr>
                             <td>
-								<script>
-									$(document).ready(function() {
-										var progressBar = $("#progressBar");
-										for (i = 0; i < 100; i++) {
-											setTimeout(function(){ progressBar.css("width", i + "%"); }, i*1000);
+							<?php
+	                        if(isset($_FILES["firmware"])) {
+								require "upload-status.php";
+	                        }else{
+	                        ?>
+							<script>
+								$(document).ready(function() {
+									if(os == "esp8266") {
+										$("#firmware-interface").append($("<option>",{value:"uart-esp8266",selected:'selected'}).append("UART over ESP8266"));
+										$("#firmware-interface").append($("<option>",{value:"swd-esp8266",selected:'selected'}).append("SWD over ESP8266"));
+									}else{
+										unblockSerial();
+										for (var i = 0; i < jtag_interface.length; i++) {
+											$("#firmware-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_name[i]));
 										}
-										$.ajax({
-											type: "GET",
-											url:';
-											echo "'";
-											//$tmp_dir = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
-											echo "firmware.php?ajax=1";
-											$ocd_interface = $_POST["interface"];
-											if ($os === "mac") {
-												$ocd_file = "/tmp/" .$_FILES['firmware']["name"];
-											}elseif ($os === "windows") {
-												$ocd_file = sys_get_temp_dir(). "\\" .$_FILES['firmware']["name"];
-												$ocd_interface = str_replace("/","\\",$ocd_interface);
-											}else{
-												$ocd_file = sys_get_temp_dir(). "/" .$_FILES['firmware']["name"];
-											}
-											move_uploaded_file($_FILES['firmware']['tmp_name'], $ocd_file);
-											echo "&file=" .urlencode($ocd_file);
-											echo "&interface=" .urlencode($ocd_interface);
-											echo "'";
-											echo ',success: function(data){
+										$.ajax("serial.php?com=list", {
+											async: false,
+											success: function(data) {
 												//console.log(data);
-                                                deleteCookie("version");
-												progressBar.css("width","100%");
-												$("#output").append($("<pre>").append(data));
-                                                if(data.indexOf("shutdown command invoked") !=-1 || data.indexOf("jolly good") !=-1 || data.indexOf("Update done") !=-1){
-                                                    $.notify({ message: "Flash Complete" },{ type: "success" });
-                                                }
-                                                if(data.indexOf("shutdown command invoked") !=-1 || data.indexOf("jolly good") !=-1){
-                                                    $.notify({ message: "Plugin USB-RS232-TTL" },{ type: "warning" });
-                                                    $.notify({ message: "Unlug JTAG Programmer" },{ type: "danger" });
-                                                }else if(data.indexOf("Transmission Error") !=-1){
-                                                    $.notify({ message: "USB power insufficeint, plug inverter to 12V" },{ type: "danger" });
-                                                }else if(data.indexOf("timeout") !=-1){
-                                                    $.notify({ message: "If Olimex is bricked, press reset button while flashing" },{ type: "warning" });
-                                                }
-                                                setTimeout( function (){
-                                                    window.location.href = "index.php";
-                                                },12000);
+												var s = data.split('\n');
+												for (var i = 0; i < s.length; i++) {
+													if(s[i] != "")
+														$("#firmware-interface").append($("<option>",{value:s[i]}).append(s[i]));
+												}
 											}
 										});
-									});
-								</script>
-								<div class="progress progress-striped active">
-                                    <div class="progress-bar" style="width:0%" id="progressBar"></div>
-                                </div>
-                                <br><br>
-                                <div id="output"></div>
-							</td>
-                        </tr>';
-                        }else{
-                        ?>
-						<script>
-							$(document).ready(function() {
-								if(os == "esp8266") {
-									$("#firmware-interface").append($("<option>",{value:"uart-esp8266",selected:'selected'}).append("UART over ESP8266"));
-									$("#firmware-interface").append($("<option>",{value:"swd-esp8266",selected:'selected'}).append("SWD over ESP8266"));
-								}else{
-									for (var i = 0; i < jtag_interface.length; i++) {
-										$("#firmware-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_name[i]));
 									}
-									//$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
-									$.ajax("serial.php?com=list", {
-										async: false,
-										success: function(data) {
-											//console.log(data);
-											var s = data.split('\n');
-											for (var i = 0; i < s.length; i++) {
-												if(s[i] != "")
-													$("#firmware-interface").append($("<option>",{value:s[i]}).append(s[i]));
-											}
-										}
-									});
-								}
-								$("#firmware-interface").prop('selectedIndex', 0);
-								$(".loader").hide();
-								$(".input-group-addon").show();
-								setInterfaceImage();
-								displayHWVersion();
-							});
-                        </script>
-						<tr>
-                            <td>
-								<center>
-                                <div class="loader"></div>
-                                <div class="input-group w-100">
-                                    <span class="input-group-addon hidden w-75">
-										<form enctype="multipart/form-data" action="firmware.php" method="POST" id="firmwareForm">
-											<input name="firmware" type="file" class="file" hidden onchange="firmwareUpload()" />
-											<select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage()" id="firmware-interface"></select>
-										</form>
-									</span>
-                                    <span class="input-group-addon hidden w-25 text-center">
-										<button class="browse btn btn-primary" type="button"><i class="icons icon-select"></i> Select stm32_sine.bin</button>
-									</span>
-                                </div>
-                                <br><br><h2 id="jtag-name"></h2>
-                                <span class="badge badge-lg bg-warning" id="jtag-txt"></span><br><br>
-                                <img src="" id="jtag-image" class="rounded" />
-								</center>
+									$("#firmware-interface").prop('selectedIndex', 0);
+									$(".loader").hide();
+									$(".input-group-addon").show();
+									setInterfaceImage();
+									displayHWVersion();
+								});
+	                        </script>
+							<center>
+                            <div class="loader"></div>
+                            <div class="input-group w-100">
+                                <div class="input-group-addon hidden w-75">
+									<form enctype="multipart/form-data" action="firmware.php" method="POST" id="firmwareForm">
+										<input name="firmware" type="file" class="file" hidden onchange="firmwareUpload()" />
+										<select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage()" id="firmware-interface"></select>
+									</form>
+								</div>
+                                <div class="input-group-addon hidden w-25 text-center">
+									<button class="browse btn btn-primary" type="button"><i class="icons icon-select"></i> Select stm32_sine.bin</button>
+								</div>
+                            </div>
+                            <br><br><h2 id="jtag-name"></h2>
+                            <span class="badge badge-lg bg-warning" id="jtag-txt"></span><br><br>
+                            <img src="" id="jtag-image" class="img-thumbnail rounded" />
+							</center>
+							<?php
+	                            } 
+	                        ?>
                             </td>
                         </tr>
-						<?php
-                            } 
-                        ?>
                     </table>
                 </div>
             </div>

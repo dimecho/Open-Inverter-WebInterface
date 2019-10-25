@@ -18,9 +18,8 @@ if($args[0] -eq "uninstall") {
 }else{
     if (-Not (Test-Path $cangaroo)){
 		Elevate $args[0]
-		Add-Type -AssemblyName System.IO.Compression.FileSystem
-		[System.IO.Compression.ZipFile]::ExtractToDirectory("$env:userprofile\Downloads\cangaroo-win32-0363ce7.zip", "$env:programfiles")
-        Rename-Item "$env:programfiles\dist" $cangaroo
+        Expand-Archive -Path "$env:userprofile\Downloads\cangaroo-win32-0363ce7.zip" -DestinationPath "$env:programfiles" -Force
+		Rename-Item "$env:programfiles\dist" $cangaroo
 	}
 	
     Start-Process "$cangaroo\cangaroo.exe"

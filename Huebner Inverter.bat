@@ -12,7 +12,7 @@ powershell.exe -ExecutionPolicy Bypass -Command "exit $PSVersionTable.PSVersion.
 SET PSVer=%errorlevel%
 ECHO PowerShell Version %PSVer%
 
-IF %PSVer% geq 4 (
+IF %PSVer% geq 5 (
     powershell.exe -ExecutionPolicy Bypass -File .\Windows\run.ps1
 ) ELSE (
     ECHO Download and Install PowerShell 5.1

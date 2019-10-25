@@ -6,9 +6,7 @@
 mkdir -p data/css
 mkdir -p data/js
 mkdir -p data/img
-mkdir -p data/fonts
-mkdir -p data/firmware
-mkdir -p data/firmware/img
+mkdir -p data/font
 mkdir -p data/pcb
 mkdir -p data/pcb/v1.0
 mkdir -p data/pcb/v3.0
@@ -18,18 +16,18 @@ for i in "${array[@]}"; do
     cp -rf ../Web/$i data
 done
 
-array=(alertify.css jquery.fancybox.css animate.css bootstrap.css ion.rangeSlider.css icons.css style.css)
+array=(alertify.css jquery.fancybox.css animate.css bootstrap.css bootstrap.slate.css ion.rangeSlider.css icons.css style.css)
 for i in "${array[@]}"; do
     cp -rf ../Web/css/$i data/css
 done
 
-array=(jquery.js jquery.knob.js potentiometer.js jquery.fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-annotation.js chartjs-plugin-datalabels.js test.js mobile.js)
+array=(esp8266.js jquery.js jquery.knob.js potentiometer.js jquery.fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-annotation.js chartjs-plugin-datalabels.js test.js mobile.js)
 for i in "${array[@]}"; do
     cp -rf ../Web/js/$i data/js
 done
 cp -rf ../Web/js/menu-esp8266.json data/js/menu.json
 
-array=(background.jpg safety.png)
+array=(background.png)
 for i in "${array[@]}"; do
     cp -rf ../Web/img/$i data/img
 done
@@ -38,8 +36,8 @@ cp -rf  "../Web/pcb/Hardware v1.0/diagrams/test.png" data/pcb/v1.0
 cp -rf  "../Web/pcb/Hardware v1.0/diagrams/esp8266.png" data/pcb/v1.0
 cp -rf  "../Web/pcb/Hardware v3.0/diagrams/test.png" data/pcb/v3.0
 cp -rf  "../Web/pcb/Hardware v3.0/diagrams/esp8266.png" data/pcb/v3.0
-cp -rf ../Web/fonts/icons.ttf data/fonts
-cp -rf ../Web/fonts/icons.woff data/fonts
+cp -rf ../Web/font/icons.ttf data/font
+cp -rf ../Web/font/icons.woff data/font
 
 #======================
 #Correct long filenames
@@ -124,7 +122,7 @@ if [ ! -f tools/yuicompressor-2.4.8.jar ]; then
 fi
 
 if [ ! -f tools/yuicompressor-2.4.8.jar ]; then
-    curl -L -o tools/compiler-20180910.zip -k -C - https://dl.google.com/closure-compiler/compiler-20180910.zip
+    curl -L -o tools/compiler-20190929.zip -k -C - https://dl.google.com/closure-compiler/compiler-20190929.zip
     cd tools
     unzip compiler-20180910
     cd ../
@@ -152,7 +150,7 @@ echo " > Compress Javascript? (y/n)"
 read yn
 if [ $yn = y ]; then
     for f in $(find data -name '*.js'); do
-        java -jar tools/closure-compiler-v20180910.jar --strict_mode_input=false --language_in ECMASCRIPT5 --js_output_file "$f-min.js" --js "$f"
+        java -jar tools/closure-compiler-v20190929.jar --strict_mode_input=false --language_in ECMASCRIPT5 --js_output_file "$f-min.js" --js "$f"
         mv "$f-min.js" "$f"
     done
 fi

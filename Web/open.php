@@ -84,6 +84,7 @@ session_start();
 			$command = "..\\Windows\\puttytel.exe -serial " .$_SESSION["serial"]. " -sercfg " .$_SESSION["speed"]. ",8,n,1,N";
 		}else if ($os === "mac") {
             //$command = "open -n -a Terminal --args ../minicom -D " .$_SESSION["serial"]. " -b " .$_SESSION["speed"];
+            file_put_contents("../minicom.sh", "#!/bin/sh\ncd \"$(dirname \"$0\")\"\n./minicom -D " .$_SESSION["serial"]. " -b " .$_SESSION["speed"]);
             $command = "open -n -a Terminal ../minicom.sh";
 		}else{
             $command = "gnome-terminal -- bash -c \"minicom -D " .$_SESSION["serial"]. " -b " .$_SESSION["speed"]. "\"";

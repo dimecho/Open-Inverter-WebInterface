@@ -155,6 +155,8 @@ function buildTable(title, csv, notes) {
             if (notes.length > 1)
                 div.append(label);
             div.append(table);
+
+            setTheme();
             
             $('[data-toggle="tooltip"]').tooltip({
                 container: 'body',
