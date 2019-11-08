@@ -180,7 +180,9 @@
         </script>
     </head>
     <body>
-        <?php include "menu.php" ?>
+        <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
+        <div class="row mt-5"></div>
+        <div class="row mt-5"></div>
         <div class="container">
             <br><br>
             <div class="row">

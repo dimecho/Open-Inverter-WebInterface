@@ -7,8 +7,10 @@
         <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
+        <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
+        <div class="row mt-5"></div>
+        <div class="row mt-5"></div>
         <div class="container">
-            <?php include "menu.php" ?>
             <div class="row">
                 <div class="col">
                     <table class="table table-active table-bordered">

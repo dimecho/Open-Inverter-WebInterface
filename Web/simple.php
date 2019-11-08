@@ -7,7 +7,9 @@
         <script src="js/simple.js"></script>
     </head>
     <body>
-    	<?php include "menu.php" ?>
+    	<div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
+        <div class="row mt-5"></div>
+        <div class="row mt-5"></div>
         <div class="container">
             <div class="row">
                 <div class="col">
@@ -43,13 +45,13 @@
                         <div class="row"><hr></div>
                     </div>
                     <br>
-                    <center><div class="loader hidden"></div></center>
+                    <center><div class="spinner-border text-dark d-none" id="loader-parameters"></div></center>
                     <table class="table table-active bg-light table-bordered"><tr><td><h4>Motor</h4></td></tr></table>
                     <table class="table table-active bg-light table-bordered table-striped table-hover" id="parameters_Motor"></table>
                     <table class="table table-active bg-light table-bordered"><tr><td><h4>Battery</h4></td></tr></table>
                     <table class="table table-active bg-light table-bordered table-striped table-hover" id="parameters_Battery"></table>
                     <a class="temp-tune" data-fancybox data-src="#temp-tune" href="javascript:;"></a>
-                    <div class="hidden" id="temp-tune" style="width:60%;border-radius:5px">
+                    <div class="d-none" id="temp-tune" style="width:60%;border-radius:5px">
                         <div class="container">
                             <div class="row">
                                 <div class="col">
@@ -73,5 +75,6 @@
                 </div>
             </div>
         </div>
+        <?php include "footer.php" ?>
     </body>
 </html>

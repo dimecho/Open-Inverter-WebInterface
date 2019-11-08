@@ -50,8 +50,8 @@ $(document).ready(function () {
 	        success: function success(data) {
                 if (data["nvram6"] == "1") {
                 	$("#can-interface").append($("<option>",{value:can_interface.length}).append("CAN over ESP8266 with MCP2515"));
-                	$("#can-interface-label").show();
-                	$("#can-interface").show();
+                	$("#can-interface-label").removeClass("d-none"); //.show();
+                	$("#can-interface").removeClass("d-none"); //.show();
                 }
 	        }
 	    });
@@ -59,8 +59,8 @@ $(document).ready(function () {
     	for (var i = 0; i < can_interface.length-1; i++) {
     		$("#can-interface").append($("<option>",{value:i}).append(can_name[i]));
     	}
-    	$("#can-interface-label").show();
-    	$("#can-interface").show();
+    	$("#can-interface-label").removeClass("d-none"); //.show();
+    	$("#can-interface").removeClass("d-none"); //.show();
         setCANImage();
     }
 
@@ -112,7 +112,7 @@ function setCANImage() {
         }, 300);
     });
 
-    if(can_app[v] != "")
+    if(can_app[v] != "" && os != "mobile")
     {
         var can_app_button = $("<button>", {class:"btn btn-primary"}).append($("<i>", {class:"icons icon-list"}));
         can_app_button.attr("onClick", "eval(checkSoftware('" + can_app[v].toLowerCase() + "'))");
@@ -166,7 +166,7 @@ function canbitLimit(value) {
 
 function buildCANParameters() {
     
-    $(".loader").show();
+    $("#loader-parameters").removeClass("d-none"); //.show();
 
     json = sendCommand("json");
     
@@ -340,7 +340,7 @@ function buildCANParameters() {
 				}
 			});
         };
-        menu.show();
+        menu.removeClass("d-none"); //.show();
 
         if(os === "mobile") {
             $("table").attr("style","font-size: 140%;");
@@ -351,7 +351,7 @@ function buildCANParameters() {
         $('[data-toggle="tooltip"]').tooltip();
     }
 
-    $(".loader").hide();
+    $("#loader-parameters").addClass("d-none"); //.hide();
 };
 
 function saveCANMapping() {

@@ -9,9 +9,12 @@ body {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  text-rendering: optimizeSpeed; /*optimizeLegibility;*/
 }
-[class^="icon-"]:before, [class*=" icon-"]:before {
-  margin-right: .5em !important;
+canvas {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 .navbar {
   padding: 0 !important;
@@ -20,9 +23,6 @@ body {
 .hidden {
   display: none;
 }
-.slider {
-  width: 90% !important;
-}
 .btn-space {
   margin-right: 6px;
 }
@@ -30,8 +30,15 @@ body {
   font-size: 2em;
   margin: 8px auto;
 }
+.icon-status .tooltip-inner {
+	text-align: left !important;
+}
 .icon-theme {
   font-size: 1.5em;
+}
+.fancybox-content {
+  width:60%;
+  border-radius:5px
 }
 .circle-size-1 {
   width: 20px;
@@ -58,27 +65,6 @@ body {
 }
 .nav-tabs > li > a:hover {
   color: #000000; 
-}
-.loader {
-  border: 5px solid #A9A9A9;
-  border-top-width: 5px;
-  border-top-style: solid;
-  border-top-color: rgb(243, 243, 243);
-  -webkit-animation: spin 1s linear infinite;
-  animation: spin 1s linear infinite;
-  border-top: 5px solid #404040;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-}
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-canvas {
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
 }
 .chartWrapper {
   position: relative;
@@ -108,4 +94,11 @@ canvas {
 }
 .form-control {
   padding: 0.375rem 0.75rem !important;
+}
+.large.tooltip-inner {
+  min-width: 100px;
+  max-width: 80%;
+}
+.fancybox-content {
+  width:65%;
 }

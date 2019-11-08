@@ -22,34 +22,27 @@
         <script src="js/graph.js"></script>
     </head>
     <body>
-    	<?php include "menu.php" ?>
-        <div class="container">
+        <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
+        <div class="row mt-5"></div>
+        <div class="row mt-5"></div>
+        <div class="container bg-light">
+            <div class="row">
+                <div class="col" id="buildGraphMenu">
+                    <div id="potentiometer" style="display:none">
+                        <input class="knob" data-displayinput="true" data-min="0" data-max="100" data-fgcolor="#222222" data-bgcolor="#FFFFFF" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4"></div>
+            <div class="row">
+                <div class="col-auto mr-auto mb-auto mt-auto" id="buildGraphButtons"></div>
+                <div class="col-auto text-right" id="buildGraphExport"></div>
+            </div>
+            <div class="row p-4">
+                <div class="col" id="buildGraphZoom"></div>
+            </div>
             <div class="row">
                 <div class="col">
-                    <div class="container bg-light">
-                        <div class="row">
-                            <div class="col">
-                                <div id="buildGraphMenu"></div>
-                                <div id="potentiometer" style="display:none">
-                                    <input class="knob" data-displayinput="true" data-min="0" data-max="100" data-fgcolor="#222222" data-bgcolor="#FFFFFF" value="0">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-4"></div>
-                        <div class="row">
-                            <div class="col-8">
-                                <div id="buildGraphButtons"></div>
-                            </div>
-                            <div class="col-4 text-right">
-                                <div id="buildGraphExport"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <div id="buildGraphZoom"></div>
-                            </div>
-                        </div>
-                    </div>
 					<!-- http://jsfiddle.net/jmpxgufu/100/ -->
 					<div class="chartWrapper bg-light">
 						<div class="chartAreaWrapper">
@@ -59,23 +52,19 @@
 						</div>
 						<canvas id="chartAxis" width="0"></canvas>
 					</div>
-                    <div class="container bg-light">
-                        <div class="row">
-                            <div class="col">
-                                <div class="mx-auto" id="buildGraphSlider"></div>
-                            </div>
-                        </div>
-                        <div class="row mt-4"></div>
-                        <div class="row text-center">
-                            <div class="col">
-                                <code id="devmode"><a href="#">Developer Mode is OFF</a></code>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+            </div>
+            <div class="row p-4">
+                <div class="col" id="buildGraphSlider">
+                </div>
+            </div>
+            <div class="row mt-4"></div>
+            <div class="row p-2 text-center">
+                <div class="col">
+                    <code id="devmode"><a href="#">Developer Mode is OFF</a></code>
                 </div>
             </div>
         </div>
-        <br>
         <a class="graphSettings" data-fancybox data-src="#graphSettings" href="#"></a>
         <div class="hidden bg-light" id="graphSettings" style="width:60%;border-radius:5px">
             <div class="container">
@@ -145,6 +134,7 @@
                 </div>
             </div>
         </div>
+        <?php include "footer.php" ?>
     </body>
 </html>
 <?php } ?>

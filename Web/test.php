@@ -42,7 +42,9 @@
         <script src="js/test.js"></script>
     </head>
     <body>
-        <?php include "menu.php" ?>
+        <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
+        <div class="row mt-5"></div>
+        <div class="row mt-5"></div>
         <div class="container">
             <div class="row">
                 <div class="col">
@@ -51,7 +53,7 @@
                             <div class="col">
                                 <ul class="nav nav-tabs" role="tablist">
                                     <li class="nav-item"><a class="nav-link" href="#tabAnalog">Analog</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="#tabDigital">Digital</a></li>
+                                    <li class="nav-item d-none"><a class="nav-link" href="#tabDigital">Digital</a></li>
                                     <li class="nav-item"><a class="nav-link" href="#tabHardware">Hardware</a></li>
                                 </ul>
                             </div>
@@ -183,7 +185,7 @@
                             <div class="row mt-4"></div>
 							<div class="row">
                                 <div class="col">
-                                    <center><div class="loader hidden"></div></center>
+                                    <center><div class="spinner-border text-dark d-none"></div></center>
                                 </div>
                             </div>
 							<div class="row mt-4"></div>
@@ -202,7 +204,7 @@
             </div>
         </div>
         <a class="hwtestconfirm" data-fancybox data-src="#hwtestconfirm" href="javascript:;"></a>
-        <div class="hidden" id="hwtestconfirm" style="width:60%;border-radius:5px">
+        <div class="d-none" id="hwtestconfirm" style="width:60%;border-radius:5px">
             <div class="container">
                 <div class="row">
                     <div class="col" align="center">
@@ -222,6 +224,7 @@
                 </div>
             </div>
         </div>
+        <?php include "footer.php" ?>
     </body>
 </html>
 <?php } ?>

@@ -5,7 +5,9 @@
         <script src="js/db.js"></script>
     </head>
     <body>
-        <?php include "menu.php" ?>
+        <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
+        <div class="row mt-5"></div>
+        <div class="row mt-5"></div>
         <div class="container">
             <br>
             <div class="row">
@@ -20,7 +22,7 @@
                                         <select class="form-control" id="motor-select"></select>
                                     </span>
                                     <span class = "input-group-addon w-25">
-                                        <button class="browse btn btn-primary" type="button"><i class="icon-list-alt"></i> Select Motor</button>
+                                        <button class="browse btn btn-primary" type="button"><i class="icons icon-list-alt"></i> Select Motor</button>
                                     </span>
                                 </div>
                                 <br><br>
@@ -40,5 +42,6 @@
                 </div>
             </div>
         </div>
+        <?php include "footer.php" ?>
     </body>
 </html>

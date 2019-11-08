@@ -5,7 +5,9 @@
         <script src="js/uninstall.js"></script>
     </head>
     <body>
-        <?php include "menu.php" ?>
+        <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
+        <div class="row mt-5"></div>
+        <div class="row mt-5"></div>
         <div class="container">
              <div class="row">
                 <div class="col">
@@ -43,7 +45,7 @@
 											echo "<tr><td><input type='checkbox' onclick='UninstallEverything();' class='everything' /> <span><b>Everything</b></span></td></tr>";
 										}
 
-										echo "<tr><td><input id='" .$id. "' type='checkbox' " . $disabled. " /> <span>" .$item["title"]. " " .$item["download"]["version"]. "</span>" .$builtin." <img src='/img/loading.gif' id='" .$id. "_progress' style='display:none;'></td></tr>";
+										echo "<tr><td><input id='" .$id. "' type='checkbox' " . $disabled. " /> <span>" .$item["title"]. " " .$item["download"]["version"]. "</span>" .$builtin." <div class='spinner-border text-dark d-none' id='" .$id. "_progress'></div></td></tr>";
 									}
 								}
                             }
@@ -53,6 +55,5 @@
                 </div>
             </div>
         </div>
-        <br>
     </body>
 </html>

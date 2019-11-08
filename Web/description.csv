@@ -1,45 +1,57 @@
 boost,0 Hz Boost in digit. 1000 digit ~ 2.5%
 fweak,Frequency where V/Hz reaches its peak
-fconst,Frequency where slip frequency is derated to form a constant power region. Only has an effect when < fweak
+idweak,"Above ""fweak"" frequency start injecting field weakening current. 0=Disabled"
+udcnom,Scales fweak and boost as DC voltage changes. 0=Don't scale 
+fpconst,Frequency where slip frequency is derated to form a constant power region. Only has an effect when < fweak
 fslipmin,Slip frequency at minimum throttle
 fslipmax,Slip frequency at maximum throttle
 polepairs,Pole pairs of motor (4-pole motor: 2 pole pairs)
-respolepairs,Pole pairs of resolver
+respolepairs,Pole pairs of resolver (2-pole resolver: 1 pole pair)
 encflt,Filter constant between pulse encoder and speed calculation. Makes up for slightly uneven pulse distribution
+encmode,"0=Single (Async Motor), 1=AB (Async Motor), 2=ABZ (Sync Motor), 3=SPI [Talk to AD2S chip via SPI ""Deprecated""] (Sync Motor), 4=Resolver [Needs ON state on pin PD2 and expects sin/cos signal on PA6/PA7] (Sync Motor)"
 fmin,Below this frequency no voltage is generated
 fmax,At this frequency slip is commanded 0 to avoid further acceleration
-pwmfrq,"PWM frequency. 0=17.6kHz, 1=8.8kHz, 2=4.4kHz, 3=2.2kHz"
-pwmpol,"PWM polarity. 0=active high, 1=active low. DO NOT PLAY WITH THIS!"
-deadtime,"Deadtime between highside and lowside pulse. 28=800ns, 56=1.5µs. Not always linear, consult STM32 manual"
 numimp,Pulse encoder pulses per turn
 dirchrpm,Motor speed at which direction change is allowed
-dirmode,0=button (momentary pulse selects forward/reverse), 1=switch (forward or reverse signal must be constantly high) 
+dirmode,0=button (momentary pulse selects forward/reverse), 1=switch (forward or reverse signal must be constantly high)
 syncofs,Phase shift of sine wave after receiving index pulse
-speedflt,Filter before cruise controller
-bmslimhigh,Positive throttle limit on BMS under voltage
-bmslimlow,Regen limit on BMS over voltage
-udcsw,Voltage at which the DC contactor is allowed to close
-udcmin,Low voltage at which a voltage warning light comes on
-udcmax,High voltage at which a voltage warning light comes on
-udclim,High voltage at which the PWM is shut down
+syncadv,"Shifts ""syncofs"" upwards with frequency"
+snsm,"Motor temperature sensor. 12=KTY83-110, 13=KTY84-130, 14=Leaf"
+pwmfrq,"PWM frequency. 0=17.6kHz, 1=8.8kHz, 2=4.4kHz, 3=2.2kHz"
+pwmpol,"PWM polarity. 0=Active High, 1=Active Low (gate drive opto coupler whos anode is connected to 5V permanently and they are switched on by pulling the cathode low, typically via a resistor) DO NOT PLAY WITH THIS!"
+deadtime,"Deadtime between highside and lowside pulse. 28=800ns, 56=1.5us. Not always linear, consult STM32 manual"
 ocurlim,Hardware over current limit. RMS-current times sqrt(2) + some slack
 minpulse,"Narrowest or widest pulse, all other mapped to full off or full on, respectively"
 il1gain,Digits per A of current sensor L1
 il2gain,Digits per A of current sensor L2
 udcgain,Digits per V of DC link
+udcofs,DC link 0V offset
+udclim,High voltage at which the PWM is shut down
+snshs,"Heatsink temperature sensor. 0=JCurve, 1=Semikron (Skiip82), 2=MBB600"
+bmslimhigh,Positive throttle limit on BMS under voltage
+bmslimlow,Regen limit on BMS over voltage
+udcsw,Voltage at which the DC contactor is allowed to close
+udcmin,Low voltage at which a voltage warning light comes on
+udcmax,High voltage at which a voltage warning light comes on
+iacmax,Maximum peak AC current (peak not RMS)
+ifltfall,"Resolver - Dampens how quickly the amplitude is decreased once it overshoots iacmax*80% (over current limiting)"
+ifltrise,"Resolver - Dampens ""recovery"" how quickly the amplitude is increased once it overshoots iacmax*80% (higher value, slower the reponse)"
+idcmax,Maximum DC input current
+idcmin,Maximum DC output current (regen)
 pwmfunc,"Quantity that controls the PWM output. 0=tmpm, 1=tmphs, 2=speed"
 pwmgain,Gain of PWM output
 pwmofs,"Offset of PWM output, 4096=full on"
 tripmodes,"Control of relay reaction to trip event. 0=AllOff, 1=dcswon, 2=prechargeon"
-snshs,"Heatsink temperature sensor. 0=JCurve, 1=Semikron (Skiip82), 2=MBB600"
-snsm,"Motor temperature sensor. 12=KTY83-110, 13=KTY84-130, 14=Leaf"
 opmode,"Operating mode. 0=Off, 1=Run, 2=Manual_run"
 udc,DC link voltage
+uac,Calculated AC voltage
 idc,Calculated DC current
 il1,AC current L1
 il2,AC current L2
 il1rms,RMS current L1
 il2rms,RMS current L2
+boostcalc,Calculated value from udcnom
+fweakcalc,Calculated value from udcnom
 fstat,Stator frequency
 speed,Motor speed
 amp,"Sine amplitude, 37813=max"
@@ -54,6 +66,7 @@ potmode,"0=Pot 1 is throttle and pot 2 is regen strength preset, 1=Pot 2 is prop
 throtramp,Max positive throttle slew rate
 throtramprpm,No throttle ramping above this speed
 throtid,Sets the amount of magnetizing current per % of potnom. To demagnetize (i.e. field weaken) it must be negative.
+throtcur,Sets the amount of magnetizing current per % of potnom. To demagnetize (i.e. field weaken) it must be negative.
 ampmin,Relative sine amplitude at minimum throttle
 slipstart,% positive throttle travel at which slip is increased
 brknompedal,Foot on break pedal regen torque
@@ -68,10 +81,11 @@ idlethrotlim,Throttle limit of idle speed controller
 idlemode,"Motor idle speed mode. 0=always run idle speed controller, 1=only run it when brake pedal is released"
 speedkp,Speed controller gain (Cruise and idle speed). Decrease if speed oscillates. Increase for faster load regulation
 cruisemode,"0=button (set when button pressed, reset with brake pedal), 1=switch (set when switched on, reset when switched off or brake pedal)"
+speedflt,Filter before cruise controller
 dir,"Rotation direction. -1=REV, 0=Neutral, 1=FWD"
 tmphs,Heatsink temperature
 tmpm,Motor temperature
-uaux,Chargemode voltage accuracy
+uaux,Auxiliary voltage accuracy. Measured on pin 11 (mprot) 
 din_cruise,Cruise Control. This pin activates the cruise control with the current speed. Pressing again updates the speed set point.
 din_start,"State of digital input ""start"". This pin starts inverter operation"
 din_brake,"State of digital input ""brake"". This pin sets maximum regen torque (brknompedal). Cruise control is disabled."
@@ -89,11 +103,7 @@ chargecur,Hardware over current limit
 chargekp,Charge controller gain. Lower if you have oscillation, raise if current set point is not met
 chargeflt,Charge current filtering. Raise if you have oscillations
 chargemax,Charge mode duty cycle limit. Especially in boost mode this makes sure you don't overvolt you IGBTs if there is no battery connected.
-udcnom,Scales fweak and boost as DC voltage changes
-fweakcalc,Calculated value from udcnom
-boostcalc,Calculated value from udcnom
 udcswbuck,Precharge voltage in buck mode
-encmode,"Single=Async Motor, AB=Async Motor, ABZ=Sync Motor, SPI=Talk to AD2S chip via SPI ""Deprecated"" (Sync motor), Resolver=Needs ON state on pin PD2 and expects sin/cos signal on PA6/PA7 (Sync Motor)"
 pinswap,"1=Currents 1 and 2 (FOC only), 2=Resolver Sin/Cos, 4=PWM Output 1 and 2"
 angle,Motor rotor angle
 turns,Full rotor turns
@@ -103,9 +113,10 @@ fslipspnt,Slip setpoint in mode 2. Written by software in mode 1
 ampnom,Nominal amplitude in mode 2. Written by software in mode 1
 version,Firmware version
 hwver,Hardware revision
-ifltfall,"Resolver - Dampens how quickly the amplitude is decreased once it overshoots iacmax*80% (over current limiting)"
-ifltrise,"Resolver - Dampens ""recovery"" how quickly the amplitude is increased once it overshoots iacmax*80% (higher value, slower the reponse)"
 id,Direct axis stator current - Produces reluctance torque in conjunction with quadrature axis currents. Negative in order to produce any positive torque (when ld is smaller than lq) a positive id is never desired.
 iq,Quadrature axis stator current - Produces only magnetic torque but do not contribute in producing reluctance torque
 ld,Inductance along Direct axis - Inductance along the d-axis is usually lower than that along the q-axis (ld is smaller than lq)
 lq,Inductance along Quadrature axis - Permanent magnets have higher reluctance than iron (lq is greater than ld)
+ud,Voltage along Direct axis
+uq,Voltage along Quadrature axis
+fwkp,Inverter MTPA (maximum torque per amp) gain.

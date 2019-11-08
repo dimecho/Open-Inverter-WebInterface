@@ -31,7 +31,16 @@ function beginESP8266SWD() {
 				$.notify({ message: "SWD over ESP8266 Connected" },{ type: "success" });
 				$.notify({ message: "Hardware IDCode: " + data.idcode },{ type: "warning" });
 			}else{
-				$.notify({ message: "SWD over ESP8266 Not Connected, Try Reset and different Power Source (USB may not be enough)" },{ type: "danger" });
+				$.ajax("/nvram", {
+		            dataType: 'json',
+		            success: function success(data) {
+		                if(data["nvram5"] == "1") {
+		                    $.notify({ message: "SWD over ESP8266 Not Connected, Try Reset and different Power Source (USB may not be enough)" },{ type: "danger" });
+		                }else{
+		                	$.notify({ message: "SWD not Enabled in <a href='esp8266.php'>ESP8266 Configuration</a>" },{ type: "danger" });
+		                }
+		            }
+		        });
 			}
 		}
 	});
@@ -45,6 +54,7 @@ function setInterfaceImage() {
 		
 		//0=Rev1, 1=Rev2, 2=Rev3, 3=Tesla
 		if (hardware == undefined) {
+			$("#hardware").removeClass("d-none");
 			$(".hardware").trigger('click'); //Manual Select
         }else{
         	if(v == "swd-esp8266") {

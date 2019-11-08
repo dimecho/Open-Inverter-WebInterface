@@ -34,7 +34,7 @@ function simpleRow(id, txt) {
 
 function buildSimpleParameters() {
 
-    $(".loader").show();
+    $("#loader-parameters").removeClass("d-none"); //.show();
 
     var json = sendCommand("json");
 
@@ -42,14 +42,65 @@ function buildSimpleParameters() {
     {
         var motor = $("#parameters_Motor").empty();
         var battery = $("#parameters_Battery").empty();
-
-        //=======================
+        
         motor.append(simpleRow("polepairs", "Poles"));
-        motor.append(simpleRow("udcnom", "Motor Rating"));
-        motor.append(simpleRow("boost", "Resistance"));
-        motor.append(simpleRow("fweak", "Speed"));
-        motor.append(simpleRow("idlespeed", "Idle"));
-        motor.append(simpleRow("ampmin", "Torque"));
+        if(json.version.unit.indexOf("foc") == -1) {
+            motor.append(simpleRow("udcnom", "Motor Rating"));
+            $("#udcnom").ionRangeSlider({
+                skin: "big",
+                grid: true,
+                step: 1,
+                min: 12,
+                max: 480,
+                from: json.udcnom.value,
+                postfix: " Volt",
+                onFinish: function (e) {
+                    validateInput("udcnom",e.from);
+                    setParameter("udcnom",e.from,true,true);
+                }
+            });
+            motor.append(simpleRow("boost", "Resistance"));
+            //TODO: account for battery voltage
+			$("#boost").ionRangeSlider({
+				skin: "big",
+				grid: true,
+				step: 0.1,
+				min: 0.0,
+				max: 10.0,
+				from: json.boost.value/1000,
+				postfix: " &#8486;",
+				onFinish: function (e) {
+					validateInput("boost",e.from*1000);
+					setParameter("boost",e.from*1000,true,true);
+				}
+			});
+        	motor.append(simpleRow("fweak", "Speed"));
+        	$("#fweak").ionRangeSlider({
+				skin: "big",
+				grid: true,
+				step: 100,
+				min: 0,
+				max: 5000,
+				from: Math.round(json.fweak.value / json.fmax.value * 5000), //(json.udcmax.value / 1.41 / json.udcmax.value),
+				postfix: " RPM"
+			});
+        	motor.append(simpleRow("ampmin", "Torque"));
+        	//TODO: calculate true torque - fweak,boost etc
+			$("#ampmin").ionRangeSlider({
+				skin: "big",
+				grid: true,
+				step: 1,
+				min: 1,
+				max: 100,
+				from: json.ampmin.value,
+				postfix: " %",
+				onFinish: function (e) {
+					validateInput("ampmin",e.from);
+					setParameter("ampmin",e.from,true,true);
+				}
+			});
+    	}
+    	motor.append(simpleRow("idlespeed", "Idle"));
         motor.append(simpleRow("fmax", "Frequency"));
         motor.append(simpleRow("pwm", "Pulse Width Modulation"));
         motor.append(simpleRow("encmode", "Encoder Mode"));
@@ -94,44 +145,6 @@ function buildSimpleParameters() {
             setParameter("udcnom",e.value,true,true);
         });
 		*/
-		$("#udcnom").ionRangeSlider({
-			skin: "big",
-			grid: true,
-			step: 1,
-			min: 12,
-			max: 480,
-			from: json.udcnom.value,
-			postfix: " Volt",
-			onFinish: function (e) {
-				validateInput("udcnom",e.from);
-				setParameter("udcnom",e.from,true,true);
-			}
-		});
-        //=======================
-        //TODO: account for battery voltage
-		$("#boost").ionRangeSlider({
-			skin: "big",
-			grid: true,
-			step: 0.1,
-			min: 0.0,
-			max: 10.0,
-			from: json.boost.value/1000,
-			postfix: " &#8486;",
-			onFinish: function (e) {
-				validateInput("boost",e.from*1000);
-				setParameter("boost",e.from*1000,true,true);
-			}
-		});
-        //=======================
-		$("#fweak").ionRangeSlider({
-			skin: "big",
-			grid: true,
-			step: 100,
-			min: 0,
-			max: 5000,
-			from: Math.round(json.fweak.value / json.fmax.value * 5000), //(json.udcmax.value / 1.41 / json.udcmax.value),
-			postfix: " RPM"
-		});
         //=======================
 		$("#idlespeed").ionRangeSlider({
 			skin: "big",
@@ -144,21 +157,6 @@ function buildSimpleParameters() {
 			onFinish: function (e) {
 				validateInput("idlespeed",e.from);
 				setParameter("idlespeed",e.from,true,true);
-			}
-		});
-        //=======================
-        //TODO: calculate true torque - fweak,boost etc
-		$("#ampmin").ionRangeSlider({
-			skin: "big",
-			grid: true,
-			step: 1,
-			min: 1,
-			max: 100,
-			from: json.ampmin.value,
-			postfix: " %",
-			onFinish: function (e) {
-				validateInput("ampmin",e.from);
-				setParameter("ampmin",e.from,true,true);
 			}
 		});
         //=======================
@@ -285,10 +283,10 @@ function buildSimpleParameters() {
 			}
 		});
 		
-        motor.show();
-        battery.show();
+        motor.removeClass("d-none"); //.show();
+        battery.removeClass("d-none"); //.show();
     }
-    $(".loader").hide();
+    $("#loader-parameters").addClass("d-none"); //.hide();
 };
 
 function slider_adjustment(id,array) {

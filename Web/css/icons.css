@@ -1,28 +1,27 @@
 @font-face{
-	font-family:icons;
-	src:url(../font/icons.eot?85112072);
-	src:url(../font/icons.eot?85112072#iefix) format('embedded-opentype'),
-	/*url(../font/icons.woff2?85112072) format('woff2'),*/
-	url(../font/icons.woff?85112072) format('woff'),
-	url(../font/icons.ttf?85112072) format('truetype'),
-	url(../font/icons.svg?85112072#icons) format('svg');
+	font-family:'icons';
+	src:url('/font/icons.eot'); /* IE9 Compat Modes */
+	src:url('/font/icons.eot#iefix') format('embedded-opentype'), /* IE6-IE8 */
+		url('/font/icons.woff2') format('woff2'), /* Super Modern Browsers */
+		url('/font/icons.woff') format('woff'), /* Pretty Modern Browsers */
+		url('/font/icons.ttf') format('truetype'), /* Safari, Android, iOS */
+		url('/font/icons.svg#icons') format('svg');  /* Legacy iOS */
 	font-weight:normal;
 	font-style:normal
 }
-[class*="icon-"]:before,[class^=icon-]:before{
-	font-family:icons;
+.icons{
+	font-family:'icons';
 	font-style:normal;
 	font-weight:normal;
 	speak:none;
 	display:inline-block;
 	text-decoration:inherit;
 	width:1em;
-	margin-right:.2em;
+	margin-right:.5em;
 	text-align:center;
 	font-variant:normal;
 	text-transform:none;
 	line-height:1em;
-	margin-left:.2em;
 	-webkit-font-smoothing:antialiased;
 	-moz-osx-font-smoothing:grayscale
 }

@@ -41,7 +41,7 @@
 			$data = bytearray($read);
 			fclose($handle);
 			
-			$pages = round(($len + $PAGE_SIZE_BYTES - 1) / $PAGE_SIZE_BYTES);
+			$pages = ($len + $PAGE_SIZE_BYTES - 1) / $PAGE_SIZE_BYTES;
 			
             print "File length is " .$len. " bytes/" .$pages. " pages\n";
 
@@ -142,7 +142,9 @@
         <script src="js/firmware.js"></script>
     </head>
     <body>
-    	<?php include "menu.php" ?>
+    	<div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
+        <div class="row mt-5"></div>
+        <div class="row mt-5"></div>
         <div class="container">
             <div class="row">
                 <div class="col">
@@ -164,13 +166,15 @@
 							<script>
 								$(document).ready(function() {
 									if(os == "esp8266") {
-										$("#firmware-interface").append($("<option>",{value:"uart-esp8266",selected:'selected'}).append("UART over ESP8266"));
-										$("#firmware-interface").append($("<option>",{value:"swd-esp8266",selected:'selected'}).append("SWD over ESP8266"));
+										$("#firmware-interface").append($("<option>",{value:"uart-esp8266",selected:"selected"}).append("UART over ESP8266"));
+										$("#firmware-interface").append($("<option>",{value:"swd-esp8266"}).append("SWD over ESP8266"));
 									}else{
 										unblockSerial();
 										for (var i = 0; i < jtag_interface.length; i++) {
-											$("#firmware-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_name[i]));
+											$("#firmware-interface").append($("<option>",{value:jtag_interface[i]}).append(jtag_name[i]));
 										}
+										$("#firmware-interface").prop('selectedIndex', (jtag_interface.length-1));
+
 										$.ajax("serial.php?com=list", {
 											async: false,
 											success: function(data) {
@@ -180,26 +184,26 @@
 													if(s[i] != "")
 														$("#firmware-interface").append($("<option>",{value:s[i]}).append(s[i]));
 												}
+												$("#firmware-interface").prop('selectedIndex', (jtag_interface.length + s.length - 2));
 											}
 										});
 									}
-									$("#firmware-interface").prop('selectedIndex', 0);
-									$(".loader").hide();
-									$(".input-group-addon").show();
+									$(".spinner-border").addClass("d-none"); //.hide();
+									$(".input-group-addon").removeClass("d-none"); //.show();
 									setInterfaceImage();
 									displayHWVersion();
 								});
 	                        </script>
 							<center>
-                            <div class="loader"></div>
+                            <div class="spinner-border text-dark"></div>
                             <div class="input-group w-100">
-                                <div class="input-group-addon hidden w-75">
+                                <div class="input-group-addon d-none w-75">
 									<form enctype="multipart/form-data" action="firmware.php" method="POST" id="firmwareForm">
 										<input name="firmware" type="file" class="file" hidden onchange="firmwareUpload()" />
 										<select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage()" id="firmware-interface"></select>
 									</form>
 								</div>
-                                <div class="input-group-addon hidden w-25 text-center">
+                                <div class="input-group-addon d-none w-25 text-center">
 									<button class="browse btn btn-primary" type="button"><i class="icons icon-select"></i> Select stm32_sine.bin</button>
 								</div>
                             </div>
@@ -216,6 +220,7 @@
                 </div>
             </div>
         </div>
+        <?php include "footer.php" ?>
     </body>
 </html>
 <?php

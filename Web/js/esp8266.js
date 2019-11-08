@@ -3,7 +3,7 @@ var timer;
 var formName;
 
 function progressTimer() {
-    var progressBar = $("#progressBar");
+    var progressBar = $(".progress-bar");
     progressBar.css("width", i + "%");
     i++;
     if(i == 100) {
@@ -22,8 +22,8 @@ function HiddenCheck(id,element) {
 
 $(document).ready(function() {
     if(os == "esp8266") {
-        $("#esp8266-nvram").show();
-        $("#esp8266-flash-select").show();
+        $("#esp8266-nvram").removeClass("d-none"); //.show();
+        $("#esp8266-flash-select").removeClass("d-none"); //.show();
         
         $.ajax("/nvram", {
             dataType: 'json',
@@ -45,24 +45,24 @@ $(document).ready(function() {
                 bool_value = data["nvram6"] == "1" ? true : false;
                 $("#EnableCAN").val(data["nvram6"]);
                 $("#EnableCANCheckbox").prop("checked", bool_value);
-                $(".loader").hide();
-                $("#parameters").show();
+                $(".spinner-border").addClass("d-none"); //.hide();
+                $("#parameters").removeClass("d-none"); //.show();
             }
         });
     }else{
         $("#formSPIFFS").attr("action", "esp8266.php");
         $("#formSketch").attr("action", "esp8266.php");
         $("#esp8266-flash-firmware img").attr("src","img/esp8266-flash.png");
-        $("#esp8266-download-firmware").show();
-        $("#esp8266-flash-firmware").show();
-        $("#esp8266-flash-select").show();
-        $(".loader").hide();
+        $("#esp8266-download-firmware").removeClass("d-none"); //.show();
+        $("#esp8266-flash-firmware").removeClass("d-none"); //.show();
+        $("#esp8266-flash-select").removeClass("d-none"); //.show();
+        $(".spinner-border").addClass("d-none"); //.hide();
     }
 
     $("#fileSPIFFS").change(function() {
         i = 1;
         formName = "#formSPIFFS";
-        
+
         if(os != "esp8266") {
             $(formName + " input[name=interface]").val($("#firmware-interface").val());
             $(formName).submit();

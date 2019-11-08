@@ -11,12 +11,12 @@ mkdir -p data/pcb
 mkdir -p data/pcb/v1.0
 mkdir -p data/pcb/v3.0
 
-array=(index.php header.php menu.php esp8266.php can.php graph.php bootloader.php firmware.php simple.php test.php version.txt description.csv)
+array=(index.php header.php footer.php esp8266.php can.php graph.php bootloader.php firmware.php simple.php test.php version.txt description.csv)
 for i in "${array[@]}"; do
     cp -rf ../Web/$i data
 done
 
-array=(alertify.css jquery.fancybox.css animate.css bootstrap.css bootstrap.slate.css ion.rangeSlider.css icons.css style.css)
+array=(mobile.css alertify.css jquery.fancybox.css animate.css bootstrap.css bootstrap.slate.css ion.rangeSlider.css icons.css style.css)
 for i in "${array[@]}"; do
     cp -rf ../Web/css/$i data/css
 done

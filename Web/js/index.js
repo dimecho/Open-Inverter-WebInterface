@@ -1,4 +1,7 @@
 var boot  = getCookie("boot");
+var ctxFont = 16;
+var ctxFontColor = "#808080";
+var ctxDashColor = "black";
 
 $(document).ready(function () {
 
@@ -15,7 +18,13 @@ $(document).ready(function () {
             openEffect  : 'none',
             closeEffect : 'none'
         });
+        $("#safety").removeClass("d-none");
         $(".safety").trigger('click');
+    }
+
+    if(theme == ".slate") {
+        ctxFontColor = "#aaa";
+        ctxDashColor = "white";              
     }
 });
 
@@ -31,7 +40,7 @@ function initializeSerial() {
 
             if(data.toUpperCase().indexOf("ERROR") != -1)
             {
-                $("#com").show();
+                $("#com").removeClass("d-none"); //.show();
                 //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
                 $.ajax("serial.php?com=list", {
                     async: false,
@@ -57,6 +66,7 @@ function initializeSerial() {
                                 if(s[i] != "")
                                     $("#serial-interface").append($("<option>",{value:s[i]}).append(s[i]));
                             }
+                            $("#serial").removeClass("d-none");
                             $(".serial").trigger('click');
                         }else if (os === "mac") {
                             $("#macdrivers img").attr("src","img/catalina-logo.png");
@@ -71,6 +81,7 @@ function initializeSerial() {
                                 openEffect  : 'none',
                                 closeEffect : 'none'
                             });
+                            $("#macdrivers").removeClass("d-none");
                             $(".macdrivers").trigger('click');
                         }else{
                             $.notify({ message: "Serial not found" }, { type: "danger" });
@@ -84,17 +95,17 @@ function initializeSerial() {
                 }else{
                     deleteCookie("boot");
                     $.notify({ message: 'Firmware corrupt or not found' }, { type: 'danger' });
-                    //$("#com").show();
+                    //$("#com").removeClass("d-none"); //.show();
                     setTimeout(function () {
                         window.location.href = "firmware.php";
                     }, 2600);
                 }
             }else if(data.indexOf("9600") != -1) {
                 $.notify({ message: 'Serial speed is 9600 baud, Power cycle' }, { type: 'danger' });
-                $("#com").show();
+                $("#com").removeClass("d-none"); //.show();
             }else if(data.indexOf("w}") != -1) {
                 $.notify({ message: 'Serial speed incorrect, Refresh' }, { type: 'danger' });
-                $("#com").show();
+                $("#com").removeClass("d-none"); //.show();
             }else if(data.indexOf("test pin") != -1) {
                 $.notify({ message: 'STM32 Test firmware detected' }, { type: 'danger' });
                 setTimeout(function () {
@@ -110,7 +121,7 @@ function initializeSerial() {
                 $.notify({ message: "Serial blocked ...Un-plug it!" }, { type: "danger" });
             }
             $.notify({ message: "Try swapping TX <-> RX" }, { type: "warning" });
-            $("#com").show();
+            $("#com").removeClass("d-none"); //.show();
             setCookie("serial.block", 1, 1);
         }
     });
@@ -118,14 +129,10 @@ function initializeSerial() {
 
 function basicChecks(json)
 {
-	var fweak = setDefaultValue(json.fweak, 0);
-	var fslipmax = setDefaultValue(json.fslipmax, 0);
-    var fslipmin = setDefaultValue(json.fslipmin, 0);
 	var deadtime = setDefaultValue(json.deadtime, 0);
 	var udc = setDefaultValue(json.udc, 0);
 	var udcsw = setDefaultValue(json.udcsw, 0);
-    var udcnom = setDefaultValue(json.udcnom, 0);
-
+    
 	if(udc > udcsw) //Get real operating voltage
 	{
 		if((udc < 32 && fweak > 20) ||
@@ -137,17 +144,25 @@ function basicChecks(json)
 			$.notify({ message: 'Field weakening "fweak" might be too high' }, { type: 'warning' });
 		}
 	}
-    if (udcnom > udc) {
-        $.notify({ message: '"udcnom" is higher than detected voltage "udc"' }, { type: 'warning' });
-    }
-	if(fweak === 0) {
-		$.notify({ message: 'Field weakening "fweak" is dangerously low. Motor may jump on startup' }, { type: 'danger' });
-	}
-	if (fslipmax > 10) {
-		$.notify({ message: 'Slip "fslipmax" is high, might be running open loop. Check your encoder connections' }, { type: 'warning' });
-	}
-    if(fslipmax / 5 > fslipmin) {
-        $.notify({ message: 'Slip "fslipmax" too high from "fslipmin". Motor may start to rock violently on startup' }, { type: 'warning' });
+    if(json.version.unit.indexOf("foc") == -1)
+    {
+        var fweak = setDefaultValue(json.fweak, 0);
+        var fslipmax = setDefaultValue(json.fslipmax, 0);
+        var fslipmin = setDefaultValue(json.fslipmin, 0);
+        var udcnom = setDefaultValue(json.udcnom, 0);
+
+        if (udcnom > udc) {
+            $.notify({ message: '"udcnom" is higher than detected voltage "udc"' }, { type: 'warning' });
+        }
+        if(fweak === 0) {
+            $.notify({ message: 'Field weakening "fweak" is dangerously low. Motor may jump on startup' }, { type: 'danger' });
+        }
+        if (fslipmax > 10) {
+            $.notify({ message: 'Slip "fslipmax" is high, might be running open loop. Check your encoder connections' }, { type: 'warning' });
+        }
+        if(fslipmax / 5 > fslipmin) {
+            $.notify({ message: 'Slip "fslipmax" too high from "fslipmin". Motor may start to rock violently on startup' }, { type: 'warning' });
+        }
     }
 	if (deadtime < 28) {
 		$.notify({ message: 'IGBT "deadtime" is dangerously fast' }, { type: 'danger' });
@@ -210,7 +225,7 @@ function boostSlipCalculator()
     var div = $("<div>",{class:"container"});
     var row = $("<div>",{class:"row"});
     var col = $("<div>",{class:"col", align:"center"});
-    var loader = $("<div>",{ class:"loader"});
+    var loader = $("<div>",{ class:"spinner-border text-dark"});
     var canvas = $("<canvas>");
 
     col.append(loader);
@@ -220,19 +235,11 @@ function boostSlipCalculator()
 
     $("#calculator").empty();
     $("#calculator").append(div);
+    $("#calculator").removeClass("d-none");
     $(".calculator").trigger("click");
 
     $.getScript("js/chart.js").done(function(script, textStatus) {
         $.getScript("js/chartjs-plugin-annotation.js").done(function(script, textStatus) {
-
-            var ctxFont = 16;
-            var ctxFontColor = "#808080";
-            var ctxDashColor = "black";
-
-            if(theme == ".slate") {
-                ctxFontColor = "#aaa";
-                ctxDashColor = "white";              
-            }
 
             var chart_boost_datasets = {
                 type: "line",
@@ -342,9 +349,8 @@ function boostSlipCalculator()
                         id: "y-axis-0",
                         position: 'right',
                         scaleLabel: {
-                            fontColor: ctxFontColor,
-                            fontSize: ctxFont,
                             labelString: 'boost',
+                            fontSize: ctxFont,
                             fontColor: chart_boost_datasets.borderColor
                         },
                         ticks: {
@@ -363,9 +369,8 @@ function boostSlipCalculator()
                         id: "y-axis-1",
                         position: 'left',
                         scaleLabel: {
-                            fontColor: ctxFontColor,
-                            fontSize: ctxFont,
                             labelString: 'fweak (Hz)',
+                            fontSize: ctxFont,
                             fontColor: chart_fweak_datasets.borderColor
                         },
                         ticks: {
@@ -417,14 +422,173 @@ function boostSlipCalculator()
     });
 };
 
+function MTPACalculator()
+{
+    $.notify({ message: "Under Development" }, { type: "danger" });
+
+    var div = $("<div>",{class:"container"});
+    var row = $("<div>",{class:"row"});
+    var col = $("<div>",{class:"col", align:"center"});
+    var loader = $("<div>",{ class:"spinner-border text-dark"});
+    var canvas = $("<canvas>");
+
+    col.append(loader);
+    col.append(canvas);
+    row.append(col);
+    div.append(row);
+
+    $("#calculator").empty();
+    $("#calculator").append(div);
+    $("#calculator").removeClass("d-none");
+    $(".calculator").trigger("click");
+
+    $.getScript("js/chart.js").done(function(script, textStatus) {
+        $.getScript("js/chartjs-plugin-annotation.js").done(function(script, textStatus) {
+
+        	//TODO: This needs a proper formula!
+        	var optimum_mtpa = [
+        	{x:-3.5,y:6.0},
+        	{x:-3.0,y:5.6},
+        	{x:-2.5,y:5.2},
+        	{x:-2.0,y:4.8},
+        	{x:-1.5,y:4.2},
+        	{x:-1.0,y:3.5},
+        	{x:-0.5,y:2.5},
+        	{x:-0.2,y:1.5},
+        	{x:0,y:0}
+        	];
+        	var optimum_torque = [
+        	{x:-6.0,y:3.2},
+        	{x:-5.0,y:3.3},
+        	{x:-4.0,y:3.5},
+        	{x:-3.0,y:3.8},
+        	{x:-2.0,y:4.4},
+        	{x:-1.0,y:5.2},
+        	{x:0,y:6.0}
+        	];
+
+            var chart_mtpa_datasets = {
+                type: "line",
+                label: "MTPA",
+                fill: false,
+                borderColor: "rgba(255,99,132)",
+                borderWidth: 2,
+                data: optimum_mtpa,
+                yAxisID: "y-axis-0",
+            };
+
+            var chart_iq_datasets = {
+                type: "line",
+                label: "Current Limit",
+                fill: false,
+                borderColor: "rgba(51, 153, 255)",
+                borderWidth: 2,
+                data: [],
+                yAxisID: "y-axis-1",
+            };
+
+            var chart_id_datasets = {
+                type: "line",
+                label: "Optimum Torque",
+                fill: false,
+                borderColor: "rgba(102, 255, 51)",
+                borderWidth: 2,
+                data: optimum_torque,
+                xAxisID: "x-axis-0"
+            };
+
+            data = {
+                labels: [],
+                datasets: [chart_iq_datasets,chart_id_datasets,chart_mtpa_datasets]
+            };
+
+            options = {
+                legend: {
+                    labels: {
+                        fontColor: ctxFontColor,
+                        fontSize: ctxFont
+                    }
+                },
+                scales: {
+                    xAxes: [{
+                        id: "x-axis-0",
+                        position: "bottom",
+                        type: "linear",
+                        scaleLabel: {
+                            display: true,
+                            fontColor: ctxFontColor,
+                            fontSize: ctxFont,
+                            labelString: "Direct Axis Current (A)"
+                        },
+                        ticks: {
+                        	precision: 0,
+                            fontColor: ctxFontColor,
+                            fontSize: ctxFont,
+                            stepSize: 0.5,
+                            suggestedMin: -6,
+                            suggestedMax: 0,
+                            userCallback: function(label, index, labels) {
+			                    if (Math.floor(label) === label) {
+			                        return label;
+			                    }
+			                }
+                        },
+                        gridLines: {
+                        	drawOnChartArea: false,
+                            color: ctxFontColor
+                        }
+                    }],
+                    yAxes: [{
+                        id: "y-axis-0",
+                        position: "left",
+                        scaleLabel: {
+                            display: true,
+                            fontColor: ctxFontColor,
+                            fontSize: ctxFont,
+                            labelString: "Quadrature Axis Current (A)"
+                        },
+                        ticks: {
+                            precision: 0,
+                            fontColor: ctxFontColor,
+                            fontSize: ctxFont,
+                            stepSize: 0.5,
+                            suggestedMin: 0,
+                            suggestedMax: 6,
+                            userCallback: function(label, index, labels) {
+			                    if (Math.floor(label) === label) {
+			                        return label;
+			                    }
+			                }
+                        },
+                        gridLines: {
+                            drawOnChartArea: true,
+                            color: ctxFontColor
+                        }
+                    }]
+                }
+            };
+
+            loader.hide();
+            
+            var chart = new Chart(canvas, {
+                type: 'line',
+                data: data,
+                options: options
+            });
+        });
+    });
+};
+
 function syncofsCalculator()
 {
+    var polepairs = parseInt($("#polepairs").val());
+
     var div = $("<div>",{class:"container"});
     var row = $("<div>",{class:"row"});
     var col2 = $("<div>",{class:"col"});
 
     var p = $("<p>").append("Nissan Leaf Resolver Offsets");
-    var input1 = $("<input>",{ class:"form-control my-3", type:"text"});
+    var input1 = $("<input>",{ class:"form-control my-3", type:"text", placeholder:"Motor Label (Ex: 7F0036)"});
     var input2 = $("<input>",{ class:"form-control my-3", type:"text", disabled:true});
     var btn = $("<button>",{ class:"btn btn-primary", type:"button"});
 
@@ -442,9 +606,9 @@ function syncofsCalculator()
 
     input1.on("input",function(e) {
         var value = $(this).val();
-        var hex = parseInt("0x" + value.substring(0, 2));
+        var hex = parseInt("0x" + value.substring(0, 2),16);
 
-        var a = ((hex - 0x80) * 256);
+        var a = Math.abs((hex - 0x80) * 256);
         var b = (a * 360 / 65536) * 2;
         b = 360/Math.floor(360 / b); //degree round
         b = Math.round(b * 10) / 10; //digit round
@@ -469,15 +633,20 @@ function syncofsCalculator()
 	then 0x2 would be perfect since 0x2 + 0x80 = 0x82.
 	*/
 	//console.log(((0x82 + 0x80) % 256) * 256);
+	/*
+	syncofs=46152 (270 degree)
+	syncofs=16384 (90 degree)
+	*/
 
     $("#calculator").empty();
     $("#calculator").append(div);
+    $("#calculator").removeClass("d-none");
     $(".calculator").trigger("click");
 };
 
 function buildParameters()
 {
-    $(".loader").show();
+    $("#loader-parameters").removeClass("d-none"); //.show();
 	
 	$.ajax("description.csv",{
 		//async: false,
@@ -550,8 +719,6 @@ function buildParameters()
                         }
                     });
                     if(os === "mobile") {
-                        tr.attr("style","font-size: 140%;");
-                        a.attr("style","font-size: 110%; width: 100%; height: 1.5em");
                         a.attr("type","number");
                     }
                 //}else{
@@ -559,7 +726,7 @@ function buildParameters()
                 //    a.append(json[key].value);
                 //}
 
-                var category_icon = $("<i>", { class:"text-muted icons" });
+                var category_icon = $("<i>", { class:"icons text-muted" });
 
                 if(json[key].category)
                 {
@@ -622,11 +789,14 @@ function buildParameters()
                 var td3 = $("<td>").append(a);
                 var td4 = $("<td>");
 
-                if(key == "syncofs")
-                {
+                if(key == "fwkp") {
+                    var fwkp_btn = $("<button>", {type:"button", class:"btn btn-primary", onclick:"MTPACalculator()"});
+                    var fwkp_calc = $("<i>", {class:"icons icon-magic"});
+                    td4.append(fwkp_btn.append(fwkp_calc).append(" MTPA"));
+                }else if(key == "syncofs") {
                     var syncofs_btn = $("<button>", {type:"button", class:"btn btn-primary", onclick:"syncofsCalculator()"});
-                    var syncofs_calc = $("<i>", {class:"icons icon-magic"}).append(" Calculate");
-                    td4.append(syncofs_btn.append(syncofs_calc));
+                    var syncofs_calc = $("<i>", {class:"icons icon-magic"});
+                    td4.append(syncofs_btn.append(syncofs_calc).append(" Calculate"));
                 } else if(key == "udcnom") {
                     var fweak_btn = $("<button>", {type:"button", class:"btn btn-primary", onclick:"boostSlipCalculator()"});
                     var fweak_calc = $("<i>", {class:"icons icon-magic"}).append(" Calculate");
@@ -645,13 +815,19 @@ function buildParameters()
                 tr.append(td1).append(td2).append(td3).append(td4);
                 tbody.append(tr);
             };
-            menu.show();
+            menu.removeClass("d-none"); //.show();
 
-            $("#saveload").show();
+            $("#saveload").removeClass("d-none");//.show();
             
-            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-toggle="tooltip"]').tooltip({
+                template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner large"></div></div>',
+                container: 'body',
+                placement: 'right',
+                html: true
+            });
 
-            $(".loader").hide();
+            $("#loader-parameters").addClass("d-none"); //.hide();
+
 		},
 		error: function(xhr, textStatus, errorThrown){
 		}
@@ -685,7 +861,7 @@ function checkFirmwareUpdates(v)
                     if(version > _version || build > _build)
                     {
                         $.notify({
-                            icon: "icon icon-download",
+                            icon: "icons icon-download",
                             title: "New Firmware",
                             message: "Available <a href='https://github.com/jsphuebner/stm32-sine/releases' target='_blank'>Download</a>"
                         }, {
@@ -735,7 +911,7 @@ function checkWebUpdates()
                                     url += version + "Huebner.Inverter.ESP8266.zip";
                                 }
                                 $.notify({
-                                    icon: "icon icon-download",
+                                    icon: "icons icon-download",
                                     title: "New Web Interface",
                                     message: "Available <a href='" + url + "' target='_blank'>Download</a>"
                                 }, {

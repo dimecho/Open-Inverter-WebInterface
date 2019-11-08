@@ -10,12 +10,12 @@ New-Item -ItemType directory -Path .\data\pcb
 New-Item -ItemType directory -Path .\data\pcb\v1.0
 New-Item -ItemType directory -Path .\data\pcb\v3.0
 
-$phpfiles = 'index.php', 'header.php', 'menu.php', 'esp8266.php', 'can.php', 'graph.php', 'bootloader.php', 'firmware.php', 'simple.php', 'test.php', 'version.txt', 'description.csv'
+$phpfiles = 'index.php', 'header.php', 'footer.php', 'esp8266.php', 'can.php', 'graph.php', 'bootloader.php', 'firmware.php', 'simple.php', 'test.php', 'version.txt', 'description.csv'
 foreach ($file in $phpfiles) {
   Copy-Item "..\Web\$file" -Destination .\data
 }
 
-$cssfiles = 'alertify.css', 'jquery.fancybox.css', 'animate.css', 'bootstrap.css', 'bootstrap.slate.css', 'ion.rangeSlider.css', 'icons.css', 'style.css'
+$cssfiles = 'mobile.css', 'alertify.css', 'jquery.fancybox.css', 'animate.css', 'bootstrap.css', 'bootstrap.slate.css', 'ion.rangeSlider.css', 'icons.css', 'style.css'
 foreach ($file in $cssfiles) {
   Copy-Item "..\Web\css\$file" -Destination .\data\css
 }
@@ -35,9 +35,9 @@ Copy-Item "..\Web\pcb\Hardware v1.0\diagrams\test.png" -Destination .\data\pcb\v
 Copy-Item "..\Web\pcb\Hardware v1.0\diagrams\esp8266.png" -Destination .\data\pcb\v1.0
 Copy-Item "..\Web\pcb\Hardware v3.0\diagrams\test.png" -Destination .\data\pcb\v3.0
 Copy-Item "..\Web\pcb\Hardware v3.0\diagrams\esp8266.png" -Destination .\data\pcb\v3.0
-#Copy-Item ..\Web\font\icons.ttf -Destination .\data\font
+Copy-Item ..\Web\font\icons.ttf -Destination .\data\font
 #Copy-Item ..\Web\font\icons.woff2 -Destination .\data\font
-Copy-Item ..\Web\font\icons.woff -Destination .\data\font
+#Copy-Item ..\Web\font\icons.woff -Destination .\data\font
 
 #======================
 #Correct long filenames

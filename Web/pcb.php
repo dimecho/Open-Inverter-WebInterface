@@ -58,11 +58,13 @@ if(isset($_GET["find"])) {
         </style>
     </head>
     <body>
-    	<?php include "menu.php" ?>
+    	<div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
+        <div class="row mt-5"></div>
+        <div class="row mt-5"></div>
         <div class="container">
              <div class="row">
                 <div class="col">
-                    <div class="container bg-light" id="pcbList" style="display:none">
+                    <div class="container bg-light d-none" id="pcbList">
                         <div class="row"><hr></div>
                         <div class="row">
                             <div class="col">
@@ -114,7 +116,7 @@ if(isset($_GET["find"])) {
                             </div>
                         </div>
                     </div>
-                    <div class="container bg-light" id="pcbComponents" style="display:none">
+                    <div class="container bg-light d-none" id="pcbComponents">
                         <div class="row"><hr></div>
                         <div class="row">
                             <div class="col" id="pcbComponentsTable">

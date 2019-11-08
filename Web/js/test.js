@@ -33,6 +33,24 @@ $(document).ready(function () {
     });
     hardwareTestProcess("");
     displayHWVersion();
+
+    if(os == "esp8266") {
+        $.ajax("/nvram", {
+            dataType: 'json',
+            success: function success(data) {
+                //console.log(data);
+                if(data["nvram6"] == "1") {
+                    $("#can-interface").append($("<option>",{value:can_interface[2]}).append("CAN over ESP8266 with MCP2515"));
+                    $(".d-none.nav-item").removeClass("d-none"); //.show();
+                }
+            }
+        });
+    }else{
+        for (var i = 0; i < can_interface.length; i++) {
+            $("#can-interface").append($("<option>",{value:can_interface[i]}).append(can_name[i]));
+        }
+        $(".d-none.nav-item").removeClass("d-none"); //.show();
+    }
 });
 
 $(document).on('click', '.browse', function(){
@@ -58,16 +76,7 @@ function loadTab() {
 			"displayPrevious": true,
 			"value": 0
 		});
-	
-	}else if(activeTab == "#tabDigital") {
-		
-		if(os == "esp8266") {
-			$("#can-interface").append($("<option>",{value:can_interface[2]}).append("CAN over ESP8266 with MCP2515"));
-		}else{
-			for (var i = 0; i < can_interface.length; i++) {
-				$("#can-interface").append($("<option>",{value:can_interface[i]}).append(can_name[i]));
-			}
-		}
+	//}else if(activeTab == "#tabDigital") {
     }else if(activeTab == "#tabHardware") {
 
 		$("#hardware-version").empty();
@@ -194,8 +203,8 @@ function hardwareTestFlash(file) {
 		return;
 	}
 	
-    //$("#hardware-image").hide();
-    $(".loader").show();
+    //$("#hardware-image").addClass("d-none"); //.hide();
+    $(".spinner-border").removeClass("d-none"); //.show();
 
     if(os == "esp8266") { //Special ESP8266 requirement
         $.ajax({
@@ -236,13 +245,13 @@ function hardwareTestFlash(file) {
                 }else{
 					$.notify({ message: data }, { type: 'warning' });
 				}
-				$(".loader").hide();
-				//$("#hardware-image").show();
+				$(".spinner-border").addClass("d-none"); //.hide();
+				//$("#hardware-image").removeClass("d-none"); //.show();
             }
         },
         error:function() {
             $.notify({ message: 'Timed Out ...Reset Power to Board' }, { type: 'danger' });
-            $(".loader").hide();
+            $(".spinner-border").addClass("d-none"); //.hide();
         }
     });
 };
@@ -257,7 +266,7 @@ function hardwareTestResults() {
 	var v = $("#hardware-version").val();
     var s = $("#serial2-interface").val();
 
-    $(".loader").show();
+    $(".spinner-border").removeClass("d-none"); //.show();
 
     setCookie("hardware", v, 1);
 	
@@ -284,11 +293,11 @@ function hardwareTestResults() {
                     results.append(row);
                 }
             }
-			$(".loader").hide();
+			$(".spinner-border").addClass("d-none"); //.hide();
         },
         error:function() {
             $.notify({ message: 'Timed Out ...Reset Power to Board' }, { type: 'danger' });
-            $(".loader").hide();
+            $(".spinner-border").addClass("d-none"); //.hide();
         }
     });
 };
@@ -330,5 +339,5 @@ function setHardwareImage() {
 	}else{
 		$("#hardware-image").attr("src","pcb/Hardware v1.0/diagrams/test.png");
 	}
-	//$("#hardware-image").show();
+	//$("#hardware-image").removeClass("d-none"); //.show();
 };

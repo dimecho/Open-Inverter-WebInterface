@@ -1,0 +1,63 @@
+h1 {
+	font-size: 4.0rem;
+}
+body {
+	font-size: 2.5rem !important;
+	font-weight: 300 !important;
+	margin-top: 6em; 
+}
+button {
+	font-size: 2.5rem !important;
+}
+input, select, option {
+	font-size: 2.5rem !important;
+}
+.alertify .ajs-dialog {
+	min-height:250px !important;
+	max-width:90% !important;
+}
+.fancybox-button {
+	height: 100px !important;
+	min-width: 100px !important;
+}
+.tooltip-inner .large.tooltip-inner {
+	font-size: 2.0rem !important;
+}
+.container {
+	max-width: 100% !important;
+}
+.fancybox-content {
+	width:98% !important;
+}
+.navbar {
+	padding: 1.0rem !important;
+}
+.nav-item {
+	padding: 1.0rem !important;
+}
+.navbar-toggler-icon, .navbar-nav {
+	font-size: 4.5rem !important;
+}
+.dropdown-item {
+	font-size: 3.0rem !important;
+	padding: 1.0rem !important;
+}
+.nav-tabs {
+	font-size: 2.0rem !important;
+}
+[data-notify="container"] {
+	font-size: 2.5rem !important;
+}
+.badge {
+	font-size: 1.8rem !important;
+}
+.irs {
+	font-size: 2.0rem !important;
+}
+.irs-bar {
+	height: 40px !important;
+}
+.irs-handle {
+	width: 60px !important;
+	height: 60px !important;
+}

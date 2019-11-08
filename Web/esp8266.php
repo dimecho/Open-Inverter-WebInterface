@@ -28,18 +28,20 @@
 	<script src="js/esp8266.js"></script>
  </head>
  <body>
- 	<?php include "menu.php" ?>
+   	<div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
+    <div class="row mt-5"></div>
+    <div class="row mt-5"></div>
 	<div class="container">
 		<div class="row">
 			<div class="col">
-				<table class="table table-active bg-light table-bordered hidden" id="esp8266-download-firmware">
+				<table class="table table-active bg-light table-bordered d-none" id="esp8266-download-firmware">
                     <tr>
                         <td>
                             <button type="button" class="btn btn-primary" onClick="window.open('https://github.com/dimecho/Huebner-Inverter/releases/download/1.0/Huebner.Inverter.ESP8266.zip')"><i class="icons icon-download"></i> Download Firmware</button>
                         </td>
                     </tr>
                 </table>
-                <table class="table table-active bg-light table-bordered hidden" id="esp8266-flash-firmware">
+                <table class="table table-active bg-light table-bordered d-none" id="esp8266-flash-firmware">
                 	<tr>
                         <td>
 	            		<?php
@@ -66,14 +68,14 @@
 										});
 									}
 									$("#firmware-interface").prop('selectedIndex', 0);
-									$(".loader").hide();
-									$(".input-group-addon").show();
+									$(".spinner-border").addClass("d-none"); //.hide();
+									$(".input-group-addon").removeClass("d-none"); //.show();
 								});
 	                        </script>
                     	<center>
-                        	<div class="loader"></div>
+                        	<div class="spinner-border text-dark"></div>
                             <div class="input-group w-100">
-                                <span class="input-group-addon w-100">
+                                <span class="input-group-addon d-none w-100">
 									<select name="interface" class="form-control" id="firmware-interface"></select>
 								</span>
                             </div>
@@ -98,11 +100,11 @@
 					    </td>
                     </tr>
                 </table>
-			    <table class="table table-active table-bordered hidden" id="esp8266-nvram">
+			    <table class="table table-active table-bordered d-none" id="esp8266-nvram">
                     <tr>
                         <td>
-                        	<center><div class="loader"></div></center>
-                        	<form class="hidden" method="POST" action="/nvram" id="parameters" oninput='WiFiPasswordConfirm.setCustomValidity(WiFiPasswordConfirm.value != WiFiPassword.value ? "Passwords do not match." : "")'>
+                        	<center><div class="spinner-border text-dark"></div></center>
+                        	<form method="POST" action="/nvram" id="parameters" oninput='WiFiPasswordConfirm.setCustomValidity(WiFiPasswordConfirm.value != WiFiPassword.value ? "Passwords do not match." : "")'>
                         		<fieldset class="form-group">
                         			<legend>ESP8266 Wireless Connection:</legend>
 		                        	<div class="form-check">
@@ -182,7 +184,7 @@
                         </td>
                     </tr>
                 </table>
-				<table class="table table-active table-bordered hidden" id="esp8266-flash-select">
+				<table class="table table-active table-bordered d-none" id="esp8266-flash-select">
 					<tr align="center">
 						<td align="center">
 							<button class="btn btn-primary" type="button" id="browseSPIFFS"><i class="icons icon-chip"></i> Flash SPIFFS</button>
@@ -193,8 +195,8 @@
 					</tr>
 					<tr align="center">
 						<td colspan="2">
-							<div class="progress progress-striped active hidden">
-								<div class="progress-bar" style="width:1%" id="progressBar"></div>
+							<div class="progress progress-striped active">
+								<div class="progress-bar" style="width:1%"></div>
 							</div>
 						</td>
 					</tr>

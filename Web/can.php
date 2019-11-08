@@ -5,7 +5,9 @@
         <script src="js/can.js"></script>
     </head>
     <body>
-    	<?php include "menu.php" ?>
+    	<div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
+        <div class="row mt-5"></div>
+        <div class="row mt-5"></div>
         <div class="container">
             <div class="row">
                 <div class="col">
@@ -13,12 +15,12 @@
                         <div class="row"><hr></div>
                         <div class="row">
                             <div class="col col-md-4">
-                                <p class="hidden" id="can-interface-label">CAN Interface:</p>
+                                <p class="d-none" id="can-interface-label">CAN Interface:</p>
                                 <p>Inverter CAN Speed:</p>
 								<p>Inverter CAN Period:</p>
                             </div>
 							<div class="col col-md-4 text-center">
-								<select name="interface" class="form-control" onchange="setCANImage()" id="can-interface" style="display: none;"></select>
+								<select name="interface" class="d-none form-control" onchange="setCANImage()" id="can-interface"></select>
 								<select name="speed" class="form-control" onchange="setCANSpeed()" id="can-speed">
 									<option value="0">250kbps</option>
 									<option value="1">500kbps</option>
@@ -48,11 +50,12 @@
                         <div class="row"><hr></div>
                     </div>
 					<center>
-						<div class="loader"></div>
+						<div class="spinner-border text-dark" id="loader-parameters"></div>
 					</center>
-                    <table class="table table-active bg-light table-bordered table-striped table-hover" style="display:none;" id="parameters"></table>
+                    <table class="table table-active bg-light table-bordered table-striped table-hover d-none" id="parameters"></table>
                 </div>
             </div>
         </div>
+        <?php include "footer.php" ?>
     </body>
 </html>

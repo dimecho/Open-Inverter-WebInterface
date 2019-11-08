@@ -9,25 +9,27 @@
         </script>
     </head>
     <body>
-    	<?php include "menu.php" ?>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <table class="table table-active bg-faded table-bordered">
-                            <tr>
-                                <td>
-                                    <b>Version 1</b> inverter was using ATTiny13 chip to isolate high voltage detection from main controller.
-                                    <br><br>
-									<div class="row">
-										<div class="col">
-											<button type="button" class="btn btn-primary" onClick="eval(checkSoftware('avr'))"><i class="icons icon-magic"></i> Install AVR</button>
-										</div>
-										<div class="col">
-											<button type="button" class="btn btn-primary" onClick="window.open('pcb/Hardware v1.0/firmware/attiny13/volt-pwm-attiny13.c')"><i class="icons icon-download"></i> Download ATTiny13 Code</button>
-										</div>
-									</div>
-                  <br><br>
-                  <pre>
+    	<div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
+      <div class="row mt-5"></div>
+      <div class="row mt-5"></div>
+      <div class="container">
+        <div class="row">
+            <div class="col">
+                <table class="table table-active bg-faded table-bordered">
+                        <tr>
+                            <td>
+                                <b>Version 1</b> inverter was using ATTiny13 chip to isolate high voltage detection from main controller.
+                                <br><br>
+							<div class="row">
+								<div class="col">
+									<button type="button" class="btn btn-primary" onClick="eval(checkSoftware('avr'))"><i class="icons icon-magic"></i> Install AVR</button>
+								</div>
+								<div class="col">
+									<button type="button" class="btn btn-primary" onClick="window.open('pcb/Hardware v1.0/firmware/attiny13/volt-pwm-attiny13.c')"><i class="icons icon-download"></i> Download ATTiny13 Code</button>
+								</div>
+							</div>
+              <br><br>
+              <pre>
 <code>#include <avr/io.h>
 #include <util/delay.h>
 

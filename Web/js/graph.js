@@ -1,6 +1,8 @@
 // Internet Explorer Fix
 function fill(size, content) {
-    for (; size--; this.push(content));
+    for (var i = 0; i < size; i++) {
+    	this.push(content);
+    }
     return this;
 };
 // ---------------------
@@ -212,6 +214,11 @@ var chart_pwm_datasets = [{
 }];
 
 var chart_can_datasets = [];
+var chart_can_zeroLineH = 2.8;
+var chart_can_zeroLineL = 2.2;
+var chart_can_v = 0.640; //640mV
+var chart_can_h = chart_can_zeroLineH + chart_can_v;
+var chart_can_l = chart_can_zeroLineL - chart_can_v;
 var paramReadable = [];
 var can_bin_flipflop = false;
 var updateURL = "";
@@ -462,6 +469,7 @@ function newYAxis(key,id,options,side,visible) {
         id: id,
         position: side,
         scaleLabel: {
+        	display: true,
         	fontColor: ctxFontColor,
             fontSize: ctxFont,
             labelString: label //datasets[1].label
@@ -475,7 +483,9 @@ function newYAxis(key,id,options,side,visible) {
         },
         gridLines: {
             drawOnChartArea: visible,
-			color: ctxGridColor
+			color: ctxGridColor,
+			zeroLineColor: ctxFontColor
+            //zeroLineWidth: 2
         }
     };
 
@@ -553,18 +563,18 @@ function buildGraphMenu() {
 
     var tabs = ["Motor", "Temperature", "Voltage", "Amperage", "Frequencies", "CAN", "PWM"];
 
-    var menu = $("#buildGraphMenu").empty();
-    var menu_buttons = $("#buildGraphButtons").empty();
-    var export_buttons = $("#buildGraphExport").empty();
+    var menu = $("#buildGraphMenu"); //.empty();
+    var menu_buttons = $("#buildGraphButtons"); //.empty();
+    var export_buttons = $("#buildGraphExport"); //.empty();
 
 	var btn_points_i = $("<i>", { class: "icons icon-ok" });
 	var btn_points = $("<button>", { class: "btn btn-primary btn-space", onClick: "buildPointsMenu();$(\".graphPoints\").trigger(\"click\");" }).append(btn_points_i).append(" Select Points");
     var btn_start = $("<button>", { class: "btn btn-success btn-space", onClick: "startChart()" }).append("Start Graph");
     var btn_stop = $("<button>", { class: "btn btn-danger btn-space", onClick: "stopChart()" }).append("Stop Graph");
-    var e_settings = $("<i>", { class: "icon-status icons icon-settings p-2", onClick: "$(\".graphSettings\").trigger(\"click\");", "data-toggle": "tooltip", "title": "Settings" });
-    var e_pdf = $("<i>", { class: "icon-status icons icon-pdf p-2", onClick: "exportPDF(true)", "data-toggle": "tooltip", "title": "Export PDF" });
-    var e_img = $("<i>", { class: "icon-status icons icon-png p-2", onClick: "exportPDF()", "data-toggle": "tooltip", "title": "Export Image" });
-    var e_csv = $("<i>", { class: "icon-status icons icon-csv p-2", onClick: "exportCSV()", "data-toggle": "tooltip", "title": "Export CSV" });
+    var e_settings = $("<i>", { class: "icons icon-status icon-settings p-2", onClick: "$(\".graphSettings\").trigger(\"click\");", "data-toggle": "tooltip", "title": "Settings" });
+    var e_pdf = $("<i>", { class: "icons icon-status icon-pdf p-2", onClick: "exportPDF(true)", "data-toggle": "tooltip", "title": "Export PDF" });
+    var e_img = $("<i>", { class: "icons icon-status icon-png p-2", onClick: "exportPDF()", "data-toggle": "tooltip", "title": "Export Image" });
+    var e_csv = $("<i>", { class: "icons icon-status icon-csv p-2", onClick: "exportCSV()", "data-toggle": "tooltip", "title": "Export CSV" });
 
     var z = $("#buildGraphZoom").empty();
     var input_zoom = $("<input>", { id: "zoom", type: "text", "data-provide": "slider"} );
@@ -658,50 +668,37 @@ function buildGraphMenu() {
         graphDivision = 40;
 
         var nav = $("<nav>", { class: "navbar navbar-toggleable-md navbar-light bg-faded" });
-        var div = $("<div>", { class: "collapse navbar-collapse", id: "navbarsGraph" });
+        var wrap = $("<div>", { class: "container" });
+        
         var button = $("<button>", { class: "navbar-toggler navbar-toggler-right", type: "button", "data-toggle":"collapse", "data-target": "#navbarsGraph", "aria-controls": "navbarsGraph", "aria-expanded": false, "aria-label": "Navigation" });
-        var span = $("<span>", { class: "text-dark display-3 icons icon-menu" });
-        var text = $("<a>", { class: "text-dark display-4", href:"#"}).append($("<b>").append(activeTabText));
-
+        var span = $("<span>", { class: "navbar-toggler-icon display-3" });
         button.append(span);
-        nav.append(button);
-        nav.append(text);
+		wrap.append(button);
 
+        var div = $("<div>", { class: "collapse navbar-collapse", id: "navbarsGraph" });
         for (var i = 0; i < tabs.length; i++)
         {
             var ul = $("<ul>", { class: "navbar-nav" });
             var li = $("<li>", { class: "nav-item" });
             var a = $("<a>", { class: "nav-link display-4", id: i});
-            
+
             a.append($("<b>").append(tabs[i]));
             li.append(a);
             ul.append(li);
             div.append(ul);
         }
 
-        nav.append(div);
+        wrap.append(div);
+        nav.append(wrap);
         menu.append(nav);
 
         $('.nav-item a').click(function () {
 
-            button.click();
-
             activeTab = "#graph" + this.id;
             activeTabText = this.text;
-            text.empty();
-            text.append($("<b>").append(activeTabText));
-
             stopChart();
             initChart();
         });
-
-        //slow_img.attr("style","width:80px; height:80px;");
-        $(".slider").attr("style","width:80%;");
-        $(".slider-track").attr("style","height:40px;");
-        $(".slider-handle").attr("style","width:70px;height:70px;");
-        //fast_img.attr("style","width:80px; height:80px;");
-        $(".btn").attr("style","font-size: 150%;");
-        $(".icons").attr("style","width:80px; height:80px;");
 
     }else{
     	if(os != "esp8266") {
@@ -925,7 +922,7 @@ function startChart() {
 
     var mode = getJSONFloatValue('opmode');
     if (mode === 2 || mode === 5) {
-        $("#potentiometer").show();
+        $("#potentiometer").removeClass("d-none"); //.show();
     }
 
 	var value = [];
@@ -994,7 +991,7 @@ function stopChart() {
 
     clearTimeout(streamTimer);
 
-    $("#potentiometer").hide();
+    $("#potentiometer").addClass("d-none"); //.hide();
 };
 
 function initTimeAxis(seconds, labels, stamp) {
@@ -1260,29 +1257,40 @@ var flipbits = function flipbits(str) {
   }).join('');
 };
 
-function genCANpulse(value,speed,gain)
+function genCANpulse(value,speed,gain,length)
 {
-	var data = [2.50,2.50];
-	gain = (gain / 100);
+	var byte = "";
+	var data = [];
+	gain = (gain / 1000);
 
-	var byte = (Math.abs(value)).toString(2);
+	if(length == undefined) {	
+		byte = (Math.abs(value)).toString(2);
+	}else{
+		for (var i = 0; i < Math.abs(length); i++)
+    	{
+    		if(length > 0) {
+    			byte += "1";
+    		}else{
+    			byte += "0";
+    		}
+    	}
+	}
 
-	//if(value < 0) {
-	//	byte = flipbits(byte);
-	//}
-	console.log(byte);
+	//console.log(byte);
+	byte = flipbits(byte);
+	console.log(":" + byte);
 	
 	for (var i = 1; i <= byte.length; i++)
     {
     	var bit = byte.substring(i,i-1);
-    	//var bit_n = byte.substring(i+1,i);
-
-    	var b = bit * gain;
-    	if(value > 0)
-		{
-			b = 2.501 + b; //H
+    	var b = 0;
+   
+    	if(value > 0) {
+    		b = bit * (chart_can_v + gain);
+			b = chart_can_zeroLineH + b; //2.5001 + b; //H
 		}else{
-			b = 2.499 - b; //L
+			b = bit * (chart_can_v - gain);
+			b = chart_can_zeroLineL - b; //2.4999 - b; //L
 		}
     	data.push(b);
     	data.push(b);
@@ -1293,32 +1301,60 @@ function genCANpulse(value,speed,gain)
     	*/
     	//console.log("[" + i + "] " + bit + ">" + bit_n + "=" + b);
     }
-    //data.push(2.50);
-    //data.push(2.50);
 	//console.log(data);
 	return data;
 }
 
-function addCANdataset(key,gain,value) {
+function addCANdataset(id,key,gain,value) {
+
+	/*
+	http://blog.qartis.com/can-bus
+	*/
+	//var can_frame_start = []; //Start of Frame (1)
+	var can_frame_identifier = []; //Arbitration Field
+	var can_frame_control = []; //Control (3) (RTR bit, IDE bit, and r0 reserved bit)
+	var can_frame_data = []; //Data
+	var can_frame_crc = []; //CRC - all bits from the Start of Frame until before the CRC sequence
+	//var can_frame_ack = []; //ACK field (2)
+	var can_frame_eof = []; //End of Frame (7)
 
 	var color_h = ["CCE5FF", "99CCFF", "66B2FF", "3399FF","0080FF","0066CC"];
 	var color_l = ["FFCCCC", "FF9999", "FF6666", "FF3333","FF0000","CC0000"];
-	var can_frame_control = []; //Control
-	var can_frame_data = []; //Data
-	var can_frame_crc = []; //CRC
-	var can_frame_eof = []; //End Of Frame
+	var color_d = ["2ECC71"];
 	var color = [];
 
 	color = hexToRgb(color_h[2]);
 	var color_h_rgb = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
 	color = hexToRgb(color_l[2]);
 	var color_l_rgb = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+	color = hexToRgb(color_d[0]);
+	var color_d_rgb = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
 	//console.log(color_h_rgb + " " + color_l_rgb);
 
-	can_frame_control = genCANpulse(10,1,gain);
+    var crc = 0;
+	var bits = ("0" + id + "000" + value).split(/(?=[\s\S])/u);
+	for (var b = 0; b < bits.length; b++) {
+		crc = can_crc_next(crc, bits[b]);
+	}
+	console.log(crc);
+	/*
+	var bits = v.toString(2).split(/(?=[\s\S])/u);
+	var crc = CRC15(bits); //.reverse();
+	var crc_int = parseInt(crc.join(""),2);
+	console.log("CRC:" + crc.join("") + "("+ crc_int + ")");
+	*/
+	/*
+	bits = bits.concat(crc);
+	console.log(bits.toString());
+	console.log(BitStuff(bits).toString());
+	*/
+	can_frame_identifier = [chart_can_zeroLineH + chart_can_v]; //Start of Frame
+	can_frame_identifier = can_frame_identifier.concat(genCANpulse(id,1,gain));
+	can_frame_control = genCANpulse(1,1,gain,-3);
 	can_frame_data = genCANpulse(value,1,gain);
-	can_frame_crc = genCANpulse(2,1,gain);
-	can_frame_eof = fill.call([],10,2.501);
+	can_frame_crc = genCANpulse(crc,1,gain);
+	can_frame_eof = genCANpulse(255,1,gain);
+
     var can_h = {
         type: "line",
         label: key + " (CAN H)",
@@ -1327,7 +1363,8 @@ function addCANdataset(key,gain,value) {
 		backgroundColor: color_h_rgb.replace(")",", 0.4)"),
 		borderColor: color_h_rgb.replace(")",", 1)"),
         borderWidth: 2,
-        data: can_frame_control.concat(can_frame_data).concat(can_frame_crc).concat(can_frame_eof),
+        segment: [],
+        data: can_frame_identifier.concat(can_frame_control).concat(can_frame_data).concat(can_frame_crc).concat(can_frame_eof),
         datalabels: {
         	align: 'top',
 			//anchor: 'end',
@@ -1335,10 +1372,24 @@ function addCANdataset(key,gain,value) {
         }
     };
 
-    can_frame_control = genCANpulse(-10,1,gain);
+    var s = 0;
+	s += can_frame_identifier.length;
+	can_h.segment.push(s);
+	s += can_frame_control.length;
+	can_h.segment.push(s);
+	s += can_frame_data.length;
+	can_h.segment.push(s);
+	s += can_frame_crc.length;
+	can_h.segment.push(s);
+	s += can_frame_eof.length;
+	can_h.segment.push(s);
+
+	can_frame_identifier = [chart_can_zeroLineL - chart_can_v]; //Start of Frame
+    can_frame_identifier = can_frame_identifier.concat(genCANpulse(0-id,1,gain));
+    can_frame_control = genCANpulse(-1,1,gain,-3);
 	can_frame_data = genCANpulse((0-value),1,gain);
-	can_frame_crc = genCANpulse(-2,1,gain);
-	can_frame_eof = fill.call([],10,2.499);
+	can_frame_crc = genCANpulse(0-crc,1,gain);
+	can_frame_eof = genCANpulse(-255,1,gain);
     var can_l = {
         type: "line",
         label: key + " (CAN L)",
@@ -1347,21 +1398,50 @@ function addCANdataset(key,gain,value) {
 		backgroundColor: color_l_rgb.replace(")",", 0.4)"),
 		borderColor: color_l_rgb.replace(")",", 1)"),
         borderWidth: 2,
-        data: can_frame_control.concat(can_frame_data).concat(can_frame_crc).concat(can_frame_eof),
+        data: can_frame_identifier.concat(can_frame_control).concat(can_frame_data).concat(can_frame_crc).concat(can_frame_eof),
         datalabels: {
             align: 'bottom',
             //display: 'auto',
         }
     };
+
+    var can_d = {
+        type: "line",
+        label: key + " (Differential)",
+        gain: gain,
+        fill: false,
+		backgroundColor: color_d_rgb.replace(")",", 0.4)"),
+		borderColor: color_d_rgb.replace(")",", 1)"),
+        borderWidth: 2,
+        data: [],
+        datalabels: {
+            align: 'bottom',
+            //display: 'auto',
+        }
+    };
+
+    for (var i = 0; i < can_h.data.length; i++) {
+    	var diff = (can_l.data[i] - chart_can_l) - (can_h.data[i] - chart_can_h);
+		can_d.data.push(diff);
+	}
+
     chart_can_datasets.push(can_h);
     chart_can_datasets.push(can_l);
+    chart_can_datasets.push(can_d);
+
+    return crc;
 };
 
 function initCANChart(duration) {
 
 	chart_can_datasets = [];
 
-    $.notify({ message: "CAN graph is \"simulated\" how the signals look." }, { type: "success" });
+	var can_id = [];
+	var can_gain = [];
+    var can_value = [];
+    var can_crc = [];
+
+    $.notify({ message: "CAN graph is \"simulated\" based on <a href='https://elearning.vector.com/mod/page/view.php?id=341' target=_blank>ISO 11898-2</a>" }, { type: "success" });
 
     for(var key in json)
     {
@@ -1369,22 +1449,36 @@ function initCANChart(duration) {
         {
             if(json[key].isrx == false) //TX
             {
-            	addCANdataset(key,json[key].cangain,json[key].value);
-            	break;
+            	var id = json[key].canid;
+            	var g = json[key].cangain * 10;
+            	var v = json[key].value;
+
+            	can_id.push(id);
+            	can_gain.push(g);
+            	can_value.push(v);
+
+            	var crc = addCANdataset(id,key,g,v);
+				can_crc.push(crc);
+
+            	break; //TODO: graph multiple CAN signals
             }
         }
     }
 
-    if(chart_can_datasets.length == 0){
+    if(chart_can_datasets.length == 0) {
         $.notify({ message: "<a href='can.php'>CAN Mapping</a> (TX) signal not configured." }, { type: "warning" });
-        if(devmode == true)
-        {
-        	addCANdataset("test",10,200);
+        if(devmode == true) {
+        	can_id.push(100);
+        	can_gain.push(10);
+            can_value.push(200);
+            
+        	var crc = addCANdataset(100,"test",10,200);
+        	can_crc.push(crc);
         }
     }
 
     data = {
-        labels: initTimeAxis(graphDivision,[],0),
+        labels: initTimeAxis(graphDivision*1.5,[],0),
         datasets: chart_can_datasets
     };
 
@@ -1412,11 +1506,11 @@ function initCANChart(duration) {
             enabled: false,
             callbacks: {
                 label: function(tooltipItem, data) {
-                    var value  = tooltipItem.yLabel;
-                    if(value == 2.50) {
-                		return "";
-                	}else if(value == 2.499 || value == 2.501) {
+                    var value = tooltipItem.yLabel;
+                    if(value == chart_can_zeroLineH) {
                 		return "0";
+                	//}else if(value == 2.4999 || value == 2.5001) {
+                	//	return "0";
                 	}else{
                 		return "1";
                 	}
@@ -1443,13 +1537,14 @@ function initCANChart(duration) {
                     stepSize: 50
                 },
                 gridLines: {
-				  color: ctxGridColor
+				  	color: ctxGridColor
 				}
             }],
             yAxes: [{
      			id: "y-axis-0",
                 position: 'left',
                 scaleLabel: {
+                	display: true,
                 	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     labelString: 'Volts'
@@ -1458,13 +1553,20 @@ function initCANChart(duration) {
                 	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     stepSize: 0.1,
-                    suggestedMin: 2.4, //important
-                    suggestedMax: 2.7 //important
+                    suggestedMin: chart_can_zeroLineL - (chart_can_v + can_gain.max()*0.001 + 0.5),
+                    suggestedMax: chart_can_zeroLineH + (chart_can_v + can_gain.max()*0.001 + 0.5)
+                },
+                gridLines: {
+                    drawOnChartArea: true,
+                    color: ctxGridColor,
+                    zeroLineColor: ctxFontColor,
+                    //zeroLineWidth: 2
                 }
-            }, {
+            } /*,{
                 id: "y-axis-1",
                 position: 'right',
                 scaleLabel: {
+                	display: true,
                 	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     labelString: 'Gain (mV)'
@@ -1473,14 +1575,16 @@ function initCANChart(duration) {
                 	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     stepSize: 10,
-                    suggestedMin: -200, //important
-                    suggestedMax: 200 //important
+                    suggestedMin: 0 - (can_gain.max() * 100 + 200),
+                    suggestedMax: can_gain.max() * 100 + 200
                 },
                 gridLines: {
-                    drawOnChartArea: true,
-                    color: ctxGridColor
+                    drawOnChartArea: false,
+                    color: ctxGridColor,
+                    zeroLineColor: ctxFontColor,
+                    //zeroLineWidth: 2
                 }
-            }]
+            }*/]
         },
         annotation: {
     		drawTime: 'afterDraw',
@@ -1511,12 +1615,12 @@ function initCANChart(duration) {
                 id: "a-line-0",
                 mode: "vertical",
                 scaleID: "x-axis-0",
-                value: 10,
+                value: 1,
                 borderColor: ctxFontColor,
                 borderWidth: 1,
                 borderDash: [4, 4],
                 label: {
-                  content: "Control:", //8
+                  content: "Start", //1
                   enabled: true,
                   position: "top"
                 }
@@ -1525,12 +1629,12 @@ function initCANChart(duration) {
                 id: "a-line-1",
                 mode: "vertical",
                 scaleID: "x-axis-0",
-                value: 28,
+                value: chart_can_datasets[0].segment[0],
                 borderColor: ctxFontColor,
                 borderWidth: 1,
                 borderDash: [4, 4],
                 label: {
-                  content: "Data: 200", //8
+                  content: "ID: " + can_id[0], //8
                   enabled: true,
                   position: "top"
                 }
@@ -1539,12 +1643,12 @@ function initCANChart(duration) {
                 id: "a-line-2",
                 mode: "vertical",
                 scaleID: "x-axis-0",
-                value: 33,
+                value: chart_can_datasets[0].segment[1],
                 borderColor: ctxFontColor,
                 borderWidth: 1,
                 borderDash: [4, 4],
                 label: {
-                  content: "CRC:", //15
+                  content: "Control", //3
                   enabled: true,
                   position: "top"
                 }
@@ -1553,31 +1657,73 @@ function initCANChart(duration) {
                 id: "a-line-3",
                 mode: "vertical",
                 scaleID: "x-axis-0",
-                value: 44,
+                value: chart_can_datasets[0].segment[2],
                 borderColor: ctxFontColor,
                 borderWidth: 1,
                 borderDash: [4, 4],
                 label: {
-                  content: "End of Frame:", //10
+                  content: "Data: " + can_value[0], //8+
                   enabled: true,
                   position: "top"
+                }
+            },{
+                type: "line",
+                id: "a-line-4",
+                mode: "vertical",
+                scaleID: "x-axis-0",
+                value: chart_can_datasets[0].segment[3],
+                borderColor: ctxFontColor,
+                borderWidth: 1,
+                borderDash: [4, 4],
+                label: {
+                  content: "CRC: " + can_crc[0], //15
+                  enabled: true,
+                  position: "top"
+                }
+            },{
+                type: "line",
+                id: "a-line-5",
+                mode: "vertical",
+                scaleID: "x-axis-0",
+                value: chart_can_datasets[0].segment[4]-1,
+                borderColor: ctxFontColor,
+                borderWidth: 1,
+                borderDash: [4, 4],
+                label: {
+                  content: "End of Frame", //2+7
+                  enabled: true,
+                  position: "top"
+                }
+            },{
+                type: "line",
+                id: "a-line-6",
+                mode: "horizontal",
+                scaleID: "y-axis-0",
+                value: 2.5,
+                borderColor: ctxFontColor,
+                borderWidth: 1,
+                borderDash: [4, 4],
+                label: {
+                	enabled: false
                 }
             }]
 		},
         plugins: {
             datalabels: {
-		        /*
+            	padding: 2,
 				align: function(context) {
 					return context.active ? 'end' : 'center';
-				}
-				*/
+				},
+				color: ctxFontColor,
+                font: ctxFont,
             	backgroundColor: function(context) {
 					return context.dataset.backgroundColor;
 				},
             	display: function(context) {
             		var display = false;
             		var point = context.dataset.data[context.dataIndex];
-            		if(point != 2.5) {
+            		
+            		if(context.dataset.label.indexOf("Differential") == -1) {
             			if(can_bin_flipflop == true){
             				can_bin_flipflop = false;
             			}else{
@@ -1588,12 +1734,12 @@ function initCANChart(duration) {
 					return display;
 		        },
                 formatter: function(value, context) {
-                	if(value == 2.5) {
-                		return "";
-                	}else if(value == 2.499 || value == 2.501) {
-                		return 0;
-                	}else{
+                	if(value == chart_can_zeroLineH || value == chart_can_zeroLineL || value == (chart_can_zeroLineL + chart_can_zeroLineH)) {
                 		return 1;
+                	//}else if(value == 2.4999 || value == 2.5001) {
+                	//	return 0;
+                	}else{
+                		return 0;
                 	}
                     //return context.chart.data.labels[context.dataIndex];
                 }
@@ -1661,6 +1807,8 @@ function initFrequenciesChart(duration) {
         },
         plugins: {
             datalabels: {
+            	color: ctxFontColor,
+                font: ctxFont,
 	            align: 'top',
 	            display: showDataLabels,
 	            backgroundColor: function(context) {
@@ -1733,6 +1881,8 @@ function initAmperageChart(duration) {
         },
         plugins: {
             datalabels: {
+            	color: ctxFontColor,
+                font: ctxFont,
 	            align: 'top',
 	            display: showDataLabels,
 	            backgroundColor: function(context) {
@@ -1752,7 +1902,6 @@ function initMotorChart(duration) {
     };
 
     options = {
-        responsive: false,
         legend: {
             labels: {
             	fontColor: ctxFontColor,
@@ -1791,6 +1940,8 @@ function initMotorChart(duration) {
         },
         plugins: {
             datalabels: {
+            	color: ctxFontColor,
+                font: ctxFont,
 	            align: 'top',
 	            display: showDataLabels,
 	            backgroundColor: function(context) {
@@ -1849,6 +2000,8 @@ function initTemperatureChart(duration) {
         },
         plugins: {
             datalabels: {
+            	color: ctxFontColor,
+                font: ctxFont,
 	            align: 'top',
 	            display: showDataLabels,
 	            backgroundColor: function(context) {
@@ -1914,6 +2067,8 @@ function initVoltageChart(duration) {
         },
         plugins: {
             datalabels: {
+            	color: ctxFontColor,
+                font: ctxFont,
 	            align: 'top',
 	            display: showDataLabels,
 	            backgroundColor: function(context) {
@@ -2087,3 +2242,117 @@ function updateChart(value, autosize, accuracy) {
 function isEmpty( el ){
     return !$.trim(el.html())
 };
+
+Array.prototype.max = function() {
+  return Math.max.apply(null, this);
+};
+
+Array.prototype.min = function() {
+  return Math.min.apply(null, this);
+};
+
+function can_crc_next(crc, data)
+{
+    var i, j;
+ 
+    crc ^= data << 7;
+ 
+    for (i = 0; i < 8; i++) {
+        crc <<= 1;
+        if (crc & 0x8000) {
+            crc ^= 0xc599;
+        }
+    }
+ 
+    return crc & 0x7fff;
+};
+
+/*
+https://stackoverflow.com/questions/30922637/calculate-crc-15-for-can-bus
+0000011110000 becomes 0000011111000001
+*/
+/*
+function BitStuff(bits)
+{
+    var sb = null;
+    var last = ' ';
+    var count = 0;
+
+    for (var i = 0; i < bits.length; i++)
+    {
+        var ch = bits[i];
+
+        if (ch == last)
+        {
+            count++;
+
+            if (count == 5)
+            {
+                if (sb == null)
+                {
+                    // The maximum length is equal to the length of bits
+                    // plus 1 for length 5, 2 for length 9, 3 for length 13...
+                    // This because the maximum expanion is for
+                    // 00000111100001111... or 11111000011110000...
+                    sb = [bits.length + (bits.length - 1) / 4];
+                    for (var x = 0; x <= i; x++)
+                    	sb += bits[x];
+                }
+
+                sb += ch;
+                last = ch == '0' ? '1' : '0';
+                sb += last;
+                count = 1;
+
+                continue;
+            }
+        }
+        else
+        {
+            last = ch;
+            count = 1;
+        }
+
+        if (sb != null)
+        {
+            sb += ch;
+        }
+    }
+    return sb != null ? sb.ToString() : bits;
+}
+
+// http://www.ghsi.de/pages/subpages/Online%20CRC%20Calculation/index.php?Polynom=1100010110011001&Message=2AA80
+function CRC15(bits)
+{
+    var res = [15]; //CRC Result
+    var crc = [15];
+
+    for (var i = 0; i < bits.length; i++)
+    {
+        var doInvert = (bits[i] == '1') ^ crc[14];         // XOR required?
+
+        crc[14] = crc[13] ^ doInvert;
+        crc[13] = crc[12];
+        crc[12] = crc[11];
+        crc[11] = crc[10];
+        crc[10] = crc[9] ^ doInvert;
+        crc[9] = crc[8];
+        crc[8] = crc[7] ^ doInvert;
+        crc[7] = crc[6] ^ doInvert;
+        crc[6] = crc[5];
+        crc[5] = crc[4];
+        crc[4] = crc[3] ^ doInvert;
+        crc[3] = crc[2] ^ doInvert;
+        crc[2] = crc[1];
+        crc[1] = crc[0];
+        crc[0] = doInvert;
+    }
+
+    // Convert binary to ASCII
+    for (var i = 0; i < 15; i++)
+    {
+        res[14 - i] = crc[i] ? '1' : '0';
+    }
+    return res;
+}
+*/

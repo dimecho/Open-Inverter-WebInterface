@@ -28,16 +28,6 @@
         }, {
             "id": "-"
         }, {
-            "id": "Upload",
-            "icon": "icon-up",
-            "onClick": "uploadSnapshot()"
-        }, {
-            "id": "Download",
-            "icon": "icon-down",
-            "onClick": "downloadSnapshot()"
-        }, {
-            "id": "-"
-        }, {
             "id": "Auto Tuning",
             "icon": "icon-tune",
             "onClick": "/simple.php"

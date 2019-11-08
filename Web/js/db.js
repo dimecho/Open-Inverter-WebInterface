@@ -26,9 +26,9 @@ function setMotorImage(motorDB)
                 //console.log(data);
                 var json = JSON.parse(data);
                 var btn = $("<button>", {class:"btn btn-success", id:motorDB.motors[i].tune[t].file});
-                var icon = $("<i>", {class:"icons icon-motor"}).append(" Set Motor for " + TryParseInt(json.udc, "(?)") + " V");
+                var icon = $("<i>", {class:"icons icon-motor"});
                 var tr = $("<tr>");
-                var td = $("<td>").append(btn.append(icon));
+                var td = $("<td>").append(btn.append(icon).append(" Set Motor for " + TryParseInt(json.udc, "(?)") + " V"));
                 tr.append(td);
                 table.append(tr);
 
@@ -48,9 +48,6 @@ function setMotorImage(motorDB)
 
                     $(this).removeAttr("disabled");
                 });
-
-                if(os === "mobile")
-                    btn.attr("style","font-size: 140%;");
             }
         });
     }

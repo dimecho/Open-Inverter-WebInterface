@@ -22,7 +22,7 @@ function Uninstall() {
                 async: false,
                 success: function success(data) {
                     console.log(data);
-                    $("#" + data + "_progress").hide();
+                    $("#" + data + "_progress").addClass("d-none"); //.hide();
                     $("#" + data).parent().css("text-decoration", "line-through");
                 },
                 error: function error(xhr, textStatus, errorThrown) {},

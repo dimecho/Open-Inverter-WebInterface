@@ -1,1 +1,3 @@
 Johannes Huebner,http://openinverter.org
+usb2can (Original),https://github.com/roboterclubaachen/usb2can
+usb2can (Modified),https://github.com/strongly-typed/usb2can

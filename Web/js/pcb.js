@@ -25,7 +25,7 @@ function loadList() {
                 img.attr("src",data[key].path + data[key].thumb);
                 title.append(data[key].title);
 
-                $("#pcbList").show();
+                $("#pcbList").removeClass("d-none"); //.show();
             }
         }
     });
@@ -54,7 +54,7 @@ function loadComponents(v) {
                     }
                 }
             }
-            $("#pcbComponents").show();
+            $("#pcbComponents").removeClass("d-none"); //.show();
         }
     });
 };
