@@ -14,8 +14,7 @@ function setMotorImage(motorDB)
     motorinfo.append("<li>Amperage: " + motorDB.motors[i].amperage + "</li>");
 
     var motortune = $("#motor-tune").empty();
-    var table =  $("<table>");
-
+   
     for(var t in motorDB.motors[i].tune)
     {
         $.ajax("db/" + motorDB.motors[i].tune[t].file,{
@@ -25,12 +24,19 @@ function setMotorImage(motorDB)
             {
                 //console.log(data);
                 var json = JSON.parse(data);
-                var btn = $("<button>", {class:"btn btn-success", id:motorDB.motors[i].tune[t].file});
+                var udc = (json.udc === undefined) ? json.udcsw : json.udc;
+
+                var div = $("<div>", {class:"row p-2"});
                 var icon = $("<i>", {class:"icons icon-motor"});
-                var tr = $("<tr>");
-                var td = $("<td>").append(btn.append(icon).append(" Set Motor for " + TryParseInt(json.udc, "(?)") + " V"));
-                tr.append(td);
-                table.append(tr);
+                var btn = $("<button>", {class:"btn btn-success", id:motorDB.motors[i].tune[t].file}).append(icon);
+                
+                if(udc != 0) {
+                    btn.append(" Set Motor for " + Math.trunc(udc) + " Volts");
+                }else{
+                    btn.append(" Set Motor for 'Uknown' Volts");
+                }
+                div.append(btn);
+                motortune.append(div);
 
                 btn.click(function(){
 
@@ -51,8 +57,6 @@ function setMotorImage(motorDB)
             }
         });
     }
-
-    motortune.append(table);
 };
 
 function buildMotorDB(motorDB)
@@ -101,4 +105,4 @@ function TryParseInt(str,defaultValue) {
         }
     }
     return retValue;
-}
+};

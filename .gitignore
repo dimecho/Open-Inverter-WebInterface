@@ -1,3 +1,4 @@
+.DS_Store
 *.blend1
 *.lck
 !.gitignore

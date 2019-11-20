@@ -424,157 +424,199 @@ function boostSlipCalculator()
 
 function MTPACalculator()
 {
-    $.notify({ message: "Under Development" }, { type: "danger" });
-
-    var div = $("<div>",{class:"container"});
-    var row = $("<div>",{class:"row"});
-    var col = $("<div>",{class:"col", align:"center"});
-    var loader = $("<div>",{ class:"spinner-border text-dark"});
+    var loader = $("<div>",{ class:"spinner-border text-dark", align:"center"});
     var canvas = $("<canvas>");
 
-    col.append(loader);
-    col.append(canvas);
-    row.append(col);
-    div.append(row);
-
     $("#calculator").empty();
-    $("#calculator").append(div);
+    $("#calculator").append(loader);
+    $("#calculator").append(canvas);
+    //$("#calculator").addClass("h-100");
     $("#calculator").removeClass("d-none");
     $(".calculator").trigger("click");
 
     $.getScript("js/chart.js").done(function(script, textStatus) {
-        $.getScript("js/chartjs-plugin-annotation.js").done(function(script, textStatus) {
+		$.getScript("js/chartjs-plugin-annotation.js").done(function(script, textStatus) {
 
-        	//TODO: This needs a proper formula!
-        	var optimum_mtpa = [
-        	{x:-3.5,y:6.0},
-        	{x:-3.0,y:5.6},
-        	{x:-2.5,y:5.2},
-        	{x:-2.0,y:4.8},
-        	{x:-1.5,y:4.2},
-        	{x:-1.0,y:3.5},
-        	{x:-0.5,y:2.5},
-        	{x:-0.2,y:1.5},
-        	{x:0,y:0}
-        	];
-        	var optimum_torque = [
-        	{x:-6.0,y:3.2},
-        	{x:-5.0,y:3.3},
-        	{x:-4.0,y:3.5},
-        	{x:-3.0,y:3.8},
-        	{x:-2.0,y:4.4},
-        	{x:-1.0,y:5.2},
-        	{x:0,y:6.0}
-        	];
+	    	//TODO: This needs a proper formula!
+	    	var fwkp = parseInt($("#fwkp").val());
 
-            var chart_mtpa_datasets = {
-                type: "line",
-                label: "MTPA",
-                fill: false,
-                borderColor: "rgba(255,99,132)",
-                borderWidth: 2,
-                data: optimum_mtpa,
-                yAxisID: "y-axis-0",
-            };
+	    	var beta_angle = 25; //MTPA Trajectory Angle at rated design point (syncofs?)
+	    	var _iq_sin_beta = Math.sin(beta_angle);
+	    	var _iq_cos_beta = Math.cos(beta_angle);
+	    	var syncadv = 0;
+	    	var radius = Math.abs(parseInt($("#ocurlim").val()));
+	    	var radius_offset = 20;
 
-            var chart_iq_datasets = {
-                type: "line",
-                label: "Current Limit",
-                fill: false,
-                borderColor: "rgba(51, 153, 255)",
-                borderWidth: 2,
-                data: [],
-                yAxisID: "y-axis-1",
-            };
+	    	var optimum_mtpa = [];
+	    	for (var i = 0; i < (beta_angle * 1.5); i++) {
+				var angle  = (90  + syncadv) - (i * 2);
+				var _x = radius * Math.sin(Math.PI * 2 * angle / 360);
+				var _y = radius * Math.cos(Math.PI * 2 * angle / 360);
+				_x = _x - radius; //invert trajectory
+				optimum_mtpa.push({x:_x.toFixed(2),y:_y.toFixed(2)});
+				//console.log(_x + ', ' + _y);
+	    	}
+	    	var optimum_torque = []
+	    	for (var i = 0; i <= 45; i++) {
+				var angle  = 90 + (i * 2);
+				var _x = radius * Math.sin(Math.PI * 2 * angle / 360);
+				var _y = radius * Math.cos(Math.PI * 2 * angle / 360);
+				_y = _y + radius + radius_offset; //invert trajectory
+				_x = _x - radius; //invert trajectory
+				optimum_torque.push({x:_x.toFixed(2),y:_y.toFixed(2)});
+				//console.log(_x + ', ' + _y);
+	    	}
+	    	var current_limit = [];
+	    	for (var i = 0; i <= 45; i++) {
+				var angle  = 270 + (i * 2);
+				var _x = radius * Math.sin(Math.PI * 2 * angle / 360);
+				var _y = radius * Math.cos(Math.PI * 2 * angle / 360);
+				current_limit.push({x:_x.toFixed(2),y:_y.toFixed(2)});
+				//console.log(_x + ', ' + _y);
+	    	}
 
-            var chart_id_datasets = {
-                type: "line",
-                label: "Optimum Torque",
-                fill: false,
-                borderColor: "rgba(102, 255, 51)",
-                borderWidth: 2,
-                data: optimum_torque,
-                xAxisID: "x-axis-0"
-            };
+	        var chart_mtpa_datasets = {
+	            type: "line",
+	            label: "MTPA",
+	            fill: false,
+	            borderColor: "rgba(255,99,132)",
+	            borderWidth: 2,
+	            //pointRadius: 0,
+	            data: optimum_mtpa,
+	            yAxisID: "y-axis-0",
+	        };
 
-            data = {
-                labels: [],
-                datasets: [chart_iq_datasets,chart_id_datasets,chart_mtpa_datasets]
-            };
+	        var chart_iq_datasets = {
+	            type: "line",
+	            label: "Current Limit",
+	            fill: false,
+	            borderColor: "rgba(51, 153, 255)",
+	            borderWidth: 2,
+	            pointRadius: 0,
+	            data: current_limit,
+	            yAxisID: "y-axis-0",
+	        };
 
-            options = {
-                legend: {
-                    labels: {
-                        fontColor: ctxFontColor,
-                        fontSize: ctxFont
-                    }
-                },
-                scales: {
-                    xAxes: [{
-                        id: "x-axis-0",
-                        position: "bottom",
-                        type: "linear",
-                        scaleLabel: {
-                            display: true,
-                            fontColor: ctxFontColor,
-                            fontSize: ctxFont,
-                            labelString: "Direct Axis Current (A)"
-                        },
-                        ticks: {
-                        	precision: 0,
-                            fontColor: ctxFontColor,
-                            fontSize: ctxFont,
-                            stepSize: 0.5,
-                            suggestedMin: -6,
-                            suggestedMax: 0,
-                            userCallback: function(label, index, labels) {
+	        var chart_id_datasets = {
+	            type: "line",
+	            label: "Optimum Torque",
+	            fill: false,
+	            borderColor: "rgba(102, 255, 51)",
+	            borderWidth: 2,
+	            pointRadius: 0,
+	            data: optimum_torque,
+	            xAxisID: "x-axis-0"
+	        };
+
+	        data = {
+	            labels: [],
+	            datasets: [chart_iq_datasets,chart_id_datasets,chart_mtpa_datasets]
+	        };
+
+	        options = {
+	        	responsive: true,
+				maintainAspectRatio: true,
+	            legend: {
+	                labels: {
+	                    fontColor: ctxFontColor,
+	                    fontSize: ctxFont
+	                }
+	            },
+	            scales: {
+	                xAxes: [{
+	                    id: "x-axis-0",
+	                    position: "bottom",
+	                    type: "linear",
+	                    scaleLabel: {
+	                        display: true,
+	                        fontColor: ctxFontColor,
+	                        fontSize: ctxFont,
+	                        labelString: "Direct Axis Current (A)"
+	                    },
+	                    ticks: {
+	                    	precision: 2,
+	                        fontColor: ctxFontColor,
+	                        fontSize: ctxFont,
+	                        suggestedMin: -6,
+	                        suggestedMax: 0,
+	                        userCallback: function(label, index, labels) {
 			                    if (Math.floor(label) === label) {
 			                        return label;
 			                    }
 			                }
-                        },
-                        gridLines: {
-                        	drawOnChartArea: false,
-                            color: ctxFontColor
-                        }
-                    }],
-                    yAxes: [{
-                        id: "y-axis-0",
-                        position: "left",
-                        scaleLabel: {
-                            display: true,
-                            fontColor: ctxFontColor,
-                            fontSize: ctxFont,
-                            labelString: "Quadrature Axis Current (A)"
-                        },
-                        ticks: {
-                            precision: 0,
-                            fontColor: ctxFontColor,
-                            fontSize: ctxFont,
-                            stepSize: 0.5,
+	                    },
+	                    gridLines: {
+	                    	drawOnChartArea: false,
+	                        color: ctxFontColor
+	                    }
+	                }],
+	                yAxes: [{
+	                    id: "y-axis-0",
+	                    position: "left",
+	                    scaleLabel: {
+	                        display: true,
+	                        fontColor: ctxFontColor,
+	                        fontSize: ctxFont,
+	                        labelString: "Quadrature Axis Current (A)"
+	                    },
+	                    ticks: {
+	                        precision: 2,
+	                        fontColor: ctxFontColor,
+	                        fontSize: ctxFont
+	                    },
+	                    gridLines: {
+	                        drawOnChartArea: true,
+	                        color: ctxFontColor
+	                    }
+	                },{
+	                    id: "y-axis-1",
+	                    position: "right",
+	                    scaleLabel: {
+	                        display: true,
+	                        fontColor: ctxFontColor,
+	                        fontSize: ctxFont,
+	                        labelString: "Frequency (Hz)"
+	                    },
+	                    ticks: {
+	                        precision: 0,
+	                        fontColor: ctxFontColor,
+	                        fontSize: ctxFont,
+	                        stepSize: 10,
                             suggestedMin: 0,
-                            suggestedMax: 6,
-                            userCallback: function(label, index, labels) {
-			                    if (Math.floor(label) === label) {
-			                        return label;
-			                    }
-			                }
-                        },
-                        gridLines: {
-                            drawOnChartArea: true,
-                            color: ctxFontColor
+                            suggestedMax: 200
+	                    },
+	                    gridLines: {
+	                        drawOnChartArea: false
+	                    }
+	                }]
+    			}, 
+    			annotation: {
+		        	//drawTime: 'afterDatasetsDraw',
+					annotations: [{
+						type: "line",
+                        id: "a-line-0",
+                        mode: "horizontal",
+                        scaleID: 'y-axis-1',
+                        value: fwkp,
+                        borderColor: "rgb(255, 205, 86)",
+                        borderWidth: 2,
+                        label: {
+                          content: "fwkp=" + fwkp,
+                          enabled: true,
+                          yAdjust: -12,
+                          position: "right"
                         }
-                    }]
-                }
-            };
+					}]
+				}
+	        };
 
-            loader.hide();
-            
-            var chart = new Chart(canvas, {
-                type: 'line',
-                data: data,
-                options: options
-            });
+	        loader.hide();
+	        
+	        var chart = new Chart(canvas, {
+	            type: 'line',
+	            data: data,
+	            options: options
+	        });
         });
     });
 };
@@ -583,45 +625,238 @@ function syncofsCalculator()
 {
     var polepairs = parseInt($("#polepairs").val());
 
+    var loader = $("<div>",{ class:"spinner-border text-dark", align:"center"});
     var div = $("<div>",{class:"container"});
     var row = $("<div>",{class:"row"});
+    var col1 = $("<div>",{class:"col"});
     var col2 = $("<div>",{class:"col"});
 
     var p = $("<p>").append("Nissan Leaf Resolver Offsets");
     var input1 = $("<input>",{ class:"form-control my-3", type:"text", placeholder:"Motor Label (Ex: 7F0036)"});
     var input2 = $("<input>",{ class:"form-control my-3", type:"text", disabled:true});
     var btn = $("<button>",{ class:"btn btn-primary", type:"button"});
+    var img = $("<img>",{ class:"img-thumbnail rounded", src:"img/leaf-resolver-offsets.jpg"});
 
-    if(os != "esp8266" && os != "mobile")
-    {
-        var img = $("<img>",{ class:"img-thumbnail rounded", src:"img/leaf-resolver-offsets.jpg"});
-        var col1 = $("<div>",{class:"col", align:"center"});
+    if(os != "esp8266" && os != "mobile") {
         col1.append(img);
-        row.append(col1);
     }
 
     col2.append(p).append(input1).append(input2);
     col2.append(btn.append("Save"));
-    div.append(row.append(col2));
+    div.append(row.append(col1).append(col2));
 
     input1.on("input",function(e) {
+    	var shift_oneeighty = 0.5;
         var value = $(this).val();
-        var hex = parseInt("0x" + value.substring(0, 2),16);
 
-        var a = Math.abs((hex - 0x80) * 256);
-        var b = (a * 360 / 65536) * 2;
-        b = 360/Math.floor(360 / b); //degree round
-        b = Math.round(b * 10) / 10; //digit round
-        b = Math.ceil(b * 20) / 20; //nearest 0.5
+        if(value.length > 1)
+        {
+	        var hex = parseInt("0x" + value.substring(0, 2),16);
 
-        input2.val((a/2) + " @ " + b + "°");
+	        var syncofs = Math.abs(hex - 0x80) * 256;
+	        
+	        if(syncofs > 512) { //TODO: check for correctness
+	        	shift_oneeighty = 2;
+	        }
+	        
+	        var syncofs_angle = (syncofs * 360 / 65536)
+	        syncofs_angle = (360/Math.floor(360 / syncofs_angle)); //degree round
+	        //syncofs_angle = Math.round(syncofs_angle * 10) / 10; //digit round
+	        //syncofs_angle = Math.ceil(syncofs_angle * 20) / 20; //nearest 0.5
+
+	        input2.val(syncofs + " @ " + syncofs_angle.toFixed(1) + "°, Shift 180° = " + (syncofs/shift_oneeighty) + " @ " + (syncofs_angle/shift_oneeighty).toFixed(1) + "°");
+			
+			if(os != "mobile")
+		    {
+	    		col1.empty();
+	    		col1.append(loader);
+
+		    	$.getScript("js/chart.js").done(function(script, textStatus) {
+		    		$.getScript("js/chartjs-plugin-annotation.js").done(function(script, textStatus) {
+
+			    		var canvas = $("<canvas>");
+			    		var red = 'rgb(255, 99, 132)';
+			    		var blue = 'rgb(54, 162, 235)';
+			    		var yellow = 'rgb(255, 205, 86)';
+			    		var visual_angle = Math.round(syncofs_angle)*2;
+
+			    		var chart_stator_datasets = {
+		        			data: gen_stator_data(polepairs*2),
+		        			backgroundColor: gen_stator_data_color(polepairs*2),
+		        			//data: gen_stator_data(8),
+		        			//backgroundColor: gen_stator_data_color(8),
+		        			//borderWidth:0
+				        };
+				       	var chart_syncofs_datasets = {
+				       		data: gen_syncofs_data(polepairs*2,visual_angle*2),
+		        			backgroundColor: gen_stator_syncofs_color(polepairs*2),
+		        			//data: gen_syncofs_data(8,visual_angle),
+		        			//backgroundColor: gen_stator_syncofs_color(8),
+		        			borderWidth:0
+				        };
+				        var chart_rotor_datasets = {
+		        			data: [360],
+		        			backgroundColor: [],
+		        			borderWidth:0
+				        };
+
+				        data = {
+				            labels: [],
+				            datasets: [chart_stator_datasets, chart_syncofs_datasets, chart_rotor_datasets]
+				        };
+
+				        for (var i = 90; i > 0; i--) {
+				        	data.labels.push(0-i);
+				        }
+				        for (var i = 0; i < 90; i++) {
+				        	data.labels.push(i);
+				        }
+
+				        options = {
+				        	//responsive: true,
+							//maintainAspectRatio: true,
+				            rotation: Math.PI,
+				            //cutoutPercentage: 20,
+				            legend: {
+				            	display: false
+				            },
+				            /*elements: {
+					            arc: {
+					                borderWidth: 2
+					            }
+					        },*/
+					        tooltips: {
+						        enabled: false      
+						    },
+				            scales: {
+				            	xAxes: [{
+				            		gridLines: {
+						                display:false
+						            },
+					                ticks: {
+					                	display: false
+					                }
+					            }],
+					            yAxes: [{
+					            	/*gridLines: {
+						                display:false
+						            },*/
+					                ticks: {
+					                	display: false
+					                }
+					            }]
+					        },
+					        annotation: {
+					        	//drawTime: 'afterDatasetsDraw',
+								annotations: [{
+									type: "line",
+			                        id: "a-line-0",
+			                        mode: "vertical",
+			                        scaleID: 'x-axis-0',
+			                        value: visual_angle,
+			                        endValue: 0-visual_angle,
+			                        borderWidth: 0,
+			                        label: {
+			                        	enabled: true,
+			                        	xAdjust: -60,
+			                          	yAdjust: 32,
+			                          	content: syncofs + " (" + syncofs_angle.toFixed(1) + "°)",
+			                          	position: "top"
+			                        }
+								},{
+									type: "line",
+			                        id: "a-line-1",
+			                        mode: "vertical",
+			                        scaleID: 'x-axis-0',
+			                        value: 0,
+			                        borderWidth: 0,
+			                        label: {
+			                        	enabled: true,
+			                          	content: "Angle=0",
+			                          	position: "top"
+			                        }
+								},{
+									type: "line",
+			                        id: "a-line-2",
+			                        mode: "horizontal",
+			                        scaleID: 'y-axis-0',
+			                        value: 0.5,
+			                        borderWidth: 0,
+			                        label: {
+			                        	enabled: true,
+			                        	yAdjust: -12,
+			                          	content: "49152 (270°)",
+			                         	position: "left"
+			                        }
+								},{
+									type: "line",
+			                        id: "a-line-3",
+			                        mode: "horizontal",
+			                        scaleID: 'y-axis-0',
+			                        value: 0.5,
+			                        borderWidth: 0,
+			                        label: {
+			                        	enabled: true,
+			                        	yAdjust: -12,
+			                          	content: "16384 (90°)",
+			                          	position: "right"
+			                        }
+								}]
+							}
+				        };
+
+						var chart = new Chart(canvas, {
+				            type: 'pie', //'doughnut'
+				            data: data,
+				            options: options
+				        });
+
+						loader.hide();
+		    			col1.append(canvas);
+
+			    		var img = new Image();
+			    		img.src = "img/rotate.png";
+						img.onload = function() {
+
+							//console.log(chart.canvas);
+							var canvasPattern = document.createElement("canvas");
+							var ctxPattern = canvasPattern.getContext("2d");
+							canvasPattern.width  = chart.canvas.parentNode.clientWidth - img.width / 2;
+    						canvasPattern.height = chart.canvas.parentNode.clientHeight + img.height;
+
+    						//Flip Horizontally
+    						//-----------------
+    						ctxPattern.translate(canvasPattern.width, 0);
+							ctxPattern.scale(-1, 1);
+							//-----------------
+
+							ctxPattern.drawImage(img,
+								canvasPattern.width / 2 - img.width / 2,
+        						canvasPattern.height / 2 - img.height / 2
+        					);
+							ctxPattern.fillStyle = ctxPattern.createPattern(canvasPattern, "no-repeat");
+
+							//DEBUG
+							/*
+        					var link = document.createElement('a');
+							link.download = 'canvas.png';
+							link.href = canvasPattern.toDataURL("image/png");
+							link.click();
+							*/
+							chart.data.datasets[2].backgroundColor = [ctxPattern.fillStyle];
+						}
+		    		});
+			    });
+		    }
+        }
 	});
 
     btn.click(function() {
         $.fancybox.close();
         var split = input2.val().split(" ");
-        $("#syncofs").val(split[0]);
-        setParameter("syncofs",split[0],true,true);
+        var v = parseInt(split[6]);
+        $("#syncofs").val(v);
+        setParameter("syncofs",v,true,true);
     });
 
 	/*
@@ -634,7 +869,7 @@ function syncofsCalculator()
 	*/
 	//console.log(((0x82 + 0x80) % 256) * 256);
 	/*
-	syncofs=46152 (270 degree)
+	syncofs=49152 (270 degree)
 	syncofs=16384 (90 degree)
 	*/
 
@@ -642,6 +877,93 @@ function syncofsCalculator()
     $("#calculator").append(div);
     $("#calculator").removeClass("d-none");
     $(".calculator").trigger("click");
+};
+
+function gen_stator_data(poles) {
+	var d = [];
+	for (var i = 0; i < poles; i++) {
+		d.push(360/poles);
+	}
+	return d;
+};
+
+function gen_stator_data_color(poles) {
+	var red = 'rgb(255, 99, 132)';
+	var blue = 'rgb(54, 162, 235)';
+	var c = [blue];
+	for (var i = 1; i < poles; i++) {
+		if(c[i-1] == blue){
+			c.push(red);
+		}else{
+			c.push(blue);
+		}
+	}
+	return c;
+};
+
+function gen_syncofs_data(poles,angle) {
+	var divide = 1;
+	if(poles == 2) //2 poles need more segments to show angle
+		divide = 2;
+	var d = [];
+	for (var i = 0; i < poles*divide; i++) {
+		d.push(angle);
+		d.push(360/poles/divide);
+	}
+	//console.log(d);
+	return d;
+};
+
+function gen_stator_syncofs_color(poles) {
+	var red = 'rgb(255, 99, 132)';
+	var blue = 'rgb(54, 162, 235)';
+	var yellow = 'rgb(255, 205, 86)';
+	var c = [red];
+	//for (var x = 0; x < poles/2; x++)
+	//	c.push(blue);
+	console.log("Poles:" + poles);
+
+	var marker = 0;
+	var divide = poles/2;
+	if(poles == 2) { //2 poles need more segments to show angle
+		poles = poles*2;
+		divide = 2;
+	}
+	if(poles == 8)
+		marker = 1;
+
+	for (var i = 0; i < poles*divide; i++) {
+		//console.log(i + " " + c[c.length-1]);
+		if(i > poles*divide-2) { //end: 2 = (1 start and 1 marker)
+			for (var x = 0; x < poles/divide; x++)
+				c.push(red);
+		}else if(c[c.length-1] == blue){
+			for (var x = 0; x < poles/divide-1; x++)
+				c.push(red);
+			if(i == marker) {
+				c.push(yellow);
+			}else{
+				c.push(red);
+			}
+		}else if(c[c.length-1] == red){
+			for (var x = 0; x < poles/divide-1; x++)
+				c.push(blue);
+			if(i == marker) {
+				c.push(yellow);
+			}else{
+				c.push(blue);
+			}
+		}else{
+			var alt_color = red;
+			if(poles == 2 || poles == 8) {
+				alt_color = blue;
+			}
+			for (var x = 0; x < poles/divide; x++)
+				c.push(alt_color);
+		}
+	}
+	//console.log(c);
+	return c;
 };
 
 function buildParameters()
@@ -712,7 +1034,7 @@ function buildParameters()
                     a.on('change paste', function() {
                         var element = $(this);
                         if(element.val() != "") {
-                            validateInput(element.attr("id"), element.val(), function(r) {
+                            validateInput(json,element.attr("id"), element.val(), function(r) {
                                 if(r === true) 
                                     setParameter(element.attr("id"),element.val(),true,true);
                             });

@@ -86,6 +86,10 @@ Foreach-Object {
 #====================
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12;
 
+if(!(Test-Path .\tools -PathType Container)) { 
+    New-Item -ItemType "directory" -Path .\tools
+}
+
 if (-Not (Test-Path .\tools\yuicompressor-2.4.8.jar)) {
 	Invoke-WebRequest -OutFile .\tools\yuicompressor-2.4.8.zip -Uri "https://github.com/yui/yuicompressor/releases/download/v2.4.8/yuicompressor-2.4.8.zip"
 }

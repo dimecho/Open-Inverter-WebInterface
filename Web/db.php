@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="col">
                     <table class="table table-active bg-light table-bordered">
-                        <tr align="center">
+                        <tr>
                             <td>
                                 <h2>Motor Configuraton Database</h2>
                                 <br>
@@ -27,11 +27,11 @@
                                 </div>
                                 <br><br>
                                 <div class="input-group">
-                                    <span class = "input-group-addon w-50">
-                                        <img src="" id="motor-image" class="rounded pull-left w-75">
+                                    <span class = "input-group-addon pull-left w-50">
+                                        <img class="rounded m-2" src="" id="motor-image"/>
                                     </span>
-                                    <span class = "input-group-addon align-text-top pull-left">
-                                        <ul class="text-left" id="motor-info"></ul>
+                                    <span class = "input-group-addon pull-left w-50">
+                                        <ul class="m-2" id="motor-info"></ul>
                                         <br>
                                         <div id="motor-tune"></div>
                                     </span>

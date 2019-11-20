@@ -55,7 +55,7 @@ function buildSimpleParameters() {
                 from: json.udcnom.value,
                 postfix: " Volt",
                 onFinish: function (e) {
-                    validateInput("udcnom",e.from);
+                    validateInput(json,"udcnom",e.from);
                     setParameter("udcnom",e.from,true,true);
                 }
             });
@@ -70,7 +70,7 @@ function buildSimpleParameters() {
 				from: json.boost.value/1000,
 				postfix: " &#8486;",
 				onFinish: function (e) {
-					validateInput("boost",e.from*1000);
+					validateInput(json,"boost",e.from*1000);
 					setParameter("boost",e.from*1000,true,true);
 				}
 			});
@@ -95,7 +95,7 @@ function buildSimpleParameters() {
 				from: json.ampmin.value,
 				postfix: " %",
 				onFinish: function (e) {
-					validateInput("ampmin",e.from);
+					validateInput(json,"ampmin",e.from);
 					setParameter("ampmin",e.from,true,true);
 				}
 			});
@@ -117,7 +117,7 @@ function buildSimpleParameters() {
             max: 10,
             value: json.polepairs.value * 2
         }).on('slideStop', function (e) {
-            validateInput("polepairs",e.value/2);
+            validateInput(json,"polepairs",e.value/2);
             setParameter("polepairs",e.value/2,true,true);
         });
 		*/
@@ -127,7 +127,7 @@ function buildSimpleParameters() {
 			values: polepairs_values,
 			from: polepairs_values.indexOf(json.polepairs.value * 2),
 			onFinish: function (e) {
-				validateInput("polepairs",e.from_value/2);
+				validateInput(json,"polepairs",e.from_value/2);
 				setParameter("polepairs",e.from_value/2,true,true);
 			}
 		});
@@ -141,7 +141,7 @@ function buildSimpleParameters() {
             precision: 1,
             tooltip_position: 'left'
         }).on('slideStop', function (e) {
-            validateInput("udcnom",e.value);
+            validateInput(json,"udcnom",e.value);
             setParameter("udcnom",e.value,true,true);
         });
 		*/
@@ -155,7 +155,7 @@ function buildSimpleParameters() {
 			from: json.idlespeed.value,
 			postfix: " RPM",
 			onFinish: function (e) {
-				validateInput("idlespeed",e.from);
+				validateInput(json,"idlespeed",e.from);
 				setParameter("idlespeed",e.from,true,true);
 			}
 		});
@@ -171,7 +171,7 @@ function buildSimpleParameters() {
 			onFinish: function (e) {
 				//console.log(e.from);
 				//calculateCurve(e.from);   //calculate fweak
-				validateInput("fmax",e.from);
+				validateInput(json,"fmax",e.from);
 				setParameter("fmax",e.from,true,true);
 			}
 		});
@@ -190,7 +190,7 @@ function buildSimpleParameters() {
 			onFinish: function (e) {
 				//console.log(e.from);
 				//calculateCurve(e.from);   //calculate fweak
-				validateInput("pwmfrq",e.from);
+				validateInput(json,"pwmfrq",e.from);
 				setParameter("pwmfrq",e.from,true,true);
 			}
 		});
@@ -210,7 +210,7 @@ function buildSimpleParameters() {
 
                 clearTimeout(saveTimer);
                 saveTimer = setTimeout(function(){
-                    validateInput("encmode",e.from);
+                    validateInput(json,"encmode",e.from);
                     setParameter("encmode",e.from,true,true);
                 }, 1500);
             }
@@ -236,8 +236,8 @@ function buildSimpleParameters() {
 				*/
 				//calculateCurve(e.from); //calculate fweak
 
-				//validateInput("udcmin",e.from);
-				//validateInput("udcmax",e.to);
+				//validateInput(json,"udcmin",e.from);
+				//validateInput(json,"udcmax",e.to);
 
 				clearTimeout(saveTimer);
 				saveTimer = setTimeout(function(){
@@ -259,7 +259,7 @@ function buildSimpleParameters() {
 			onFinish: function (e) {
 				//slider_adjustment("ocurlim",[800,400,200,100]);
 
-				validateInput("ocurlim",(0-e.from));
+				validateInput(json,"ocurlim",(0-e.from));
 
 				clearTimeout(saveTimer);
 				saveTimer = setTimeout(function(){
@@ -278,7 +278,7 @@ function buildSimpleParameters() {
 			from: json.brknom.value,
 			postfix: " %",
 			onFinish: function (e) {
-				validateInput("brknom",e.from);
+				validateInput(json,"brknom",e.from);
 				setParameter("brknom",e.from,true,true);
 			}
 		});

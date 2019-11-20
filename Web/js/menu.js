@@ -14,7 +14,8 @@ var hardware_name = [
     "Hardware v1.0",
     "Hardware v2.0",
     "Hardware v3.0",
-    "Hardware Tesla"
+    "Hardware Tesla",
+    "Hardware Blue-Pill"
 ];
 var statusRefreshTimer;
 
@@ -256,8 +257,19 @@ function openConsole(){
     });
 };
 
-function validateInput(id, value, callback)
+function validateInput(json, id, value, callback)
 {
+    if(value > json[id].maximum) {
+        $.notify({ message: id + ' maximum ' + json[id].maximum}, { type: 'danger' });
+        if(callback)
+                callback(false);
+            return;
+    }else if(value < json[id].minimum) {
+        $.notify({ message: id + ' minimum ' + json[id].minimum}, { type: 'danger' });
+        if(callback)
+                callback(false);
+            return;
+    }
     getJSONFloatValue('opmode', function(opmode) {
         if(opmode > 0 && id != 'fslipspnt') {
             stopInverter();

@@ -2,6 +2,10 @@ boost,0 Hz Boost in digit. 1000 digit ~ 2.5%
 fweak,Frequency where V/Hz reaches its peak
 idweak,"Above ""fweak"" frequency start injecting field weakening current. 0=Disabled"
 udcnom,Scales fweak and boost as DC voltage changes. 0=Don't scale 
+fwkp,Inverter MTPA (maximum torque per amp) gain
+dofsramp,
+frqfac,PI controller help to reach appropriate output at higher frequencies. 0=No Help
+dmargin,Configures how much margin there is for q current at full amplitude
 fpconst,Frequency where slip frequency is derated to form a constant power region. Only has an effect when < fweak
 fslipmin,Slip frequency at minimum throttle
 fslipmax,Slip frequency at maximum throttle
@@ -15,7 +19,7 @@ numimp,Pulse encoder pulses per turn
 dirchrpm,Motor speed at which direction change is allowed
 dirmode,0=button (momentary pulse selects forward/reverse), 1=switch (forward or reverse signal must be constantly high)
 syncofs,Phase shift of sine wave after receiving index pulse
-syncadv,"Shifts ""syncofs"" upwards with frequency"
+syncadv,"Speed dependent phase shift. Shifts ""syncofs"" downwards/upwards with frequency"
 snsm,"Motor temperature sensor. 12=KTY83-110, 13=KTY84-130, 14=Leaf"
 pwmfrq,"PWM frequency. 0=17.6kHz, 1=8.8kHz, 2=4.4kHz, 3=2.2kHz"
 pwmpol,"PWM polarity. 0=Active High, 1=Active Low (gate drive opto coupler whos anode is connected to 5V permanently and they are switched on by pulling the cathode low, typically via a resistor) DO NOT PLAY WITH THIS!"
@@ -25,7 +29,7 @@ minpulse,"Narrowest or widest pulse, all other mapped to full off or full on, re
 il1gain,Digits per A of current sensor L1
 il2gain,Digits per A of current sensor L2
 udcgain,Digits per V of DC link
-udcofs,DC link 0V offset
+udcofs,Speed dependent voltage offset. DC link 0V offset
 udclim,High voltage at which the PWM is shut down
 snshs,"Heatsink temperature sensor. 0=JCurve, 1=Semikron (Skiip82), 2=MBB600"
 bmslimhigh,Positive throttle limit on BMS under voltage
@@ -65,8 +69,7 @@ pot2max,"Value of ""pot2"" when regen pot is in full on position"
 potmode,"0=Pot 1 is throttle and pot 2 is regen strength preset, 1=Pot 2 is proportional to pot 1 (redundance) 2=Throttle controlled via CAN"
 throtramp,Max positive throttle slew rate
 throtramprpm,No throttle ramping above this speed
-throtid,Sets the amount of magnetizing current per % of potnom. To demagnetize (i.e. field weaken) it must be negative.
-throtcur,Sets the amount of magnetizing current per % of potnom. To demagnetize (i.e. field weaken) it must be negative.
+throtcur,Sets the amount of magnetizing current per % of potnom. To demagnetize (i.e. field weaken) it must be negative. throtcur=4 means 400A at 100% throttle
 ampmin,Relative sine amplitude at minimum throttle
 slipstart,% positive throttle travel at which slip is increased
 brknompedal,Foot on break pedal regen torque
@@ -119,4 +122,4 @@ ld,Inductance along Direct axis - Inductance along the d-axis is usually lower t
 lq,Inductance along Quadrature axis - Permanent magnets have higher reluctance than iron (lq is greater than ld)
 ud,Voltage along Direct axis
 uq,Voltage along Quadrature axis
-fwkp,Inverter MTPA (maximum torque per amp) gain.
+lasterr,Last Error
