@@ -2,12 +2,14 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-slider.css" />
-        <script src="js/bootstrap-slider.js"></script>
-        <script src="js/three.js"></script>
-        <script src="js/OrbitControls.js"></script>
-        <script src="js/Projector.js"></script>
-        <script src="js/design.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/ion.rangeSlider.css" />
+        <script src="js/ion.rangeSlider.js"></script>
+        <script src="js/3d/three.js"></script>
+        <script src="js/3d/GLTFLoader.js"></script>
+        <script src="js/3d/DRACOLoader.js"></script>
+        <script src="js/3d/OrbitControls.js"></script>
+        <script src="js/3d/Projector.js"></script>
+        
 		<style>
 			canvas { width: 100%; height: 100% }
 		</style>
@@ -23,10 +25,10 @@
                         <script>
                             $(document).ready(function() {
                                 initialize3D("<?php echo $_GET['id'] ?>");
-                                giveCredit("/3d/<?php echo $_GET['id'] ?>.txt");
+                                giveCredit("js/3d/models/<?php echo $_GET['id'] ?>.txt");
                             });
                         </script>
-                        <input id="explode" type="hidden" data-slider-orientation="horizontal" data-slider-tooltip="hide" />
+                        <input id="explode" type="text" data-provide="slider" />
                         <br><br>
                         <canvas id="canvas"></canvas>
                     <?php }else{ ?>
@@ -43,4 +45,5 @@
             </div>
         </div>
     </body>
+    <script src="js/design.js"></script>
 </html>

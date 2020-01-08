@@ -803,11 +803,11 @@ function switchTheme(element,dark,light) {
 };
 
 function setTheme() {
-	//loadTheme();
-	if(theme == ".slate") {
+    //loadTheme();
+    if(theme == ".slate") {
         $(".icon-day-and-night").attr("data-original-title", "<h6 class='text-white'>Light Theme</h6>");
     }else{
-    	$(".icon-day-and-night").attr("data-original-title", "<h6 class='text-white'>Dark Theme</h6>");
+        $(".icon-day-and-night").attr("data-original-title", "<h6 class='text-white'>Dark Theme</h6>");
     }
     switchTheme("i.icon-status","text-white","text-dark");
     switchTheme("div","navbar-dark","navbar-light");

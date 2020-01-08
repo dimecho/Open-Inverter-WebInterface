@@ -31,7 +31,7 @@
         "title" : "GCC Compiler",
         "download" : {
             "mac" : "",
-            "windows" : "http://sysprogs.com/files/gnutoolchains/mingw32/mingw32-gcc4.8.1.exe",
+            "windows" : "https://sysprogs.com/files/gnutoolchains/mingw32/mingw32-gcc4.8.1.exe",
             "linux" : "",
             "size" : 25,
             "version" : ""
@@ -50,19 +50,19 @@
     "arm" : {
         "title" : "ARM Embedded Compiler",
         "download" : {
-            "mac" : "https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/8-2018q4/gcc-arm-none-eabi-8-2018-q4-major-mac.tar.bz2",
-            "windows" : "https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/8-2018q4/gcc-arm-none-eabi-8-2018-q4-major-win32.exe",
+             "mac" : "https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2019q4/RC2.1/gcc-arm-none-eabi-9-2019-q4-major-mac.tar.bz2",
+            "windows" : "https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2019q4/RC2.1/gcc-arm-none-eabi-9-2019-q4-major-win32.exe.bz2",
             "linux" : "",
-            "size" : 106,
-            "version" : "8.4"
+            "size" : 110,
+            "version" : "9.4"
         },
 		"checksum" : {
-            "mac" : "6b707a2ce7ac18c6fd25413b0ba5bc63",
-            "windows" : "",
+            "mac" : "241b64f0578db2cf146034fc5bcee3d4",
+            "windows" : "033151c92a5cd986e4cbea058f93d91b",
             "linux" : ""
         },
         "path" : {
-            "mac" : "/usr/local/share/gcc-arm-none-eabi-8-2018-q4-major/bin/arm-none-eabi-gcc",
+            "mac" : "/usr/local/share/gcc-arm-none-eabi-9-2019-q4-major/bin/arm-none-eabi-gcc",
             "windows" : "C:\\SysGCC\\ARM\\bin\\arm-none-eabi-gcc.exe",
             "linux" : "/usr/share/gcc-arm-embedded/bin/gcc-arm-none-eabi"
         }
@@ -70,8 +70,8 @@
     "avr" : {
         "title" : "AVR Compiler",
         "download" : {
-            "mac" : "http://ww1.microchip.com/downloads/en/DeviceDoc/avr8-gnu-toolchain-osx-3.6.2.503-darwin.any.x86_64.tar.gz",
-            "windows" : "http://ww1.microchip.com/downloads/en/DeviceDoc/avr8-gnu-toolchain-3.6.2.1759-win32.any.x86.zip",
+            "mac" : "https://ww1.microchip.com/downloads/en/DeviceDoc/avr8-gnu-toolchain-osx-3.6.2.503-darwin.any.x86_64.tar.gz",
+            "windows" : "https://ww1.microchip.com/downloads/en/DeviceDoc/avr8-gnu-toolchain-3.6.2.1759-win32.any.x86.zip",
             "linux" : "",
             "size" : 45,
             "version" : "3.6.2"
@@ -130,15 +130,15 @@
     "openscad" : {
         "title" : "OpenSCAD - 3D CAD",
         "download" : {
-            "mac" : "https://files.openscad.org/snapshots/OpenSCAD-2019.03.03.dmg",
-            "windows" : "https://files.openscad.org/snapshots/OpenSCAD-2019.01-RC4-x86-64-Installer.exe",
+            "mac" : "https://files.openscad.org/snapshots/OpenSCAD-2019.12.20.dmg",
+            "windows" : "https://files.openscad.org/snapshots/OpenSCAD-2019.12.21.ci4161-x86-64-Installer.exe",
             "linux" : "",
             "size" : 25,
-            "version" : "2019.01-RC4"
+            "version" : "2019.12.21"
         },
 		"checksum" : {
-            "mac" : "7ba501f10b596f5608c3c5894c378844",
-            "windows" : "f713143440fec886474adb1ee626724b",
+            "mac" : "",
+            "windows" : "",
             "linux" : ""
         },
         "path" : {
@@ -150,14 +150,14 @@
     "inkscape" : {
         "title" : "Inkscape - Vector Graphics Software",
         "download" : {
-            "mac" : "https://inkscape.org/gallery/item/11269/Inkscape-0.92.2-1-x11-10.7-x86_64.dmg",
+            "mac" : "https://inkscape.org/gallery/item/16193/Inkscape-1.0beta2.dmg",
             "windows" : "https://inkscape.org/gallery/item/12190/inkscape-0.92.3-x64.msi",
             "linux" : "",
             "size" : 80,
             "version" : "0.92.3"
         },
 		"checksum" : {
-            "mac" : "32441e9314b5970661155970fd3e170c",
+            "mac" : "",
             "windows" : "100fa7d2aef7ec36823b9ad40e4635ea",
             "linux" : ""
         },

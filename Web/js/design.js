@@ -1,109 +1,169 @@
-var canvas, camera, scene, renderer;
+var canvas, camera, scene, model, orbit, renderer;
 var explodeValue;
 var explodeDirection = [];
+var renderColor = 0xffffff;
+var gridColor = 0xabb2b9;
 
 function initialize3D(id) {
 
-    scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0xE0E0E0, 0.02);
+	if(theme == ".slate") {
+		renderColor = 0xabb2b9;
+		gridColor = 0xffffff;          
+    }
 
-    //var ambient = new THREE.AmbientLight( 0xE0E0E0 );
-    var ambient = new THREE.AmbientLight( 0xC1C1C1);
+    $("#explode").ionRangeSlider({
+        skin: "big",
+        //grid: true,
+        min: 0,
+        max: 30,
+        from: 0,
+        step: 1,
+        onChange: function (e) {
+
+            var value = e.from;
+        
+            if (value === 0) {
+
+                scene.traverse (function (mesh) {
+                    //if(mesh instanceof THREE.Mesh) {
+                    if(mesh.geometry) {
+                        //console.log(mesh);
+                        mesh.position.x = mesh.original[0];
+                        mesh.position.y = mesh.original[1];
+                        mesh.position.z = mesh.original[2];
+                    }
+                });
+
+            }else if(explodeValue < value){
+
+                explode(true,value);
+
+            }else if(explodeValue > value){
+
+                explode(false,value);
+            }
+            explodeValue = value;
+        }
+    });
+
+    canvas = document.getElementById('canvas');
+	/*
+    canvas.addEventListener("webglcontextlost", function(event) {
+        event.preventDefault();
+    }, false);
+    canvas.addEventListener(
+    "webglcontextrestored", setupWebGLStateAndResources, false);
+    */
+    setupWebGLStateAndResources(id);
+
+    window.addEventListener('resize', function() {
+        //camera.fov = Math.atan(window.innerHeight / 2 / camera.position.z) * 2 * THREE.Math.RAD2DEG;
+	    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+	    camera.updateProjectionMatrix();
+        //renderer.setViewport(0, 0, canvas.clientWidth, canvas.clientHeight);
+	    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+	});
+
+    animate();
+};
+
+function  setupWebGLStateAndResources(id) {
+
+    scene = new THREE.Scene();
+
+    //var ambient = new THREE.AmbientLight(0xE0E0E0);
+    var ambient = new THREE.AmbientLight(0xC1C1C1);
     scene.add(ambient);
 
-    var grid = new THREE.GridHelper( 5, 20, 0xffffff, 0xffffff);
+    var grid = new THREE.GridHelper(5, 20, gridColor, gridColor);
     grid.position.y = -1;
     scene.add(grid);
-    
+
+    /*
     var light = new THREE.DirectionalLight(0xE0E0E0 , 0.8);
-    light.position.set( 0, -1, 0 );
-    scene.add(light);
+    light.position.set(0, -1, 0);
+    //scene.add(light);
 
     var spotLight = new THREE.SpotLight(0xE0E0E0);
     spotLight.position.set(-1, 20, -1);
     //scene.add(spotLight);
 
-    var hemiLight = new THREE.HemisphereLight( 0xE5E5E5, 0xE5E5E5, 0.8);
-    hemiLight.position.set( 10, 40, 10 );
+    var hemiLight = new THREE.HemisphereLight(0xE5E5E5, 0xE5E5E5, 0.8);
+    hemiLight.position.set(10, 40, 10);
     //scene.add(hemiLight);
 
-    var directionalLight = new THREE.DirectionalLight( 0xE5E5E5);
-    directionalLight.position.set(0, 10, -1 ).normalize();
-    scene.add( directionalLight );
+    var pointLight = new THREE.PointLight(0xffaa00);
+    pointLight.position.set(0, 0, 0);
+    //scene.add(pointLight);
+    */
 
-    var pointLight = new THREE.PointLight( 0xffaa00 );
-    pointLight.position.set( 0, 0, 0 );
-    //scene.add( pointLight );
-	
-	canvas = document.getElementById('canvas');
-	
+    var directionalLight = new THREE.DirectionalLight(0xE5E5E5);
+    directionalLight.position.set(0, 10, -1 ).normalize();
+    scene.add(directionalLight);
+
+
     renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true});
-	canvas.width  = canvas.clientWidth;
-	canvas.height = canvas.clientHeight;
-	renderer.setViewport(0, 0, canvas.clientWidth, canvas.clientHeight);
+    canvas.width  = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+    renderer.setViewport(0, 0, canvas.clientWidth, canvas.clientHeight);
 
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    renderer.setClearColor(scene.fog.color, 1);
+    renderer.setClearColor(renderColor, 1.0);
 
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFShadowMap;
-	
-	camera = new THREE.PerspectiveCamera(20, canvas.clientWidth/canvas.clientHeight, 0.1, 50);
+    //renderer.shadowMap.enabled = true;
+    //renderer.shadowMap.type = THREE.PCFShadowMap;
+    //renderer.state.setBlending(THREE.NoBlending);
+
+    camera = new THREE.PerspectiveCamera(20, canvas.clientWidth/canvas.clientHeight, 0.1, 50);
     scene.add(camera);
-	
-    var controls = new THREE.OrbitControls( camera, renderer.domElement );
-    controls.zoomSpeed = 0.5;
 
-    var manager = new THREE.LoadingManager();
-    //var loader = new THREE.JSONLoader(manager);
-    var loader = new THREE.ObjectLoader(manager);
+    orbit = new THREE.OrbitControls(camera, renderer.domElement);
+    orbit.zoomSpeed = 0.5;
 
-    loader.setTexturePath("3d/textures/");
-
-    /*
-    loader.load("3d/" + id + ".json", function( geometry, materials ) {
-        for ( var i = 0; i < materials.length; i ++ ) {
-            var m = materials[ i ];
-             m.morphTargets = true;
-             console.log(m);
-        }
-        mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
-        scene.add( mesh );
-    } );
-    */
+    //https://threejs.org/docs/#examples/en/loaders/GLTFLoader
     
-    loader.load("3d/" + id + ".json", function (object) {
+    //renderer.physicallyCorrectLights = true;
+    //renderer.gammaOutput = true;
+    //renderer.gammaFactor = 2.0;
     
-        object.rotation.y = -90;
-        scene.add(object);
-        camera.position.set(5, 10, 5);
+    var loader = new THREE.GLTFLoader();
+    loader.setResourcePath("js/3d/textures/");
+
+    //Provide a DRACOLoader instance to decode compressed mesh data
+    var dracoLoader = new THREE.DRACOLoader();
+    dracoLoader.setDecoderPath('js/3d/libs/draco/');
+    loader.setDRACOLoader(dracoLoader);
+    
+    loader.load("js/3d/models/" + id + ".glb", function (object) {
 
         var movementSpeed = 0.1;
-        
-        /*
-        object.traverse( function(child) {
-            if( child instanceof THREE.Mesh ) {
-            child.material = new THREE.MeshBasicMaterial( { color: 0x009900, wireframe: true, vertexColors: THREE.VertexColors } ); 
-            //child.scale.set(20,20,20);
-                object.add( child );
-            }
-        });
-        */
-        
+
+        camera.position.set(5, 10, 5);
+
+        //object.rotation.y = -90;
+
+        scene.add(object.scene);
+
         scene.traverse(function (mesh) {
 
-            if(mesh instanceof THREE.Mesh) {
-        
-                //mesh.geometry.computeFaceNormals();
-                //mesh.geometry.computeVertexNormals();
+            //if(mesh instanceof THREE.Mesh) {
+            if(mesh.geometry) {
+                console.log(mesh);
+
+                /*
+                mesh.geometry.computeFaceNormals();
+                mesh.geometry.computeVertexNormals();
                 mesh.geometry.computeBoundingBox();
+                mesh.geometry.normalsNeedUpdate = true;
+                mesh.geometry.verticesNeedUpdate = true;
+                */
 
-                //Blender Exporter Fix
-                if(mesh.name.indexOf("Cube") !== -1)
-                    mesh.material.opacity = 0.6;
-
-                mesh.material.shading = THREE.FlatShading;
+                /*
+                mesh.material.flatShading = THREE.FlatShading;
+                //mesh.receiveShadow = false; // or false
+                //mesh.material.needsUpdate = true;
+                */
                 
                 mesh.original = [mesh.position.x,mesh.position.y,mesh.position.z];
 
@@ -111,61 +171,10 @@ function initialize3D(id) {
                 explodeDirection.push({x:(Math.random() * movementSpeed)-(movementSpeed/2),y:(Math.random() * movementSpeed)-(movementSpeed/2),z:(Math.random() * movementSpeed)-(movementSpeed/2)});
             }
         });
+    },undefined, function (error) {
+        console.error(error);
     });
-    
-	onResize(canvas, function () {
-          canvas.width  = canvas.clientWidth;
-          canvas.height = canvas.clientHeight;
-          renderer.setViewport(0, 0, canvas.clientWidth, canvas.clientHeight);
-          camera.aspect = canvas.clientWidth / canvas.clientHeight;
-          camera.updateProjectionMatrix();
-    });
-	
-    animate();
-
-    $("#explode").slider({
-        min: 0,
-        max: 100,
-        value: 0,
-        step: 1
-    }).on('slide', function() {
-        
-        var value = $("#explode").slider('getValue');
-        
-        if (value === 0) {
-
-            scene.traverse (function (object) {
-                if(object.geometry)
-                {
-                    object.position.x = object.original[0];
-                    object.position.y = object.original[1];
-                    object.position.z = object.original[2];
-                }
-            });
-
-        }else if(explodeValue < value){
-
-            explode(true,value);
-
-        }else if(explodeValue > value){
-
-            explode(false,value);
-        }
-        explodeValue = value;
-    });
-};
-
-function onResize(element, callback) {
-	var height = element.clientHeight;
-	var width  = element.clientWidth;
-	
-	return setInterval(function() {
-		if (element.clientHeight != height || element.clientWidth != width) {
-		  height = element.clientHeight;
-		  width  = element.clientWidth;
-		  callback();
-		}
-	}, 500);
+    camera.lookAt(scene.position);
 };
 
 function fill3DTable() {
@@ -175,13 +184,13 @@ function fill3DTable() {
     var tr = $("<tr>");
     var td = $("<td>",{align:"center"});
 
-    $.ajax("3d/index.json", {
+    $.ajax("js/3d/models/index.json", {
         contentType: "application/json",
         dataType: "json",
         success: function success(data) {
             $.each(data.list, function () {
                 var a = $("<a>", { href: "design.php?id=" + this.id });
-                var img = $("<img>", { src: "3d/" + this.id + ".png", class: "img-thumbnail rounded", style: "margin:10px;width:400px;height:220px"});
+                var img = $("<img>", { src: "js/3d/models/" + this.id + ".png", class: "img-thumbnail rounded", style: "margin:10px;width:400px;height:220px"});
                 td.append(a.append(img));
             });
         },
@@ -194,27 +203,29 @@ function fill3DTable() {
 };
 
 function explode(outwards, value) {
-    
+    /*
+    06-particles-postprocessing/06.06-explode-geometry-model.html
+    */
+
     var dir = outwards === true ? 1 : -1;
-    var i = 0;
+    var count = 0;
 
-    scene.traverse (function (object)
+    scene.traverse (function (mesh)
     {
-        if(object.geometry){
-
-            object.position.x += explodeDirection[i].x * dir; 
-            object.position.y += explodeDirection[i].y * dir;
-            object.position.z += explodeDirection[i].z * dir;
-            
-            //object.geometry.verticesNeedUpdate=true;
-            i++;
+    	//if(mesh instanceof THREE.Mesh) {
+        if(mesh.geometry) {
+            mesh.position.x += explodeDirection[count].x * value * dir; 
+            mesh.position.y += explodeDirection[count].y * value * dir;
+            mesh.position.z += explodeDirection[count].z * value * dir;
+            //mesh.geometry.verticesNeedUpdate = true;
+            count++;
         }
     });
 };
 
 function animate() {
-
-    requestAnimationFrame(animate);
-    camera.lookAt(scene.position);
+	requestAnimationFrame(animate);
     renderer.render(scene,camera);
+    orbit.update();
+    //camera.lookAt(scene.position);
 };

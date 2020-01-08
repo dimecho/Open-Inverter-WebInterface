@@ -1,12 +1,20 @@
 #!/bin/sh
+
+AVRPath="/usr/local/share/avr8-gnu-toolchain-darwin_x86_64"
+
 if [ "$1" = "uninstall" ] ; then
-    rm -rf "/usr/local/share/avr8-gnu-toolchain-darwin_x86_64"
+    rm -rf "$AVRPath"
 else
-    if [ ! -f "/usr/local/share/avr8-gnu-toolchain-darwin_x86_64/bin/avr-gcc" ]; then
+    if [ ! -f "$AVRPath/bin/avr-gcc" ]; then
     	#MacOS 10.15
         if [ ! -d "/usr/local/share" ]; then
             osascript -e "do shell script \"mkdir /usr/local/share; chown -R $(whoami) /usr/local/share\" with administrator privileges"
         fi
         tar xzfv ~/Downloads/avr8-gnu-toolchain-osx-3.6.2.503-darwin.any.x86_64.tar.gz -C /usr/local/share
+        case ":$PATH:" in
+		  *:$AVRPath/bin:*) echo $PATH;;
+		  *) echo "PATH=\${PATH}:$AVRPath/bin" >> ~/.zshrc;;
+		esac
+		source ~/.zshrc
     fi
 fi

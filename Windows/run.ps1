@@ -191,6 +191,18 @@ function checkProlificDriver {
 	}
 }
 
+function checkCH341Driver {
+    
+    $Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "USB2.0-Serial"}
+    if ($Driver)
+    {
+        Elevate
+        Write-Host "...Installing Driver"
+        pnputil -a "$($PSScriptRoot)\driver\CH341\CH341SER.INF"
+        InfDefaultInstall "$($PSScriptRoot)\driver\CH341\CH341SER.INF"
+    }
+}
+
 function checkCP2102Driver {
 	
 	$Driver = Get-WmiObject Win32_PNPEntity | Where-Object{ $_.Status -match "Error" -and $_.Name -match "CP210"}
@@ -236,6 +248,7 @@ function checkCANtactDriver {
 function checkDrivers {
 
     checkProlificDriver
+    checkCH341Driver
     checkCP2102Driver
     checkLibUSBDriver
     checkCANtactDriver

@@ -33,3 +33,5 @@ Hardware v3, IPM type motor needs some demagnetizing current for most torque per
 Hardware v3,The cruise function will oscillate when there is no load on the motor because of filtering. Try setting speedflt=0. When running a vehicle set speedflt=4.
 Firmware,The symptom of the motor turning slowly is almost certainly caused by a missing or inverted encoder signal. Try to swap A and B channels.
 Battery, Put fuse in the middle of the pack. If there is a short circuit, your battery is immediately split into half voltage.
+Firmware,CAN parameters are internally scaled with 32. Say you set fslipmin to 1 then it will be "32" in memory, set to 1.5 it is "48" in memory.
+Hardware v3,Leaf inverter should be operated at 8.8kHz.
