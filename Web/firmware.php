@@ -173,23 +173,25 @@
 										for (var i = 0; i < jtag_interface.length; i++) {
 											$("#firmware-interface").append($("<option>",{value:jtag_interface[i]}).append(jtag_name[i]));
 										}
-										$("#firmware-interface").prop('selectedIndex', (jtag_interface.length-1));
-
+										$("#firmware-interface").prop('selectedIndex', 2);
 										$.ajax("serial.php?com=list", {
 											async: false,
 											success: function(data) {
 												//console.log(data);
-												var s = data.split('\n');
-												for (var i = 0; i < s.length; i++) {
-													if(s[i] != "")
-														$("#firmware-interface").append($("<option>",{value:s[i]}).append(s[i]));
+												if(data.length > 1) {
+													var s = data.split('\n');
+													for (var i = 0; i < s.length; i++) {
+														if(s[i] != "")
+															$("#firmware-interface").append($("<option>",{value:s[i]}).append(s[i]));
+													}
+													$("#firmware-interface").prop('selectedIndex', (jtag_interface.length + s.length - 2));
 												}
-												$("#firmware-interface").prop('selectedIndex', (jtag_interface.length + s.length - 2));
 											}
 										});
 									}
 									$(".spinner-border").addClass("d-none"); //.hide();
 									$(".input-group-addon").removeClass("d-none"); //.show();
+
 									setInterfaceImage();
 									displayHWVersion();
 								});

@@ -49,6 +49,7 @@ function beginESP8266SWD() {
 function setInterfaceImage() {
 
 	var v = $("#firmware-interface").val();
+	
 	if(os == "esp8266") {
 		$("#jtag-txt").html("Solder <b>GPIO-0</b> to <b>1</b> and boot ESP8266 from flash.");
 		

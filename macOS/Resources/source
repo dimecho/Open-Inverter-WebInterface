@@ -18,7 +18,7 @@ else
         
         #--------- LIBOPENCM3 ------------
         cd ~/Documents/stm32-sine-master/
-        if [ ! -d libopencm3 ]; then
+        if [ -z libopencm3 ]; then
             git clone https://github.com/jsphuebner/libopencm3.git --quiet
             #git clone https://github.com/libopencm3/libopencm3.git --quiet
         fi
@@ -33,6 +33,11 @@ else
             ditto include "$GCC_ARM/arm-none-eabi/include"
             #A Fix
             cp "$GCC_ARM/arm-none-eabi/lib/cortex-m-generic.ld" "$GCC_ARM/arm-none-eabi/lib/libopencm3_stm32f1.ld"
+        fi
+        #--------- LIBOPENINV ------------
+        cd ~/Documents/stm32-sine-master/
+        if [ -z libopeninv ]; then
+            git clone https://github.com/jsphuebner/libopeninv.git --quiet
         fi
         #--------- BOOTLOADER ------------
         cd ~/Documents/stm32-sine-master/src/
@@ -50,6 +55,7 @@ else
         cd ~/Documents/stm32-sine-master
         make clean
         make
+        make CONTROL=FOC
         #--------- ATtiny13 --------------
         export PATH="$PATH:/usr/local/share/avr8-gnu-toolchain-darwin_x86_64/bin/"
 

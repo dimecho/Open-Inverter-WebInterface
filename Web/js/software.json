@@ -375,10 +375,15 @@
             "size" : 1,
             "version" : "4.7"
         },
+        "checksum" : {
+            "mac" : "",
+            "windows" : "",
+            "linux" : ""
+        },
         "path" : {
-            "mac" : "~/Documents/stm32-sine-master/src/generic/sine_core.cpp",
-            "windows" : "~\\Documents\\stm32-sine-master\\src\\generic\\sine_core.cpp",
-            "linux" : "~/Documents/stm32-sine-master/src/generic/sine_core.cpp"
+            "mac" : "~/Documents/stm32-sine-master/src/stm32_sine.cpp",
+            "windows" : "~\\Documents\\stm32-sine-master\\src\\stm32_sine.cpp",
+            "linux" : "~/Documents/stm32-sine-master/src/stm32_sine.cpp"
         }
     },
     "php" : {

@@ -100,10 +100,11 @@ function startPHP {
 			#Quick Fix [give it a kick] - Prolific Driver Bug or Windows?
 			#================================================
             $timeouted = $null
-			$process = Start-Process -FilePath "$PSScriptRoot\puttytel.exe" -ArgumentList "-serial $($comPort) -sercfg 115200,8,n,1,N" -PassThru -WindowStyle Hidden
+			$process = Start-Process -FilePath "$PSScriptRoot\plink.exe" -ArgumentList "-serial $($comPort) -sercfg 115200,8,n,1,N" -PassThru -WindowStyle Hidden
 			$process | Wait-Process -Timeout 4 -ErrorAction SilentlyContinue -ErrorVariable timeouted
 			if ($timeouted) {
                 Get-Process -Name putty -ErrorAction SilentlyContinue | Stop-Process
+                Get-Process -Name plink -ErrorAction SilentlyContinue | Stop-Process
                 Get-Process -Name puttytel -ErrorAction SilentlyContinue | Stop-Process
                 Start-Sleep -s 2
             }

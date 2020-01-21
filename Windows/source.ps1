@@ -43,7 +43,7 @@ if($args[0] -eq "uninstall") {
 			
             #--------- LIBOPENCM3 ------------
             Set-Location "$env:USERPROFILE\Documents\stm32-sine-master"
-            if (-Not (Test-Path "libopencm3")) {
+            if (-Not (Test-Path "libopencm3\*")) {
                 if (-Not (Test-Path "$env:USERPROFILE\Downloads\libopencm3-master.zip")) {
                     Write-Host "Downloading Libopencm3" -ForegroundColor Green
 					[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -56,25 +56,43 @@ if($args[0] -eq "uninstall") {
                 {
                     $shell.Namespace("$env:USERPROFILE\Documents\stm32-sine-master\").copyhere($item)
                 }
-                Rename-Item libopencm3-master libopencm3
+                Remove-Item libopencm3 -ErrorAction SilentlyContinue
+                Rename-Item libopencm3-master libopencm3 -ErrorAction SilentlyContinue
             }
 			Set-Location libopencm3
             if (-Not (Test-Path lib\libopencm3_stm32f1.a)) {
-                Write-Host "Building Libopencm3" -ForegroundColor Green
+                Write-Host "Building libopencm3" -ForegroundColor Green
 				Elevate
-                $env:Path += ";$env:USERPROFILE\AppData\Local\Programs\Python\Python37\"
-                $env:Path += ";$env:USERPROFILE\AppData\Local\Programs\Python\Python37\Scripts\"
+                $env:Path += ";$env:USERPROFILE\AppData\Local\Programs\Python\Python38\"
+                $env:Path += ";$env:USERPROFILE\AppData\Local\Programs\Python\Python38\Scripts\"
     			
     			make.exe clean
                 make.exe TARGETS=stm32/f1
 				
-				Write-Host "Updating Libopencm3" -ForegroundColor Green
+				Write-Host "Updating libopencm3" -ForegroundColor Green
 				
 				#Overwrite existing with new version
 				Copy-Item lib "$GCC_ARM\arm-none-eabi\" -Recurse -Force
 				Copy-Item include "$GCC_ARM\arm-none-eabi\" -Recurse -Force
 				#A Fix
 				Copy-Item "$GCC_ARM\arm-none-eabi\lib\cortex-m-generic.ld" "$GCC_ARM\arm-none-eabi\lib\libopencm3_stm32f1.ld" -Force
+            }
+            #--------- LIBOPENINV ------------
+            Set-Location "$env:USERPROFILE\Documents\stm32-sine-master"
+            if (-Not (Test-Path "libopeninv\*")) {
+                if (-Not (Test-Path "$env:USERPROFILE\Downloads\libopeninv-master.zip")) {
+                    Write-Host "Downloading libopeninv" -ForegroundColor Green
+                    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+                    Invoke-WebRequest -Uri "https://github.com/jsphuebner/libopeninv/archive/master.zip" -OutFile "$env:USERPROFILE\Downloads\libopeninv-master.zip"
+                }
+                Write-Host "UnZipping libopeninv" -ForegroundColor Yellow
+                $zip = $shell.NameSpace("$env:USERPROFILE\Downloads\libopeninv-master.zip")
+                foreach($item in $zip.items())
+                {
+                    $shell.Namespace("$env:USERPROFILE\Documents\stm32-sine-master\").copyhere($item)
+                }
+                Remove-Item libopeninv -ErrorAction SilentlyContinue
+                Rename-Item libopeninv-master libopeninv -ErrorAction SilentlyContinue
             }
             #--------- BOOTLOADER ------------
             Set-Location "$env:USERPROFILE\Documents\stm32-sine-master\src"
@@ -102,18 +120,14 @@ if($args[0] -eq "uninstall") {
             Set-Location "$env:USERPROFILE\Documents\stm32-sine-master"
             make.exe clean
             make.exe
+            make.exe CONTROL=FOC
             #--------- ATtiny13 --------------
-			
 			$GCC_AVR = "C:\SysGCC\avr"
 			$env:Path += ";$GCC_AVR\bin"
-				
+			
             Set-Location "$env:USERPROFILE\Documents\stm32-sine-master\src"
             if (-Not (Test-Path attiny13)) {
-                $zip = $shell.NameSpace((Split-Path $PSScriptRoot -Parent) + "\Web\firmware\attiny13.zip")
-                foreach($item in $zip.items())
-                {
-                    $shell.Namespace("$env:USERPROFILE\Documents\stm32-sine-master\src\").copyhere($item)
-                }
+                Copy-Item -Path  "$(Split-Path $PSScriptRoot -Parent)\Web\pcb\Hardware v1.0\firmware\attiny13" -Destination "$env:USERPROFILE\Documents\stm32-sine-master\src\" -Recurse
             }
             avr-gcc.exe -g -mmcu=attiny13 -Os -Os -o volt-pwm-attiny13.o volt-pwm-attiny13.c -DF_CPU=96000000
             avr-objcopy.exe -R .eeprom -O binary volt-pwm-attiny13.o volt-pwm-attiny13.bin

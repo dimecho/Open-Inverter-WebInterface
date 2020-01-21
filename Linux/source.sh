@@ -24,7 +24,15 @@ else
         sudo rsync -avh ./lib/* "/usr/arm-none-eabi/lib"
         sudo rsync -avh ./include/* "/usr/arm-none-eabi/include"
     fi
-
+    #--------- LIBOPENINV ------------
+	cd "$HOME/Documents/stm32-sine-master"
+    if [ ! -d libopeninv ]; then
+        if [ ! -f "$HOME/Downloads/libopeninv-master.zip" ]; then
+            wget"https://github.com/jsphuebner/libopeninv/archive/master.zip" -O "$HOME/Downloads/libopeninv-master.zip"       
+        fi
+        unzip "$HOME/Downloads/libopeninv-master.zip" -d ./
+        mv ./libopeninv-master ./libopeninv
+    fi
     #--------- BOOTLOADER ------------
     cd "$HOME/Documents/stm32-sine-master"
     if [ ! -d ./src/bootloader ]; then
@@ -40,10 +48,8 @@ else
     cd "$HOME/Documents/stm32-sine-master"
     cd ./src/sine
     make clean
-    make "$1"
-    mv *.bin ../../
-    mv *.hex ../../
-
+    make
+    make CONTROL=FOC
     #--------- ATtiny13 --------------
     export PATH="$PATH:/usr/local/etc/gcc_arm/avr/bin/"
 

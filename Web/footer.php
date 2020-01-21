@@ -22,8 +22,11 @@
     <div class="row">
         <div class="col-3"></div>
         <div class="col-6 text-dark border" align="center">
-            <div class="bg-warning"><h1 class="icons icon-alert">WARNING</h1></div>
-            <div class="row">
+            <div class="row bg-warning p-1">
+                <div class="col"><h1 class="icons icon-alert"></h1></div>
+                <div class="col"><h1>WARNING</h1></div>
+            </div>
+            <div class="row p-2">
                 <div class="col"><h2>HIGH VOLTAGE</h2></div>
                 <div class="col"><h1 class="icons icon-electric-shock display-3"></h1></div>
             </div>

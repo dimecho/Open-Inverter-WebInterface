@@ -1121,8 +1121,8 @@ function buildParameters()
                     td4.append(syncofs_btn.append(syncofs_calc).append(" Calculate"));
                 } else if(key == "udcnom") {
                     var fweak_btn = $("<button>", {type:"button", class:"btn btn-primary", onclick:"boostSlipCalculator()"});
-                    var fweak_calc = $("<i>", {class:"icons icon-magic"}).append(" Calculate");
-                    td4.append(fweak_btn.append(fweak_calc));
+                    var fweak_calc = $("<i>", {class:"icons icon-magic"});
+                    td4.append(fweak_btn.append(fweak_calc).append(" Calculate"));
                 }else{
                     td4.append(json[key].unit.replace("","°"));
                 }
