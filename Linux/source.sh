@@ -55,7 +55,7 @@ else
 
     cd "$HOME/Documents/stm32-sine-master"
     if [ ! -d ./src/attiny13 ]; then
-        unzip "$(dirname "$0")/../Web/firmware/attiny13.zip" -d ./src/
+        cp -r "$(dirname "$0")/../Web/pcb/Hardware v1.0/firmware/attiny13" -d ./src/
     fi
     cd ./src/attiny13
     avr-gcc -g -mmcu=attiny13 -Os -Os -o volt-pwm-attiny13.o volt-pwm-attiny13.c -DF_CPU=96000000

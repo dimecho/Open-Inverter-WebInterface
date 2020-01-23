@@ -7,13 +7,13 @@ Build (From Source Code)
     [Arduino IDE Setup]
 
     1) Arduino/File -> Preferences -> Additional Boards Manager URLs: http://arduino.esp8266.com/stable/package_esp8266com_index.json
-    2) Tools -> Boards -> Board Manager -> esp8266 -> Install
+    2) Tools -> Boards -> Board Manager -> esp8266 -> Install (v2.5.2)
     3) Tools -> Boards -> Olimex MOD-WIFI-ESP8266-DEV -> Flash Size -> 2M (1M SPIFFS)
     4) Tools -> Boards -> Debug Level -> None
 
     [Build]
 
-    1) Run ./data.sh (data.ps1 Windows) build data directory
+    1) Run ./spiffs-build.sh (spiffs-build.ps1 Windows) build SPIFFS filesystem
     2) Open ESP8266.ino with Arduino IDE
     3) Sketch -> Export compiled Binary
 
@@ -22,7 +22,7 @@ Build (From Source Code)
 Setup (New from Factory)
 
     1) Solder GPIO-0 bridge to 0 to enable UART
-    2) Connect ESP8266 to Serial (Note: 3.3V ONLY!)
+    2) Connect ESP8266 to USB-Serial-TTL (Note: 3.3V ONLY!)
     3) Plugin to computer and check/install TTL-USB drivers
     4) Run ./sketch.sh (sketch.ps1 Windows) flash "flash-sketch.bin"
     5) Run ./spiffs.sh (spiffs.ps1 Windows) flash "flash-spiffs.bin"
@@ -38,7 +38,7 @@ Setup (Upgrade Existing)
 
     [Computer]
 
-    1) Connect to ESP8266 (WiFi or Serial)
+    1) Connect to ESP8266 USB-Serial-TTL
     2) Run ./sketch.sh (sketch.ps1 Windows) flash "flash-sketch.bin"
     3) Run ./spiffs.sh (spiffs.ps1 Windows) flash "flash-spiffs.bin"
 

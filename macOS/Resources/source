@@ -59,10 +59,11 @@ else
         #--------- ATtiny13 --------------
         export PATH="$PATH:/usr/local/share/avr8-gnu-toolchain-darwin_x86_64/bin/"
 
-        cd ~/Documents/stm32-sine-master/src/
+        cd ~/Documents/stm32-sine-master/
         if [ ! -d attiny13 ]; then
-            tar xzfv "$(dirname "$0")/Web/firmware/attiny13.zip" -C ./
+            cp -r "$(dirname "$0")/Web/pcb/Hardware v1.0/firmware/attiny13" ./src/
         fi
+        cd ./src/attiny13
         avr-gcc -g -mmcu=attiny13 -Os -Os -o volt-pwm-attiny13.o volt-pwm-attiny13.c -DF_CPU=96000000
         avr-objcopy -R .eeprom -O binary volt-pwm-attiny13.o volt-pwm-attiny13.bin
         avr-objcopy -R .eeprom -O ihex volt-pwm-attiny13.o volt-pwm-attiny13.hex

@@ -1,8 +1,8 @@
 <p align="center"><img src="macOS/Assets.xcassets/AppIcon.appiconset/128x128.png?raw=true"></p>
 
-# Huebner Inverter - Console Management
+# Huebner Inverter - Web Interface
 
-Console Management for [Huebner Inverter Project](https://github.com/jsphuebner/stm32-sine) controlling 3-phase AC Induction Motors.
+Web Interface for [Huebner Inverter Project](https://github.com/jsphuebner/stm32-sine) controlling 3-phase AC Induction Motors.
 
 > **All-in-One**
 > * RS232-USB Drivers

@@ -1,48 +1,48 @@
 #==============
 #Copy Files
 #==============
-Remove-Item -Recurse -Force .\data -ErrorAction SilentlyContinue
-New-Item -ItemType directory -Path .\data\css
-New-Item -ItemType directory -Path .\data\js
-New-Item -ItemType directory -Path .\data\img
-New-Item -ItemType directory -Path .\data\font
-New-Item -ItemType directory -Path .\data\pcb
-New-Item -ItemType directory -Path .\data\pcb\v1.0
-New-Item -ItemType directory -Path .\data\pcb\v3.0
+Remove-Item -Recurse -Force .\spiffs -ErrorAction SilentlyContinue
+New-Item -ItemType directory -Path .\spiffs\css
+New-Item -ItemType directory -Path .\spiffs\js
+New-Item -ItemType directory -Path .\spiffs\img
+New-Item -ItemType directory -Path .\spiffs\font
+New-Item -ItemType directory -Path .\spiffs\pcb
+New-Item -ItemType directory -Path .\spiffs\pcb\v1.0
+New-Item -ItemType directory -Path .\spiffs\pcb\v3.0
 
 $phpfiles = 'index.php', 'header.php', 'footer.php', 'esp8266.php', 'can.php', 'graph.php', 'bootloader.php', 'firmware.php', 'simple.php', 'test.php', 'version.txt', 'description.csv'
 foreach ($file in $phpfiles) {
-  Copy-Item "..\Web\$file" -Destination .\data
+  Copy-Item "..\Web\$file" -Destination .\spiffs
 }
 
 $cssfiles = 'mobile.css', 'alertify.css', 'jquery.fancybox.css', 'animate.css', 'bootstrap.css', 'bootstrap.slate.css', 'ion.rangeSlider.css', 'icons.css', 'style.css'
 foreach ($file in $cssfiles) {
-  Copy-Item "..\Web\css\$file" -Destination .\data\css
+  Copy-Item "..\Web\css\$file" -Destination .\spiffs\css
 }
 
 $jsfiles = 'esp8266.js', 'jquery.js', 'jquery.knob.js', 'potentiometer.js', 'jquery.fancybox.js', 'alertify.js', 'bootstrap.js', 'ion.rangeSlider.js', 'bootstrap-notify.js', 'firmware.js', 'can.js', 'graph.js', 'jscolor.js', 'index.js', 'menu.js', 'simple.js', 'chart.js', 'chartjs-plugin-annotation.js', 'chartjs-plugin-datalabels.js', 'test.js', 'mobile.js'
 foreach ($file in $jsfiles) {
-  Copy-Item "..\Web\js\$file" -Destination .\data\js
+  Copy-Item "..\Web\js\$file" -Destination .\spiffs\js
 }
 
 $imgfiles = 'background.png'
 foreach ($file in $imgfiles) {
-  Copy-Item "..\Web\img\$file" -Destination .\data\img
+  Copy-Item "..\Web\img\$file" -Destination .\spiffs\img
 }
 
-Copy-Item "..\Web\js\menu-esp8266.json" -Destination .\data\js\menu.json
-Copy-Item "..\Web\pcb\Hardware v1.0\diagrams\test.png" -Destination .\data\pcb\v1.0
-Copy-Item "..\Web\pcb\Hardware v1.0\diagrams\esp8266.png" -Destination .\data\pcb\v1.0
-Copy-Item "..\Web\pcb\Hardware v3.0\diagrams\test.png" -Destination .\data\pcb\v3.0
-Copy-Item "..\Web\pcb\Hardware v3.0\diagrams\esp8266.png" -Destination .\data\pcb\v3.0
-Copy-Item ..\Web\font\icons.ttf -Destination .\data\font
-#Copy-Item ..\Web\font\icons.woff2 -Destination .\data\font
-#Copy-Item ..\Web\font\icons.woff -Destination .\data\font
+Copy-Item "..\Web\js\menu-esp8266.json" -Destination .\spiffs\js\menu.json
+Copy-Item "..\Web\pcb\Hardware v1.0\diagrams\test.png" -Destination .\spiffs\pcb\v1.0
+Copy-Item "..\Web\pcb\Hardware v1.0\diagrams\esp8266.png" -Destination .\spiffs\pcb\v1.0
+Copy-Item "..\Web\pcb\Hardware v3.0\diagrams\test.png" -Destination .\spiffs\pcb\v3.0
+Copy-Item "..\Web\pcb\Hardware v3.0\diagrams\esp8266.png" -Destination .\spiffs\pcb\v3.0
+Copy-Item ..\Web\font\icons.ttf -Destination .\spiffs\font
+#Copy-Item ..\Web\font\icons.woff2 -Destination .\spiffs\font
+#Copy-Item ..\Web\font\icons.woff -Destination .\spiffs\font
 
 #======================
 #Correct long filenames
 #======================
-Get-ChildItem .\data -Recurse -Filter *.* | 
+Get-ChildItem .\spiffs -Recurse -Filter *.* | 
 Foreach-Object {
 	if (-Not (Test-Path $_.FullName -PathType Container)) {
 		if($_.Name.length -gt 12){
@@ -57,7 +57,7 @@ Foreach-Object {
 
 			Move-Item $_.FullName -Destination $shortPath
 
-			Get-ChildItem .\data -Recurse -Include *.php,*.css,*.js,*.json | 
+			Get-ChildItem .\spiffs -Recurse -Include *.php,*.css,*.js,*.json | 
 			Foreach-Object {
 				if (-Not (Test-Path $_.FullName -PathType Container)) {
 					(Get-Content $_.FullName).Replace($longName, $shortName) | Set-Content $_.FullName
@@ -66,7 +66,7 @@ Foreach-Object {
 		}
 	}
 }
-Get-ChildItem .\data -Recurse -Filter *.php | 
+Get-ChildItem .\spiffs -Recurse -Filter *.php | 
 Foreach-Object {
 	if (-Not (Test-Path $_.FullName -PathType Container)) {
 		$content = (Get-Content $_.FullName)
@@ -118,19 +118,19 @@ Remove-Item -Recurse -Force .\tools\mkspiffs-0.2.3-arduino-esp8266-win32 -ErrorA
 #Compress Files
 #==============
 
-Get-ChildItem .\data\css -Filter *.css | 
+Get-ChildItem .\spiffs\css -Filter *.css | 
 Foreach-Object {
     Write-Host $_.FullName
-    Start-Process java -ArgumentList "-jar ""$PSScriptRoot\tools\yuicompressor-2.4.8.jar"" --type css -o .\data\css\$($_.Name) .\data\css\$($_.Name)" -NoNewWindow -Wait
+    Start-Process java -ArgumentList "-jar ""$PSScriptRoot\tools\yuicompressor-2.4.8.jar"" --type css -o .\spiffs\css\$($_.Name) .\spiffs\css\$($_.Name)" -NoNewWindow -Wait
 }
 
-Get-ChildItem .\data\js -Filter *.js | 
+Get-ChildItem .\spiffs\js -Filter *.js | 
 Foreach-Object {
     Write-Host $_.FullName
-    Start-Process java -ArgumentList "-jar ""$PSScriptRoot\tools\closure-compiler-v20190929.jar"" --js_output_file .\data\js\$($_.Name) --js .\data\js\$($_.Name)" -NoNewWindow -Wait
+    Start-Process java -ArgumentList "-jar ""$PSScriptRoot\tools\closure-compiler-v20190929.jar"" --js_output_file .\spiffs\js\$($_.Name) --js .\spiffs\js\$($_.Name)" -NoNewWindow -Wait
 }
 
-Get-ChildItem .\data -Recurse -Exclude *.php -Filter *.* | 
+Get-ChildItem .\spiffs -Recurse -Exclude *.php -Filter *.* | 
 Foreach-Object {
     if (-Not (Test-Path $_.FullName -PathType Container)) {
         Start-Process .\tools\bin\gzip.exe -ArgumentList $_.FullName -NoNewWindow -Wait
@@ -141,5 +141,5 @@ Foreach-Object {
 #================
 #Find Folder Size
 #================
-#Start-Process .\tools\mkspiffs.exe -ArgumentList "-c .\data -b 8192 -p 256 -s 643072 flash-spiffs.bin" -NoNewWindow -PassThru -Wait
-Start-Process .\tools\mkspiffs.exe -ArgumentList "-c .\data -b 8192 -p 256 -s 600000 flash-spiffs.bin" -NoNewWindow -PassThru -Wait
+#Start-Process .\tools\mkspiffs.exe -ArgumentList "-c .\spiffs -b 8192 -p 256 -s 643072 flash-spiffs.bin" -NoNewWindow -PassThru -Wait
+Start-Process .\tools\mkspiffs.exe -ArgumentList "-c .\spiffs -b 8192 -p 256 -s 600000 flash-spiffs.bin" -NoNewWindow -PassThru -Wait

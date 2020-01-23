@@ -3,50 +3,50 @@
 #==============
 #Copy Files
 #==============
-mkdir -p data/css
-mkdir -p data/js
-mkdir -p data/img
-mkdir -p data/font
-mkdir -p data/pcb
-mkdir -p data/pcb/v1.0
-mkdir -p data/pcb/v3.0
+mkdir -p spiffs/css
+mkdir -p spiffs/js
+mkdir -p spiffs/img
+mkdir -p spiffs/font
+mkdir -p spiffs/pcb
+mkdir -p spiffs/pcb/v1.0
+mkdir -p spiffs/pcb/v3.0
 
 array=(index.php header.php footer.php esp8266.php can.php graph.php bootloader.php firmware.php simple.php test.php version.txt description.csv)
 for i in "${array[@]}"; do
-    cp -rf ../Web/$i data
+    cp -rf ../Web/$i spiffs
 done
 
 array=(mobile.css alertify.css jquery.fancybox.css animate.css bootstrap.css bootstrap.slate.css ion.rangeSlider.css icons.css style.css)
 for i in "${array[@]}"; do
-    cp -rf ../Web/css/$i data/css
+    cp -rf ../Web/css/$i spiffs/css
 done
 
-array=(esp8266.js jquery.js jquery.knob.js potentiometer.js jquery.fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-annotation.js chartjs-plugin-datalabels.js test.js mobile.js)
+array=(esp8266.js jquery.js jquery.knob.js potentiometer.js jquery.fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-annotation.js chartjs-plugin-spiffslabels.js test.js mobile.js)
 for i in "${array[@]}"; do
-    cp -rf ../Web/js/$i data/js
+    cp -rf ../Web/js/$i spiffs/js
 done
-cp -rf ../Web/js/menu-esp8266.json data/js/menu.json
+cp -rf ../Web/js/menu-esp8266.json spiffs/js/menu.json
 
 array=(background.png)
 for i in "${array[@]}"; do
-    cp -rf ../Web/img/$i data/img
+    cp -rf ../Web/img/$i spiffs/img
 done
 
-cp -rf  "../Web/pcb/Hardware v1.0/diagrams/test.png" data/pcb/v1.0
-cp -rf  "../Web/pcb/Hardware v1.0/diagrams/esp8266.png" data/pcb/v1.0
-cp -rf  "../Web/pcb/Hardware v3.0/diagrams/test.png" data/pcb/v3.0
-cp -rf  "../Web/pcb/Hardware v3.0/diagrams/esp8266.png" data/pcb/v3.0
-cp -rf ../Web/font/icons.ttf data/font
-cp -rf ../Web/font/icons.woff data/font
+cp -rf  "../Web/pcb/Hardware v1.0/diagrams/test.png" spiffs/pcb/v1.0
+cp -rf  "../Web/pcb/Hardware v1.0/diagrams/esp8266.png" spiffs/pcb/v1.0
+cp -rf  "../Web/pcb/Hardware v3.0/diagrams/test.png" spiffs/pcb/v3.0
+cp -rf  "../Web/pcb/Hardware v3.0/diagrams/esp8266.png" spiffs/pcb/v3.0
+cp -rf ../Web/font/icons.ttf spiffs/font
+cp -rf ../Web/font/icons.woff spiffs/font
 
 #======================
 #Correct long filenames
 #======================
 export LC_CTYPE=C
 export LANG=C
-for f in $(find data -type f -name '*.*'); do
+for f in $(find spiffs -type f -name '*.*'); do
     
-    f="/"${f#"data/"} #remove path folder name
+    f="/"${f#"spiffs/"} #remove path folder name
     o=$(basename "$f")
     o_size=${#f} #get path length
 
@@ -71,21 +71,21 @@ for f in $(find data -type f -name '*.*'); do
         #================
         #Find and replace
         #================
-        for ff in $(find ./data -type f -name '*.php' -o -name '*.js' -o -name '*.json' -o -name '*.css'); do
+        for ff in $(find ./spiffs -type f -name '*.php' -o -name '*.js' -o -name '*.json' -o -name '*.css'); do
             sed -i '' 's/'"$o"'/'"$fe"'/g' "$ff"
             sed -i '' 's#\/\*\!#\/\*#' "$ff" #Remove required comments
             sed -i '' 's/'"pcb\/Hardware v1.0\/diagrams\/"'/'"pcb\/v1.0\/"'/g' "$ff"
             sed -i '' 's/'"pcb\/Hardware v3.0\/diagrams\/"'/'"pcb\/v3.0\/"'/g' "$ff"
         done
 
-        mv -f "data/$f" "data/$nn"
+        mv -f "spiffs/$f" "spiffs/$nn"
     fi
 done
 
 #================
 #Clean PHP
 #================
-for f in $(find ./data -name '*.php'); do
+for f in $(find ./spiffs -name '*.php'); do
     php=false
     while read -r line; do
         if [[ $line == *"<?php"* ]]; then
@@ -140,25 +140,25 @@ fi
 #==============
 #Compress Files
 #==============
-for f in $(find data -name '*.css'); do
+for f in $(find spiffs -name '*.css'); do
     java -jar tools/yuicompressor-2.4.8.jar --type css -o "$f" "$f"
 done
-#for f in $(find data -name '*.php'); do
+#for f in $(find spiffs -name '*.php'); do
 #    java -jar tools/htmlcompressor-1.5.3.jar --preserve-php --type html -o "$f" "$f"
 #done
 echo " > Compress Javascript? (y/n)"
 read yn
 if [ $yn = y ]; then
-    for f in $(find data -name '*.js'); do
+    for f in $(find spiffs -name '*.js'); do
         java -jar tools/closure-compiler-v20190929.jar --strict_mode_input=false --language_in ECMASCRIPT5 --js_output_file "$f-min.js" --js "$f"
         mv "$f-min.js" "$f"
     done
 fi
-for f in $(find data -type f -name '*.*' ! -name '*.bin' ! -name '*.php' ! -name '.gitignore'); do
+for f in $(find spiffs -type f -name '*.*' ! -name '*.bin' ! -name '*.php' ! -name '.gitignore'); do
     gzip "$f"
     mv "$f.gz" "$f"
 done
 
-./tools/mkspiffs -c ./data/ -b 8192 -p 256 -s $(($(du -ks data | cut -f1) * 1024)) flash-spiffs.bin
-#./tools/mkspiffs -c ./data/ -b 8192 -p 256 -s 1028096 flash-spiffs.bin
+./tools/mkspiffs -c ./spiffs/ -b 8192 -p 256 -s $(($(du -ks spiffs | cut -f1) * 1024)) flash-spiffs.bin
+#./tools/mkspiffs -c ./spiffs/ -b 8192 -p 256 -s 1028096 flash-spiffs.bin
 #./tools/mkspiffs -i flash-spiffs.bin

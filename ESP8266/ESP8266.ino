@@ -114,7 +114,7 @@ void swdMemRead()
   }
 
   output += "]\n";
-  server.send(200, "application/json", output);
+  server.send(200, text_json, output);
 }
 
 void swdRegRead()
@@ -138,7 +138,7 @@ void swdRegRead()
   }
 
   output += "]\n";
-  server.send(200, "application/json", output);
+  server.send(200, text_json, output);
 }
 
 void swdMemWrite()
@@ -197,7 +197,7 @@ void swdMemWrite()
     output += buf;
   }
   output += "\n]";
-  server.send(200, "application/json", output);
+  server.send(200, text_json, output);
 }
 
 void swdRegWrite()
@@ -222,7 +222,7 @@ void swdRegWrite()
     output += buf;
   }
   output += "\n]";
-  server.send(200, "application/json", output);
+  server.send(200, text_json, output);
 }
 
 void swdBegin()
@@ -278,8 +278,9 @@ void setup()
     New ESP can cause "Fatal exception 9(LoadStoreAlignmentCause)" with uninitialized EEPROM
     TODO: Find the solution - ESP.getResetReason()?
   */
-  Serial.println(ESP.getResetReason());
-  if (NVRAM_Read(0) == "") {
+  //Serial.println(ESP.getResetReason());
+  int e = EEPROM.read(0);
+  if (e == 255) { //if (NVRAM_Read(0) == "") {
     NVRAM_Erase();
     NVRAM_Write(0, String(ACCESS_POINT_MODE));
     NVRAM_Write(1, String(ACCESS_POINT_HIDE));
