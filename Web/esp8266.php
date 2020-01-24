@@ -104,7 +104,7 @@
                     <tr>
                         <td>
                         	<center><div class="spinner-border text-dark"></div></center>
-                        	<form method="POST" action="/nvram" id="parameters" oninput='WiFiPasswordConfirm.setCustomValidity(WiFiPasswordConfirm.value != WiFiPassword.value ? "Passwords do not match." : "")'>
+                        	<form method="POST" action="/nvram" id="parameters" oninput="formValidate()">
                         		<fieldset class="form-group">
                         			<legend>ESP8266 Wireless Connection:</legend>
 		                        	<div class="form-check">
@@ -204,16 +204,12 @@
 			</div>
 		</div>
 	</div>
-	<form method="POST" action="/update?cmd=0" enctype="multipart/form-data" id="formSketch">
-		<input type="hidden" name="cmd" value="0" />
-		<input type="hidden" name="interface" />
-		<input type="file" name="firmware" id="fileSketch" hidden />
+	<form method="POST" action="/update" enctype="multipart/form-data" id="formSketch">
+		<input type="file" accept=".bin" name="firmware" id="fileSketch" hidden />
 		<input type="submit" hidden />
 	</form>
-	<form method="POST" action="/update?cmd=100" enctype="multipart/form-data" id="formSPIFFS">
-		<input type="hidden" name="cmd" value="100" />
-		<input type="hidden" name="interface" />
-		<input type="file" name="spiffs" id="fileSPIFFS" hidden />
+	<form method="POST" action="/update" enctype="multipart/form-data" id="formSPIFFS">
+		<input type="file" accept=".bin" name="filesystem" id="fileSPIFFS" hidden />
 		<input type="submit" hidden />
 	</form>
 </body>

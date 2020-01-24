@@ -12,6 +12,10 @@ function progressTimer() {
     }
 };
 
+function formValidate() {
+    WiFiPasswordConfirm.setCustomValidity(WiFiPasswordConfirm.value != WiFiPassword.value ? "Passwords do not match." : "");
+};
+
 function HiddenCheck(id,element) {
     if(element.checked) {
         $("#" + id).val("1");

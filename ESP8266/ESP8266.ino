@@ -6,7 +6,7 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include <ESP8266WebServer.h>
-#include "src/ESP8266HTTPUpdateServer.h"
+#include <ESP8266HTTPUpdateServer.h>
 #define SPIFFS_ALIGNED_OBJECT_INDEX_TABLES 1
 #define LED_BUILTIN 1 //GPIO1=Olimex, GPIO2=ESP-12/WeMos(D4)
 
