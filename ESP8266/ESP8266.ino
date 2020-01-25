@@ -3,11 +3,8 @@
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
 //#include <ESP8266mDNS.h>
-#include <WiFiUdp.h>
-#include <ArduinoOTA.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPUpdateServer.h>
-#define SPIFFS_ALIGNED_OBJECT_INDEX_TABLES 1
 #define LED_BUILTIN 1 //GPIO1=Olimex, GPIO2=ESP-12/WeMos(D4)
 
 RemoteDebug Debug;
@@ -36,18 +33,14 @@ String interface = "" ;
    http://forum.arduino.cc/index.php?topic=152145.0
    https://github.com/Metaln00b/NodeMCU-BlackBox
 */
-#include "src/mcp_can.h"
+#include <mcp_can.h>
 #include <SPI.h>
 /*
   #define MCP_8MHz_250kBPS_CFG1 (0x40)
   #define MCP_8MHz_250kBPS_CFG2 (0xF1)
   #define MCP_8MHz_250kBPS_CFG3 (0x85)
 */
-long unsigned int rxId;
-unsigned char len = 0;
-unsigned char rxBuf[8];
-char msgString[128];  // Array to store serial string
-
+char canMessage[128];  // Array to store serial string
 /*
   MISO=D7(GPIO12),MOSI=D6(GPIO13),SCLK=D5(GPIO14),CS=D2(GPIO4),INT=D4(GPIO2)
   https://arduino-esp8266.readthedocs.io/en/2.4.0-rc1/libraries.html#spi
@@ -57,8 +50,8 @@ char msgString[128];  // Array to store serial string
 
   The pins would change to: MOSI=SD1,MISO=SD0,SCLK=CLK,HWCS=GPIO0
 */
-#define CAN0_INT 2    // Set INT to pin GPIO2 (D4)
-MCP_CAN CAN0(4);      // Set CS to pin GPIO4 (D2)
+#define CAN_INT 2    // Set INT to pin GPIO2 (D4)
+MCP_CAN CAN(4);      // Set CS to pin GPIO4 (D2)
 
 //=========================
 //Experimental SWD Debugger
@@ -307,6 +300,7 @@ void setup()
     //=====================
     //WiFi Access Point Mode
     //=====================
+    WiFi.setPhyMode(WIFI_PHY_MODE_11B); // WIFI_PHY_MODE_11G / WIFI_PHY_MODE_11N
     WiFi.mode(WIFI_AP);
     IPAddress ip(192, 168, 4, 1);
     IPAddress gateway(192, 168, 4, 1);
@@ -320,6 +314,8 @@ void setup()
     //WiFi Client Mode
     //================
     WiFi.mode(WIFI_STA);
+    WiFi.persistent(false);
+    WiFi.disconnect(true);
     WiFi.begin(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD);  //Connect to the WiFi network
     //WiFi.enableAP(0);
     while (WiFi.waitForConnectResult() != WL_CONNECTED) {
@@ -329,51 +325,6 @@ void setup()
     }
     //Serial.println(WiFi.localIP());
   }
-
-  //===================
-  //Arduino OTA Updater
-  //===================
-  /*
-    Port defaults to 8266
-    ArduinoOTA.setPort(8266);
-
-    Hostname defaults to esp8266-[ChipID]
-    ArduinoOTA.setHostname("inverter");
-
-    No authentication by default
-    ArduinoOTA.setPassword("admin");
-
-    Password can be set with it's md5 value as well
-    MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
-    ArduinoOTA.setPasswordHash("21232f297a57a5a743894a0e4a801fc3");
-  */
-  ArduinoOTA.onStart([]() {
-    String type;
-    if (ArduinoOTA.getCommand() == U_FLASH) {
-      type = "sketch";
-    } else { // U_SPIFFS
-      type = "filesystem";
-      SPIFFS.end(); //unmount SPIFFS
-    }
-    //Serial.println("Start updating " + type);
-  });
-  /*
-    ArduinoOTA.onEnd([]() {
-    Debug.println("\nEnd");
-    });
-    ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-    DEBUG.printf("Progress: %u%%\r", (progress / (total / 100)));
-    });
-    ArduinoOTA.onError([](ota_error_t error) {
-    //DEBUG.printf("Error[%u]: ", error);
-    if (error == OTA_AUTH_ERROR) Debug.println("Auth Failed");
-    else if (error == OTA_BEGIN_ERROR) Debug.println("Begin Failed");
-    else if (error == OTA_CONNECT_ERROR) Debug.println("Connect Failed");
-    else if (error == OTA_RECEIVE_ERROR) Debug.println("Receive Failed");
-    else if (error == OTA_END_ERROR) Debug.println("End Failed");
-    });
-  */
-  ArduinoOTA.begin();
 
   //===============
   //Web OTA Updater
@@ -390,7 +341,7 @@ void setup()
     -------------------------
   */
   server.on("/can/read", []() {
-    server.send(200, text_plain, msgString);
+    server.send(200, text_plain, canMessage);
   });
   /*
     -------------------------
@@ -580,13 +531,13 @@ void setup()
   //Experimental CAN-Bus
   //====================
   if (ENABLE_CAN == 1) {
-    if (CAN0.begin(MCP_ANY, CAN_250KBPS, MCP_8MHZ) == CAN_OK)
-      //if(CAN0.begin(MCP_ANY, CAN_250KBPS, MCP_16MHZ) == CAN_OK)
+    //if (CAN.begin(MCP_ANY, CAN_250KBPS, MCP_8MHZ) == CAN_OK)
+    if(CAN.begin(CAN_250KBPS) == CAN_OK)
     {
       Serial.println("MCP2515 Initialized Successfully!");
-      CAN0.setMode(MCP_NORMAL);
-      //CAN0.setMode(MCP_LOOPBACK);
-      pinMode(CAN0_INT, INPUT);
+      //CAN.setMode(MODE_NORMAL);
+      //CAN.setMode(MODE_LOOPBACK);
+      //pinMode(CAN_INT, INPUT);
     } else {
       Serial.println("Error Initializing MCP2515...");
     }
@@ -605,7 +556,6 @@ char* string2char(String command) {
 void loop()
 {
   Debug.handle();
-  ArduinoOTA.handle();
   server.handleClient();
 
   //====================
@@ -613,26 +563,32 @@ void loop()
   //====================
   if (ENABLE_CAN == 1) {
     //if (!digitalRead(CAN0_INT))
-    if (CAN0.checkReceive() == CAN_MSGAVAIL)
+    if (CAN.checkReceive() == CAN_MSGAVAIL)
     {
-      CAN0.readMsgBuf(&rxId, &len, rxBuf);      // Read data: len = data length, buf = data byte(s)
+      unsigned int rxId;
+      unsigned char len = 0;
+      unsigned char rxBuf[8];
 
+      CAN.readMsgBuf(&len, rxBuf);      // Read data: len = data length, buf = data byte(s)
+      
+      rxId = CAN.getCanId();
+      
       Debug.print("<"); Debug.print(rxId); Debug.print(",");
 
       if ((rxId & 0x80000000) == 0x80000000)
-        sprintf(msgString, "Extended ID: 0x%.8lX  DLC: %1d  Data:", (rxId & 0x1FFFFFFF), len);
+        sprintf(canMessage, "Extended ID: 0x%.8lX  DLC: %1d  Data:", (rxId & 0x1FFFFFFF), len);
       else
-        sprintf(msgString, "Standard ID: 0x%.3lX       DLC: %1d  Data:", rxId, len);
+        sprintf(canMessage, "Standard ID: 0x%.3lX       DLC: %1d  Data:", rxId, len);
 
-      //Debug.print(msgString);
+      //Debug.print(canMessage);
 
       if ((rxId & 0x40000000) == 0x40000000) {
-        sprintf(msgString, " REMOTE REQUEST FRAME");
-        //Debug.print(msgString);
+        sprintf(canMessage, " REMOTE REQUEST FRAME");
+        //Debug.print(canMessage);
       } else {
         for (byte i = 0; i < len; i++) {
-          //sprintf(msgString, " 0x%.2X", rxBuf[i]);
-          //Debug.println(msgString);
+          //sprintf(canMessage, " 0x%.2X", rxBuf[i]);
+          //Debug.println(canMessage);
           Debug.print(rxBuf[i]); Debug.print(",");
         }
         Debug.print(">");
@@ -641,17 +597,17 @@ void loop()
     }
   }
   /*
-    if (CAN0.checkError() == CAN_CTRLERROR) {
+    if (CAN.checkError() == CAN_CTRLERROR) {
     Serial.print("Error register value: ");
-    byte tempErr = CAN0.getError() & MCP_EFLG_ERRORMASK; // We are only interested in errors, not warnings.
+    byte tempErr = CAN.getError() & MCP_EFLG_ERRORMASK; // We are only interested in errors, not warnings.
     Debug.println(tempErr, BIN);
 
     Debug.print("Transmit error counter register value: ");
-    tempErr = CAN0.errorCountTX();
+    tempErr = CAN.errorCountTX();
     Debug.println(tempErr, DEC);
 
     Debug.print("Receive error counter register value: ");
-    tempErr = CAN0.errorCountRX();
+    tempErr = CAN.errorCountRX();
     Debug.println(tempErr, DEC);
     }
   */
@@ -660,10 +616,10 @@ void loop()
     if (Serial.available()) {
     stmp[0] = Serial.read();
     if (stmp[0] == 'l') {
-      CAN0.setMode(MCP_LOOPBACK);
+      CAN.setMode(MCP_LOOPBACK);
     }
     if (stmp[0] == 'n') {
-      CAN0.setMode(MCP_NORMAL);
+      CAN.setMode(MCP_NORMAL);
     }
     }
   */
@@ -719,7 +675,10 @@ void NVRAMUpload()
 
   server.sendHeader("Refresh", "8; url=/esp8266.php");
   server.send(200, text_html, out);
-
+  
+  WiFi.disconnect(true);  //Erases SSID/password
+  //ESP.eraseConfig();
+  
   delay(4000);
   ESP.restart();
 }
@@ -727,7 +686,7 @@ void NVRAMUpload()
 void NVRAM_Erase()
 {
   for (uint16_t i = 0 ; i < EEPROM.length() ; i++) {
-    EEPROM.write(i, 0);
+    EEPROM.write(i, 255);
   }
 }
 
