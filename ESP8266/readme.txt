@@ -13,7 +13,7 @@ Build (From Source Code)
 
     [Build]
 
-    1) Run ./spiffs-build.sh (spiffs-build.ps1 Windows) build SPIFFS filesystem
+    1) Run ./spiffs-build-osx.sh (spiffs-build-win.ps1 Windows) build SPIFFS filesystem
     2) Open ESP8266.ino with Arduino IDE
     3) Sketch -> Export compiled Binary
 

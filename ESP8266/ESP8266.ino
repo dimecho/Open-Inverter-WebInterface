@@ -12,6 +12,8 @@ ESP8266WebServer server(80);
 ESP8266HTTPUpdateServer updater;
 File fsUpload;
 
+int WIFI_PHY_MODE = 1; //WIFI_PHY_MODE_11B = 1, WIFI_PHY_MODE_11G = 2, WIFI_PHY_MODE_11N = 3
+float WIFI_PHY_POWER = 20.5; //Max = 20.5dbm
 int ACCESS_POINT_MODE = 0;
 char ACCESS_POINT_SSID[] = "Inverter";
 char ACCESS_POINT_PASSWORD[] = "inverter123";
@@ -266,7 +268,7 @@ void setup()
   //======================
   //NVRAM type of Settings
   //======================
-  EEPROM.begin(256);
+  EEPROM.begin(512);
   /*
     New ESP can cause "Fatal exception 9(LoadStoreAlignmentCause)" with uninitialized EEPROM
     TODO: Find the solution - ESP.getResetReason()?
@@ -296,11 +298,13 @@ void setup()
   }
   //EEPROM.end();
 
+  WiFi.setPhyMode((WiFiPhyMode_t)WIFI_PHY_MODE);
+  WiFi.setOutputPower(WIFI_PHY_POWER);
+
   if (ACCESS_POINT_MODE == 0) {
     //=====================
     //WiFi Access Point Mode
     //=====================
-    WiFi.setPhyMode(WIFI_PHY_MODE_11B); // WIFI_PHY_MODE_11G / WIFI_PHY_MODE_11N
     WiFi.mode(WIFI_AP);
     IPAddress ip(192, 168, 4, 1);
     IPAddress gateway(192, 168, 4, 1);
@@ -532,7 +536,7 @@ void setup()
   //====================
   if (ENABLE_CAN == 1) {
     //if (CAN.begin(MCP_ANY, CAN_250KBPS, MCP_8MHZ) == CAN_OK)
-    if(CAN.begin(CAN_250KBPS) == CAN_OK)
+    if (CAN.begin(CAN_250KBPS) == CAN_OK)
     {
       Serial.println("MCP2515 Initialized Successfully!");
       //CAN.setMode(MODE_NORMAL);
@@ -570,9 +574,9 @@ void loop()
       unsigned char rxBuf[8];
 
       CAN.readMsgBuf(&len, rxBuf);      // Read data: len = data length, buf = data byte(s)
-      
+
       rxId = CAN.getCanId();
-      
+
       Debug.print("<"); Debug.print(rxId); Debug.print(",");
 
       if ((rxId & 0x80000000) == 0x80000000)
@@ -675,10 +679,10 @@ void NVRAMUpload()
 
   server.sendHeader("Refresh", "8; url=/esp8266.php");
   server.send(200, text_html, out);
-  
+
   WiFi.disconnect(true);  //Erases SSID/password
   //ESP.eraseConfig();
-  
+
   delay(4000);
   ESP.restart();
 }
@@ -832,6 +836,9 @@ String getContentType(String filename)
   else if (filename.endsWith(".pdf")) return "application/x-pdf";
   else if (filename.endsWith(".zip")) return "application/x-zip";
   else if (filename.endsWith(".csv")) return "text/csv";
+  else if (filename.endsWith(".ttf")) return "font/ttf";
+  else if (filename.endsWith(".woff")) return "font/woff";
+  else if (filename.endsWith(".woff2")) return "font/woff2";
   return text_plain;
 }
 

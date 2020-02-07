@@ -6,6 +6,12 @@ session_start();
     header("Cache-Control: no-cache");
 
     error_reporting(E_ERROR | E_PARSE);
+
+    $GLOBALS["crlf"] = "\r\n";
+
+    if (php_uname('s') == "Linux") {
+        $GLOBALS["crlf"] = "\n\n";
+    }
     
     if(isset($_SESSION["timeout"]))
     {
@@ -155,7 +161,6 @@ session_start();
             $_SESSION["speed"] = $speed;
         }
         
-        $read = fastUART($com,$speed);
         $uname = strtolower(php_uname('s'));
 
         if (strpos($uname, "windows") !== false) {
@@ -186,6 +191,7 @@ session_start();
         if($errors != "")
             return "Error: " . $errors;
 
+        $read = fastUART($com,$speed);
         $err = substr($read, 0, 2);
 
         if($err === "2D" || $err === "w}"){
@@ -199,9 +205,6 @@ session_start();
             if($uart)
             {
                 fwrite($uart, "hello\n");
-                //echo fgets($uart); //echo
-                //echo fgets($uart); //ok
-                echo uart_read_line($uart); //echo
                 echo uart_read_line($uart); //ok
                 fclose($uart);
             }else{
@@ -213,7 +216,9 @@ session_start();
     
     function uart_read_line($uart)
     {
-        while(substr($read, -1) !== "\n") {
+        $crlf = $GLOBALS["crlf"];
+
+        while(substr($read, -2) !== $crlf) {
             $read .= stream_get_contents($uart, 1);
         }
 
@@ -340,6 +345,7 @@ session_start();
     
     function readSerial($cmd)
     {
+        $crlf = $GLOBALS["crlf"];
         $com = $_SESSION["serial"];
         $uart = fopen($com, "r+"); //Read & Write
         stream_set_blocking($uart, 0); //O_NONBLOCK
@@ -374,26 +380,26 @@ session_start();
                 for ($i = 0; $i < 9; $i++) {
                     $read .= stream_get_contents($uart, 1024); //fread($uart,1024);
                 }
-                while (substr($read, -6) !== "}\r\n}\r\n"){
+                while (substr($read, -6) !== "}" . $crlf . "}" . $crlf){
                     $read .= stream_get_contents($uart, 1); //fread($uart,1);
                 }
             }else if($cmd === "all\n"){
-                $read = uart_read_eof($uart,array("\r"));
+                $read = uart_read_eof($uart,array($crlf));
             }else if($cmd === "errors\n"){
-                $read = uart_read_eof($uart,array("\r"));
+                $read = uart_read_eof($uart,array($crlf));
                 //(blocking UART) cheat a little, get last error and loop until found
                 $errorcodes = array("NONE", "OVERCURRENT", "THROTTLE1", "THROTTLE2", "CANTIMEOUT", "EMCYSTOP", "MPROT", "DESAT", "OVERVOLTAGE", "ENCODER", "PRECHARGE", "TMPHSMAX", "CURRENTLIMIT", "PWMSTUCK", "HICUROFS1", "HICUROFS2", "HIRESOFS", "LORESAMP");
                 $cmd = "get lasterr\n";
                 fwrite($uart, $cmd);
                 uart_read_echo($uart,$cmd); //echo
-                $lasterr = uart_read_eof($uart,array("\r"));
+                $lasterr = uart_read_eof($uart,array($crlf));
                 if (php_uname('s') != "Windows NT") { //TODO: make it work windowz
                     if($lasterr > 0) {
                         $lasterrcode = $errorcodes[intval($lasterr)];
                         $cmd = "errors\n";
                         fwrite($uart, $cmd);
                         uart_read_echo($uart,$cmd); //echo
-                        $read = uart_read_eof($uart,array($lasterrcode. "\r"));
+                        $read = uart_read_eof($uart,array($lasterrcode . $crlf));
                     }
                 }
             }else if($cmd === "save\n"){
@@ -417,7 +423,7 @@ session_start();
             }
             fclose($uart);
             
-            $read = str_replace("\r", "", $read);
+            $read = str_replace($crlf, "\n", $read);
             $read = rtrim($read, "\n");
             
             return $read;
@@ -429,6 +435,7 @@ session_start();
 
     function streamSerial($cmd,$loop,$delay)
     {
+        $crlf = $GLOBALS["crlf"];
         $com = $_SESSION["serial"];
         $uart = fopen($com, "r+"); //Read & Write
         stream_set_blocking($uart, 0); //O_NONBLOCK
@@ -454,7 +461,7 @@ session_start();
                     $read = uart_read_line($uart); //fgets($uart);
                     $read = ltrim($read, "!");
                     
-                    echo str_replace("\r", "", $read);
+                    echo str_replace($crlf, "\n", $read);
                     
                     usleep($delay);
                     $streamCount++;

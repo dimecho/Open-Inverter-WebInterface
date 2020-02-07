@@ -96,11 +96,11 @@ session_start();
 		
     }else if(isset($_FILES["file"])) {
 		
-		if ($os === "mac") {
-			$tmp_name = "/tmp/" .basename($_FILES['file']['tmp_name']). ".svg";
-		}else{
+		//if ($os === "mac") {
+			//$tmp_name = "/tmp/" .basename($_FILES['file']['tmp_name']). ".svg";
+		//}else{
 			$tmp_name = sys_get_temp_dir(). "/" .basename($_FILES['file']['tmp_name']). ".svg";
-		}
+		//}
         move_uploaded_file($_FILES['file']['tmp_name'], $tmp_name);
 		
         $args = " -f \"" .$tmp_name. "\" --verb EditSelectAll --verb SelectionUnGroup --verb SelectionSymDiff --verb command.extrude.openscad";

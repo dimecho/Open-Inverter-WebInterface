@@ -6,9 +6,7 @@
         "amperage": 125,
         "image": "img/Nissan-Leaf.jpg",
         "tune": [{
-            "file": "Leaf_Gen2_foc1.json"
-        },{
-            "file": "Leaf_Gen2_foc2.json"
+            "file": "Leaf_Gen2_foc.json"
         }]
     },{
         "model": "AC-35",

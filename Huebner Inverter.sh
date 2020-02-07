@@ -50,7 +50,6 @@ if [[ $(type -p php) ]]; then
     
     killall php
     php -S 0.0.0.0:8080 -t "$(dirname "$0")/Web/" &
-    #php -S 0.0.0.0:8081 -t "$(dirname "$0")/Web/" &
     sleep 4
     
     checkUSB

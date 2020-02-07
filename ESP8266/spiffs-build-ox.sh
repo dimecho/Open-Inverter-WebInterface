@@ -3,6 +3,7 @@
 #==============
 #Copy Files
 #==============
+rm -rf spiffs
 mkdir -p spiffs/css
 mkdir -p spiffs/js
 mkdir -p spiffs/img
@@ -21,7 +22,7 @@ for i in "${array[@]}"; do
     cp -rf ../Web/css/$i spiffs/css
 done
 
-array=(esp8266.js jquery.js jquery.knob.js potentiometer.js jquery.fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-annotation.js chartjs-plugin-spiffslabels.js test.js mobile.js)
+array=(esp8266.js jquery.js jquery.knob.js potentiometer.js jquery.fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-annotation.js chartjs-plugin-datalabels.js test.js mobile.js)
 for i in "${array[@]}"; do
     cp -rf ../Web/js/$i spiffs/js
 done
@@ -36,8 +37,8 @@ cp -rf  "../Web/pcb/Hardware v1.0/diagrams/test.png" spiffs/pcb/v1.0
 cp -rf  "../Web/pcb/Hardware v1.0/diagrams/esp8266.png" spiffs/pcb/v1.0
 cp -rf  "../Web/pcb/Hardware v3.0/diagrams/test.png" spiffs/pcb/v3.0
 cp -rf  "../Web/pcb/Hardware v3.0/diagrams/esp8266.png" spiffs/pcb/v3.0
-cp -rf ../Web/font/icons.ttf spiffs/font
 cp -rf ../Web/font/icons.woff spiffs/font
+#cp -rf ../Web/font/icons.ttf spiffs/font
 
 #======================
 #Correct long filenames
@@ -113,7 +114,7 @@ done
 #====================
 #Download Compressors
 #====================
-
+mkdir -p tools
 if [ ! -f tools/yuicompressor-2.4.8.jar ]; then
     curl -L -o tools/yuicompressor-2.4.8.zip -k -C - https://github.com/yui/yuicompressor/releases/download/v2.4.8/yuicompressor-2.4.8.zip
     cd tools
@@ -159,6 +160,6 @@ for f in $(find spiffs -type f -name '*.*' ! -name '*.bin' ! -name '*.php' ! -na
     mv "$f.gz" "$f"
 done
 
-./tools/mkspiffs -c ./spiffs/ -b 8192 -p 256 -s $(($(du -ks spiffs | cut -f1) * 1024)) flash-spiffs.bin
-#./tools/mkspiffs -c ./spiffs/ -b 8192 -p 256 -s 1028096 flash-spiffs.bin
+#./tools/mkspiffs -c ./spiffs/ -b 8192 -p 256 -s $(($(du -ks spiffs | cut -f1) * 1024)) flash-spiffs.bin
+./tools/mkspiffs -c ./spiffs/ -b 8192 -p 256 -s 600000 flash-spiffs.bin
 #./tools/mkspiffs -i flash-spiffs.bin

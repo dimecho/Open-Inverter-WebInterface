@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <script>
+            //For ESP8266
+            function handleEvent(e) {
+                console.log(e);
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "/format");
+                xhr.send();
+                alert("File System not compressed! Please flash SPIFFS binary.");
+                window.location.href = "/update";
+            }
+            function addListeners(xhr) {
+                xhr.addEventListener('error', handleEvent);
+            }
+            var xhr = new XMLHttpRequest();
+            addListeners(xhr);
+            xhr.open("GET", "js/menu.js");
+            xhr.send();
+        </script>
         <?php include "header.php" ?>
         <script src="js/index.js"></script>
     </head>
@@ -46,7 +64,7 @@
             </center>
         </div>
         <form action="snapshot.php" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file" class="fileUpload" hidden onchange="javascript:this.form.submit();" accept=".txt">
+            <input type="file" name="file" class="fileUpload" hidden onchange="javascript:this.form.submit();" accept=".json,.txt">
             <input type="submit" hidden>
         </form>
         <?php include "footer.php" ?>
