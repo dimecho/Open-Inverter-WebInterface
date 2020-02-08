@@ -7,12 +7,6 @@ session_start();
 
     error_reporting(E_ERROR | E_PARSE);
 
-    $GLOBALS["crlf"] = "\r\n";
-
-    if (php_uname('s') == "Linux") {
-        $GLOBALS["crlf"] = "\n\n";
-    }
-    
     if(isset($_SESSION["timeout"]))
     {
         set_time_limit($_SESSION["timeout"]);
@@ -183,7 +177,7 @@ session_start();
                 exec("killall minicom");
             }
             #Linux set TTY speed
-            exec("stty -F " .$com. " " .$speed. " -parenb cs8 cstopb");
+            exec("stty -F " .$com. " " .$speed. " -icanon -isig -iexten -echo -icrnl -ixon -ixany -imaxbel -brkint -opost -onlcr -parenb cs8");
             exec("stty -F " .$com, $stty);
             print_r($stty);
         }
@@ -205,6 +199,7 @@ session_start();
             if($uart)
             {
                 fwrite($uart, "hello\n");
+                echo uart_read_line($uart); //echo
                 echo uart_read_line($uart); //ok
                 fclose($uart);
             }else{
@@ -216,11 +211,14 @@ session_start();
     
     function uart_read_line($uart)
     {
-        $crlf = $GLOBALS["crlf"];
-
-        while(substr($read, -2) !== $crlf) {
+        $read = "";
+        
+        while(substr($read, -1) !== "\n") {
             $read .= stream_get_contents($uart, 1);
         }
+
+        //echo "READ: >" .strToHex($read) . "<\n\n"; //DEBUG
+        //echo "CMD: >" . strToHex($cmd). "<\n\n"; //DEBUG
 
         return $read;
     }
@@ -244,15 +242,19 @@ session_start();
         if (php_uname('s') == "Windows NT") {
 			//Windows does not set "stream_set_blocking"
 			//PHP Bug https://bugs.php.net/bug.php?id=47918
-			while(true) {
-				$read .= stream_get_contents($uart, 1);
-				foreach($end as $item) {
-					if(strpos($read, $item) == true) {
-						break 2;
+			if($end == null) {
+				$read = uart_read_line($uart);
+			}else{
+	        	do {
+					$read .= stream_get_contents($uart, 1);
+					foreach($end as $item) {
+						if(strpos($read, $item) == true) {
+							$read .= uart_read_line($uart);
+							return $read;
+						}
 					}
-				}
+				} while(true);
 			}
-			$read .= uart_read_line($uart);
 		}else{
 			//Works well for Macs with auto timer.
 			$timer = 10000;
@@ -345,7 +347,6 @@ session_start();
     
     function readSerial($cmd)
     {
-        $crlf = $GLOBALS["crlf"];
         $com = $_SESSION["serial"];
         $uart = fopen($com, "r+"); //Read & Write
         stream_set_blocking($uart, 0); //O_NONBLOCK
@@ -380,27 +381,27 @@ session_start();
                 for ($i = 0; $i < 9; $i++) {
                     $read .= stream_get_contents($uart, 1024); //fread($uart,1024);
                 }
-                while (substr($read, -6) !== "}" . $crlf . "}" . $crlf){
+                while (substr($read, -6) !== "}\r\n}\r\n") {
                     $read .= stream_get_contents($uart, 1); //fread($uart,1);
                 }
             }else if($cmd === "all\n"){
-                $read = uart_read_eof($uart,array($crlf));
-            }else if($cmd === "errors\n"){
-                $read = uart_read_eof($uart,array($crlf));
+                $read = stream_get_contents($uart, 1024); //fread($uart,1024);
+                while (substr($read, -5) !== "qspnt") {
+                    $read .= stream_get_contents($uart, 1); //fread($uart,1);
+                }
+                $read .= uart_read_line($uart);
+                //$read .= uart_read_eof($uart,array("qspnt"));
+            }else if($cmd === "get lasterr\n"){
                 //(blocking UART) cheat a little, get last error and loop until found
                 $errorcodes = array("NONE", "OVERCURRENT", "THROTTLE1", "THROTTLE2", "CANTIMEOUT", "EMCYSTOP", "MPROT", "DESAT", "OVERVOLTAGE", "ENCODER", "PRECHARGE", "TMPHSMAX", "CURRENTLIMIT", "PWMSTUCK", "HICUROFS1", "HICUROFS2", "HIRESOFS", "LORESAMP");
-                $cmd = "get lasterr\n";
-                fwrite($uart, $cmd);
-                uart_read_echo($uart,$cmd); //echo
-                $lasterr = uart_read_eof($uart,array($crlf));
-                if (php_uname('s') != "Windows NT") { //TODO: make it work windowz
-                    if($lasterr > 0) {
-                        $lasterrcode = $errorcodes[intval($lasterr)];
-                        $cmd = "errors\n";
-                        fwrite($uart, $cmd);
-                        uart_read_echo($uart,$cmd); //echo
-                        $read = uart_read_eof($uart,array($lasterrcode . $crlf));
-                    }
+                $lasterr = uart_read_line($uart);
+                if($lasterr > 0) {
+                    $lasterrcode = $errorcodes[intval($lasterr)];
+                    //echo ">>". $lasterrcode. "\n"; //DEBUG
+                    $cmd = "errors\n";
+                    fwrite($uart, $cmd);
+                    uart_read_echo($uart,$cmd); //echo
+                    $read = uart_read_eof($uart,array($lasterrcode));
                 }
             }else if($cmd === "save\n"){
                 $read = uart_read_line($uart); //fgets($uart); //CRC
@@ -418,12 +419,12 @@ session_start();
                         $streamCount++;
                     }
                 }else{
-                    $read = fgets($uart);
+                    $read = uart_read_line($uart); //fgets($uart);
                 }
             }
             fclose($uart);
             
-            $read = str_replace($crlf, "\n", $read);
+            $read = str_replace("\r", "", $read);
             $read = rtrim($read, "\n");
             
             return $read;
@@ -435,7 +436,6 @@ session_start();
 
     function streamSerial($cmd,$loop,$delay)
     {
-        $crlf = $GLOBALS["crlf"];
         $com = $_SESSION["serial"];
         $uart = fopen($com, "r+"); //Read & Write
         stream_set_blocking($uart, 0); //O_NONBLOCK
@@ -461,7 +461,7 @@ session_start();
                     $read = uart_read_line($uart); //fgets($uart);
                     $read = ltrim($read, "!");
                     
-                    echo str_replace($crlf, "\n", $read);
+                    echo str_replace("\r", "", $read);
                     
                     usleep($delay);
                     $streamCount++;
@@ -499,5 +499,17 @@ session_start();
         }
         $average = ($total/$count); // get average value
         return round($average,2);
+    }
+
+    function strToHex($string)
+    {
+        $hex = '';
+        for ($i=0; $i<strlen($string); $i++){
+            $ord = ord($string[$i]);
+            $hexCode = dechex($ord);
+            $hex .= $string[$i];
+            $hex .= "[" .substr('0'.$hexCode, -2). "]";;
+        }
+        return strToUpper($hex);
     }
 ?>

@@ -9,6 +9,7 @@ var serialWDomain = "http://" + window.location.hostname;
 var serialTimeout = 12000;
 var serialBlock = getCookie("serial.block");
 var os = getCookie("os");
+var sn = getCookie("sn");
 var hardware = getCookie("hardware");
 var hardware_name = [
     "Hardware v1.0",
@@ -191,6 +192,12 @@ function displayHWVersion()
         console.log(hardware + ":" + hardware_name[hardware]);
         $("#hwVersion").empty().append(hardware_name[hardware]);
         $("#hwVersion").removeClass("invisible");
+    }
+
+    if (sn == undefined) {
+        sn = sendCommand("serial");
+        setCookie("sn", sn, 1);
+        console.log("Serial:" + sn);
     }
 };
 
@@ -740,7 +747,7 @@ function buildMenu() {
 
 			var col = $("<div>", { class: "col-auto mb-auto mt-auto" });
             var fwver = $("<span>", { class: "d-none d-md-block badge bg-info border text-white invisible", id: "fwVersion" });
-            var hwver = $("<span>", { class: "d-none d-md-block badge bg-success border text-white invisible", id: "hwVersion" });
+            var hwver = $("<span>", { class: "d-none d-md-block badge bg-success border text-white invisible", id: "hwVersion", "data-toggle": "tooltip", "data-html": "true", "data-original-title": sn });
             col.append(fwver).append(hwver);
 			wrap.append(col);
 
@@ -853,24 +860,24 @@ function buildStatus() {
                 //$("#potentiometer").addClass("d-none"); //.hide();
 
                 if (parseFloat(data[15]) === 3) {
-                    img.attr("data-original-title", "<h6>Boost Mode</h6>");
+                    img.attr("data-original-title", "Boost Mode");
                     img.addClass("text-warning");
                 } else if (parseFloat(data[15]) === 4) {
-                    img.attr("data-original-title", "<h6>Buck Mode</h6>");
+                    img.attr("data-original-title", "Buck Mode");
                     img.addClass("text-warning");
                 }else if (parseFloat(data[0]) === 0) {
-                    img.attr("data-original-title", "<h6>Off</h6>");
+                    img.attr("data-original-title", "Off");
                     img.addClass("text-danger");
                 } else if (parseFloat(data[0]) === 1) {
                     if (parseFloat(data[6]) === 1) {
-                        img.attr("data-original-title", "<h6>Pulse Only - Do not leave ON</h6>");
+                        img.attr("data-original-title", "Pulse Only - Do not leave ON");
                         img.addClass("text-warning");
                     } else {
-                        img.attr("data-original-title", "<h6>Running</h6>");
+                        img.attr("data-original-title", "Running");
                         img.addClass("text-success");
                     }
                 } else if (parseFloat(data[0]) === 2) {
-                    img.attr("data-original-title", "<h6>Manual Mode</h6>");
+                    img.attr("data-original-title", "Manual Mode");
                     img.addClass("text-success");
                     $("#potentiometer").removeClass("d-none"); //.show();
                 }
@@ -883,7 +890,7 @@ function buildStatus() {
                 opStatus.append(div);
                 */
                 //========================
-                img = $("<i>", { class: "icons icon-status icon-battery", "data-toggle": "tooltip", "data-html": "true", "data-original-title": "<h6>" + data[1] + "V</h6>" });
+                img = $("<i>", { class: "icons icon-status icon-battery", "data-toggle": "tooltip", "data-html": "true", "data-original-title": data[1] + "V" });
                 if (parseFloat(data[1]) > parseFloat(data[2]) && parseFloat(data[1]) > 10 && parseFloat(data[1]) < 520) { // && parseFloat(data[15]) !== 0) {
                     img.addClass("text-success");
                 } else {
@@ -891,7 +898,7 @@ function buildStatus() {
                 }
                 opStatus.append(img);
                 //========================
-                img = $("<i>", { class: "icons icon-status icon-temp", "data-toggle": "tooltip", "data-html": "true", "data-original-title": "<h6>" + data[3] + "&#8451;</h6>"});
+                img = $("<i>", { class: "icons icon-status icon-temp", "data-toggle": "tooltip", "data-html": "true", "data-original-title": data[3] + "&#8451;"});
                 if (parseFloat(data[3]) > 150 || parseFloat(data[4]) > 150) {
                     img.addClass("text-danger");
                     opStatus.append(img);
@@ -900,7 +907,7 @@ function buildStatus() {
                     opStatus.append(img);
                 }
                 //========================
-                img = $("<i>", { class: "icons icon-status icon-magnet", "data-toggle": "tooltip", "data-html": "true", "data-original-title": "<h6>" + data[5] + "ms</h6>" });
+                img = $("<i>", { class: "icons icon-status icon-magnet", "data-toggle": "tooltip", "data-html": "true", "data-original-title": data[5] + "ms" });
                 if(parseFloat(data[5]) < 22){
                     img.addClass("text-danger");
                     opStatus.append(img);
@@ -918,22 +925,21 @@ function buildStatus() {
                 */
                 //========================
                 if (parseFloat(data[7]) != 1 && parseFloat(data[15]) === 0) {
-                    img = $("<i>", { class: "icons icon-status icon-alert", "data-toggle": "tooltip", "data-html": "true", "data-original-title": "<h6>Probably forgot PIN 11 to 12V</h6>" });
+                    img = $("<i>", { class: "icons icon-status icon-alert", "data-toggle": "tooltip", "data-html": "true", "data-original-title": "Probably forgot PIN 11 to 12V" });
                     img.addClass("text-warning");
                     opStatus.append(img);
                 }
             }else{
-                img = $("<i>", { class: "icons icon-status icon-alert", "data-toggle": "tooltip", "data-html": "true", "data-original-title": "<h6>Inverter Disconnected</h6>" });
+                img = $("<i>", { class: "icons icon-status icon-alert", "data-toggle": "tooltip", "data-html": "true", "data-original-title": "Inverter Disconnected" });
                 img.addClass("text-warning");
                 opStatus.append(img);
             }
             
             //$("#opStatus").empty().append(opStatus);
-
-            $.ajax("serial.php?command=errors", {
+            $.ajax("serial.php?get=lasterr", {
 		        success: function success(data) {
 	                if (data.indexOf("No Errors") === -1) {
-	                    img = $("<i>", { class: "icons icon-status icon-alert", "data-toggle": "tooltip", "data-html": "true", "data-original-title": "<h6>" + data + "</h6>" });
+	                    img = $("<i>", { class: "icons icon-status icon-alert", "data-toggle": "tooltip", "data-html": "true", "data-original-title": data.replace("\n","<br>") });
 	                    img.addClass("text-warning");
 	                    $("#opStatus").append(img);
 	                    $('[data-toggle="tooltip"]').tooltip();
