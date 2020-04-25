@@ -13,8 +13,8 @@ else
         tar xzfv ~/Downloads/gcc-arm-none-eabi-9-2019-q4-major-mac.tar.bz2 -C /usr/local/share
         case ":$PATH:" in
 		  *:$ARMPath/bin:*) echo $PATH;;
-		  *) echo "PATH=\${PATH}:$ARMPath/bin" >> ~/.zshrc;;
+		  *) echo "export PATH=\${PATH}:$ARMPath/bin" >> ~/.zprofile;;
 		esac
-		source ~/.zshrc
+		source ~/.zprofile
     fi
 fi

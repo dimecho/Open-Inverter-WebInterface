@@ -6,7 +6,7 @@
         "dropdown": [{
             "id": "Start Inverter",
             "icon": "icon-key",
-            "onClick": "alertify.startInverterMode(\"<i class='icons icon-speedometer'></i> Warning: Before starting the inverter set the throttle control to zero.\")"
+            "onClick": "$('#startInverterMode').modal()"
         }, {
             "id": "Stop Inverter",
             "icon": "icon-alert",
@@ -14,7 +14,7 @@
         }, {
             "id": "Reset to Default",
             "icon": "icon-reset",
-            "onClick": "setDefaults()"
+            "onClick": "$('#resetInverterDefault').modal()"
         }, {
             "id": "-"
         }, {

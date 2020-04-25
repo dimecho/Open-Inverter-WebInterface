@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+    buildMenu();
     $.ajax("js/pcb.json", {
         dataType: "json",
         success: function(data) {

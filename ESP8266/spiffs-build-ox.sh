@@ -17,12 +17,12 @@ for i in "${array[@]}"; do
     cp -rf ../Web/$i spiffs
 done
 
-array=(mobile.css alertify.css jquery.fancybox.css animate.css bootstrap.css bootstrap.slate.css ion.rangeSlider.css icons.css style.css)
+array=(mobile.css animate.css bootstrap.css bootstrap.slate.css ion.rangeSlider.css icons.css style.css)
 for i in "${array[@]}"; do
     cp -rf ../Web/css/$i spiffs/css
 done
 
-array=(esp8266.js jquery.js jquery.knob.js potentiometer.js jquery.fancybox.js alertify.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-annotation.js chartjs-plugin-datalabels.js test.js mobile.js)
+array=(esp8266.js jquery.js jquery.knob.js potentiometer.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-annotation.js chartjs-plugin-datalabels.js test.js mobile.js)
 for i in "${array[@]}"; do
     cp -rf ../Web/js/$i spiffs/js
 done
@@ -33,6 +33,8 @@ for i in "${array[@]}"; do
     cp -rf ../Web/img/$i spiffs/img
 done
 
+cp -rf ./server.key spiffs/
+cp -rf ./server.crt spiffs/
 cp -rf  "../Web/pcb/Hardware v1.0/diagrams/test.png" spiffs/pcb/v1.0
 cp -rf  "../Web/pcb/Hardware v1.0/diagrams/esp8266.png" spiffs/pcb/v1.0
 cp -rf  "../Web/pcb/Hardware v3.0/diagrams/test.png" spiffs/pcb/v3.0
@@ -122,10 +124,10 @@ if [ ! -f tools/yuicompressor-2.4.8.jar ]; then
     cd ../
 fi
 
-if [ ! -f tools/yuicompressor-2.4.8.jar ]; then
-    curl -L -o tools/compiler-20190929.zip -k -C - https://dl.google.com/closure-compiler/compiler-20190929.zip
+if [ ! -f tools/closure-compiler-v20200224.jar ]; then
+    curl -L -o tools/compiler-20200224.zip -k -C - https://dl.google.com/closure-compiler/compiler-20200224.zip
     cd tools
-    unzip compiler-20180910
+    unzip compiler-20200224
     cd ../
 fi
 
@@ -151,11 +153,11 @@ echo " > Compress Javascript? (y/n)"
 read yn
 if [ $yn = y ]; then
     for f in $(find spiffs -name '*.js'); do
-        java -jar tools/closure-compiler-v20190929.jar --strict_mode_input=false --language_in ECMASCRIPT5 --js_output_file "$f-min.js" --js "$f"
+        java -jar tools/closure-compiler-v20200224.jar --strict_mode_input=false --language_in ECMASCRIPT5 --js_output_file "$f-min.js" --js "$f"
         mv "$f-min.js" "$f"
     done
 fi
-for f in $(find spiffs -type f -name '*.*' ! -name '*.bin' ! -name '*.php' ! -name '.gitignore'); do
+for f in $(find spiffs -type f -name '*.*' ! -name '*.bin' ! -name '*.php' ! -name '*.key' ! -name '*.crt'); do
     gzip "$f"
     mv "$f.gz" "$f"
 done

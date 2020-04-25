@@ -1,128 +1,104 @@
-var boot  = getCookie("boot");
+var boot = getCookie('boot');
 var ctxFont = 16;
-var ctxFontColor = "#808080";
-var ctxDashColor = "black";
+var ctxFontColor = '#808080';
+var ctxDashColor = 'black';
 
 $(document).ready(function () {
 
-    var safety = getCookie("safety");
+    var safety = getCookie('safety');
     if (safety === undefined) {
-        $(".safety").fancybox({
-            maxWidth    : 800,
-            maxHeight   : 640,
-            fitToView   : false,
-            width       : '80%',
-            height      : '80%',
-            autoSize    : false,
-            closeClick  : false,
-            openEffect  : 'none',
-            closeEffect : 'none'
-        });
-        $("#safety").removeClass("d-none");
-        $(".safety").trigger('click');
+        //$('#safety').removeClass('d-none');
+        $('#safety').modal();
+    }else{
+        buildMenu('index.php');
     }
 
-    if(theme == ".slate") {
-        ctxFontColor = "#aaa";
-        ctxDashColor = "white";              
+    if(theme == '.slate') {
+        ctxFontColor = '#aaa';
+        ctxDashColor = 'white';
+    }
+    
+    window.onbeforeunload = function() {
+        if(saveReminder == true)
+            return 'Are you sure you want to leave?';
     }
 });
 
+function saveReminderCounter() {
+    $.notify({ message: 'Don\'t forget to Save Settings!' }, { type: 'warning' });
+};
+
 function initializeSerial() {
 
-    $.ajax("serial.php?init=115200", {
+    $.ajax('serial.php?init=115200', {
         async: true,
         timeout: 6400,
         success: function(data) {
             console.log(data);
 
-            deleteCookie("serial.block");
+            deleteCookie('serial.block');
 
-            if(data.toUpperCase().indexOf("ERROR") != -1)
+            if(data.toUpperCase().indexOf('ERROR') != -1)
             {
-                $("#com").removeClass("d-none"); //.show();
-                //$.ajax(serialWDomain + ":" + serialWeb + "/serial.php?com=list", {
-                $.ajax("serial.php?com=list", {
+                $('#com').removeClass('d-none'); //.show();
+                //$.ajax(serialWDomain + ':' + serialWeb + '/serial.php?com=list', {
+                $.ajax('serial.php?com=list', {
                     async: false,
                     timeout:2000,
                     success: function(data) {
                        //console.log(data);
-                       $(".serial").fancybox({
-                            maxWidth    : 800,
-                            maxHeight   : 640,
-                            fitToView   : false,
-                            width       : '80%',
-                            height      : '80%',
-                            autoSize    : false,
-                            closeClick  : false,
-                            openEffect  : 'none',
-                            closeEffect : 'none'
-                        });
                         var s = data.split('\n');
                         if(s.length == 2) {
-                            $.notify({ message: "Try swapping TX <-> RX" }, { type: "warning" });
+                            $.notify({ message: 'Try swapping TX <-> RX' }, { type: 'warning' });
                         }else if(s.length > 1) {
                             for (var i = 0; i < s.length; i++) {
-                                if(s[i] != "")
-                                    $("#serial-interface").append($("<option>",{value:s[i]}).append(s[i]));
+                                if(s[i] != '')
+                                    $('#serial-interface').append($('<option>',{value:s[i]}).append(s[i]));
                             }
-                            $("#serial").removeClass("d-none");
-                            $(".serial").trigger('click');
-                        }else if (os === "mac") {
-                            $("#macdrivers img").attr("src","img/catalina-logo.png");
-                            $(".macdrivers").fancybox({
-                                maxWidth    : 800,
-                                maxHeight   : 640,
-                                fitToView   : false,
-                                width       : '80%',
-                                height      : '80%',
-                                autoSize    : false,
-                                closeClick  : false,
-                                openEffect  : 'none',
-                                closeEffect : 'none'
-                            });
-                            $("#macdrivers").removeClass("d-none");
-                            $(".macdrivers").trigger('click');
+                            $('#serial').modal();
+                        }else if (os === 'mac') {
+                            $('#macdrivers').find('img').attr('src','img/catalina-logo.png');
+                            $('#macdrivers').modal();
                         }else{
-                            $.notify({ message: "Serial not found" }, { type: "danger" });
+                            $.notify({ message: 'Serial not found' }, { type: 'danger' });
                         }
                     }
                 });
-            }else if(data.indexOf("2D") != -1) {
+            }else if(data.indexOf('2D') != -1) {
                 if (boot == undefined) { // Two try - prevents false-positive ESP8266
-                    setCookie("boot", 1, 1);
+                    setCookie('boot', 1, 1);
                     location.reload();
                 }else{
-                    deleteCookie("boot");
+                    deleteCookie('boot');
                     $.notify({ message: 'Firmware corrupt or not found' }, { type: 'danger' });
-                    //$("#com").removeClass("d-none"); //.show();
+                    //$('#com').removeClass('d-none'); //.show();
                     setTimeout(function () {
-                        window.location.href = "firmware.php";
+                        window.location.href = 'firmware.php';
                     }, 2600);
                 }
-            }else if(data.indexOf("9600") != -1) {
+            }else if(data.indexOf('9600') != -1) {
                 $.notify({ message: 'Serial speed is 9600 baud, Power cycle' }, { type: 'danger' });
-                $("#com").removeClass("d-none"); //.show();
-            }else if(data.indexOf("w}") != -1) {
+                $('#com').removeClass('d-none'); //.show();
+            }else if(data.indexOf('w}') != -1) {
                 $.notify({ message: 'Serial speed incorrect, Refresh' }, { type: 'danger' });
-                $("#com").removeClass("d-none"); //.show();
-            }else if(data.indexOf("test pin") != -1) {
+                $('#com').removeClass('d-none'); //.show();
+            }else if(data.indexOf('test pin') != -1) {
                 $.notify({ message: 'STM32 Test firmware detected' }, { type: 'danger' });
                 setTimeout(function () {
-                    window.location.href = "test.php";
+                    window.location.href = 'test.php';
                 }, 2600);
             }else{
                 buildParameters();
             }
         }, error: function (data, textStatus, errorThrown) { //only for Windows (blocking UART)
-        	console.log(textStatus);
-        	console.log(data);
-            if (os === "windows"){
-                $.notify({ message: "Serial blocked ...Un-plug it!" }, { type: "danger" });
+            console.log(textStatus);
+            console.log(data);
+            if (os === 'windows'){
+                $.notify({ message: 'Serial blocked ...Un-plug it!' }, { type: 'danger' });
             }
-            $.notify({ message: "Try swapping TX <-> RX" }, { type: "warning" });
-            $("#com").removeClass("d-none"); //.show();
-            setCookie("serial.block", 1, 1);
+            $.notify({ message: 'Try swapping TX <-> RX' }, { type: 'warning' });
+            $('#com').removeClass('d-none'); //.show();
+            setCookie('serial.block', 1, 1);
         }
     });
 };
@@ -144,7 +120,7 @@ function basicChecks(json)
 			$.notify({ message: 'Field weakening "fweak" might be too high' }, { type: 'warning' });
 		}
 	}
-    if(json.version.unit.indexOf("foc") == -1)
+    if(json.version.unit.indexOf('foc') == -1)
     {
         var fweak = setDefaultValue(json.fweak, 0);
         var fslipmax = setDefaultValue(json.fslipmax, 0);
@@ -171,7 +147,7 @@ function basicChecks(json)
         var v = json.version.value
         if(json.version.unit != undefined)
         {
-            var split = json.version.unit.split("=");
+            var split = json.version.unit.split('=');
             v = split[1];
         }
         displayFWVersion(v);
@@ -179,7 +155,7 @@ function basicChecks(json)
     }
     if(json.hwver != undefined) {
         hardware = parseInt(json.hwver.value);
-        setCookie("hardware", hardware, 1);
+        setCookie('hardware', hardware, 1);
         displayHWVersion();
     }
 };
@@ -192,25 +168,25 @@ function _boostSlipCalculator(fslipconstmax,fslipmax,fconst,boost,fweak,udcnom,u
     var fweak_calc = (fweak*adj_factor_calc);
     var fslip_change_calc = (fweak-fweak_calc)*((fslipconstmax-fslipmax)/(fconst-fweak));
     /*
-    console.log("udc " + udc);
-    console.log("udc_diff " + udc_diff);
-    console.log("adj_factor_calc " + adj_factor_calc);
-    console.log("boost_calc " + boost_calc);
-    console.log("fweak_calc " + fweak_calc);
-    console.log("fslip_change_calc " + fslip_change_calc);
+    console.log('udc ' + udc);
+    console.log('udc_diff ' + udc_diff);
+    console.log('adj_factor_calc ' + adj_factor_calc);
+    console.log('boost_calc ' + boost_calc);
+    console.log('fweak_calc ' + fweak_calc);
+    console.log('fslip_change_calc ' + fslip_change_calc);
     */
     return [Math.round(boost_calc), Math.round(fweak_calc)];
 };
 
 function boostSlipCalculator()
 {
-    var fslipconstmax = parseInt($("#fslipconstmax").val());
-    var fslipmax = parseInt($("#fslipmax").val());
-    var fconst = parseInt($("#fconst").val());
-    var boost = parseInt($("#boost").val());
-    var fweak = parseInt($("#fweak").val());
-    var udcnom = parseInt($("#udcnom").val());
-    var udc = parseInt($("#udc").val());
+    var fslipconstmax = parseInt($('#fslipconstmax').val());
+    var fslipmax = parseInt($('#fslipmax').val());
+    var fconst = parseInt($('#fconst').val());
+    var boost = parseInt($('#boost').val());
+    var fweak = parseInt($('#fweak').val());
+    var udcnom = parseInt($('#udcnom').val());
+    var udc = parseInt($('#udc').val());
 
     //_boostSlipCalculator(fslipconstmax,fslipmax,fconst,boost,fweak,udcnom,udc);
     //_boostSlipCalculator(5.5,3.6,350,2000,100,500,480);
@@ -222,59 +198,57 @@ function boostSlipCalculator()
         return;
     }
 
-    var div = $("<div>",{class:"container"});
-    var row = $("<div>",{class:"row"});
-    var col = $("<div>",{class:"col", align:"center"});
-    var loader = $("<div>",{ class:"spinner-border text-dark"});
-    var canvas = $("<canvas>");
+    var div = $('<div>',{class:'container'});
+    var row = $('<div>',{class:'row'});
+    var col = $('<div>',{class:'col', align:'center'});
+    var loader = $('<div>',{ class:'spinner-border text-dark'});
+    var canvas = $('<canvas>');
 
     col.append(loader);
     col.append(canvas);
     row.append(col);
     div.append(row);
 
-    $("#calculator").empty();
-    $("#calculator").append(div);
-    $("#calculator").removeClass("d-none");
-    $(".calculator").trigger("click");
+    $('#calculator').find('.modal-body').empty().append(div);
+    $('#calculator').modal();
 
-    $.getScript("js/chart.js").done(function(script, textStatus) {
-        $.getScript("js/chartjs-plugin-annotation.js").done(function(script, textStatus) {
+    $.getScript('js/chart.js').done(function(script, textStatus) {
+        $.getScript('js/chartjs-plugin-annotation.js').done(function(script, textStatus) {
 
             var chart_boost_datasets = {
-                type: "line",
-                label: "boost",
+                type: 'line',
+                label: 'boost',
                 fill: false,
-                backgroundColor: "rgba(255,99,132, 0.5)",
-                borderColor: "rgba(255,99,132)",
+                backgroundColor: 'rgba(255,99,132, 0.5)',
+                borderColor: 'rgba(255,99,132)',
                 borderWidth: 2,
                 tooltipHidden: false,
                 data: [],
-                yAxisID: "y-axis-0",
+                yAxisID: 'y-axis-0',
             };
 
             var chart_fweak_datasets = {
-                type: "line",
-                label: "fweak",
+                type: 'line',
+                label: 'fweak',
                 fill: false,
-                backgroundColor: "rgba(51, 153, 255, 0.5)",
-                borderColor: "rgba(51, 153, 255)",
+                backgroundColor: 'rgba(51, 153, 255, 0.5)',
+                borderColor: 'rgba(51, 153, 255)',
                 borderWidth: 2,
                 tooltipHidden: false,
                 data: [],
-                yAxisID: "y-axis-1",
+                yAxisID: 'y-axis-1',
             };
 
             var chart_udc_datasets = {
-                type: "line",
-                label: "udc",
+                type: 'line',
+                label: 'udc',
                 lineTension: 0,
-                backgroundColor: "rgba(102, 255, 51, 0.4)",
-                borderColor: "rgba(102, 255, 51)",
+                backgroundColor: 'rgba(102, 255, 51, 0.4)',
+                borderColor: 'rgba(102, 255, 51)',
                 borderWidth: 2,
                 tooltipHidden: true,
                 data: [], //udc representation
-                xAxisID: "x-axis-0"
+                xAxisID: 'x-axis-0'
             };
 
             var udc_segment = 8;
@@ -346,7 +320,7 @@ function boostSlipCalculator()
                         }
                     }],
                     yAxes: [{
-                        id: "y-axis-0",
+                        id: 'y-axis-0',
                         position: 'right',
                         scaleLabel: {
                             labelString: 'boost',
@@ -366,7 +340,7 @@ function boostSlipCalculator()
                             color: ctxFontColor
                         }
                     },{
-                        id: "y-axis-1",
+                        id: 'y-axis-1',
                         position: 'left',
                         scaleLabel: {
                             labelString: 'fweak (Hz)',
@@ -390,18 +364,18 @@ function boostSlipCalculator()
                 },
                 annotation: {
                     annotations: [{
-                        type: "line",
-                        id: "a-line-0",
-                        mode: "vertical",
-                        scaleID: "x-axis-0",
+                        type: 'line',
+                        id: 'a-line-0',
+                        mode: 'vertical',
+                        scaleID: 'x-axis-0',
                         value: udcnom,
                         borderColor: ctxDashColor,
                         borderWidth: 1,
                         borderDash: [4, 4],
                         label: {
-                          content: "udcnom",
+                          content: 'udcnom',
                           enabled: true,
-                          position: "top"
+                          position: 'top'
                         }
                     }
                 ]}
@@ -416,7 +390,7 @@ function boostSlipCalculator()
             });
 
             if(chart_fweak_datasets.data[chart_fweak_datasets.data.length-1] < 0){
-                alert("udcnom is too low, adjust and re-calculate.");
+                alert('udcnom is too low, adjust and re-calculate.');
             }
         });
     });
@@ -424,27 +398,23 @@ function boostSlipCalculator()
 
 function MTPACalculator()
 {
-    var loader = $("<div>",{ class:"spinner-border text-dark", align:"center"});
-    var canvas = $("<canvas>");
+    var loader = $('<div>',{ class:'spinner-border text-dark', align:'center'});
+    var canvas = $('<canvas>');
 
-    $("#calculator").empty();
-    $("#calculator").append(loader);
-    $("#calculator").append(canvas);
-    //$("#calculator").addClass("h-100");
-    $("#calculator").removeClass("d-none");
-    $(".calculator").trigger("click");
+    $('#calculator').find('.modal-body').empty().append(loader).append(canvas);
+    $('#calculator').modal();
 
-    $.getScript("js/chart.js").done(function(script, textStatus) {
-		$.getScript("js/chartjs-plugin-annotation.js").done(function(script, textStatus) {
+    $.getScript('js/chart.js').done(function(script, textStatus) {
+		$.getScript('js/chartjs-plugin-annotation.js').done(function(script, textStatus) {
 
 	    	//TODO: This needs a proper formula!
-	    	var fwkp = parseInt($("#fwkp").val());
+	    	var fwkp = parseInt($('#fwkp').val());
 
 	    	var beta_angle = 25; //MTPA Trajectory Angle at rated design point (syncofs?)
 	    	var _iq_sin_beta = Math.sin(beta_angle);
 	    	var _iq_cos_beta = Math.cos(beta_angle);
 	    	var syncadv = 0;
-	    	var radius = Math.abs(parseInt($("#ocurlim").val()));
+	    	var radius = Math.abs(parseInt($('#ocurlim').val()));
 	    	var radius_offset = 20;
 
 	    	var optimum_mtpa = [];
@@ -476,36 +446,36 @@ function MTPACalculator()
 	    	}
 
 	        var chart_mtpa_datasets = {
-	            type: "line",
-	            label: "MTPA",
+	            type: 'line',
+	            label: 'MTPA',
 	            fill: false,
-	            borderColor: "rgba(255,99,132)",
+	            borderColor: 'rgba(255,99,132)',
 	            borderWidth: 2,
 	            //pointRadius: 0,
 	            data: optimum_mtpa,
-	            yAxisID: "y-axis-0",
+	            yAxisID: 'y-axis-0',
 	        };
 
 	        var chart_iq_datasets = {
-	            type: "line",
-	            label: "Current Limit",
+	            type: 'line',
+	            label: 'Current Limit',
 	            fill: false,
-	            borderColor: "rgba(51, 153, 255)",
+	            borderColor: 'rgba(51, 153, 255)',
 	            borderWidth: 2,
 	            pointRadius: 0,
 	            data: current_limit,
-	            yAxisID: "y-axis-0",
+	            yAxisID: 'y-axis-0',
 	        };
 
 	        var chart_id_datasets = {
-	            type: "line",
-	            label: "Optimum Torque",
+	            type: 'line',
+	            label: 'Optimum Torque',
 	            fill: false,
-	            borderColor: "rgba(102, 255, 51)",
+	            borderColor: 'rgba(102, 255, 51)',
 	            borderWidth: 2,
 	            pointRadius: 0,
 	            data: optimum_torque,
-	            xAxisID: "x-axis-0"
+	            xAxisID: 'x-axis-0'
 	        };
 
 	        data = {
@@ -524,14 +494,14 @@ function MTPACalculator()
 	            },
 	            scales: {
 	                xAxes: [{
-	                    id: "x-axis-0",
-	                    position: "bottom",
-	                    type: "linear",
+	                    id: 'x-axis-0',
+	                    position: 'bottom',
+	                    type: 'linear',
 	                    scaleLabel: {
 	                        display: true,
 	                        fontColor: ctxFontColor,
 	                        fontSize: ctxFont,
-	                        labelString: "Direct Axis Current (A)"
+	                        labelString: 'Direct Axis Current (A)'
 	                    },
 	                    ticks: {
 	                    	precision: 2,
@@ -551,13 +521,13 @@ function MTPACalculator()
 	                    }
 	                }],
 	                yAxes: [{
-	                    id: "y-axis-0",
-	                    position: "left",
+	                    id: 'y-axis-0',
+	                    position: 'left',
 	                    scaleLabel: {
 	                        display: true,
 	                        fontColor: ctxFontColor,
 	                        fontSize: ctxFont,
-	                        labelString: "Quadrature Axis Current (A)"
+	                        labelString: 'Quadrature Axis Current (A)'
 	                    },
 	                    ticks: {
 	                        precision: 2,
@@ -569,13 +539,13 @@ function MTPACalculator()
 	                        color: ctxFontColor
 	                    }
 	                },{
-	                    id: "y-axis-1",
-	                    position: "right",
+	                    id: 'y-axis-1',
+	                    position: 'right',
 	                    scaleLabel: {
 	                        display: true,
 	                        fontColor: ctxFontColor,
 	                        fontSize: ctxFont,
-	                        labelString: "Frequency (Hz)"
+	                        labelString: 'Frequency (Hz)'
 	                    },
 	                    ticks: {
 	                        precision: 0,
@@ -593,18 +563,18 @@ function MTPACalculator()
     			annotation: {
 		        	//drawTime: 'afterDatasetsDraw',
 					annotations: [{
-						type: "line",
-                        id: "a-line-0",
-                        mode: "horizontal",
+						type: 'line',
+                        id: 'a-line-0',
+                        mode: 'horizontal',
                         scaleID: 'y-axis-1',
                         value: fwkp,
-                        borderColor: "rgb(255, 205, 86)",
+                        borderColor: 'rgb(255, 205, 86)',
                         borderWidth: 2,
                         label: {
-                          content: "fwkp=" + fwkp,
+                          content: 'fwkp=' + fwkp,
                           enabled: true,
                           yAdjust: -12,
-                          position: "right"
+                          position: 'right'
                         }
 					}]
 				}
@@ -623,35 +593,35 @@ function MTPACalculator()
 
 function syncofsCalculator()
 {
-    var polepairs = parseInt($("#polepairs").val());
+    var polepairs = parseInt($('#polepairs').val());
 
-    var loader = $("<div>",{ class:"spinner-border text-dark", align:"center"});
-    var div = $("<div>",{class:"container"});
-    var row = $("<div>",{class:"row"});
-    var col1 = $("<div>",{class:"col"});
-    var col2 = $("<div>",{class:"col"});
+    var loader = $('<div>',{ class:'spinner-border text-dark', align:'center'});
+    var div = $('<div>',{class:'container'});
+    var row = $('<div>',{class:'row'});
+    var col1 = $('<div>',{class:'col'});
+    var col2 = $('<div>',{class:'col'});
 
-    var p = $("<p>").append("Nissan Leaf Resolver Offsets");
-    var input1 = $("<input>",{ class:"form-control my-3", type:"text", placeholder:"Motor Label (Ex: 7F0036)"});
-    var input2 = $("<input>",{ class:"form-control my-3", type:"text", disabled:true});
-    var btn = $("<button>",{ class:"btn btn-primary", type:"button"});
-    var img = $("<img>",{ class:"img-thumbnail rounded", src:"img/leaf-resolver-offsets.jpg"});
+    var p = $('<p>').append('Nissan Leaf Resolver Offsets');
+    var input1 = $('<input>',{ class:'form-control my-3', type:'text', placeholder:'Motor Label (Ex: 7F0036)'});
+    var input2 = $('<input>',{ class:'form-control my-3', type:'text', disabled:true});
+    var btn = $('<button>',{ class:'btn btn-primary', type:'button'});
+    var img = $('<img>',{ class:'img-thumbnail rounded', src:'img/leaf-resolver-offsets.jpg'});
 
-    if(os != "esp8266" && os != "mobile") {
+    if(os != 'esp8266' && os != 'mobile') {
         col1.append(img);
     }
 
     col2.append(p).append(input1).append(input2);
-    col2.append(btn.append("Save"));
+    col2.append(btn.append('Save'));
     div.append(row.append(col1).append(col2));
 
-    input1.on("input",function(e) {
+    input1.on('input',function(e) {
     	var shift_oneeighty = 0.5;
         var value = $(this).val();
 
         if(value.length > 1)
         {
-	        var hex = parseInt("0x" + value.substring(0, 2),16);
+	        var hex = parseInt('0x' + value.substring(0, 2),16);
 
 	        var syncofs = Math.abs(hex - 0x80) * 256;
 	        
@@ -664,17 +634,17 @@ function syncofsCalculator()
 	        //syncofs_angle = Math.round(syncofs_angle * 10) / 10; //digit round
 	        //syncofs_angle = Math.ceil(syncofs_angle * 20) / 20; //nearest 0.5
 
-	        input2.val(syncofs + " @ " + syncofs_angle.toFixed(1) + "°, Shift 180° = " + (syncofs/shift_oneeighty) + " @ " + (syncofs_angle/shift_oneeighty).toFixed(1) + "°");
+	        input2.val(syncofs + ' @ ' + syncofs_angle.toFixed(1) + '°, Shift 180° = ' + (syncofs/shift_oneeighty) + ' @ ' + (syncofs_angle/shift_oneeighty).toFixed(1) + '°');
 			
-			if(os != "mobile")
+			if(os != 'mobile')
 		    {
 	    		col1.empty();
 	    		col1.append(loader);
 
-		    	$.getScript("js/chart.js").done(function(script, textStatus) {
-		    		$.getScript("js/chartjs-plugin-annotation.js").done(function(script, textStatus) {
+		    	$.getScript('js/chart.js').done(function(script, textStatus) {
+		    		$.getScript('js/chartjs-plugin-annotation.js').done(function(script, textStatus) {
 
-			    		var canvas = $("<canvas>");
+			    		var canvas = $('<canvas>');
 			    		var red = 'rgb(255, 99, 132)';
 			    		var blue = 'rgb(54, 162, 235)';
 			    		var yellow = 'rgb(255, 205, 86)';
@@ -749,9 +719,9 @@ function syncofsCalculator()
 					        annotation: {
 					        	//drawTime: 'afterDatasetsDraw',
 								annotations: [{
-									type: "line",
-			                        id: "a-line-0",
-			                        mode: "vertical",
+									type: 'line',
+			                        id: 'a-line-0',
+			                        mode: 'vertical',
 			                        scaleID: 'x-axis-0',
 			                        value: visual_angle,
 			                        endValue: 0-visual_angle,
@@ -760,46 +730,46 @@ function syncofsCalculator()
 			                        	enabled: true,
 			                        	xAdjust: -60,
 			                          	yAdjust: 32,
-			                          	content: syncofs + " (" + syncofs_angle.toFixed(1) + "°)",
-			                          	position: "top"
+			                          	content: syncofs + ' (' + syncofs_angle.toFixed(1) + '°)',
+			                          	position: 'top'
 			                        }
 								},{
-									type: "line",
-			                        id: "a-line-1",
-			                        mode: "vertical",
+									type: 'line',
+			                        id: 'a-line-1',
+			                        mode: 'vertical',
 			                        scaleID: 'x-axis-0',
 			                        value: 0,
 			                        borderWidth: 0,
 			                        label: {
 			                        	enabled: true,
-			                          	content: "Angle=0",
-			                          	position: "top"
+			                          	content: 'Angle=0',
+			                          	position: 'top'
 			                        }
 								},{
-									type: "line",
-			                        id: "a-line-2",
-			                        mode: "horizontal",
+									type: 'line',
+			                        id: 'a-line-2',
+			                        mode: 'horizontal',
 			                        scaleID: 'y-axis-0',
 			                        value: 0.5,
 			                        borderWidth: 0,
 			                        label: {
 			                        	enabled: true,
 			                        	yAdjust: -12,
-			                          	content: "49152 (270°)",
-			                         	position: "left"
+			                          	content: '49152 (270°)',
+			                         	position: 'left'
 			                        }
 								},{
-									type: "line",
-			                        id: "a-line-3",
-			                        mode: "horizontal",
+									type: 'line',
+			                        id: 'a-line-3',
+			                        mode: 'horizontal',
 			                        scaleID: 'y-axis-0',
 			                        value: 0.5,
 			                        borderWidth: 0,
 			                        label: {
 			                        	enabled: true,
 			                        	yAdjust: -12,
-			                          	content: "16384 (90°)",
-			                          	position: "right"
+			                          	content: '16384 (90°)',
+			                          	position: 'right'
 			                        }
 								}]
 							}
@@ -815,12 +785,12 @@ function syncofsCalculator()
 		    			col1.append(canvas);
 
 			    		var img = new Image();
-			    		img.src = "img/rotate.png";
+			    		img.src = 'img/rotate.png';
 						img.onload = function() {
 
 							//console.log(chart.canvas);
-							var canvasPattern = document.createElement("canvas");
-							var ctxPattern = canvasPattern.getContext("2d");
+							var canvasPattern = document.createElement('canvas');
+							var ctxPattern = canvasPattern.getContext('2d');
 							canvasPattern.width  = chart.canvas.parentNode.clientWidth - img.width / 2;
     						canvasPattern.height = chart.canvas.parentNode.clientHeight + img.height;
 
@@ -834,13 +804,13 @@ function syncofsCalculator()
 								canvasPattern.width / 2 - img.width / 2,
         						canvasPattern.height / 2 - img.height / 2
         					);
-							ctxPattern.fillStyle = ctxPattern.createPattern(canvasPattern, "no-repeat");
+							ctxPattern.fillStyle = ctxPattern.createPattern(canvasPattern, 'no-repeat');
 
 							//DEBUG
 							/*
         					var link = document.createElement('a');
 							link.download = 'canvas.png';
-							link.href = canvasPattern.toDataURL("image/png");
+							link.href = canvasPattern.toDataURL('image/png');
 							link.click();
 							*/
 							chart.data.datasets[2].backgroundColor = [ctxPattern.fillStyle];
@@ -852,11 +822,10 @@ function syncofsCalculator()
 	});
 
     btn.click(function() {
-        $.fancybox.close();
-        var split = input2.val().split(" ");
+        var split = input2.val().split(' ');
         var v = parseInt(split[6]);
-        $("#syncofs").val(v);
-        setParameter("syncofs",v,true,true);
+        $('#syncofs').val(v);
+        setParameter('syncofs',v,true,true);
     });
 
 	/*
@@ -873,10 +842,32 @@ function syncofsCalculator()
 	syncofs=16384 (90 degree)
 	*/
 
-    $("#calculator").empty();
-    $("#calculator").append(div);
-    $("#calculator").removeClass("d-none");
-    $(".calculator").trigger("click");
+    $('#calculator').find('.modal-body').empty().append(div);
+    $('#calculator').modal();
+};
+
+function pinSwapCalculator()
+{
+    var div = $('<div>',{class:'container'});
+    var row = $('<div>',{class:'row'});
+    var col = $('<div>',{class:'col'});
+    var pre = $('<pre>').append(
+        '3-bit Binary Field\n \
+        --------------------------\n \
+        PWM----Resolver----Current\n\n \
+        001 = 1 Swap Currents ony\n \
+        010 = 2 Swap Resolver only\n \
+        011 = 3 Swap Resolver and Currents\n \
+        100 = 4 Swap PWM only\n \
+        101 = 5 Swap PWM and Currents\n \
+        110 = 6 Swap PWM and Resolver\n \
+        111 = 7 Swap PWM and Resolver and Currents');
+
+    col.append(pre);
+    div.append(row.append(col));
+
+    $('#calculator').find('.modal-body').empty().append(div);
+    $('#calculator').modal();
 };
 
 function gen_stator_data(poles) {
@@ -921,7 +912,7 @@ function gen_stator_syncofs_color(poles) {
 	var c = [red];
 	//for (var x = 0; x < poles/2; x++)
 	//	c.push(blue);
-	console.log("Poles:" + poles);
+	console.log('Poles:' + poles);
 
 	var marker = 0;
 	var divide = poles/2;
@@ -933,7 +924,7 @@ function gen_stator_syncofs_color(poles) {
 		marker = 1;
 
 	for (var i = 0; i < poles*divide; i++) {
-		//console.log(i + " " + c[c.length-1]);
+		//console.log(i + ' ' + c[c.length-1]);
 		if(i > poles*divide-2) { //end: 2 = (1 start and 1 marker)
 			for (var x = 0; x < poles/divide; x++)
 				c.push(red);
@@ -968,21 +959,21 @@ function gen_stator_syncofs_color(poles) {
 
 function buildParameters()
 {
-    $("#loader-parameters").removeClass("d-none"); //.show();
+    $('#loader-parameters').removeClass('d-none'); //.show();
 	
-	$.ajax("description.csv",{
-		//async: false,
+	$.ajax('description.csv',{
+		async: true,
         dataType : 'text',
 		success: function(data)
 		{
             var parameters = [];
             var description = [];
 
-			var row = data.split("\n");
+			var row = data.split('\n');
 
 			for (var i = 0; i < row.length; i++) {
 				
-				var split = row[i].split(",");
+				var split = row[i].split(',');
                 
                 //console.log(split[0]);
                 //console.log(d.replace(/"/g, ''));
@@ -991,14 +982,14 @@ function buildParameters()
 				description.push(row[i].substring(split[0].length + 1).replace(/"/g, ''));
 			}
 
-            var json = sendCommand("json");
+            var json = sendCommand('json');
             var inputDisabled = false;
 
             if(Object.keys(json).length == 0)
             {
-                $.ajax("js/parameters.json", {
+                $.ajax('js/parameters.json', {
                   async: false,
-                  dataType: "json",
+                  dataType: 'json',
                   success: function(data) {
                     console.log(data);
                     json = data;
@@ -1010,10 +1001,10 @@ function buildParameters()
                 basicChecks(json);
             }
 
-            var legend = $("#legend").empty();
-            var menu = $("#parameters").empty();
-            var thead = $("<thead>", {class:"thead-inverse"}).append($("<tr>").append($("<th>")).append($("<th>").append("Name")).append($("<th>").append("Value")).append($("<th>").append("Type")));
-            var tbody = $("<tbody>");
+            var legend = $('#legend').empty();
+            var menu = $('#parameters').empty();
+            var thead = $('<thead>', {class:'thead-inverse'}).append($('<tr>').append($('<th>')).append($('<th>').append('Name')).append($('<th>').append('Value')).append($('<th>').append('Type')));
+            var tbody = $('<tbody>');
             menu.append(thead);
             menu.append(tbody);
 
@@ -1021,125 +1012,133 @@ function buildParameters()
             {
                 //console.log(key);
 
-                var tooltip = "";
+                var tooltip = '';
                 var x = parameters.indexOf(key);
                 if(x !=-1)
                     tooltip = description[x];
 
-                var a = $("<a>");
-                var tr = $("<tr>");
+                var a = $('<a>');
+                var tr = $('<tr>');
 
-                //if(os === "mobile" || esp8266 === true) {
-                    var a = $("<input>", { type:"text", "id":key, class:"form-control", value:json[key].value, disabled: inputDisabled });
+                //if(os === 'mobile' || esp8266 === true) {
+                    var a = $('<input>', { type:'text', 'id':key, class:'form-control', value:json[key].value, disabled: inputDisabled });
                     a.on('change paste', function() {
                         var element = $(this);
-                        if(element.val() != "") {
-                            validateInput(json,element.attr("id"), element.val(), function(r) {
-                                if(r === true) 
-                                    setParameter(element.attr("id"),element.val(),true,true);
+                        if(element.val() != '') {
+                            validateInput(json,element.attr('id'), element.val(), function(r) {
+                                if(r === true) {
+                                    setParameter(element.attr('id'),element.val(),false,true);
+                                    clearTimeout(saveReminderTimer);
+                                    saveReminderTimer = setInterval(saveReminderCounter, 60000);
+                                    saveReminder = true;
+                                }
                             });
                         }
                     });
-                    if(os === "mobile") {
-                        a.attr("type","number");
+                    if(os === 'mobile') {
+                        a.attr('type','number');
                     }
                 //}else{
-                //    var a = $("<a>", { href:"#", "id":key, "data-type":"text", "data-pk":"1", "data-placement":"right", "data-placeholder":"Required", "data-title":json[key].unit + " ("+ json[key].default + ")"});
+                //    var a = $('<a>', { href:'#', 'id':key, 'data-type':'text', 'data-pk':'1', 'data-placement':'right', 'data-placeholder':'Required', 'data-title':json[key].unit + ' ('+ json[key].default + ')'});
                 //    a.append(json[key].value);
                 //}
 
-                var category_icon = $("<i>", { class:"icons text-muted" });
+                var category_icon = $('<i>', { class:'icons text-muted' });
 
                 if(json[key].category)
                 {
                     var category = json[key].category;
                     
-                    category_icon.attr("data-toggle", "tooltip");
-                    category_icon.attr("data-html", true);
-                    category_icon.attr("title", "<h6>" + category + "</h6>");
+                    category_icon.attr('data-toggle', 'tooltip');
+                    category_icon.attr('data-html', true);
+                    category_icon.attr('title', '<h6>' + category + '</h6>');
 
-                    if(category == "Motor")
+                    if(category == 'Motor')
                     {
-                        category_icon.addClass("icon-motor");
+                        category_icon.addClass('icon-motor');
                     }
-                    else if(category == "Inverter")
+                    else if(category == 'Inverter')
                     {
-                        category_icon.addClass("icon-inverter");
+                        category_icon.addClass('icon-inverter');
                     }
-                    else if(category == "Charger")
+                    else if(category == 'Charger')
                     {
-                        category_icon.addClass("icon-plug");
+                        category_icon.addClass('icon-plug');
                     }
-                    else if(category == "Throttle")
+                    else if(category == 'Throttle')
                     {
-                        category_icon.addClass("icon-throttle");
+                        category_icon.addClass('icon-throttle');
                     }
-                    else if(category == "Regen")
+                    else if(category == 'Regen')
                     {
-                        category_icon.addClass("icon-power");
+                        category_icon.addClass('icon-power');
                     }
-                    else if(category == "Automation")
+                    else if(category == 'Automation')
                     {
-                        category_icon.addClass("icon-gear");
+                        category_icon.addClass('icon-gear');
                     }
-                    else if(category == "Derating")
+                    else if(category == 'Derating')
                     {
-                        category_icon.addClass("icon-magnet");
+                        category_icon.addClass('icon-magnet');
                     }
-                    else if(category == "Contactor Control")
+                    else if(category == 'Contactor Control')
                     {
-                        category_icon.addClass("icon-download");
+                        category_icon.addClass('icon-download');
                     }
-                    else if(category == "Aux PWM")
+                    else if(category == 'Aux PWM')
                     {
-                        category_icon.addClass("icon-pwm");
+                        category_icon.addClass('icon-pwm');
                     }
-                    else if(category == "Testing")
+                    else if(category == 'Testing')
                     {
-                        category_icon.addClass("icon-test");
+                        category_icon.addClass('icon-test');
 					}
-                    else if(category == "Communication")
+                    else if(category == 'Communication')
                     {
-                        category_icon.addClass("icon-transfer");
+                        category_icon.addClass('icon-transfer');
                     }else{
-                        category_icon.addClass("icon-info");
+                        category_icon.addClass('icon-info');
                     }
                 }
                 
-                var td1 = $("<td>").append(category_icon);
-                var td2 = $("<td>").append(key);
-                var td3 = $("<td>").append(a);
-                var td4 = $("<td>");
+                var td1 = $('<td>').append(category_icon);
+                var td2 = $('<td>').append(key);
+                var td3 = $('<td>').append(a);
+                var td4 = $('<td>');
 
-                if(key == "fwkp") {
-                    var fwkp_btn = $("<button>", {type:"button", class:"btn btn-primary", onclick:"MTPACalculator()"});
-                    var fwkp_calc = $("<i>", {class:"icons icon-magic"});
-                    td4.append(fwkp_btn.append(fwkp_calc).append(" MTPA"));
-                }else if(key == "syncofs") {
-                    var syncofs_btn = $("<button>", {type:"button", class:"btn btn-primary", onclick:"syncofsCalculator()"});
-                    var syncofs_calc = $("<i>", {class:"icons icon-magic"});
-                    td4.append(syncofs_btn.append(syncofs_calc).append(" Calculate"));
-                } else if(key == "udcnom") {
-                    var fweak_btn = $("<button>", {type:"button", class:"btn btn-primary", onclick:"boostSlipCalculator()"});
-                    var fweak_calc = $("<i>", {class:"icons icon-magic"});
-                    td4.append(fweak_btn.append(fweak_calc).append(" Calculate"));
+                if(key == 'fwkp') {
+                    var fwkp_btn = $('<button>', {type:'button', class:'btn btn-primary', onclick:'MTPACalculator()'});
+                    var fwkp_calc = $('<i>', {class:'icons icon-magic'});
+                    td4.append(fwkp_btn.append(fwkp_calc).append(' MTPA'));
+                }else if(key == 'syncofs') {
+                    var syncofs_btn = $('<button>', {type:'button', class:'btn btn-primary', onclick:'syncofsCalculator()'});
+                    var syncofs_calc = $('<i>', {class:'icons icon-magic'});
+                    td4.append(syncofs_btn.append(syncofs_calc).append(' Calculate'));
+                }else if(key == 'pinswap') {
+                    var pinswap_btn = $('<button>', {type:'button', class:'btn btn-primary', onclick:'pinSwapCalculator()'});
+                    var pinswap_calc = $('<i>', {class:'icons icon-magic'});
+                    td4.append(pinswap_btn.append(pinswap_calc).append(' Calculate'));
+                } else if(key == 'udcnom') {
+                    var fweak_btn = $('<button>', {type:'button', class:'btn btn-primary', onclick:'boostSlipCalculator()'});
+                    var fweak_calc = $('<i>', {class:'icons icon-magic'});
+                    td4.append(fweak_btn.append(fweak_calc).append(' Calculate'));
                 }else{
-                    td4.append(json[key].unit.replace("","°"));
+                    td4.append(json[key].unit.replace('','°'));
                 }
 
-                if(tooltip != "")
+                if(tooltip != '')
                 {
-                    td2.attr("data-toggle", "tooltip");
-                    td2.attr("data-html", true);
-                    td2.attr("title", "<h6>" + tooltip + "</h6>");
+                    td2.attr('data-toggle', 'tooltip');
+                    td2.attr('data-html', true);
+                    td2.attr('title', '<h6>' + tooltip + '</h6>');
                 }
 
                 tr.append(td1).append(td2).append(td3).append(td4);
                 tbody.append(tr);
             };
-            menu.removeClass("d-none"); //.show();
+            menu.removeClass('d-none'); //.show();
 
-            $("#saveload").removeClass("d-none");//.show();
+            $('#saveload').removeClass('d-none');//.show();
             
             $('[data-toggle="tooltip"]').tooltip({
                 template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner large"></div></div>',
@@ -1148,7 +1147,7 @@ function buildParameters()
                 html: true
             });
 
-            $("#loader-parameters").addClass("d-none"); //.hide();
+            $('#loader-parameters').addClass('d-none'); //.hide();
 
 		},
 		error: function(xhr, textStatus, errorThrown){
@@ -1160,32 +1159,32 @@ function buildParameters()
 
 function checkFirmwareUpdates(v)
 {
-    var split = v.split(".");
+    var split = v.split('.');
     var _version = parseFloat(split[0]);
     var _build = parseFloat(split[1]);
 
     var check = Math.random() >= 0.5;
     if (check === true)
     {
-        $.ajax("https://api.github.com/repos/jsphuebner/stm32-sine/releases/latest", {
+        $.ajax('https://api.github.com/repos/jsphuebner/stm32-sine/releases/latest', {
             async: false,
             dataType: 'json',
             success: function success(data) {
                 try{
-                    var release = data.tag_name.replace("v","").replace(".R","");
-                    var split = release.split(".");
+                    var release = data.tag_name.replace('v','').replace('.R','');
+                    var split = release.split('.');
                     var version = parseFloat(split[0]);
                     var build = parseFloat(split[1]);
 
-                    //console.log("Old Firmware:" + _version + " Build:" + _build);
-                    //console.log("New Firmware:" + version + " Build:" + build);
+                    //console.log('Old Firmware:' + _version + ' Build:' + _build);
+                    //console.log('New Firmware:' + version + ' Build:' + build);
 
                     if(version > _version || build > _build)
                     {
                         $.notify({
-                            icon: "icons icon-download",
-                            title: "New Firmware",
-                            message: "Available <a href='https://github.com/jsphuebner/stm32-sine/releases' target='_blank'>Download</a>"
+                            icon: 'icons icon-download',
+                            title: 'New Firmware',
+                            message: 'Available <a href="https://github.com/jsphuebner/stm32-sine/releases" target="_blank">Download</a>'
                         }, {
                             type: 'success'
                         });
@@ -1201,40 +1200,40 @@ function checkWebUpdates()
     var check = Math.random() >= 0.5;
     if (check === true)
     {
-        $.ajax("https://raw.githubusercontent.com/dimecho/Huebner-Inverter/master/Web/version.txt", {
+        $.ajax('https://raw.githubusercontent.com/dimecho/Open-Inverter-WebInterface/master/Web/version.txt', {
             async: true,
             success: function success(data) {
                 try {
-                    var split = data.split("\n");
+                    var split = data.split('\n');
                     var version = parseFloat(split[0]);
                     var build = parseFloat(split[1]);
 
-                    $.ajax("version.txt", {
+                    $.ajax('version.txt', {
                         async: true,
                         success: function success(data) {
 
-                            var _split = data.split("\n");
+                            var _split = data.split('\n');
                             var _version = parseFloat(_split[0]);
                             var _build = parseFloat(_split[1]);
 
-                            //console.log("Old Web Interface:" + _version + " Build:" + _build);
-                            //console.log("New Web Interface:" + version + " Build:" + build);
+                            //console.log('Old Web Interface:' + _version + ' Build:' + _build);
+                            //console.log('New Web Interface:' + version + ' Build:' + build);
 
                             if(version > _version || build > _build)
                             {
-                                var url = "https://github.com/dimecho/Huebner-Inverter/releases/download/";
-                                if(os === "mac"){
-                                    url += version + "Huebner.Inverter.dmg";
-                                }else if(os === "windows"){
-                                    url += version + "Huebner.Inverter.Windows.zip";
-                                }else if(os === "linux"){
-                                    url += version + "Huebner.Inverter.Linux.tgz";
-                                }else if(os === "esp8266"){
-                                    url += version + "Huebner.Inverter.ESP8266.zip";
+                                var url = 'https://github.com/dimecho/Open-Inverter-WebInterface/releases/download/';
+                                if(os === 'mac'){
+                                    url += version + 'Huebner.Inverter.dmg';
+                                }else if(os === 'windows'){
+                                    url += version + 'Huebner.Inverter.Windows.zip';
+                                }else if(os === 'linux'){
+                                    url += version + 'Huebner.Inverter.Linux.tgz';
+                                }else if(os === 'esp8266'){
+                                    url += version + 'Huebner.Inverter.ESP8266.zip';
                                 }
                                 $.notify({
-                                    icon: "icons icon-download",
-                                    title: "New Web Interface",
+                                    icon: 'icons icon-download',
+                                    title: 'New Web Interface',
                                     message: "Available <a href='" + url + "' target='_blank'>Download</a>"
                                 }, {
                                     type: 'success'

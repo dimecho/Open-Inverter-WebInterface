@@ -35,15 +35,16 @@
                     <div class="d-none container table-active table-bordered" id="saveload">
                         <div class="row p-2">
                             <div class="col">
-                                <button type="button" class="btn btn-primary" onclick="downloadSnapshot()"><i class="icons icon-down"></i> Save to File</button>
+                                <button type="button" class="btn btn-secondary" onclick="downloadSnapshot()"><i class="icons icon-down"></i> Save to File</button>
                             </div>
                             <div class="col">
-                                <button type="button" class="btn btn-success" onclick="uploadSnapshot()"><i class="icons icon-up"></i> Load from File</button>
+                                <button type="button" class="btn btn-secondary" onclick="uploadSnapshot()"><i class="icons icon-up"></i> Load from File</button>
+                            </div>
+                            <div class="col">
+                                <button type="button" class="btn btn-success" onclick="saveParameter(true)"><i class="icons icon-save"></i> Save Parameters</button>
                             </div>
                         </div>
                     </div>
-                    <a class="calculator" data-fancybox data-src="#calculator" href="javascript:;"></a>
-                    <div class="d-none fancy-box bg-light" id="calculator"></div>
                     <hr>
                 </div>
             </div>
@@ -53,15 +54,37 @@
                 </div>
             </div>
         </div>
-        <a class="macdrivers" data-fancybox data-src="#macdrivers" href="#"></a>
-        <div class="d-none bg-light" id="macdrivers">
-            <center>
-                <img src="" />
-                <br><br>
-                <p>Recommended Mac Drivers: <a href="#">mac-usb-serial.com</a></p>
-                <br>
-                <button class="btn btn-primary" type="button" onClick="$.fancybox.close();window.open('https://www.mac-usb-serial.com','_blank');"><i class="icons icon-download"></i> Download</button>
-            </center>
+        <div class="modal fade" id="calculator" tabindex="-1" role="dialog" aria-labelledby="calculatorTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg bg-light" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="calculatorTitle"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body"></div>
+                    <div class="modal-footer"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="macdrivers" tabindex="-1" role="dialog" aria-labelledby="macdriversTitle" aria-hidden="true">
+	        <div class="modal-dialog bg-light" role="document">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <h5 class="modal-title" id="macdriversTitle">MacOS Drivers</h5>
+	                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                        <span aria-hidden="true">&times;</span>
+	                    </button>
+	                </div>
+	                <div class="modal-body">
+	                	Recommended Drivers: <a href="#">mac-usb-serial.com</a>
+	                </div>
+	                <div class="modal-footer">
+	                	<button class="btn btn-primary" type="button" data-dismiss="modal" onClick="window.open('https://www.mac-usb-serial.com','_blank')"><i class="icons icon-download"></i> Download</button>
+	                </div>
+	            </div>
+	        </div>
         </div>
         <form action="snapshot.php" method="POST" enctype="multipart/form-data">
             <input type="file" name="file" class="fileUpload" hidden onchange="javascript:this.form.submit();" accept=".json,.txt">

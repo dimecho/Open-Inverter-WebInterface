@@ -15,12 +15,12 @@ foreach ($file in $phpfiles) {
   Copy-Item "..\Web\$file" -Destination .\spiffs
 }
 
-$cssfiles = 'mobile.css', 'alertify.css', 'jquery.fancybox.css', 'animate.css', 'bootstrap.css', 'bootstrap.slate.css', 'ion.rangeSlider.css', 'icons.css', 'style.css'
+$cssfiles = 'mobile.css', 'animate.css', 'bootstrap.css', 'bootstrap.slate.css', 'ion.rangeSlider.css', 'icons.css', 'style.css'
 foreach ($file in $cssfiles) {
   Copy-Item "..\Web\css\$file" -Destination .\spiffs\css
 }
 
-$jsfiles = 'esp8266.js', 'jquery.js', 'jquery.knob.js', 'potentiometer.js', 'jquery.fancybox.js', 'alertify.js', 'bootstrap.js', 'ion.rangeSlider.js', 'bootstrap-notify.js', 'firmware.js', 'can.js', 'graph.js', 'jscolor.js', 'index.js', 'menu.js', 'simple.js', 'chart.js', 'chartjs-plugin-annotation.js', 'chartjs-plugin-datalabels.js', 'test.js', 'mobile.js'
+$jsfiles = 'esp8266.js', 'jquery.js', 'jquery.knob.js', 'potentiometer.js', 'bootstrap.js', 'ion.rangeSlider.js', 'bootstrap-notify.js', 'firmware.js', 'can.js', 'graph.js', 'jscolor.js', 'index.js', 'menu.js', 'simple.js', 'chart.js', 'chartjs-plugin-annotation.js', 'chartjs-plugin-datalabels.js', 'test.js', 'mobile.js'
 foreach ($file in $jsfiles) {
   Copy-Item "..\Web\js\$file" -Destination .\spiffs\js
 }

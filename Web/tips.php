@@ -4,6 +4,7 @@
         <?php include "header.php" ?>
         <script>
             $(document).ready(function () {
+                buildMenu();
                 $.ajax("tips.csv", {
                     success: function success(data)
                     {

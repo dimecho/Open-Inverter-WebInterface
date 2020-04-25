@@ -4,11 +4,11 @@ cd "$(dirname "$0")"
 
 shopt -s nocasematch
 
-myIP=$(ifconfig | grep "inet " | grep -v "127.0.0.1" | cut -f2 -d' '| awk 'NR==1{print $1}')
-
-if [ -z "$myIP" ]; then
-    myIP="127.0.0.1"
-fi
+myIP="127.0.0.1"
+#myIP=$(ifconfig | grep "inet " | grep -v "127.0.0.1" | cut -f2 -d' '| awk 'NR==1{print $1}')
+#if [ -z "$myIP" ]; then
+#    myIP="127.0.0.1"
+#fi
 
 checkUSB()
 {
@@ -106,10 +106,10 @@ verlt() {
 }
 
 pkill -9 php
-/usr/bin/php -S 0.0.0.0:8080 -t "$(dirname "$0")/Web/" &
-#/usr/bin/php -S 0.0.0.0:8081 -t "$(dirname "$0")/Web/" &
+#/usr/bin/php -S 0.0.0.0:8080 -t "$(dirname "$0")/Web/" &
+/usr/bin/php -S 127.0.0.1:8080 -t "$(dirname "$0")/Web/" &
 sleep 2
 
-checkDrivers
+#checkDrivers
 
 checkUSB

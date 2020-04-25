@@ -23,9 +23,6 @@ canvas {
 .hidden {
   display: none;
 }
-.btn-space {
-  margin-right: 6px;
-}
 .icon-status {
   font-size: 2em;
   margin: 8px auto;

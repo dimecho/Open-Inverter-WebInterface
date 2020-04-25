@@ -4,6 +4,8 @@ $(document).ready(function () {
 
     $.notify({ message: 'Experimental Area' }, { type: 'danger' });
 
+    buildMenu();
+    
     buildSimpleParameters();
 
     $("#brknompedal-enabled").click(function () {

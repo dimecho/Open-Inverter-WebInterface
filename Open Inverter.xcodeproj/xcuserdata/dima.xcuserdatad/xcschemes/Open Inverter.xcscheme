@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1110"
+   LastUpgradeVersion = "1130"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "32D281AD1CF0066E00606B12"
-               BuildableName = "Huebner Inverter.app"
-               BlueprintName = "Huebner Inverter"
-               ReferencedContainer = "container:Huebner Inverter.xcodeproj">
+               BuildableName = "Open Inverter.app"
+               BlueprintName = "Open Inverter"
+               ReferencedContainer = "container:Open Inverter.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -31,9 +31,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "32D281AD1CF0066E00606B12"
-            BuildableName = "Huebner Inverter.app"
-            BlueprintName = "Huebner Inverter"
-            ReferencedContainer = "container:Huebner Inverter.xcodeproj">
+            BuildableName = "Open Inverter.app"
+            BlueprintName = "Open Inverter"
+            ReferencedContainer = "container:Open Inverter.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -42,9 +42,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "32D281BE1CF0066F00606B12"
-               BuildableName = "Huebner InverterTests.xctest"
-               BlueprintName = "Huebner InverterTests"
-               ReferencedContainer = "container:Huebner Inverter.xcodeproj">
+               BuildableName = "Open InverterTests.xctest"
+               BlueprintName = "Open InverterTests"
+               ReferencedContainer = "container:Open Inverter.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -52,9 +52,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "32D281C91CF0066F00606B12"
-               BuildableName = "Huebner InverterUITests.xctest"
-               BlueprintName = "Huebner InverterUITests"
-               ReferencedContainer = "container:Huebner Inverter.xcodeproj">
+               BuildableName = "Open InverterUITests.xctest"
+               BlueprintName = "Open InverterUITests"
+               ReferencedContainer = "container:Open Inverter.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -74,9 +74,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "32D281AD1CF0066E00606B12"
-            BuildableName = "Huebner Inverter.app"
-            BlueprintName = "Huebner Inverter"
-            ReferencedContainer = "container:Huebner Inverter.xcodeproj">
+            BuildableName = "Open Inverter.app"
+            BlueprintName = "Open Inverter"
+            ReferencedContainer = "container:Open Inverter.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -91,9 +91,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "32D281AD1CF0066E00606B12"
-            BuildableName = "Huebner Inverter.app"
-            BlueprintName = "Huebner Inverter"
-            ReferencedContainer = "container:Huebner Inverter.xcodeproj">
+            BuildableName = "Open Inverter.app"
+            BlueprintName = "Open Inverter"
+            ReferencedContainer = "container:Open Inverter.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

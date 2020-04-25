@@ -1,4 +1,4 @@
-Write-Host "`nHuebner Inverter - Console Management`n"  -ForegroundColor Green
+Write-Host "`nOpen Inverter - Console Management`n"  -ForegroundColor Green
 
 function Elevate() {
 	# Get the ID and security principal of the current user account

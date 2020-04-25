@@ -2,6 +2,7 @@
 <html>
     <head>
         <?php include "header.php" ?>
+        <script>$(document).ready(function(){buildMenu()})</script>
     </head>
     <body>
         <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>

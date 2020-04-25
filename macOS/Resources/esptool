@@ -18,13 +18,13 @@ else
 
 		    os_ver=$(sw_vers -productVersion)
 		    if [[ $os_ver == 10.15* ]]; then
-			   echo "PATH=$PATH:$HOME/Library/Python/2.7/bin" > ~/.zshrc
+			   echo "export PATH=$PATH:$HOME/Library/Python/2.7/bin" > ~/.zprofile
 			else
-			   echo "PATH=$PATH:$HOME/Library/Python/2.7/bin" > ~/.bashrc
+			   echo "export PATH=$PATH:$HOME/Library/Python/2.7/bin" > ~/.bashrc
 			fi
 		fi
 
-		if [ ! -d ~/Library/Python/2.7/lib/python/site-packages/serial ] && [ ! -d /Library/Python/2.7/site-packages/serial]; then
+		if [ ! -d ~/Library/Python/2.7/lib/python/site-packages/serial ] && [ ! -d /Library/Python/2.7/site-packages/serial ]; then
 			pip install pyserial --user
 		fi
 

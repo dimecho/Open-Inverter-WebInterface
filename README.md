@@ -1,8 +1,14 @@
 <p align="center"><img src="macOS/Assets.xcassets/AppIcon.appiconset/128x128.png?raw=true"></p>
 
-# Huebner Inverter - Web Interface
+# Open Inverter - Alternative Web Interface
 
-Web Interface for [Huebner Inverter Project](https://github.com/jsphuebner/stm32-sine) controlling 3-phase AC Induction Motors.
+Alternative Web Interface for [OpenInverter.org Project](https://openinverter.org/forum)
+
+- Inverter [Hardware](https://github.com/jsphuebner/inverter-hardware)
+- Inverter [Firmware](https://github.com/jsphuebner/stm32-sine)
+- Original [Web Interface](https://github.com/jsphuebner/esp8266-web-interface)
+
+## Features
 
 > **All-in-One**
 > * RS232-USB Drivers
@@ -26,15 +32,15 @@ Web Interface for [Huebner Inverter Project](https://github.com/jsphuebner/stm32
 
 ## Download
 
-![Mac](Web/img/mac.png?raw=true) [Download for Mac](../../releases/download/1.0/Huebner.Inverter.dmg)
+![Mac](Web/img/mac.png?raw=true) [Download for Mac](../../releases/download/1.0/Open.Inverter.Web.dmg)
 
-![Windows](Web/img/win.png?raw=true) [Download for Windows](../../releases/download/1.0/Huebner.Inverter.Windows.zip)
+![Windows](Web/img/win.png?raw=true) [Download for Windows](../../releases/download/1.0/Open.Inverter.Web.zip)
 
-![Linux](Web/img/linux.png?raw=true) [Download for Linux](../../releases/download/1.0/Huebner.Inverter.Linux.tgz)
+![Linux](Web/img/linux.png?raw=true) [Download for Linux](../../releases/download/1.0/Open.Inverter.Web.tgz)
 
-![ESP8266](Web/img/esp8266.png?raw=true) [Download for ESP8266](../../releases/download/1.0/Huebner.Inverter.ESP8266.zip)
+![ESP8266](Web/img/esp8266.png?raw=true) [Download for ESP8266](../../releases/download/1.0/Open.Inverter.ESP8266.zip)
 
-![RaspberryPi](Web/img/pi.png?raw=true) [Download for RaspberryPi](../../releases/download/1.0/Huebner.Inverter.Pi.zip)
+![RaspberryPi](Web/img/pi.png?raw=true) [Download for RaspberryPi](../../releases/download/1.0/Open.Inverter.Pi.zip)
 
 ## Author
 

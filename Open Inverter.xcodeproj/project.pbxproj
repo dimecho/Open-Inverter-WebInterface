@@ -41,7 +41,7 @@
 		32724CEB21E1DDA700127D21 /* cantact */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = cantact; path = macOS/Resources/cantact; sourceTree = "<group>"; };
 		328002001D6AAA4A001C5E4E /* run */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = run; path = macOS/Resources/run; sourceTree = "<group>"; };
 		32836C6A21C9F09D0009C3D5 /* stlink */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = stlink; path = macOS/Resources/stlink; sourceTree = "<group>"; };
-		32D281AE1CF0066E00606B12 /* Huebner Inverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Huebner Inverter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		32D281AE1CF0066E00606B12 /* Open Inverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open Inverter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		32D281B31CF0066E00606B12 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Application.swift; path = Sources/Application.swift; sourceTree = "<group>"; };
 		32D281B51CF0066F00606B12 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		32D281B81CF0066F00606B12 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -82,7 +82,7 @@
 		32D281AF1CF0066E00606B12 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				32D281AE1CF0066E00606B12 /* Huebner Inverter.app */,
+				32D281AE1CF0066E00606B12 /* Open Inverter.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -127,9 +127,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		32D281AD1CF0066E00606B12 /* Huebner Inverter */ = {
+		32D281AD1CF0066E00606B12 /* Open Inverter */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 32D281D31CF0066F00606B12 /* Build configuration list for PBXNativeTarget "Huebner Inverter" */;
+			buildConfigurationList = 32D281D31CF0066F00606B12 /* Build configuration list for PBXNativeTarget "Open Inverter" */;
 			buildPhases = (
 				32D281AA1CF0066E00606B12 /* Sources */,
 				32D281AB1CF0066E00606B12 /* Frameworks */,
@@ -139,9 +139,9 @@
 			);
 			dependencies = (
 			);
-			name = "Huebner Inverter";
-			productName = "Huebner Inverter";
-			productReference = 32D281AE1CF0066E00606B12 /* Huebner Inverter.app */;
+			name = "Open Inverter";
+			productName = "Open Inverter";
+			productReference = 32D281AE1CF0066E00606B12 /* Open Inverter.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -151,7 +151,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 1110;
+				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					32D281AD1CF0066E00606B12 = {
@@ -160,7 +160,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 32D281A91CF0066E00606B12 /* Build configuration list for PBXProject "Huebner Inverter" */;
+			buildConfigurationList = 32D281A91CF0066E00606B12 /* Build configuration list for PBXProject "Open Inverter" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -173,7 +173,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				32D281AD1CF0066E00606B12 /* Huebner Inverter */,
+				32D281AD1CF0066E00606B12 /* Open Inverter */,
 			);
 		};
 /* End PBXProject section */
@@ -343,11 +343,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 41;
 				INFOPLIST_FILE = macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				PRODUCT_BUNDLE_IDENTIFIER = "Huebner-Inverter";
+				PRODUCT_BUNDLE_IDENTIFIER = "Open-Inverter";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
@@ -360,11 +360,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 41;
 				INFOPLIST_FILE = macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				PRODUCT_BUNDLE_IDENTIFIER = "Huebner-Inverter";
+				PRODUCT_BUNDLE_IDENTIFIER = "Open-Inverter";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
@@ -374,7 +374,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		32D281A91CF0066E00606B12 /* Build configuration list for PBXProject "Huebner Inverter" */ = {
+		32D281A91CF0066E00606B12 /* Build configuration list for PBXProject "Open Inverter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				32D281D11CF0066F00606B12 /* Debug */,
@@ -383,7 +383,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		32D281D31CF0066F00606B12 /* Build configuration list for PBXNativeTarget "Huebner Inverter" */ = {
+		32D281D31CF0066F00606B12 /* Build configuration list for PBXNativeTarget "Open Inverter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				32D281D41CF0066F00606B12 /* Debug */,

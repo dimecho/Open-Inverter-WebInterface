@@ -176,10 +176,10 @@
 							<div class="row mt-4"></div>
                             <div class="row">
                                 <div class="col">
-                                    <button class="btn btn-success" type="button" onClick="$('.hwtestconfirm').trigger('click');"><i class="icons icon-chip"></i> Flash Test Firmware</button>
+                                    <button class="btn btn-success" type="button" onClick="$('#hwtestconfirm').modal()"><i class="icons icon-chip"></i> Flash Test Firmware</button>
                                 </div>
                                 <div class="col">
-									<button class="btn btn-success" type="button" onClick="hardwareTestRun();"><i class="icons icon-test"></i> Run Test Results</button>
+									<button class="btn btn-success" type="button" onClick="hardwareTestRun()"><i class="icons icon-test"></i> Run Test Results</button>
                                 </div>
                             </div>
                             <div class="row mt-4"></div>
@@ -203,24 +203,23 @@
                 </div>
             </div>
         </div>
-        <a class="hwtestconfirm" data-fancybox data-src="#hwtestconfirm" href="javascript:;"></a>
-        <div class="d-none" id="hwtestconfirm" style="width:60%;border-radius:5px">
-            <div class="container">
-                <div class="row">
-                    <div class="col" align="center">
-                        <h4><i class="icons icon-alert"></i> Warning: This test will <font color=red>ERASE FLASH</font></h4><br>
-                        Debugger (JTAG/ST-Link) <b>AND</b> Serial (UART) must be connected.<br><br>
-                        After the test is complete you will need to flash original bootloader and firmware.<br>
-                    </div>
+        <div class="modal fade" id="hwtestconfirm" tabindex="-1" role="dialog" aria-labelledby="hwtestconfirmTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg bg-light" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="hwtestconfirmTitle">Warning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="row"><hr></div>
-                <div class="row">
-                    <div class="col" align="center">
-                        <button class="btn btn-danger" type="button" onClick="$.fancybox.close();"><i class="icons icon-cancel"></i> Cancel</button>
-                    </div>
-                    <div class="col" align="center">
-                        <button class="btn btn-success" type="button" onClick="startTest();"><i class="icons icon-ok"></i> Continue Test</button>
-                    </div>
+                <div class="modal-body">
+                    <h4><i class="icons icon-alert"></i> Warning: This test will <font color=red>ERASE FLASH</font></h4>
+                    <br>Debugger (JTAG/ST-Link) <b>AND</b> Serial (UART) must be connected.<br><br>
+                        After the test is complete you will need to flash original bootloader and firmware.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="icons icon-cancel"></i> Cancel</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onClick="startTest()"><i class="icons icon-ok"></i> Continue Test</button>
                 </div>
             </div>
         </div>

@@ -13,9 +13,9 @@ else
         tar xzfv ~/Downloads/xpack-openocd-0.10.0-13-darwin-x64.tgz -C /usr/local/share
         case ":$PATH:" in
           *:$xPacksPath/bin:*) echo $PATH;;
-          *) echo "PATH=\${PATH}:$xPacksPath/bin" >> ~/.zshrc;;
+          *) echo "export PATH=\${PATH}:$xPacksPath/bin" >> ~/.zprofile;;
         esac
-        source ~/.zshrc
+        source ~/.zprofile
     else
         export PATH="$PATH:$xPacksPath/bin/"
         cd $xPacksPath/scripts/

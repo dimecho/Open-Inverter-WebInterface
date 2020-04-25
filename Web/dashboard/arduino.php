@@ -4,7 +4,10 @@
         <?php include "header.php" ?>
         <link rel="stylesheet" href="css/androidstudio.css">
         <script src="js/highlight.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
+        <script>
+            $(document).ready(function(){buildMenu()});
+            hljs.initHighlightingOnLoad();
+        </script>
     </head>
     <body>
         <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>

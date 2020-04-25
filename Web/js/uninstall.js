@@ -1,3 +1,7 @@
+$(document).ready(function () {
+    buildMenu();
+});
+
 function UninstallEverything() {
 
     checked = false;

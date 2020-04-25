@@ -14,7 +14,7 @@
                     <table class="table table-active bg-light table-bordered">
                         <tr>
                             <td>
-                                <span class="icons icon-trash"></span> Remove Software installed by Huebner Inverter.
+                                <span class="icons icon-trash"></span> Remove Software installed by Open Inverter.
                             </td>
                         </tr>
                     </table>
@@ -55,5 +55,6 @@
                 </div>
             </div>
         </div>
+        <?php include "footer.php" ?>
     </body>
 </html>

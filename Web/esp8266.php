@@ -37,7 +37,7 @@
 				<table class="table table-active bg-light table-bordered d-none" id="esp8266-download-firmware">
                     <tr>
                         <td>
-                            <button type="button" class="btn btn-primary" onClick="window.open('https://github.com/dimecho/Huebner-Inverter/releases/download/1.0/Huebner.Inverter.ESP8266.zip')"><i class="icons icon-download"></i> Download Firmware</button>
+                            <button type="button" class="btn btn-primary" onClick="window.open('https://github.com/dimecho/Open-Inverter-WebInterface/releases/download/1.0/Huebner.Inverter.ESP8266.zip')"><i class="icons icon-download"></i> Download Firmware</button>
                         </td>
                     </tr>
                 </table>
@@ -49,29 +49,6 @@
 							require "upload-status.php";
 	                    }else{
 	                	?>
-	                	<script>
-								$(document).ready(function() {
-									if(os != "esp8266") {
-
-										unblockSerial();
-
-										$.ajax("serial.php?com=list", {
-											async: false,
-											success: function(data) {
-												//console.log(data);
-												var s = data.split('\n');
-												for (var i = 0; i < s.length; i++) {
-													if(s[i] != "")
-														$("#firmware-interface").append($("<option>",{value:s[i]}).append(s[i]));
-												}
-											}
-										});
-									}
-									$("#firmware-interface").prop('selectedIndex', 0);
-									$(".spinner-border").addClass("d-none"); //.hide();
-									$(".input-group-addon").removeClass("d-none"); //.show();
-								});
-	                        </script>
                     	<center>
                         	<div class="spinner-border text-dark"></div>
                             <div class="input-group w-100">
@@ -106,7 +83,7 @@
                         	<center><div class="spinner-border text-dark"></div></center>
                         	<form method="POST" action="/nvram" id="parameters" oninput="formValidate()">
                         		<fieldset class="form-group">
-                        			<legend>ESP8266 Wireless Connection:</legend>
+                        			<legend>ESP8266 Wireless:</legend>
 		                        	<div class="form-check">
 		                        		<label class="form-check-label">
 									    <input type="radio" class="form-check-input" id="WiFiModeAP" name="WiFiMode" value="0">
@@ -168,15 +145,46 @@
 								<div class="form-group">
 									<div class="form-check">
 									  <label class="form-check-label">
-										  	<input type="hidden" id="EnableSWD" name="EnableSWD" value="0">
-									    	<input type="checkbox" id="EnableSWDCheckbox" class="form-check-input" onclick="HiddenCheck('EnableSWD',this)"> Enable SWD
+										  	<input type="hidden" id="EnableLOG" name="EnableLOG" value="0">
+									    	<input type="checkbox" id="EnableLOGCheckbox" class="form-check-input" onclick="HiddenCheck('EnableLOG',this)"> Enable LOG
 									  </label>
 									</div>
+									<div class="input-group">
+									  	<input type="text" id="EnableLOGInterval" name="EnableLOGInterval" class="form-control" placeholder="Log Interval (seconds)">
+									</div>
+								</div>
+								<fieldset class="form-group">
+                        			<legend>ESP8266 Network:</legend>
 									<div class="form-check">
 									  <label class="form-check-label">
-										  	<input type="hidden" id="EnableCAN" name="EnableCAN" value="0">
-								    		<input type="checkbox" id="EnableCANCheckbox" class="form-check-input" onclick="HiddenCheck('EnableCAN',this)"> Enable CAN
+									  	<input type="hidden" id="WiFiDHCP" name="WiFiDHCP" value="0">
+									    <input type="checkbox" id="WiFiDHCPCheckbox" class="form-check-input" onclick="HiddenCheck('WiFiDHCP',this)">
+									    	Enable DHCP
 									  </label>
+									</div>
+								</fieldset>
+								<div class="form-group">
+									<div class="input-group">
+								    	<div class="input-group-addon"><i class="icons icon-wifi p-3"></i></div>
+								    	<input type="text" id="WiFiIP" name="WiFiIP" class="form-control" placeholder="IPv4 Address (192.168.0.2)" required>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="input-group">
+								    	<div class="input-group-addon"><i class="icons icon-wifi p-3"></i></div>
+								    	<input type="text" id="WiFiSubnet" name="WiFiSubnet" class="form-control" placeholder="Subnet Mask (255.255.255.0)" required>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="input-group">
+								    	<div class="input-group-addon"><i class="icons icon-wifi p-3"></i></div>
+								    	<input type="text" id="WiFiGateway" name="WiFiGateway" class="form-control" placeholder="Gateway Address (192.168.0.1)" required>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="input-group">
+								    	<div class="input-group-addon"><i class="icons icon-wifi p-3"></i></div>
+								    	<input type="text" id="WiFiDNS" name="WiFiDNS" class="form-control" placeholder="DNS Address (8.8.8.8)" required>
 									</div>
 								</div>
 								<center><button type="submit" class="btn btn-success"><i class="icons icon-ok"></i> Save</button></center>

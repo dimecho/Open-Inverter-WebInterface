@@ -54,8 +54,8 @@ session_start();
         $uname = strtolower(php_uname('s'));
         if (strpos($uname, "darwin") !== false) {
             echo dirname(dirname(dirname(__DIR__)));
-            //exec("pkill \"Huebner Inverter\"");
-            exec("\"../../MacOS/Huebner Inverter\" reload > /dev/null 2>&1 &");
+            //exec("pkill \"Open Inverter\"");
+            exec("\"../../MacOS/Open Inverter\" reload > /dev/null 2>&1 &");
             //exec("open -g -a \"" . dirname(dirname(dirname(__DIR__))). "\" reload");
         }
     }
@@ -386,11 +386,11 @@ session_start();
                 }
             }else if($cmd === "all\n"){
                 $read = stream_get_contents($uart, 1024); //fread($uart,1024);
-                while (substr($read, -5) !== "qspnt") {
+                while (substr($read, -5) !== "qspnt" || substr($read, -7) !== "cpuload") {
                     $read .= stream_get_contents($uart, 1); //fread($uart,1);
                 }
                 $read .= uart_read_line($uart);
-                //$read .= uart_read_eof($uart,array("qspnt"));
+                //$read .= uart_read_eof($uart,null);
             }else if($cmd === "get lasterr\n"){
                 //(blocking UART) cheat a little, get last error and loop until found
                 $errorcodes = array("NONE", "OVERCURRENT", "THROTTLE1", "THROTTLE2", "CANTIMEOUT", "EMCYSTOP", "MPROT", "DESAT", "OVERVOLTAGE", "ENCODER", "PRECHARGE", "TMPHSMAX", "CURRENTLIMIT", "PWMSTUCK", "HICUROFS1", "HICUROFS2", "HIRESOFS", "LORESAMP");

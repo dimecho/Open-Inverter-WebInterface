@@ -13,8 +13,8 @@ else
         tar xzfv ~/Downloads/avr8-gnu-toolchain-osx-3.6.2.503-darwin.any.x86_64.tar.gz -C /usr/local/share
         case ":$PATH:" in
 		  *:$AVRPath/bin:*) echo $PATH;;
-		  *) echo "PATH=\${PATH}:$AVRPath/bin" >> ~/.zshrc;;
+		  *) echo "export PATH=\${PATH}:$AVRPath/bin" >> ~/.zprofile;;
 		esac
-		source ~/.zshrc
+		source ~/.zprofile
     fi
 fi

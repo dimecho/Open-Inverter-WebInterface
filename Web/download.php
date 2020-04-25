@@ -181,10 +181,9 @@
     </head>
     <body>
         <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
-        <div class="row mt-5"></div>
-        <div class="row mt-5"></div>
         <div class="container">
-            <br><br>
+            <div class="row mt-5"></div>
+            <div class="row mt-5"></div>
             <div class="row">
                 <div class="col">
                     <center>
@@ -222,34 +221,39 @@
                             </tbody>
                         </table>
                     </center>
-                    <a class="checksum" data-fancybox data-src="#checksum" href="javascript:;"></a>
-                    <div class="hidden" id="checksum" style="width:60%;border-radius:5px">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col" align="center">
-                                    <h4><i class="icons icon-alert"></i> Warning: Wrong Checksum</h4><br>
-                                </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="checksum" tabindex="-1" role="dialog" aria-labelledby="checksumTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered bg-light" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="checksumTitle"><i class="icons icon-alert"></i> Warning: Wrong Checksum</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body container">
+                        <div class="row">
+                            <div class="col" align="left">
+                                Downloaded File:<br>
+                                Expected Cheksum:<br>
+                                Received Checksum:<br>
                             </div>
-                            <div class="row">
-                                <div class="col" align="left">
-                                    Downloaded File:<br>
-                                    Expected Cheksum:<br>
-                                    Received Checksum:<br>
-                                </div>
-                                <div class="col" align="left">
-                                    <span class="badge badge-secondary bg-dark" id="checksum_file"><?php echo $destination; ?></span>
-                                    <span class="badge badge-secondary bg-success" id="checksum_good"></span>
-                                    <span class="badge badge-secondary bg-danger" id="checksum_bad"></span>
-                                </div>
+                            <div class="col" align="left">
+                                <span class="badge badge-secondary bg-dark" id="checksum-file"><?php echo $destination; ?></span>
+                                <span class="badge badge-secondary bg-success" id="checksum-good"></span>
+                                <span class="badge badge-secondary bg-danger" id="checksum-bad"></span>
                             </div>
-                            <div class="row"><hr></div>
-                            <div class="row">
-                                <div class="col" align="center">
-                                    <button class="btn btn-danger" type="button" onClick="$.fancybox.close();"><i class="icons icon-cancel"></i> Cancel</button>
-                                </div>
-                                <div class="col" align="center">
-                                    <button class="btn btn-success" type="button" id="continue_install"><i class="icons icon-ok"></i> Continue Installing</button>
-                                </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer container">
+                        <div class="row">
+                            <div class="col" align="center">
+                                <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="icons icon-cancel"></i> Cancel</button>
+                            </div>
+                            <div class="col" align="center">
+                                <button class="btn btn-success" type="button" data-dismiss="modal" id="continue-install"><i class="icons icon-ok"></i> Continue Installing</button>
                             </div>
                         </div>
                     </div>

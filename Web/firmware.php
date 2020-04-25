@@ -163,45 +163,12 @@
 								require "upload-status.php";
 	                        }else{
 	                        ?>
-							<script>
-								$(document).ready(function() {
-									if(os == "esp8266") {
-										$("#firmware-interface").append($("<option>",{value:"uart-esp8266",selected:"selected"}).append("UART over ESP8266"));
-										$("#firmware-interface").append($("<option>",{value:"swd-esp8266"}).append("SWD over ESP8266"));
-									}else{
-										unblockSerial();
-										for (var i = 0; i < jtag_interface.length; i++) {
-											$("#firmware-interface").append($("<option>",{value:jtag_interface[i]}).append(jtag_name[i]));
-										}
-										$("#firmware-interface").prop('selectedIndex', 2);
-										$.ajax("serial.php?com=list", {
-											async: false,
-											success: function(data) {
-												//console.log(data);
-												if(data.length > 1) {
-													var s = data.split('\n');
-													for (var i = 0; i < s.length; i++) {
-														if(s[i] != "")
-															$("#firmware-interface").append($("<option>",{value:s[i]}).append(s[i]));
-													}
-													$("#firmware-interface").prop('selectedIndex', (jtag_interface.length + s.length - 2));
-												}
-											}
-										});
-									}
-									$(".spinner-border").addClass("d-none"); //.hide();
-									$(".input-group-addon").removeClass("d-none"); //.show();
-
-									setInterfaceImage();
-									displayHWVersion();
-								});
-	                        </script>
 							<center>
                             <div class="spinner-border text-dark"></div>
                             <div class="input-group w-100">
                                 <div class="input-group-addon d-none w-75">
 									<form enctype="multipart/form-data" action="firmware.php" method="POST" id="firmwareForm">
-										<input name="firmware" type="file" class="file" hidden onchange="firmwareUpload()" />
+										<input name="firmware" type="file" class="file" hidden accept=".bin,.hex" onchange="firmwareUpload()">
 										<select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage()" id="firmware-interface"></select>
 									</form>
 								</div>

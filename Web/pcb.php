@@ -31,6 +31,7 @@ if(isset($_GET["find"])) {
         <script src="js/pcb.js"></script>
         <script>
         $(document).ready(function () {
+            buildMenu();
             <?php
             if(isset($_GET["hardware"])){
                 echo "loadComponents('" . $_GET["hardware"] . "');";

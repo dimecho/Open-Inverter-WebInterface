@@ -4,6 +4,10 @@ var explodeDirection = [];
 var renderColor = 0xffffff;
 var gridColor = 0xabb2b9;
 
+$(document).ready(function () {
+    buildMenu();
+});
+
 function initialize3D(id) {
 
 	if(theme == ".slate") {

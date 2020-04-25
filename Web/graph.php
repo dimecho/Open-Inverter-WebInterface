@@ -65,74 +65,87 @@
                 </div>
             </div>
         </div>
-        <a class="graphSettings" data-fancybox data-src="#graphSettings" href="#"></a>
-        <div class="hidden bg-light" id="graphSettings" style="width:60%;border-radius:5px">
-            <div class="container">
-                <div class="row">
-                    <div class="col">
-                        <fieldset class="form-group">
-                            <legend>Chart Settings:</legend>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="checkbox" name="roundEdges" class="form-check-input"> Round Sharp Edges
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="checkbox" name="showDataLabels" class="form-check-input"> Show Data Labels
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="checkbox" name="showAnimation" class="form-check-input"> Show Animation
-                                </label>
-                            </div>
-                        </fieldset>
-                    </div>
+        <div class="modal fade" id="graphSettings" tabindex="-1" role="dialog" aria-labelledby="graphSettingsTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="graphSettingsTitle">Chart Settings:</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="row"><hr></div>
-                <div class="row">
-                    <div class="col">Time Segments</div>
-                    <div class="col">
-                        <input type="text" name="graphDivision" class="form-control">
+                <div class="modal-body container">
+                    <div class="row">
+                        <div class="col">
+                            <fieldset class="form-group">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" name="roundEdges" class="form-check-input"> Round Sharp Edges
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" name="showDataLabels" class="form-check-input"> Show Data Labels
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" name="showAnimation" class="form-check-input"> Show Animation
+                                    </label>
+                                </div>
+                            </fieldset>
+                        </div>
                     </div>
+                    <div class="row"><hr></div>
+                    <div class="row">
+                        <div class="col">Time Segments</div>
+                        <div class="col">
+                            <input type="text" name="graphDivision" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">Line Width</div>
+                        <div class="col">
+                            <input type="text" name="lineWidth" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">Stream Loop</div>
+                        <div class="col">
+                            <input type="text" name="streamLoop" class="form-control" value=1>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">Max Scroll Pages</div>
+                        <div class="col">
+                            <input type="text" name="pageLimit" class="form-control" value=4>
+                        </div>
+                    </div>
+                    <div class="row"><hr></div>
                 </div>
-                <div class="row">
-                    <div class="col">Line Width</div>
-                    <div class="col">
-                        <input type="text" name="lineWidth" class="form-control">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">Stream Loop</div>
-                    <div class="col">
-                        <input type="text" name="streamLoop" class="form-control" value=1>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">Max Scroll Pages</div>
-                    <div class="col">
-                        <input type="text" name="pageLimit" class="form-control" value=4>
-                    </div>
-                </div>
-                <div class="row"><hr></div>
-                <div class="row text-center">
-                    <div class="col">
-                        <button class="browse btn btn-primary" type="button" onClick="$.fancybox.close();graphSettings(true);"><i class="icons icon-ok"></i> OK</button>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onClick="graphSettings(true)">OK</button>
                 </div>
             </div>
         </div>
-		<a class="graphPoints" data-fancybox data-src="#graphPoints" href="#"></a>
-        <div class="hidden bg-light" id="graphPoints" style="width:60%;border-radius:5px">
-            <div class="container" id="buildPointsMenu"></div>
-            <div class="container">
-                <div class="row text-center">
-                    <div class="col">
-                        <button class="browse btn btn-primary" type="button" onClick="$.fancybox.close();"><i class="icons icon-ok"></i> OK</button>
-                    </div>
+        </div>
+        <div class="modal fade" id="graphPoints" tabindex="-1" role="dialog" aria-labelledby="graphPointsTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="graphPointsTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container" id="buildPointsMenu"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="browse btn btn-primary" type="button" data-dismiss="modal"><i class="icons icon-ok"></i> OK</button>
                 </div>
             </div>
+        </div>
         </div>
         <?php include "footer.php" ?>
     </body>

@@ -25,6 +25,12 @@
     <head>
         <?php include "header.php" ?>
 		<script src="js/firmware.js"></script>
+        <script>
+            $(document).ready(function() {
+                $("#firmware-interface").prop('selectedIndex', 0);
+                setInterfaceImage();
+            });
+        </script>
     </head>
     <body>
         <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
@@ -48,42 +54,25 @@
     							require "upload-status.php";
                             }else{
                             ?>
-                               <script>
-                                    $(document).ready(function() {
-    									if(os == "esp8266") {
-    										$("#firmware-interface").append($("<option>",{value:"swd-esp8266",selected:'selected'}).append("SWD over ESP8266"));
-    									}else{
-                                            unblockSerial();
-    										for (var i = 0; i < jtag_interface.length; i++) {
-    											$("#firmware-interface").append($("<option>",{value:jtag_interface[i],selected:'selected'}).append(jtag_name[i]));
-    										}
-    									}
-                                        $("#firmware-interface").prop('selectedIndex', 0);
-    									$(".spinner-border").addClass("d-none"); //.hide();
-    									$(".input-group-addon").removeClass("d-none"); //.show();
-                                        setInterfaceImage();
-                                        displayHWVersion();
-                                    });
-                                </script>
-    							<center>
-    							<div class="spinner-border text-dark"></div>
-                                <div class="input-group w-100">
-                                    <span class = "input-group-addon d-none w-75">
-    								    <form enctype="multipart/form-data" action="bootloader.php" method="POST" id="firmwareForm">
-    										<input name="firmware" type="file" class="file" hidden onchange="firmwareUpload()" />
-    										<select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage()" id="firmware-interface"></select>
-    									</form>
-    								</span>
-                                    <span class = "input-group-addon d-none w-25 text-center">
-    									<button class="browse btn btn-primary" type="button"><i class="icons icon-select"></i> Select stm32_loader.bin</button>
-    								</span>
-                                </div>
-                                <br><br><h2 id="jtag-name"></h2>
-    							<span class="badge badge-lg bg-warning" id="jtag-txt"></span><br><br>
-                                <img src="" id="jtag-image" class="img-thumbnail rounded" />
-    							</center>
+							<center>
+							<div class="spinner-border text-dark"></div>
+                            <div class="input-group w-100">
+                                <span class = "input-group-addon d-none w-75">
+								    <form enctype="multipart/form-data" action="bootloader.php" method="POST" id="firmwareForm">
+										<input name="firmware" type="file" class="file" hidden accept=".bin,.hex" onchange="firmwareUpload()">
+										<select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage()" id="firmware-interface"></select>
+									</form>
+								</span>
+                                <span class = "input-group-addon d-none w-25 text-center">
+									<button class="browse btn btn-primary" type="button"><i class="icons icon-select"></i> Select stm32_loader.bin</button>
+								</span>
+                            </div>
+                            <br><br><h2 id="jtag-name"></h2>
+							<span class="badge badge-lg bg-warning" id="jtag-txt"></span><br><br>
+                            <img src="" id="jtag-image" class="img-thumbnail rounded" />
+							</center>
                             <?php
-    							} 
+    							}
     						?>
                             </td>
                         </tr>

@@ -35,3 +35,4 @@ Firmware,The symptom of the motor turning slowly is almost certainly caused by a
 Battery, Put fuse in the middle of the pack. If there is a short circuit, your battery is immediately split into half voltage.
 Firmware,CAN parameters are internally scaled with 32. Say you set fslipmin to 1 then it will be "32" in memory, set to 1.5 it is "48" in memory.
 Hardware v3,Leaf inverter should be operated at 8.8kHz.
+Hardware v3,FOC code needs to use correct sensor on correct phase. 'pinswap' parameter in software able to swap the source, but swapping sensor wires physicaly is better.

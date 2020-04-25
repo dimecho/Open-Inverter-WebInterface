@@ -9,7 +9,7 @@
         <script src="js/3d/DRACOLoader.js"></script>
         <script src="js/3d/OrbitControls.js"></script>
         <script src="js/3d/Projector.js"></script>
-        
+        <script src="js/design.js"></script>
 		<style>
 			canvas { width: 100%; height: 100% }
 		</style>
@@ -44,6 +44,6 @@
                 </div>
             </div>
         </div>
+        <?php include "footer.php" ?>
     </body>
-    <script src="js/design.js"></script>
 </html>
