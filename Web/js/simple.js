@@ -38,7 +38,7 @@ function buildSimpleParameters() {
 
     $("#loader-parameters").removeClass("d-none"); //.show();
 
-    var json = sendCommand("json");
+    var json = sendCommand("json", 0);
 
     if(Object.keys(json).length > 0)
     {

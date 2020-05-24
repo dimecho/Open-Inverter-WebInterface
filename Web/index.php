@@ -41,7 +41,7 @@
                                 <button type="button" class="btn btn-secondary" onclick="uploadSnapshot()"><i class="icons icon-up"></i> Load from File</button>
                             </div>
                             <div class="col">
-                                <button type="button" class="btn btn-success" onclick="saveParameter(true)"><i class="icons icon-save"></i> Save Parameters</button>
+                                <button type="button" class="btn btn-secondary" id="save-parameters" onclick="saveParameter(true)"><i class="icons icon-save"></i> Save Parameters</button>
                             </div>
                         </div>
                     </div>

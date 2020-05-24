@@ -16,7 +16,8 @@ var hardware_name = [
     'Hardware v2.0',
     'Hardware v3.0',
     'Hardware Tesla',
-    'Hardware Blue-Pill'
+    'Hardware Blue-Pill',
+    'Hardware Prius'
 ];
 var statusRefreshTimer;
 var saveReminderTimer;
@@ -146,7 +147,7 @@ function displayHWVersion()
     }
 
     if (sn == undefined) {
-        sn = sendCommand('serial');
+        sn = sendCommand('serial', 0);
         setCookie('sn', sn, 1);
         console.log('Serial:' + sn);
     }
@@ -342,7 +343,7 @@ function saveParameter(notify) {
     clearTimeout(saveReminderTimer);
     saveReminder = false;
 
-    var data = sendCommand('save');
+    var data = sendCommand('save', 0);
 
     if(notify) {
 
@@ -378,31 +379,37 @@ function setParameter(cmd, value, save, notify) {
     return e;
 };
 
-function sendCommand(cmd) {
-
+function sendCommand(cmd, loop) {
     var e = '';
   
-    //$.ajax(serialWDomain + ':' + serialWeb + '/serial.php?command=' + cmd, {
-    $.ajax('serial.php?command=' + cmd, {
-        async: false,
-        cache: false,
-        timeout: serialTimeout,
-        success: function success(data) {
-            //console.log(cmd);
-            //console.log(data);
-            if(cmd == 'json') {
-                try {
-                    e = JSON.parse(data);
-                } catch(ex) {
-                    e = {};
-                    $.notify({ message: ex + ':' + data }, { type: 'danger' });
+    if(loop < 2) {
+        $.ajax('serial.php?command=' + cmd, {
+            async: false,
+            cache: false,
+            timeout: serialTimeout,
+            success: function success(data) {
+                //console.log(cmd);
+                //console.log(data);
+                if(cmd == 'json') {
+                    try {
+                        e = JSON.parse(data);
+                    } catch(ex) {
+                        console.log(data);
+                        e = {};
+                        if(loop == 1)
+                            $.notify({ message: ex + ':' + data }, { type: 'danger' });
+                        loop++;
+                        e = sendCommand(cmd, loop);
+                    }
+                }else{
+                    e = data;
                 }
-            }else{
-                e = data;
-            }
-        },
-        error: function error(xhr, textStatus, errorThrown) {}
-    });
+            },
+            error: function error(xhr, textStatus, errorThrown) {}
+        });
+    }else{
+        $.notify({ message: 'Recommended: Power Cycle Inverter' }, { type: 'warning' });     
+    }
     return e;
 };
 
@@ -482,7 +489,7 @@ function getJSONAverageFloatValue(value,c) {
 
 function startInverter(mode) {
 
-    var data = sendCommand('start ' + mode);
+    var data = sendCommand('start ' + mode, 0);
     //console.log(data);
 
     if (data.indexOf('started') != -1) {
@@ -500,7 +507,7 @@ function startInverter(mode) {
 
 function stopInverter() {
 
-    var data = sendCommand('stop');
+    var data = sendCommand('stop', 0);
     //console.log(data);
 
     if (data.indexOf('halted') != -1) {
@@ -521,14 +528,14 @@ function stopInverter() {
 
 function setDefaults() {
     
-    sendCommand('can clear');
+    sendCommand('can clear', 0);
     $.ajax('can.php?clear=1');
 
-    var data = sendCommand('defaults');
+    var data = sendCommand('defaults', 0);
     //console.log(data);
 
     if (data.indexOf('Defaults loaded') != -1) {
-        sendCommand('save');
+        sendCommand('save', 0);
         $.notify({ message: 'Inverter reset to Default' }, { type: 'success' });
     } else {
         $.notify({ icon: 'icons icon-warning', title: 'Error', message: data }, { type: 'danger' });
@@ -876,7 +883,11 @@ function buildStatus() {
             }
             
             //$('#opStatus').empty().append(opStatus);
-            $.ajax('serial.php?get=lasterr', {
+            var errors_url = 'serial.php?command=errors';
+            if(os == 'windows') {
+                errors_url = 'serial.php?get=lasterr';
+            }
+            $.ajax(errors_url, {
 		        success: function success(data) {
 	                if (data.indexOf('No Errors') === -1) {
 	                    img = $('<i>', { class: 'icons icon-status icon-alert', 'data-toggle': 'tooltip', 'data-html': 'true', 'data-original-title': data.replace('\n','<br>') });

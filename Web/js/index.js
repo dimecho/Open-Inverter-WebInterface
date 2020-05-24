@@ -982,7 +982,7 @@ function buildParameters()
 				description.push(row[i].substring(split[0].length + 1).replace(/"/g, ''));
 			}
 
-            var json = sendCommand('json');
+            var json = sendCommand('json', 0);
             var inputDisabled = false;
 
             if(Object.keys(json).length == 0)
@@ -1027,6 +1027,8 @@ function buildParameters()
                         if(element.val() != '') {
                             validateInput(json,element.attr('id'), element.val(), function(r) {
                                 if(r === true) {
+                                    $('#save-parameters').removeClass('btn-secondary');
+                                    $('#save-parameters').addClass('btn-success');
                                     setParameter(element.attr('id'),element.val(),false,true);
                                     clearTimeout(saveReminderTimer);
                                     saveReminderTimer = setInterval(saveReminderCounter, 60000);

@@ -170,7 +170,7 @@ function buildCANParameters() {
     
     $('#loader-parameters').removeClass('d-none'); //.show();
 
-    json = sendCommand('json');
+    json = sendCommand('json', 0);
     
     if(json)
     {
@@ -389,7 +389,7 @@ function saveCANMapping() {
             var data;
 
             //TODO: use individiual deletes 'can del param'
-            sendCommand('can clear');
+            sendCommand('can clear', 0);
 
             for(var key in json)
             {
@@ -485,7 +485,7 @@ function saveCANMapping() {
 
                         $.notify({ message: cancommand[x] }, { type: 'warning' });
 
-                        data = sendCommand(cancommand[x]);
+                        data = sendCommand(cancommand[x], 0);
 
                         if (data.indexOf('successful') != -1) {
                             $.notify({ message: data }, { type: 'success' });
@@ -497,7 +497,7 @@ function saveCANMapping() {
                 i++;
             }
 
-            sendCommand('save');
+            sendCommand('save', 0);
 
         }else{
             $.notify({ message: 'A maximum of 8 messages can be defined' }, { type: 'danger' });
@@ -509,7 +509,7 @@ function setCANDefaults() {
 
     alertify.confirm('', 'Reset CAN settings back to default.', function () {
 
-        var data = sendCommand('can clear');
+        var data = sendCommand('can clear', 0);
         //console.log(data);
 
         if (data.indexOf('clear') != -1) {

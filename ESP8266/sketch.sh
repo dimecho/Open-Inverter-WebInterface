@@ -44,7 +44,7 @@ if [ $yn = y ]; then
         cu=$(ls /dev/cu.* && ls /dev/ttyUSB*)
         for serial in $cu; do
             if [[ $serial == *usb* ]] || [[ $serial == *ch34* ]] || [[ $serial == *pl23* ]] ; then
-                esptool.py --port $serial --baud 115200 write_flash 0x000000 flash-flash.bin
+                esptool.py --port $serial --baud 115200 write_flash 0x000000 flash-sketch.bin
                 break
             fi
         done
