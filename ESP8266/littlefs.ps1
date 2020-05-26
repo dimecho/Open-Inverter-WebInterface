@@ -14,7 +14,7 @@ if (-Not (Test-Path "$PSScriptRoot\tools\esptool.exe")) {
 }
 
 $portArray = ([System.IO.Ports.SerialPort]::GetPortNames() | select -first 1)
-$binArray = Get-ChildItem "$PSScriptRoot" -Filter *spiffs*.bin
+$binArray = Get-ChildItem "$PSScriptRoot" -Filter *fs*.bin
 
 if($binArray.Count -gt 0)
 {

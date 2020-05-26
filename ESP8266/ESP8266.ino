@@ -1,3 +1,10 @@
+#define ASYNC_TCP_SSL_ENABLED 0
+/*
+#define LFS_READ_SIZE 256
+#define LFS_PROG_SIZE 256
+#define LFS_BLOCK_SIZE 4096
+*/
+
 //#include <RemoteDebug.h>
 //#include <ArduinoOTA.h>
 #include <EEPROM.h>
@@ -5,18 +12,15 @@
 #include <flash_hal.h>
 #include <StreamString.h>
 
-#define ASYNC_TCP_SSL_ENABLED 0
-
 #ifdef ESP32
 #include <WiFi.h>
 #include <AsyncTCP.h>
-#include <SPIFFS.h>
 #include <Update.h>
 #elif defined(ESP8266)
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
-#include <FS.h>
 #endif
+#include <LittleFS.h>
 #include <ESPAsyncWebServer.h>
 
 #ifdef ARDUINO_ESP8266_WEMOS_D1R1
@@ -43,7 +47,7 @@ char ACCESS_POINT_PASSWORD[] = "inverter123";
 int ACCESS_POINT_CHANNEL = 7;
 int ACCESS_POINT_HIDE = 0;
 int DATA_LOG = 0; //Enable data logger
-int LOG_INTERVAL = 5; //seconds between data collection and write to SPIFFS
+int LOG_INTERVAL = 5; //seconds between data collection and write to Filesystem
 int NETWORK_DHCP = 0;
 char NETWORK_IP[] = "192.168.4.1";
 char NETWORK_SUBNET[] = "255.255.255.0";
@@ -72,7 +76,7 @@ static const char serverIndex[] PROGMEM =
 <br>
 <form method='POST' action='' enctype='multipart/form-data'>
    <input type='file' accept='.bin' name='filesystem'>
-   <input type='submit' value='Update Spiffs'>
+   <input type='submit' value='Update Filesystem'>
 </form>
 </body>
 </html>)";
@@ -181,7 +185,7 @@ void setup()
   //===========
   //File system
   //===========
-  SPIFFS.begin();
+  LittleFS.begin();
 
   //======================
   //NVRAM type of Settings
@@ -206,7 +210,7 @@ void setup()
     NVRAM_Write(10, NETWORK_GATEWAY);
     NVRAM_Write(11, NETWORK_DNS);
 
-    SPIFFS.format();
+    LittleFS.format();
   } else {
     ACCESS_POINT_MODE = NVRAM_Read(0).toInt();
     ACCESS_POINT_HIDE = NVRAM_Read(1).toInt();
@@ -571,10 +575,10 @@ void setup()
 #endif
 
   server.on("/format", HTTP_GET, [](AsyncWebServerRequest * request) {
-    String result = SPIFFS.format() ? "OK" : "Error";
     FSInfo fs_info;
-    SPIFFS.info(fs_info);
-    request->send(200, text_plain, "<b>Format " + result + "</b><br/>Total Flash Size: " + String(ESP.getFlashChipSize()) + "<br>SPIFFS Size: " + String(fs_info.totalBytes) + "<br>SPIFFS Used: " + String(fs_info.usedBytes));
+    String result = LittleFS.format() ? "OK" : "Error";
+    LittleFS.info(fs_info);
+    request->send(200, text_plain, "<b>Format " + result + "</b><br/>Total Flash Size: " + String(ESP.getFlashChipSize()) + "<br>Filesystem Size: " + String(fs_info.totalBytes) + "<br>Filesystem Used: " + String(fs_info.usedBytes));
   });
   server.on("/reset", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(200, text_plain, "...");
@@ -652,11 +656,11 @@ void setup()
     char b[255];
     size_t len = 0;
 
-    //Get "all", Format JSON, Save to SPIFFS and Send chunked.
+    //Get "all", Format JSON, Save to FS and Send chunked.
 
     //serialStreamFlush(); //flush
 
-    File f = SPIFFS.open("/snapshot.json", "w");
+    File f = LittleFS.open("/snapshot.json", "w");
     f.print("{\n    \"");
 
     Serial.print("all");
@@ -681,10 +685,10 @@ void setup()
     f.print("\"\n}");
     f.close();
 
-    AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/snapshot.json", text_json, true);
+    AsyncWebServerResponse *response = request->beginResponse(LittleFS, "/snapshot.json", text_json, true);
     request->send(response);
 
-    //SPIFFS.remove("/snapshot.json");
+    //LittleFS.remove("/snapshot.json");
   });
 
   server.on("/snapshot.php", HTTP_POST, [](AsyncWebServerRequest * request) {
@@ -789,7 +793,7 @@ void setup()
 
       _param += ","; //Support multi-value
 
-      for (byte i=0; i < _param.length(); i++) {
+      for (byte i = 0; i < _param.length(); i++) {
         if (_param.charAt(i) == ',') {
           serialEcho(); //while (Serial.read() != '\n'); //consume echo
         }
@@ -861,7 +865,8 @@ void setup()
     } else {
       String file = request->url();
       readPHP(file);
-      AsyncWebServerResponse *response = request->beginResponse(SPIFFS, file + ".html", text_html);
+
+      AsyncWebServerResponse *response = request->beginResponse(LittleFS, file + ".html", text_html);
       request->send(response);
     }
   });
@@ -876,10 +881,10 @@ void setup()
   });
 
   server.on("/", [](AsyncWebServerRequest * request) {
-    if (SPIFFS.exists("/index.php")) {
+    if (LittleFS.exists("/index.php")) {
       request->redirect("/index.php");
     } else {
-      AsyncWebServerResponse *response = request->beginResponse(200, text_html, "File System Not Found ...Upload SPIFFS");
+      AsyncWebServerResponse *response = request->beginResponse(200, text_html, "File System Not Found ...");
       response->addHeader("Refresh", "6; url=/update");
       request->send(response);
     }
@@ -893,9 +898,11 @@ void setup()
 #if DEBUG
     Serial.println("Request:" + file);
 #endif
-    uint8_t php_html = SPIFFS.exists(file + ".html");
 
-    if (SPIFFS.exists(file) || php_html)
+    bool php = LittleFS.exists(file);
+    bool php_html = LittleFS.exists(file + ".html");
+    
+    if (php || php_html)
     {
       digitalWrite(LED_BUILTIN, HIGH);
       String contentType = getContentType(file);
@@ -907,12 +914,14 @@ void setup()
           readPHP(file);
         }
         //Large files need to be buffered
-        AsyncWebServerResponse *response = request->beginResponse(SPIFFS, file + ".html", text_html);
+
+        AsyncWebServerResponse *response = request->beginResponse(LittleFS, file + ".html", text_html);
         //response->addHeader("Cache-Control", "max-age=3600");
         request->send(response);
 
       } else {
-        AsyncWebServerResponse *response = request->beginResponse(SPIFFS, file, contentType);
+
+        AsyncWebServerResponse *response = request->beginResponse(LittleFS, file, contentType);
         response->addHeader("Content-Encoding", "gzip");
         //response->addHeader("Cache-Control", "max-age=3600");
         request->send(response);
@@ -925,7 +934,7 @@ void setup()
 
 #if ASYNC_TCP_SSL_ENABLED == 1
   server.onSslFileRequest([](void * arg, const char *filename, uint8_t **buf) -> int {
-    File file = SPIFFS.open(filename, "r");
+    File file = LittleFS.open(filename, "r");
     if (file) {
       size_t size = file.size();
       uint8_t* nbuf = (uint8_t*) malloc(size);
@@ -1123,8 +1132,8 @@ void readPHP(String file)
   String l = "";
   phpTag[0] = false;
 
-  File f = SPIFFS.open(file, "r");
-  File ff = SPIFFS.open(file + ".html", "w");
+  File f = LittleFS.open(file, "r");
+  File ff = LittleFS.open(file + ".html", "w");
 
   while (f.available()) {
     l = f.readStringUntil('\n');
@@ -1134,7 +1143,7 @@ void readPHP(String file)
   ff.close();
 
   //Unless these are Dynamic PHP we no longer need to keep Original PHP
-  SPIFFS.remove(file);
+  LittleFS.remove(file);
 }
 
 String PHP(String line, int i)
@@ -1167,7 +1176,7 @@ String PHP(String line, int i)
       Serial.println("include:" + include);
 #endif
 
-      File f = SPIFFS.open("/" + include, "r");
+      File f = LittleFS.open("/" + include, "r");
       //if (f) {
       String l;
       int x = i + 1;
@@ -1201,7 +1210,7 @@ String indexJSON(String dir, String ext[])
 {
   String out = "{\n\t\"index\": [\n";
 
-  Dir files = SPIFFS.openDir(dir);
+  Dir files = LittleFS.openDir(dir);
   while (files.next()) {
     for (int i = 0; i < sizeof(ext); i++) {
       if (files.fileName().endsWith(ext[i])) {
@@ -1245,12 +1254,12 @@ void WebUpload(AsyncWebServerRequest *request, String filename, size_t index, ui
   if (!index) {
     //Serial.print(request->params());
 
-    if (filename == "flash-spiffs.bin") {
+    if (filename == "flash-littlefs.bin") {
       //if (request->hasParam("filesystem",true)) {
       size_t fsSize = ((size_t) &_FS_end - (size_t) &_FS_start);
 #if DEBUG
-      Serial.printf("Free SPIFFS Space: %u\n", fsSize);
-      Serial.printf("SPIFFS Flash Offset: %u\n", U_FS);
+      Serial.printf("Free Filesystem Space: %u\n", fsSize);
+      Serial.printf("Filesystem Flash Offset: %u\n", U_FS);
 #endif
       close_all_fs();
       if (!Update.begin(fsSize, U_FS)) { //start with max available size
@@ -1282,16 +1291,16 @@ void WebUpload(AsyncWebServerRequest *request, String filename, size_t index, ui
 void SnapshotUpload(AsyncWebServerRequest * request, String filename, size_t index, uint8_t *data, size_t len, bool final)
 {
   if (!index) {
-    SPIFFS.remove("/" + filename);
+    LittleFS.remove("/" + filename);
   }
 
-  File fsUpload = SPIFFS.open("/" + filename, "a");
+  File fsUpload = LittleFS.open("/" + filename, "a");
   fsUpload.write(data, len);
   fsUpload.close();
 
   if (final) {
 
-    File f = SPIFFS.open("/" + filename, "r");
+    File f = LittleFS.open("/" + filename, "r");
     while (f.available()) {
       String cmd = f.readStringUntil('\n');
       cmd.replace("\t", "");
@@ -1305,7 +1314,7 @@ void SnapshotUpload(AsyncWebServerRequest * request, String filename, size_t ind
       }
     }
     f.close();
-    SPIFFS.remove("/" + filename);
+    LittleFS.remove("/" + filename);
 
     Serial.print("save");
     Serial.print('\n');
@@ -1315,17 +1324,17 @@ void SnapshotUpload(AsyncWebServerRequest * request, String filename, size_t ind
 void FirmwareUpload(AsyncWebServerRequest * request, String filename, size_t index, uint8_t *data, size_t len, bool final)
 {
   if (!index) {
-    SPIFFS.remove("/" + filename);
+    LittleFS.remove("/" + filename);
     //firmwareStream.clear();
   }
 
-  File fsUpload = SPIFFS.open("/" + filename, "a");
+  File fsUpload = LittleFS.open("/" + filename, "a");
   fsUpload.write(data, len);
   fsUpload.close();
 
   if (final) {
 
-    File f = SPIFFS.open("/" + filename, "r");
+    File f = LittleFS.open("/" + filename, "r");
     uint32_t len = f.size();
     uint32_t addr = (uint32_t)0x08000000;
     uint32_t addrEnd = (uint32_t)0x0801ffff;
@@ -1479,7 +1488,7 @@ void FirmwareUpload(AsyncWebServerRequest * request, String filename, size_t ind
           Serial.write((uint8_t*)&crc, sizeof(uint32_t));
           while (!Serial.available()); //wait until available
           c = Serial.read();
-     
+          
           if ('D' == c)
           {
             firmwareStream.println("CRC correct!");
@@ -1502,8 +1511,8 @@ void FirmwareUpload(AsyncWebServerRequest * request, String filename, size_t ind
       }
     }
     f.close();
-    SPIFFS.remove("/" + filename);
 
+    LittleFS.remove("/" + filename);
     firmwareStream.println("</pre>");
     //request->send(response);
   }
@@ -1513,7 +1522,7 @@ void serialEcho()
 {
   uint8_t timeout = 255;
   while (char c = Serial.read() != '\n' && timeout > 0) {
-     timeout--;
+    timeout--;
   }
 }
 
@@ -1525,7 +1534,7 @@ void serialStreamFlush()
 
   Serial.print('\n');
   serialEcho(); //while (Serial.read() != '\n'); //consume echo
-  
+
   do {
     memset(b, 0, sizeof(b));
     len = Serial.readBytes(b, sizeof(b) - 1);

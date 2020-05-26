@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo " > Flash Filesystem (SPIFFS)? (y/n)"
+echo " > Flash Filesystem (LittleFS)? (y/n)"
 read yn
 if [ $yn = y ]; then
     echo " > Over The Air (OTA)? (y/n)"
@@ -12,7 +12,7 @@ if [ $yn = y ]; then
         if [ ! -f tools/espota.py ]; then
             curl -L -o tools/espota.py -k -C - https://raw.githubusercontent.com/esp8266/Arduino/master/tools/espota.py
         fi
-        python tools/espota.py -i 192.168.4.1 -p 8266 -s -f flash-spiffs.bin
+        python tools/espota.py -i 192.168.4.1 -p 8266 -s -f flash-littlefs.bin
     else
         if [[ ! $(type -p pip) ]]; then
             cd ~/Downloads
@@ -44,7 +44,7 @@ if [ $yn = y ]; then
         cu=$(ls /dev/cu.* && ls /dev/ttyUSB*)
         for serial in $cu; do
             if [[ $serial == *usb* ]] || [[ $serial == *ch34* ]] || [[ $serial == *pl23* ]] ; then
-                esptool.py --port $serial --baud 115200 write_flash 0x100000 flash-spiffs.bin
+                esptool.py --port $serial --baud 115200 write_flash 0x100000 flash-littlefs.bin
                 break
             fi
         done
