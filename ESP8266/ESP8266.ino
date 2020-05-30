@@ -1,8 +1,8 @@
 #define ASYNC_TCP_SSL_ENABLED 0
 /*
-#define LFS_READ_SIZE 256
-#define LFS_PROG_SIZE 256
-#define LFS_BLOCK_SIZE 4096
+  #define LFS_READ_SIZE 256
+  #define LFS_PROG_SIZE 256
+  #define LFS_BLOCK_SIZE 4096
 */
 
 //#include <RemoteDebug.h>
@@ -23,10 +23,10 @@
 #include <LittleFS.h>
 #include <ESPAsyncWebServer.h>
 
-#ifdef ARDUINO_ESP8266_WEMOS_D1R1
-#define LED_BUILTIN 2 //GPIO2=ESP-12/WeMos(D4)
-#else //#ifdef ARDUINO_MOD_WIFI_ESP8266
+#ifdef ARDUINO_MOD_WIFI_ESP8266
 #define LED_BUILTIN 1 //GPIO1=Olimex
+#else
+#define LED_BUILTIN 2 //GPIO2=ESP-12/WeMos(D4)
 #endif
 
 //#define DEBUG true
@@ -84,7 +84,7 @@ bool restartRequired = false;  // Set this flag in the callbacks to restart ESP 
 //====================
 //CAN-Bus
 //====================
-#ifdef ARDUINO_ESP8266_WEMOS_D1R1
+#ifndef ARDUINO_MOD_WIFI_ESP8266
 /*
    https://github.com/coryjfowler/MCP_CAN_lib
    http://scottsnowden.co.uk/esp8266-mcp2515-can-bus-to-wifi-gateway/
@@ -191,10 +191,12 @@ void setup()
   //NVRAM type of Settings
   //======================
   EEPROM.begin(1024);
-  int e = EEPROM.read(0);
+  uint8_t e = EEPROM.read(0);
   String nvram = "";
-
-  if (e == 255) { //if (NVRAM_Read(0) == "") {
+#if DEBUG
+  Serial.println(e);
+#endif
+  if (e != 48 && e != 49) {
     NVRAM_Erase();
     NVRAM_Write(0, String(ACCESS_POINT_MODE));
     NVRAM_Write(1, String(ACCESS_POINT_HIDE));
@@ -781,13 +783,13 @@ void setup()
       } while (len > 0);
 
       request->send(response);
-      
+
     } else if (request->hasParam("get")) {
 
       //serialStreamFlush(); //flush
-      
+
       String _param = request->getParam("get")->value();
-      
+
       Serial.print("get " + _param);
       Serial.print('\n');
 
@@ -798,7 +800,7 @@ void setup()
           serialEcho(); //while (Serial.read() != '\n'); //consume echo
         }
       }
-      
+
       AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
         return Serial.readBytes(buffer, maxLen);
       });
@@ -901,7 +903,7 @@ void setup()
 
     bool php = LittleFS.exists(file);
     bool php_html = LittleFS.exists(file + ".html");
-    
+
     if (php || php_html)
     {
       digitalWrite(LED_BUILTIN, HIGH);
@@ -992,7 +994,7 @@ void setup()
     //Debug.showTime(true); // To show time
     //Debug.setSerialEnabled(true); // Serial echo
   */
-#ifdef ARDUINO_ESP8266_WEMOS_D1R1
+#ifndef ARDUINO_MOD_WIFI_ESP8266
   //====================
   //CAN-Bus
   //====================
@@ -1045,7 +1047,7 @@ char* string2char(String command) {
     return p;
   }
 }
-#ifdef ARDUINO_ESP8266_WEMOS_D1R1
+#ifndef ARDUINO_MOD_WIFI_ESP8266
 StreamString CANReceive()
 {
   StreamString CANMessage;
@@ -1104,6 +1106,7 @@ void NVRAM_Erase()
   for (uint16_t i = 0 ; i < EEPROM.length() ; i++) {
     EEPROM.write(i, 255);
   }
+  EEPROM.commit();
 }
 
 void NVRAM_Write(uint32_t address, String txt)
@@ -1488,7 +1491,7 @@ void FirmwareUpload(AsyncWebServerRequest * request, String filename, size_t ind
           Serial.write((uint8_t*)&crc, sizeof(uint32_t));
           while (!Serial.available()); //wait until available
           c = Serial.read();
-          
+
           if ('D' == c)
           {
             firmwareStream.println("CRC correct!");
