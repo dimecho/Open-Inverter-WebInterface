@@ -22,7 +22,7 @@ for i in "${array[@]}"; do
     cp -rf ../Web/css/$i data/css
 done
 
-array=(esp8266.js jquery.js jquery.knob.js potentiometer.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-annotation.js chartjs-plugin-datalabels.js test.js mobile.js)
+array=(esp8266.js jquery.js jquery.knob.js potentiometer.js bootstrap.js ion.rangeSlider.js bootstrap-notify.js firmware.js can.js graph.js jscolor.js index.js menu.js simple.js chart.js chartjs-plugin-annotation.js chartjs-plugin-datalabels.js test.js mobile.js language.js)
 for i in "${array[@]}"; do
     cp -rf ../Web/js/$i data/js
 done
@@ -33,8 +33,8 @@ for i in "${array[@]}"; do
     cp -rf ../Web/img/$i data/img
 done
 
-cp -rf ./server.key data/
-cp -rf ./server.crt data/
+#cp -rf ./server.key data/
+#cp -rf ./server.cer data/
 cp -rf  "../Web/pcb/Hardware v1.0/diagrams/test.png" data/pcb/v1.0
 cp -rf  "../Web/pcb/Hardware v1.0/diagrams/esp8266.png" data/pcb/v1.0
 cp -rf  "../Web/pcb/Hardware v3.0/diagrams/test.png" data/pcb/v3.0
@@ -88,6 +88,7 @@ done
 #================
 #Clean PHP
 #================
+: <<'end_comment'
 for f in $(find ./data -name '*.php'); do
     php=false
     while read -r line; do
@@ -112,6 +113,7 @@ for f in $(find ./data -name '*.php'); do
     done < "$f"
     mv "$f.p" "$f"
 done
+end_comment
 
 #====================
 #Download Compressors
@@ -158,7 +160,7 @@ if [ $yn = y ]; then
         mv "$f-min.js" "$f"
     done
 fi
-for f in $(find data -type f -name '*.*' ! -name '*.bin' ! -name '*.php' ! -name '*.key' ! -name '*.crt'); do
+for f in $(find data -type f -name '*.*' ! -name '*.bin' ! -name '*.php' ! -name '*.key' ! -name '*.cer'); do
     gzip "$f"
     mv "$f.gz" "$f"
 done

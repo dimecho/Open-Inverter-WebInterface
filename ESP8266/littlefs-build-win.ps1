@@ -20,7 +20,7 @@ foreach ($file in $cssfiles) {
   Copy-Item "..\Web\css\$file" -Destination .\data\css
 }
 
-$jsfiles = 'esp8266.js', 'jquery.js', 'jquery.knob.js', 'potentiometer.js', 'bootstrap.js', 'ion.rangeSlider.js', 'bootstrap-notify.js', 'firmware.js', 'can.js', 'graph.js', 'jscolor.js', 'index.js', 'menu.js', 'simple.js', 'chart.js', 'chartjs-plugin-annotation.js', 'chartjs-plugin-datalabels.js', 'test.js', 'mobile.js'
+$jsfiles = 'esp8266.js', 'jquery.js', 'jquery.knob.js', 'potentiometer.js', 'bootstrap.js', 'ion.rangeSlider.js', 'bootstrap-notify.js', 'firmware.js', 'can.js', 'graph.js', 'jscolor.js', 'index.js', 'menu.js', 'simple.js', 'chart.js', 'chartjs-plugin-annotation.js', 'chartjs-plugin-datalabels.js', 'test.js', 'mobile.js', 'language.js'
 foreach ($file in $jsfiles) {
   Copy-Item "..\Web\js\$file" -Destination .\data\js
 }
@@ -30,6 +30,8 @@ foreach ($file in $imgfiles) {
   Copy-Item "..\Web\img\$file" -Destination .\data\img
 }
 
+#Copy-Item .\server.key -Destination .\data
+#Copy-Item .\server.cer -Destination .\data
 Copy-Item "..\Web\js\menu-esp8266.json" -Destination .\data\js\menu.json
 Copy-Item "..\Web\pcb\Hardware v1.0\diagrams\test.png" -Destination .\data\pcb\v1.0
 Copy-Item "..\Web\pcb\Hardware v1.0\diagrams\esp8266.png" -Destination .\data\pcb\v1.0
@@ -130,7 +132,7 @@ Foreach-Object {
     Start-Process java -ArgumentList "-jar ""$PSScriptRoot\tools\closure-compiler-v20190929.jar"" --js_output_file .\littlefs\js\$($_.Name) --js .\littlefs\js\$($_.Name)" -NoNewWindow -Wait
 }
 
-Get-ChildItem .\data -Recurse -Exclude *.php -Filter *.* | 
+Get-ChildItem .\data -Recurse -Exclude *.bin -Exclude *.php -Exclude *.key -Exclude *.cer -Filter *.* | 
 Foreach-Object {
     if (-Not (Test-Path $_.FullName -PathType Container)) {
         Start-Process .\tools\bin\gzip.exe -ArgumentList $_.FullName -NoNewWindow -Wait

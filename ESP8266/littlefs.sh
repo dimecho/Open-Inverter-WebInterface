@@ -28,6 +28,7 @@ if [ $yn = y ]; then
         fi
 
         PATH=$PATH:$HOME/Library/Python/2.7/bin
+        LIB=$(eval "python -c 'import sysconfig; print(sysconfig.get_paths()[\"purelib\"])'")
 
         if [ ! -d ~/Library/Python/2.7/lib/python/site-packages/serial ] && [ ! -d /Library/Python/2.7/site-packages/serial ]; then
             pip install pyserial --user
