@@ -22,7 +22,7 @@
                                 <br><br>
 							<div class="row">
 								<div class="col">
-									<button type="button" class="btn btn-primary" onClick="eval(checkSoftware('avr'))"><i class="icons icon-magic"></i> Install AVR</button>
+									<button type="button" class="btn btn-primary" onClick="checkSoftware('avr')"><i class="icons icon-magic"></i> Install AVR</button>
 								</div>
 								<div class="col">
 									<button type="button" class="btn btn-primary" onClick="window.open('pcb/Hardware v1.0/firmware/attiny13/volt-pwm-attiny13.c')"><i class="icons icon-download"></i> Download ATTiny13 Code</button>

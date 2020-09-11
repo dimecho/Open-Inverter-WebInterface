@@ -6,11 +6,10 @@
     {
     	set_time_limit(100);
     	$file = urldecode($_GET["file"]);
-        $cmd = urldecode($_GET["cmd"]);
         $interface = urldecode($_GET["interface"]);
 
-        if (strpos($cmd, "100") !== false) {
-        	$command = runCommand("esptool", $file. " " .$interface. " spiffs", $os, 0);
+         if(isset($_GET["littlefs"])) {
+        	$command = runCommand("esptool", $file. " " .$interface. " littlefs", $os, 0);
         }else{
             $command = runCommand("esptool", $file. " " .$interface, $os, 0);
         }
@@ -37,7 +36,7 @@
 				<table class="table table-active bg-light table-bordered d-none" id="esp8266-download-firmware">
                     <tr>
                         <td>
-                            <button type="button" class="btn btn-primary" onClick="window.open('https://github.com/dimecho/Open-Inverter-WebInterface/releases/download/1.0/Huebner.Inverter.ESP8266.zip')"><i class="icons icon-download"></i> Download Firmware</button>
+                            <button type="button" class="btn btn-primary" onClick="window.open('https://github.com/dimecho/Open-Inverter-WebInterface/releases/download/1.0/Open.Inverter.ESP8266.zip')"><i class="icons icon-download"></i> <span id="text_download">Download Firmware</span></button>
                         </td>
                     </tr>
                 </table>
@@ -45,19 +44,19 @@
                 	<tr>
                         <td>
 	            		<?php
-						if(isset($_FILES["spiffs"]) || isset($_FILES["firmware"])){
+						if(isset($_FILES["firmware"]) || isset($_FILES["filesystem"])){
 							require "upload-status.php";
 	                    }else{
 	                	?>
                     	<center>
-                        	<div class="spinner-border text-dark"></div>
+                        	<div class="spinner-border text-dark"></div> <div class="d-none" id="text_minute">This may take a minute</div>
                             <div class="input-group w-100">
-                                <span class="input-group-addon d-none w-100">
-									<select name="interface" class="form-control" id="firmware-interface"></select>
-								</span>
+                            	<span class = "input-group-addon w-100">
+                                    <select name="interface" class="form-control" id="firmware-interface" onchange="setInterfaceImage(this.selectedIndex)"></select>
+                                </span>
                             </div>
-                            <br/><br/><span class="badge badge-lg bg-danger">Solder <b>GPIO-0</b> to <b>0</b> and connect UART Pin 3 & 4 (USB-RS232-TTL)</span><br><br>
-                            <img src="" class="img-thumbnail rounded" /><br/><br/>
+                            <br/><br/><span class="badge badge-lg bg-warning" id="text_connect">Connect ESP8266 Module to USB</span><br><br>
+                            <img src="img/esp8266.png" class="img-thumbnail rounded" /><br/><br/>
                             </center>
                             <div class="input-group">
                             	<span class="input-group-addon w-100">
@@ -66,7 +65,7 @@
 	                            		<div class="col">
 	                            		WiFi SSID: Inverter<br>
 	                                	WiFi Password: inverter123 <br>
-	                                	Web Interface: http://192.168.4.1</div>
+	                                	Web Interface: <a href="http://192.168.4.1" target="_blank">http://192.168.4.1</a></div>
 	                            		<div class="col"></div>
 	                            	</div>
 	                            </span>
@@ -80,7 +79,7 @@
 			    <table class="table table-active table-bordered d-none" id="esp8266-nvram">
                     <tr>
                         <td>
-                        	<center><div class="spinner-border text-dark"></div></center>
+                        	<div class="spinner-border text-dark" align="center"></div>
                         	<form method="POST" action="/nvram" id="parameters" oninput="formValidate()">
                         		<fieldset class="form-group">
                         			<legend>ESP8266 Wireless:</legend>
@@ -121,6 +120,8 @@
 											<option>9</option>
 											<option>10</option>
 											<option>11</option>
+											<option>12</option>
+											<option>13</option>
 										</select>
 									</div>
 								</div> 
@@ -195,7 +196,7 @@
 				<table class="table table-active table-bordered d-none" id="esp8266-flash-select">
 					<tr align="center">
 						<td align="center">
-							<button class="btn btn-primary" type="button" id="browseSPIFFS"><i class="icons icon-chip"></i> Flash SPIFFS</button>
+							<button class="btn btn-primary" type="button" id="browseLittleFS"><i class="icons icon-chip"></i> Flash LittleFS</button>
 						</td>
 						<td align="center">
 							<button class="btn btn-primary" type="button" id="browseSketch"><i class="icons icon-chip"></i> Flash Sketch</button>
@@ -213,11 +214,13 @@
 		</div>
 	</div>
 	<form method="POST" action="/update" enctype="multipart/form-data" id="formSketch">
+		<input type="text" name="interface" id="interfaceSketch" hidden />
 		<input type="file" accept=".bin" name="firmware" id="fileSketch" hidden />
 		<input type="submit" hidden />
 	</form>
-	<form method="POST" action="/update" enctype="multipart/form-data" id="formSPIFFS">
-		<input type="file" accept=".bin" name="filesystem" id="fileSPIFFS" hidden />
+	<form method="POST" action="/update" enctype="multipart/form-data" id="formLittleFS">
+		<input type="text" name="interface" id="interfaceLittleFS" hidden />
+		<input type="file" accept=".bin" name="filesystem" id="fileLittleFS" hidden />
 		<input type="submit" hidden />
 	</form>
 </body>

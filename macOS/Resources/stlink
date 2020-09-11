@@ -9,7 +9,7 @@ else
       fi
       tar xzfv ~/Downloads/stlink-1.3.0-macosx-amd64.zip -C /usr/local/share
     else
-      export PATH="$PATH:/usr/local/share/stlink-1.3.0-macosx-amd64/bin/"
+      export PATH="$PATH:/usr/local/share/stlink-1.3.0-macosx-amd64/bin"
       cd /usr/local/share/stlink-1.3.0-macosx-amd64/bin/
 	
 		if [ "$2" = "ram" ]; then

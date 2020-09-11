@@ -1,4 +1,5 @@
 <?php
+	//set_time_limit(10000);
 
 	$file_name = "";
 	$file_tmp = "";
@@ -12,9 +13,10 @@
 	if(isset($_FILES["firmware"])) {
 		$file_name = $_FILES["firmware"]["name"];
 		$file_tmp = $_FILES["firmware"]["tmp_name"];
-	}else if(isset($_FILES["spiffs"])) {
-		$file_name = $_FILES["spiffs"]["name"];
-		$file_tmp = $_FILES["spiffs"]["tmp_name"];
+	}else if(isset($_FILES["filesystem"])) {
+		$file_name = $_FILES["filesystem"]["name"];
+		$file_tmp = $_FILES["filesystem"]["tmp_name"];
+		$ajax_url .= "&littlefs=1";
 	}
 
     $ocd_file = "";
@@ -29,30 +31,25 @@
 	move_uploaded_file($file_tmp, $ocd_file);
 
 	$ajax_url .= "&file=" .urlencode($ocd_file);
-	if(isset($_POST["cmd"])) {
-		$ajax_url .= "&cmd=" .urlencode($_POST["cmd"]);
-	}
 	$ajax_url .= "&interface=" .urlencode($ocd_interface). "\"";
 ?>
 <script>
 	$(document).ready(function() {
-		var progressBar = $("#progressBar");
-		for (i = 0; i < 100; i++) {
-			setTimeout(function(){ progressBar.css("width", i + "%"); }, i*1000);
-		}
-		$.ajax({
-			type: "GET",
-			url: <?php echo $ajax_url; ?>,
-			success: function(data){
+
+		clearInterval(timer);
+        timer = setInterval(progressTimer, 100);
+
+	    var xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+            if (xhr.status == 200) {
+            	var data = xhr.responseText;
 				//console.log(data);
-                deleteCookie("version");
-				progressBar.css("width","100%");
-				$("#output").append($("<pre>").append(data));
-               
+                deleteCookie('version');
+				$('#output').append($('<pre>').append(data));
             <?php
                 if (basename($_SERVER['PHP_SELF']) == "bootloader.php"){
 			?>
-				if(data.indexOf("shutdown command invoked") !=-1 || data.indexOf("jolly good") !=-1)
+				if(data.indexOf('shutdown command invoked') !=-1 || data.indexOf('jolly good') !=-1)
 				{
 					$.notify({ message: "Bootloader Complete" },{ type: "success" });
 					$.notify({ message: "...Next Flash Firmware" },{ type: "warning" });
@@ -63,20 +60,22 @@
 			<?php
                 }else if (basename($_SERVER['PHP_SELF']) == "firmware.php"){
             ?>
-            	if(data.indexOf("shutdown command invoked") !=-1 || data.indexOf("jolly good") !=-1 || data.indexOf("Update done") !=-1){
+            	if(data.indexOf('shutdown command invoked') !=-1 || data.indexOf('jolly good') !=-1 || data.indexOf('Update done') !=-1){
                     $.notify({ message: "Flash Complete" },{ type: "success" });
                 }
-                if(data.indexOf("shutdown command invoked") !=-1 || data.indexOf("jolly good") !=-1){
+                if(data.indexOf('shutdown command invoked') !=-1 || data.indexOf('jolly good') !=-1){
                     $.notify({ message: "Plugin USB-RS232-TTL" },{ type: "warning" });
                     $.notify({ message: "Unlug JTAG Programmer" },{ type: "danger" });
                 }
                 setTimeout( function (){
-                    window.location.href = "index.php";
+                    window.location.href = 'index.php';
                 },12000);
             <?php
                 }else{ //esp8266.php
             ?>
-			if(data.indexOf("Failed to connect") !=-1){
+            if(data.indexOf('data verified') !=-1){
+            	$.notify({ message: "ESP Ready! Scan WiFi" },{ type: "success" });
+			}else if(data.indexOf('Failed to connect') !=-1){
 				$.notify({ message: "GPIO 0 must be SOLDERED to 0" },{ type: "danger" });
 				$.notify({ message: "Try swapping TX <-> RX" }, { type: "warning" });
 			}
@@ -88,8 +87,10 @@
                 }else if(data.indexOf("timeout") !=-1){
                     $.notify({ message: "If Olimex is bricked, press reset button while flashing" },{ type: "warning" });
                 }
-			}
-		});
+            }
+        };
+        xhr.open('GET', <?php echo $ajax_url; ?>, true);
+        xhr.send();
 	});
 </script>
 <div class="progress progress-striped active">

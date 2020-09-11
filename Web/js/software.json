@@ -17,8 +17,8 @@
         "title": "XCode",
         "download": {
             "mac": "https://itunes.apple.com/us/app/xcode/id497799835?ls=1&mt=12",
-            "size": 5600,
-            "version" : "10.2"
+            "size": 8000,
+            "version" : "11.6"
         },
         "checksum" : {
             "mac" : ""
@@ -90,14 +90,14 @@
     "arduino" : {
         "title" : "Arduino IDE",
         "download" : {
-            "mac" : "https://downloads.arduino.cc/arduino-1.8.9-macosx.zip",
-            "windows" : "https://downloads.arduino.cc/arduino-1.8.9-windows.exe",
+            "mac" : "https://downloads.arduino.cc/arduino-1.8.13-macosx.zip",
+            "windows" : "https://downloads.arduino.cc/arduino-1.8.13-windows.exe",
             "linux" : "",
-            "size" : 180,
-            "version" : "1.8.9"
+            "size" : 160,
+            "version" : "1.8.13"
         },
 		"checksum" : {
-            "mac" : "26349ab5c746cccb5264779a6a4776d2",
+            "mac" : "",
             "windows" : "",
             "linux" : ""
         },
@@ -111,14 +111,14 @@
         "title" : "Python",
         "download" : {
             "mac" : "",
-            "windows" : "https://www.python.org/ftp/python/3.8.0/python-3.8.0-amd64.exe",
+            "windows" : "https://www.python.org/ftp/python/3.8.5/python-3.8.5-amd64.exe",
             "linux" : "",
             "size" : 26,
-            "version" : "3.8"
+            "version" : "3.8.5"
         },
 		"checksum" : {
             "mac" : "",
-            "windows" : "29ea87f24c32f5e924b7d63f8a08ee8d",
+            "windows" : "0ba2e9ca29b719da6e0b81f7f33f08f6",
             "linux" : ""
         },
         "path" : {
@@ -150,15 +150,15 @@
     "inkscape" : {
         "title" : "Inkscape - Vector Graphics Software",
         "download" : {
-            "mac" : "https://inkscape.org/gallery/item/16193/Inkscape-1.0beta2.dmg",
-            "windows" : "https://inkscape.org/gallery/item/12190/inkscape-0.92.3-x64.msi",
+            "mac" : "https://inkscape.org/gallery/item/18459/Inkscape-1.0.0.dmg",
+            "windows" : "https://inkscape.org/gallery/item/18474/inkscape-1.0-x64.msi",
             "linux" : "",
             "size" : 80,
-            "version" : "0.92.3"
+            "version" : "1.0"
         },
 		"checksum" : {
             "mac" : "",
-            "windows" : "100fa7d2aef7ec36823b9ad40e4635ea",
+            "windows" : "",
             "linux" : ""
         },
         "path" : {
@@ -190,20 +190,20 @@
     "openocd" : {
         "title" : "xPack OpenOCD Debugger",
         "download" : {
-            "mac" : "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.10.0-13/xpack-openocd-0.10.0-13-darwin-x64.tgz",
-            "windows" : "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.10.0-13/xpack-openocd-0.10.0-13-win32-x64.zip",
+            "mac" : "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.10.0-14/xpack-openocd-0.10.0-14-darwin-x64.tar.gz",
+            "windows" : "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.10.0-14/xpack-openocd-0.10.0-14-win32-x64.zip",
             "linux" : "",
-            "size" : 2.5,
-            "version" : "0.10.0-13"
+            "size" : 2.7,
+            "version" : "0.10.0-14"
         },
 		"checksum" : {
-            "mac" : "d96c0b278108a5332c2980b2d0a7f268",
-            "windows" : "b5d8024b2cebdbdf92067462036b2cda",
+            "mac" : "",
+            "windows" : "",
             "linux" : ""
         },
         "path" : {
-            "mac" : "/usr/local/share/xPacks/openocd/0.10.0-13/bin/openocd",
-            "windows" : "C:\\Program Files\\xPack\\OpenOCD\\0.10.0-13\\bin\\openocd.exe",
+            "mac" : "/usr/local/share/xPacks/openocd/0.10.0-14/bin/openocd",
+            "windows" : "C:\\Program Files\\xPack\\OpenOCD\\0.10.0-14\\bin\\openocd.exe",
             "linux" : "/usr/share/openocd/bin/openocd"
         }
     },
@@ -230,11 +230,11 @@
     "eagle" : {
         "title" : "AutoCAD Eagle - PCB Design Software",
         "download" : {
-            "mac" : "https://eagle-updates.circuits.io/downloads/9_6_0/Autodesk_EAGLE_9.6.0_English_Mac_64bit.pkg",
-            "windows" : "https://eagle-updates.circuits.io/downloads/9_6_0/Autodesk_EAGLE_9.6.0_English_Win_64bit.exe",
-            "linux" : "https://eagle-updates.circuits.io/downloads/9_6_0/Autodesk_EAGLE_9.6.0_English_Linux_64bit.tar.gz",
-            "size" : 125,
-            "version" : "9.6.0"
+            "mac" : "https://eagle-updates.circuits.io/downloads/9_6_2/Autodesk_EAGLE_9.6.2_English_Mac_64bit.pkg",
+            "windows" : "https://eagle-updates.circuits.io/downloads/9_6_2/Autodesk_EAGLE_9.6.2_English_Win_64bit.exe",
+            "linux" : "https://eagle-updates.circuits.io/downloads/9_6_2/Autodesk_EAGLE_9.6.2_English_Linux_64bit.tar.gz",
+            "size" : 140,
+            "version" : "9.6.2"
         },
 		"checksum" : {
             "mac" : "",
@@ -242,9 +242,9 @@
             "linux" : ""
         },
         "path" : {
-            "mac" : "/Applications/EAGLE-9.6.0/Eagle.app/Contents/MacOS/Eagle",
-            "windows" : "C:\\EAGLE 9.6.0\\eagle.exe",
-            "linux" : "/opt/Autodesk/eagle-9.6.0/eagle"
+            "mac" : "/Applications/EAGLE-9.6.2/Eagle.app/Contents/MacOS/Eagle",
+            "windows" : "C:\\EAGLE 9.6.2\\eagle.exe",
+            "linux" : "/opt/Autodesk/eagle-9.6.2/eagle"
         }
     },
     "designsparkpcb" : {

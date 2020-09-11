@@ -14,7 +14,7 @@
                     <table class="table table-active bg-light table-bordered">
                         <tr>
                             <td>
-                                <span class="icons icon-trash"></span> Remove Software installed by Open Inverter.
+                                <span class="icons icon-trash"></span>  <span id="text_description">Remove Software installed by Open Inverter.</span>
                             </td>
                         </tr>
                     </table>
@@ -42,7 +42,7 @@
 										if($found == false)
 										{
 											$found = true;
-											echo "<tr><td><input type='checkbox' onclick='UninstallEverything();' class='everything' /> <span><b>Everything</b></span></td></tr>";
+											echo "<tr><td><input type='checkbox' onclick='UninstallEverything();' class='everything' /> <span><b id='text_everything'>Everything</b></span></td></tr>";
 										}
 
 										echo "<tr><td><input id='" .$id. "' type='checkbox' " . $disabled. " /> <span>" .$item["title"]. " " .$item["download"]["version"]. "</span>" .$builtin." <div class='spinner-border text-dark d-none' id='" .$id. "_progress'></div></td></tr>";
@@ -51,7 +51,7 @@
                             }
                         ?>
                     </table>
-                    <button class="browse btn btn-primary" type="button" onclick="Uninstall();"><i class="icons icon-trash"></i> Uninstall</button>
+                    <button class="browse btn btn-primary" type="button" onclick="Uninstall();"><i class="icons icon-trash"></i> <span id="text_uninstall">Uninstall</span></button>
                 </div>
             </div>
         </div>

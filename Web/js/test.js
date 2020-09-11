@@ -1,3 +1,5 @@
+var knobValue = 0;
+var knobTimer;
 var display;
 var testRequest;
 var testTimer;
@@ -20,18 +22,13 @@ var can_name = [
 $(document).ready(function () {
 
     $('.nav-tabs a').click(function () {
-        $(this).tab('show');
-        //console.log(this);
-    });
-
-    $('.nav-tabs a').on('shown.bs.tab', function (event) {
         clearTimeout(testTimer);
-        $(activeTab).hide();
-        activeTab = event.target.hash;
-        $(activeTab).show();
+        //$(activeTab).hide();
+        activeTab = this.hash;
+        //$(activeTab).show();
         loadTab();
     });
-    hardwareTestProcess('');
+    //hardwareTestProcess('', function() {});
     //displayHWVersion();
 
     if(os == 'esp8266') {
@@ -43,6 +40,26 @@ $(document).ready(function () {
         }
         $('.d-none.nav-item').removeClass('d-none'); //.show();
     }
+
+    $('.knob').knob({
+        'displayPrevious': true,
+        'value': 0,
+        change: function change(value) {
+            if (value <= knobValue + 5) { //Avoid hard jumps
+                //console.log(value);
+                clearTimeout(knobTimer);
+                knobTimer = setTimeout(function () {
+                    setParameter('fslipspnt', value);
+                }, 80);
+                knobValue = value;
+            } else {
+                console.log('!' + value + '>' + knobValue);
+                $('.knob').val(knobValue).trigger('change');
+            }
+        }
+    });
+    
+    $('.knob').val(0).trigger('change');
 });
 
 $(document).on('click', '.browse', function(){
@@ -93,17 +110,22 @@ function loadTab() {
             }
             $('#debugger-interface').prop('selectedIndex', 0);
 
-            $.ajax('serial.php?com=list', {
-                //async: false,
-                success: function(data) {
-                    var s = data.split('\n');
-                    for (var i = 0; i < s.length; i++) {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function() {
+                if (xhr.status == 200) {
+                    //console.log(xhr.responseText);
+                    if(xhr.responseText.length > 1) {
+                        var s = xhr.responseText.split('\n');
+                        for (var i = 0; i < s.length; i++) {
                         if(s[i] != '')
                             $('#serial2-interface').append($('<option>',{value:s[i]}).append(s[i]));
+                        }
+                        $('#serial2-interface').prop('selectedIndex', 0);
                     }
-                    $('#serial2-interface').prop('selectedIndex', 0);
                 }
-            });
+            };
+            xhr.open('GET', 'serial.php?com=list', false);
+            xhr.send();
         }
         console.log(hardware);
 
@@ -146,15 +168,15 @@ function startTest() {
 	        var s = '';
 
 	        if(d.indexOf('stlink-v2') != -1 || d.indexOf('olimex-arm-jtag-swd') != -1) {
-	            s = checkSoftware('stlink');
+	            s = 'stlink';
 	        }else{
-	            s = checkSoftware('openocd');
+	            s = 'openocd';
 	        }
-
-	        if(s.indexOf('openExternalApp') != -1)
-	        {
-	            hardwareTestFlash();
-	        }
+            checkSoftware(s, '', function(result) {
+                if(result.indexOf('openExternalApp') != -1) {
+                    hardwareTestFlash();
+                }
+            });
     	}
     }
 };
@@ -197,14 +219,14 @@ function hardwareTestFlash(file) {
     $('.spinner-border').removeClass('d-none'); //.show();
 
     if(os == 'esp8266') { //Special ESP8266 requirement
-        $.ajax({
-    		async: false,
-    		//type: 'POST',
-    		url: '/interface?i=' + $('#debugger-interface').val(),
-    		success: function(data) {
-    			console.log(data);
-    		}
-    	});
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+            if (xhr.status == 200) {
+                console.log(xhr.responseText);
+            }
+        };
+        xhr.open('GET', '/interface?i=' + $('#debugger-interface').val(), false);
+        xhr.send();
     }
 
 	var formData = new FormData();
@@ -271,17 +293,18 @@ function hardwareTestResults() {
                 $.notify({ message: 'Current Firmware OK' }, { type: 'success' });
                 $.notify({ message: 'Flash Test Firmware' }, { type: 'warning' });
             }else{
-            	data = hardwareTestProcess(data);
-                var results = $('#hardware-results');
-                results.empty();
-                data = data.split('\n');
-                for (var i = 1; i < data.length; i++) {
-                    var row = $('<div>',{class: 'row'});
-                    var col = $('<div>',{class: 'col'});
-                    col.append(data[i].replace('[31;1;1m', '<b style="color:red">').replace('[32;1;1m', '<b style="color:green">').replace('[0;0;0m', '</b>'));
-                    row.append(col);
-                    results.append(row);
-                }
+            	hardwareTestProcess(data, function() {
+                    var results = $('#hardware-results');
+                    results.empty();
+                    data = data.split('\n');
+                    for (var i = 1; i < data.length; i++) {
+                        var row = $('<div>',{class: 'row'});
+                        var col = $('<div>',{class: 'col'});
+                        col.append(data[i].replace('[31;1;1m', '<b style="color:red">').replace('[32;1;1m', '<b style="color:green">').replace('[0;0;0m', '</b>'));
+                        row.append(col);
+                        results.append(row);
+                    }
+                });
             }
 			$('.spinner-border').addClass('d-none'); //.hide();
         },
@@ -292,19 +315,22 @@ function hardwareTestResults() {
     });
 };
 
-function hardwareTestProcess(data) {
-	$.ajax('js/test.json', {
-		async: false,
-        dataType: 'json',
-        success: function(json) {
-            for(var key in json) {
-            	//console.log(key + ':' + json[key]);
-            	data = data.replace(new RegExp(key + ' ', 'g'), key + ' (' + json[key].toUpperCase() + ') ');
+function hardwareTestProcess(data, callback) {
+
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            for(var key in xhr.response) {
+                //console.log(key + ':' + json[key]);
+                data = data.replace(new RegExp(key + ' ', 'g'), key + ' (' + json[key].toUpperCase() + ') ');
                 data = data.replace(new RegExp(key + ',', 'g'), key + ' (' + json[key].toUpperCase() + '),');
+                callback(data);
             }
         }
-    });
-    return data;
+    };
+    xhr.open('GET', 'js/test.json', true);
+    xhr.send();
 };
 
 function setFirmwareFile() {

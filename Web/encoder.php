@@ -2,7 +2,7 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script>$(document).ready(function(){buildMenu()})</script>
+        <script>$(document).ready(function(){buildMenu(function(){})})</script>
     </head>
     <body>
         <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
@@ -15,10 +15,10 @@
                     <div class="container table-active table-bordered">
                         <div class="row p-2">
                             <div class="col">
-                                <button type="button" class="btn btn-primary" onclick="eval(checkSoftware('inkscape'))"><i class="icons icon-gear"></i> Inkscape (2D)</button>
+                                <button type="button" class="btn btn-primary" onclick="checkSoftware('inkscape')"><i class="icons icon-gear"></i> Inkscape (2D)</button>
                             </div>
                             <div class="col">
-                                <button type="button" class="btn btn-primary" onclick="eval(checkSoftware('openscad'))"><i class="icons icon-gear"></i> OpenSCAD (3D)</button>
+                                <button type="button" class="btn btn-primary" onclick="checkSoftware('openscad')"><i class="icons icon-gear"></i> OpenSCAD (3D)</button>
                             </div>
                         </div>
                     </div>
@@ -60,7 +60,7 @@
                             </td>
                         </tr>
                     </table>
-                    <table class="table table-active table-bordered">
+                    <table class="table table-active bg-light table-bordered">
                         <tr align="center">
                             <td>
                                 <img src="encoder/img/TCST2103x1.png" class="img-thumbnail rounded" />

@@ -35,13 +35,13 @@
                     <div class="d-none container table-active table-bordered" id="saveload">
                         <div class="row p-2">
                             <div class="col">
-                                <button type="button" class="btn btn-secondary" onclick="downloadSnapshot()"><i class="icons icon-down"></i> Save to File</button>
+                                <button type="button" class="btn btn-secondary" onclick="downloadSnapshot()"><i class="icons icon-down"></i> Backup</button>
                             </div>
                             <div class="col">
-                                <button type="button" class="btn btn-secondary" onclick="uploadSnapshot()"><i class="icons icon-up"></i> Load from File</button>
+                                <button type="button" class="btn btn-secondary" onclick="uploadSnapshot()"><i class="icons icon-up"></i> Restore</button>
                             </div>
                             <div class="col">
-                                <button type="button" class="btn btn-secondary" id="save-parameters" onclick="saveParameter(true)"><i class="icons icon-save"></i> Save Parameters</button>
+                                <button type="button" class="btn btn-secondary" id="save-parameters" onclick="saveParameter(true)"><i class="icons icon-save"></i> Save</button>
                             </div>
                         </div>
                     </div>
@@ -54,12 +54,12 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="calculator" tabindex="-1" role="dialog" aria-labelledby="calculatorTitle" aria-hidden="true">
-            <div class="modal-dialog modal-lg bg-light" role="document">
-                <div class="modal-content">
+        <div class="modal" id="calculator">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content bg-light">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="calculatorTitle"></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close text-muted" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -68,12 +68,12 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="macdrivers" tabindex="-1" role="dialog" aria-labelledby="macdriversTitle" aria-hidden="true">
-	        <div class="modal-dialog bg-light" role="document">
-	            <div class="modal-content">
+        <div class="modal" id="macdrivers">
+	        <div class="modal-dialog modal-dialog-centered">
+	            <div class="modal-content bg-light">
 	                <div class="modal-header">
-	                    <h5 class="modal-title" id="macdriversTitle">MacOS Drivers</h5>
-	                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <h5 class="modal-title">MacOS Drivers</h5>
+	                    <button type="button" class="close text-muted" data-dismiss="modal" aria-label="Close">
 	                        <span aria-hidden="true">&times;</span>
 	                    </button>
 	                </div>

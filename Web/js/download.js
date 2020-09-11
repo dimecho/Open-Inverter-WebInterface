@@ -1,47 +1,46 @@
 var pause = false;
 var notify;
 
-$(document).on('click', '.pause', function(){
-    $.ajax('download.php?pause=' + this.textContent.toLowerCase(),{
-        //async: false,
-        success: function(data)
-        {
-            //console.log(data);
+$(document).on('click', '.pause', function()
+{
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            //console.log(xhr.responseText);
             if(data == 'Pause')
             {
                 this.textContent = 'Resume';
             }else{
                 this.textContent = 'Pause';
             }
-        },
-        error: function(xhr, textStatus, errorThrown){
         }
-    });
+    };
+    xhr.open('GET', 'download.php?pause=' + this.textContent.toLowerCase(), true);
+    xhr.send();
 });
 
 function confirmDownload(app, crc)
 {
-    $.ajax('download.php?software=' + app + '&crc=' + crc, {
-        //async: false,
-        success: function(data)
-        {
-			console.log(data);
-            json = JSON.parse(data);
-            //console.log(json);
-
-            $('#software').find('.modal-body').empty().append('Download ' + json.title + ' - ' + json.size + 'MB');
-            $('#software').modal();
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            console.log(xhr.response);
+            $('#software').find('.modal-body').empty().append('Download ' + xhr.response.title + ' - ' + xhr.response.size + 'MB');
+            var softwareModal = new bootstrap.Modal(document.getElementById('software'), {});
+            softwareModal.show();
             $("#software-install").click(function() {
                 //window.open(url, '_blank');
                 window.location.href = 'download.php?start=' + app + '&crc=' + crc;
             });
-        },
-        error: function(xhr, textStatus, errorThrown){
         }
-    });
+    };
+    xhr.open('GET', 'download.php?software=' + app + '&crc=' + crc, true);
+    xhr.send();
 };
 
-function get_filesize(url, callback) {
+function get_filesize(url, callback)
+{
     var xhr = new XMLHttpRequest();
     xhr.open('HEAD', url, true); // Notice 'HEAD' instead of 'GET', to get only the header
     xhr.onreadystatechange = function() {
@@ -56,63 +55,61 @@ function get_filesize(url, callback) {
 function install(app)
 {
     notify.update({'type': 'success', 'allow_dismiss': false, 'message':'Installing ...'});
-    
-    $.ajax('install.php?app=' + app,{
-        //async: false,
-        success: function(data)
-        {
+
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (xhr.status == 200) {
             //console.log(data);
             notify.update({'type': 'success', 'allow_dismiss': true, 'message': 'Installed'});
             
             //$('#progressBar').css('width','100%');
-            $('#output').show().append($('<pre>').append(data));
+            $('#output').show().append($('<pre>').append(xhr.responseText));
             
             setTimeout(function ()
             {
                 downloadComplete(app)
             },4000);
-        },
-        error: function(xhr, textStatus, errorThrown){
         }
-    });
+    };
+    xhr.open('GET', 'install.php?app=' + app, true);
+    xhr.send();
 };
 
 function download(app, crc)
 {
     notify = $.notify({ message: 'Downloading...',},{ type: 'success'});
 
-    $.ajax({
-        xhr: function()
-        {
-            var xhr = new window.XMLHttpRequest();
-            xhr.addEventListener('progress', function(e){
-                var s = e.target.responseText.split(',');
-                $('.progress-bar').css('width', s.pop() + '%');
-                //if(a === '100')
-                    //downloadComplete(app);
-                //console.log(s.pop());
-            }, false);
-            return xhr;
-        },
-        //async: false,
-        type: 'GET',
-        url: 'download.php?download=' + app + '&crc=' + crc,
-        data: {},
-        success: function(data)
-        {
-            console.log(data);
+    var xhr = new XMLHttpRequest();
+    //xhr.overrideMimeType('text\/plain; charset=x-user-defined');
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            console.log(xhr.responseText);
 
-            if(data.indexOf('Error') != -1)
+            if(xhr.responseText.indexOf('Error') != -1)
             {
                 $('#checksum-good').append(crc);
-                $('#checksum-bad').append(data.replace(' Error', ''));
+                $('#checksum-bad').append(xhr.responseText.replace(' Error', ''));
                 $('#continue-install').click(function() { install(app) });
                 $('#checksum').modal();
             }else{
                 install(app);
             }
         }
+    };
+    xhr.addEventListener('progress', function(e){
+        var s = e.target.responseText.split(',');
+        $('.progress-bar').css('width', s.pop() + '%');
+        //if(a === '100')
+            //downloadComplete(app);
+        //console.log(s.pop());
+    }, false);
+    /*
+    xhr.addEventListener('error', function(e) {
+      console.log('error: ' + e);
     });
+    */
+    xhr.open('GET', 'download.php?download=' + app + '&crc=' + crc);
+    xhr.send();
 };
 
 function downloadComplete(app) {

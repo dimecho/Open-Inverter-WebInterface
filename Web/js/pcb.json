@@ -53,7 +53,7 @@
     "wiring": "diagrams/wiring.png",
     "description": "Support for permanent magnet motors with resolver. ESP8266 module for wireless configuration.",
     "boards": [{
-        "base_board7": "",
+        "mainboardv3.4": "",
 		"usb2can": "usb2can <a href=https://github.com/roboterclubaachen/usb2can target=_blank>https://github.com/roboterclubaachen/usb2can</a>"
     }]
 }]

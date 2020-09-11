@@ -3,9 +3,12 @@
     <head>
         <?php include "header.php" ?>
         <link rel="stylesheet" href="css/androidstudio.css">
+        <script src="js/jquery.fancybox.js"></script>
         <script src="js/highlight.js"></script>
         <script>
-            $(document).ready(function(){buildMenu()});
+            $(document).ready(function(){
+                buildMenu(function(){});
+            });
             hljs.initHighlightingOnLoad();
         </script>
     </head>
@@ -19,11 +22,11 @@
                     <table class="table table-active table-bordered">
                         <tr>
                             <td>
-                                <button type="button" class="btn btn-primary" onClick="eval(checkSoftware('arduino'))"><i class="icons icon-gear"></i> Open Arduino IDE</button>
+                                <button type="button" class="btn btn-primary" onClick="checkSoftware('arduino')"><i class="icons icon-gear"></i> Open Arduino IDE</button>
                             </td>
                         </tr>
                     </table>
-                    <table class="table table-active table-bordered">
+                    <table class="table table-active bg-light table-bordered">
                         <tr>
                             <td>
                                 <table class="table table-bordered table-striped" >

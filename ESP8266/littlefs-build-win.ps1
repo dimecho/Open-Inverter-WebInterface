@@ -20,7 +20,7 @@ foreach ($file in $cssfiles) {
   Copy-Item "..\Web\css\$file" -Destination .\data\css
 }
 
-$jsfiles = 'esp8266.js', 'jquery.js', 'jquery.knob.js', 'potentiometer.js', 'bootstrap.js', 'ion.rangeSlider.js', 'bootstrap-notify.js', 'firmware.js', 'can.js', 'graph.js', 'jscolor.js', 'index.js', 'menu.js', 'simple.js', 'chart.js', 'chartjs-plugin-annotation.js', 'chartjs-plugin-datalabels.js', 'test.js', 'mobile.js', 'language.js'
+$jsfiles = 'esp8266.js', 'jquery.core.js', 'jquery.knob.js', 'potentiometer.js', 'bootstrap.js', 'ion.rangeSlider.js', 'bootstrap-notify.js', 'firmware.js', 'can.js', 'graph.js', 'jscolor.js', 'index.js', 'menu.js', 'simple.js', 'chart.js', 'chartjs-plugin-annotation.js', 'chartjs-plugin-datalabels.js', 'test.js', 'mobile.js', 'language.js'
 foreach ($file in $jsfiles) {
   Copy-Item "..\Web\js\$file" -Destination .\data\js
 }
@@ -41,33 +41,9 @@ Copy-Item ..\Web\font\icons.ttf -Destination .\data\font
 #Copy-Item ..\Web\font\icons.woff2 -Destination .\data\font
 #Copy-Item ..\Web\font\icons.woff -Destination .\data\font
 
-#======================
-#Correct long filenames
-#======================
-Get-ChildItem .\data -Recurse -Filter *.* | 
-Foreach-Object {
-	if (-Not (Test-Path $_.FullName -PathType Container)) {
-		if($_.Name.length -gt 12){
-			$i = "";
-			Do {
-				$longName = $_.Name
-				$shortName = "$($_.BaseName.Substring(0,8))$($i)$($_.Extension)"
-				$shortPath = "$(Split-Path -Path $_.FullName)\$($shortName)"
-				Write-Host $shortPath
-				$i = [int]$i+1
-			} while(Test-Path $shortPath)
-
-			Move-Item $_.FullName -Destination $shortPath
-
-			Get-ChildItem .\data -Recurse -Include *.php,*.css,*.js,*.json | 
-			Foreach-Object {
-				if (-Not (Test-Path $_.FullName -PathType Container)) {
-					(Get-Content $_.FullName).Replace($longName, $shortName) | Set-Content $_.FullName
-				}
-			}
-		}
-	}
-}
+#================
+#Clean PHP
+#================
 Get-ChildItem .\data -Recurse -Filter *.php | 
 Foreach-Object {
 	if (-Not (Test-Path $_.FullName -PathType Container)) {
@@ -144,4 +120,4 @@ Foreach-Object {
 #Find Folder Size
 #================
 #Start-Process .\tools\mklittlefs.exe -ArgumentList "-c .\data -b 8192 -p 256 -s 643072 flash-littlefs.bin" -NoNewWindow -PassThru -Wait
-Start-Process .\tools\mklittlefs.exe -ArgumentList "-c .\data -b 4096 -p 256 -s 600000 flash-littlefs.bin" -NoNewWindow -PassThru -Wait
+Start-Process .\tools\mklittlefs.exe -ArgumentList "-c .\data -b 8192 -p 256 -s 750000 flash-littlefs.bin" -NoNewWindow -PassThru -Wait

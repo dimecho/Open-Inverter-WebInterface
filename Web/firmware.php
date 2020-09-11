@@ -151,7 +151,7 @@
 					<table class="table table-active bg-light table-bordered">
                         <tr>
                             <td>
-                                <button type="button" class="btn btn-primary" onClick="window.open('https://github.com/jsphuebner/stm32-sine')"><i class="icons icon-download"></i> Download Firmware</button>
+                                <button type="button" class="btn btn-primary" onClick="window.open('https://github.com/jsphuebner/stm32-sine')"><i class="icons icon-download"></i> <span id="text_download">Download Firmware</span></button>
                             </td>
                         </tr>
                     </table>

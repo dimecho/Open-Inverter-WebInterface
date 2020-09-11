@@ -2,7 +2,7 @@
 <html>
     <head>
         <?php include "header.php" ?>
-        <script>$(document).ready(function(){buildMenu()})</script>
+        <script>$(document).ready(function(){buildMenu(function(){})})</script>
     </head>
     <body>
         <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
@@ -11,7 +11,7 @@
         <div class="container">
             <div class="row">
                 <div class="col" align="center">
-                    <div class="text-dark"><h1>IGBT Finger Test</h1></div>
+                    <div class="text-dark"><h1 id="text_title">IGBT Finger Test</h1></div>
                     <table class="container table-active bg-light table-bordered">
                         <tr>
                             <td>

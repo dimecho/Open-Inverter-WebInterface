@@ -41,7 +41,7 @@
                             <div class="col" id="can-app"></div>
                             <div class="col" id="can-firmware"></div>
                             <div class="col">
-                                <button type="button" class="btn btn-danger" onClick="setCANDefaults()"><i class="icons icon-reset"></i> Reset CAN</button>
+                                <button type="button" class="btn btn-danger" onClick="new bootstrap.Modal(document.getElementById('resetCAN'), {}).show()"><i class="icons icon-reset"></i> Reset CAN</button>
                             </div>
                             <div class="col">
                                <button type="button" class="btn btn-success" onClick="saveCANMapping()"><i class="icons icon-save"></i> Save CAN</button>
@@ -56,6 +56,23 @@
                 </div>
             </div>
         </div>
+        <div class="modal" id="resetCAN">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-light">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reset CANBus</h5>
+                    <button type="button" class="close text-muted" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">CANBus Settings will be Reset to Default!</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="setCANDefaults()"> Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
         <?php include "footer.php" ?>
     </body>
 </html>

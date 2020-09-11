@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" type="text/css" href="css/jquery.fancybox.css">
         <?php include "header.php" ?>
+        <script src="js/jquery.fancybox.js"></script>
         <script src="js/jspdf.js"></script>
         <script src="js/wiring.js"></script>
     </head>

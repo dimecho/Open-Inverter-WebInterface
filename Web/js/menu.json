@@ -1,127 +1,155 @@
 {
     "menu": [{
-        "id": "Motor",
+        "id": "menu_motor",
+        "text": "Motor",
         "icon": "icon-motor",
         "onClick": "",
         "dropdown": [{
-            "id": "Start Inverter",
+            "id": "menu_motor_start",
+            "text": "Start Inverter",
             "icon": "icon-key",
-            "onClick": "$('#startInverterMode').modal()"
+            "onClick": "new bootstrap.Modal(document.getElementById('startInverterMode'), {}).show()"
         }, {
-            "id": "Stop Inverter",
+            "id": "menu_motor_stop",
+            "text": "Stop Inverter",
             "icon": "icon-alert",
             "onClick": "stopInverter()"
         }, {
-            "id": "Reset to Default",
+            "id": "menu_motor_default",
+            "text": "Reset to Default",
             "icon": "icon-reset",
-            "onClick": "$('#resetInverterDefault').modal()"
+            "onClick": "new bootstrap.Modal(document.getElementById('resetInverterDefault'), {}).show()"
         }, {
             "id": "-"
         }, {
-            "id": "Parameters",
+            "id": "menu_motor_parameters",
+            "text": "Parameters",
             "icon": "icon-settings",
             "onClick": "/index.php"
         }, {
-            "id": "Graph",
+            "id": "menu_motor_graph",
+            "text": "Graph",
             "icon": "icon-graph-bar",
             "onClick": "/graph.php"
         }, {
             "id": "-"
         }, {
-            "id": "Motor Database",
+            "id": "menu_motor_db",
+            "text": "Motor Database",
             "icon": "icon-magic",
             "onClick": "/db.php"
         }, {
             "id": "-"
         }, {
-            "id": "Auto Tuning",
+            "id": "menu_motor_tuning",
+            "text": "Auto Tuning",
             "icon": "icon-tune",
             "onClick": "/simple.php"
         }, {
-            "id": "CAN Mapping",
+            "id": "menu_motor_can",
+            "text": "CAN Mapping",
             "icon": "icon-list",
             "onClick": "/can.php"
         }]
     }, {
-        "id": "Inverter",
+        "id": "menu_inverter",
+        "text": "Inverter",
         "icon": "icon-inverter",
         "onClick": "",
         "dropdown": [{
-            "id": "Flash ESP8266",
+            "id": "menu_inverter_esp8266",
+            "text": "Flash ESP8266",
             "icon": "icon-wifi",
-            "onClick": "eval(checkSoftware(\"esptool\"))"
+            "onClick": "checkSoftware(\"esptool\")"
         }, {
-            "id": "Flash Bootloader",
+            "id": "menu_inverter_bootloader",
+            "text": "Flash Bootloader",
             "icon": "icon-chip",
             "onClick": "/bootloader.php"
         }, {
-            "id": "Flash Firmware",
+            "id": "menu_inverter_firmware",
+            "text": "Flash Firmware",
             "icon": "icon-ram",
             "onClick": "/firmware.php"
         }, {
-            "id": "Compile from Source",
+            "id": "menu_inverter_source",
+            "text": "Compile from Source",
             "icon": "icon-source",
-            "onClick": "eval(checkSoftware(\"arm\"))"
+            "onClick": "checkSoftware(\"arm\")"
         }, {
             "id": "-"
         }, {
-            "id": "Board Test",
+            "id": "menu_inverter_test",
+            "text": "Board Test",
             "icon": "icon-test",
             "onClick": "/test.php"
         }, {
             "id": "-"
         }, {
-            "id": "Schematics",
+            "id": "menu_inverter_sch",
+            "text": "Schematics",
             "icon": "icon-pcb",
-            "onClick": "eval(checkSoftware(\"eagle\"))"
+            "onClick": "checkSoftware(\"eagle\")"
         }, {
-            "id": "Components",
+            "id": "menu_inverter_pcb",
+            "text": "Components",
             "icon": "icon-components",
             "onClick": "/pcb.php"
         }, {
-            "id": "Wiring Diagrams",
+            "id": "menu_inverter_diagrams",
+            "text": "Wiring Diagrams",
             "icon": "icon-connect",
             "onClick": "/wiring.php"
         }]
     }, {
-        "id": "Console",
+        "id": "menu_console",
+        "text": "Console",
         "icon": "icon-console",
         "onClick": "javascript:openConsole()"
     }, {
-        "id": "Info",
+        "id": "menu_info",
+        "text": "Info",
         "icon": "icon-info",
         "onClick": "",
         "dropdown": [{
-            "id": "Motor Classification",
+            "id": "menu_info_motor",
+            "text": "Motor Classification",
             "icon": "icon-list",
             "onClick": "/motor-class.php"
         }, {
-            "id": "DC Wire Selection",
+            "id": "menu_info_wire",
+            "text": "DC Wire Selection",
             "icon": "icon-plug",
             "onClick": "http://assets.bluesea.com/files/resources/newsletter/images/DC_wire_selection_chartlg.jpg"
         }, {
-            "id": "IGBT Test",
+            "id": "menu_info_igbt",
+            "text": "IGBT Test",
             "icon": "icon-point-down",
             "onClick": "/igbt-test.php"
         }, {
-            "id": "Encoder",
+            "id": "menu_info_encoder",
+            "text": "Encoder",
             "icon": "icon-encoder",
             "onClick": "/encoder.php"
         }, {
-            "id": "Arduino LCD",
+            "id": "menu_info_lcd",
+            "text": "Arduino LCD",
             "icon": "icon-lcd",
             "onClick": "/dashboard.php?i=arduino"
         }, {
-            "id": "Power Stage",
+            "id": "menu_info_power",
+            "text": "Power Stage",
             "icon": "icon-power",
             "onClick": "/design.php"
         }, {
-            "id": "Tips",
+            "id": "menu_info_tips",
+            "text": "Tips",
             "icon": "icon-circle-question",
             "onClick": "/tips.php"
         }]
     }, {
-        "id": "Uninstall",
+        "id": "menu_uninstall",
+        "text": "Uninstall",
         "icon": "icon-trash",
         "onClick": "/uninstall.php"
     }]

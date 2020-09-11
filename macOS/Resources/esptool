@@ -12,17 +12,40 @@ else
     else
 
 	    if [[ ! $(type -p pip) ]]; then
-	    	cd ~/Downloads
-		    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-		    python get-pip.py --user --no-warn-script-location
 
 		    os_ver=$(sw_vers -productVersion)
 		    if [[ $os_ver == 10.15* ]]; then
-			   echo "export PATH=$PATH:$HOME/Library/Python/2.7/bin" > ~/.zprofile
+		    	if ! grep -q Python ~/.zprofile; then
+		    		echo \n >> ~/.zprofile
+					echo "export PATH=\${PATH}:\${HOME}/Library/Python/2.7/bin" >> ~/.zprofile
+					echo \n >> ~/.zprofile
+				fi
 			else
-			   echo "export PATH=$PATH:$HOME/Library/Python/2.7/bin" > ~/.bashrc
+				if ! grep -q Python ~/.bashrc; then
+					echo \n >> ~/.bashrc
+			   		echo "export PATH=\${PATH}:\${HOME}/Library/Python/2.7/bin" >> ~/.bashrc
+			   		echo \n >> ~/.bashrc
+				fi
 			fi
+			source ~/.zprofile
+
+			export PATH=$PATH:$HOME/Library/Python/2.7/bin
+
+			cd ~/Downloads
+		    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+		    python get-pip.py --user --no-warn-script-location
 		fi
+
+		#pip install --upgrade pip
+
+		#Repair
+		#
+        #sudo rm -rf /usr/local/bin/pip
+        #sudo ln -s ~/Library/Python/2.7/bin/pip /usr/local/bin/pip
+        #pip -version
+        #sudo rm -rf /usr/local/bin/pip3
+        #sudo ln -s ~/Library/Python/2.7/bin/pip3 /usr/local/bin/pip3
+        #pip3 -version
 
 		if [ ! -d ~/Library/Python/2.7/lib/python/site-packages/serial ] && [ ! -d /Library/Python/2.7/site-packages/serial ]; then
 			pip install pyserial --user
@@ -30,13 +53,11 @@ else
 
 		cd /usr/local/share/esptool
 
-		PATH=$PATH:$HOME/Library/Python/2.7/bin
-
 		ADDRESS="0x000000"
-		if [ "$3" = "spiffs" ]; then
+		if [ "$3" = "littlefs" ]; then
 	        ADDRESS="0x100000"
 	    fi
 
-	    python esptool.py --chip esp8266 --port "$2" --baud 115200 write_flash $ADDRESS "$1"
+	    python esptool.py --port "$2" write_flash $ADDRESS "$1"
 	fi
 fi

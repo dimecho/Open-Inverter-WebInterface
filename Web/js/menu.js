@@ -1,11 +1,4 @@
-var theme = detectTheme();
-loadTheme();
-/*
-var serialPort = getCookie('serial');
-var serialWeb = getCookie('serial.web');
-var serialTimeout = getCookie('serial.timeout');
-var serialWDomain = 'http://' + window.location.hostname;
-*/
+var theme = detectTheme(); loadTheme();
 var serialTimeout = 12000;
 var serialBlock = getCookie('serial.block');
 var os = getCookie('os');
@@ -25,16 +18,19 @@ var saveReminder = false;
 
 $(document).ready(function () {
 
+    var xhr = new XMLHttpRequest();
+    
     if (os == undefined) {
-        $.ajax('serial.php?os=1', {
-            async: false,
-            success: function(data) {
-                os = data;
-                setCookie('os', data, 1); 
+        xhr.onload = function() {
+            if (xhr.status == 200) {
+                os = xhr.responseText;
+                setCookie('os', xhr.responseText, 1);
             }
-        });
+        };
+        xhr.open('GET', 'serial.php?os=1', true);
+        xhr.send();
     }
-
+    
     //DEBUG
     //os = 'mobile';
 
@@ -56,15 +52,18 @@ $(document).ready(function () {
 
     var version = getCookie('version') || 0;
     if (version == 0) {
-        $.ajax('version.txt', {
-            success: function(version) {
-				version = version.replace('\n', '.');
+        xhr.onload = function() {
+            if (xhr.status == 200) {
+                version = xhr.responseText.replace('\n', '.');
                 setCookie('version', version, 1);
-                titleVersion(version);
             }
-        });
+            titleVersion(version);
+        };
+        xhr.open('GET', 'version.txt', true);
+        xhr.send();
+    }else{
+        titleVersion(version);
     }
-    titleVersion(version);
     /*
     if (hardware == undefined) {
         $.ajax('serial.php?get=hwver', {
@@ -120,11 +119,9 @@ function startInverterMode(mode)
 
 function titleVersion(version)
 {
-    document.title = 'Inverter Console (' + version + ')';
-    if(os == 'esp8266') {
+    document.title = 'Web Interface (' + version + ')';
+    if(os === 'esp8266') {
         document.title += ' ESP8266';
-    }else{
-        $.getScript('js/download.js');
     }
 };
 
@@ -168,14 +165,15 @@ function unblockSerial()
 
 function selectSerial()
 {
-    //$.ajax(serialWDomain + ':' + serialWeb + '/serial.php?serial=' + $('#serial-interface').val(), {
-    $.ajax('serial.php?serial=' + $('#serial-interface').val(), {
-        async: false,
-        success: function(data) {
-            console.log(data);
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            console.log(xhr.responseText);
             location.reload();
         }
-    });
+    };
+    xhr.open('GET', 'serial.php?serial=' + $('#serial-interface').val(), true);
+    xhr.send();
 };
 
 function selectHardware()
@@ -193,27 +191,33 @@ function isFloat(n){
     return Number(n) === n && n % 1 !== 0;
 };
 
-function checkSoftware(app,args){
+function checkSoftware(app, args, callback) {
 
-    var result;
-    $.ajax('install.php?check=' + app + '&args=' + args, {
-        async: false,
-        success: function success(data) {
-            console.log(data);
-            //eval(data);
-            result = data;
+    if (callback == undefined)
+        callback = function(){};
+
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            console.log(xhr.responseText);
+            eval(xhr.responseText);
+            callback(xhr.responseText);
         }
-    });
-    return result;
+    };
+    xhr.open('GET', 'install.php?check=' + app + '&args=' + args, true);
+    xhr.send();
 };
 
 function openConsole(){
 
-    $.ajax('open.php?console=1', {
-        success: function success(data) {
-            console.log(data);
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            console.log(xhr.responseText);
         }
-    });
+    };
+    xhr.open('GET', 'open.php?console=1', true);
+    xhr.send();
 };
 
 function validateInput(json, id, value, callback)
@@ -310,19 +314,17 @@ function validateInput(json, id, value, callback)
 						callback(false);
                     return;
                 }
-            /*
             }else  if(id == 'ocurlim'){
-                if(value > 0)
+                if(value == 0)
                 {
-                    return 'Current limit should be set as negative';
-                }*/
+                    $.notify({ message: 'AC current limit code disabled' }, { type: 'warning' });
+                    if(callback)
+                        callback(true);
+                    return;
+                }
             }
 
-            var notify = $.notify({ message: id + ' = ' + $.trim(value) },{
-                //allow_dismiss: false,
-                //showProgressbar: true,
-                type: 'warning'
-            });
+            var notify = $.notify({ message: id + ' = ' + $.trim(value) },{ type: 'warning' });
 			if(callback)
 				callback(true);
         }
@@ -362,51 +364,56 @@ function setParameter(cmd, value, save, notify) {
 
     var e = '';
 
-    //$.ajax(serialWDomain + ':' + serialWeb + '/serial.php?pk=1&name=' + cmd + '&value=' + value, {
-    $.ajax('serial.php?pk=1&name=' + cmd + '&value=' + value, {
-        async: true,
-		timeout: serialTimeout,
-        success: function success(data) {
-            e = data;
-
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            e = xhr.responseText;
             if(save) {
                 saveParameter(notify);
             }
         }
-    });
+    };
+    xhr.open('GET', 'serial.php?pk=1&name=' + cmd + '&value=' + value, true);
+    xhr.send();
 
     //console.log(e);
     return e;
 };
 
-function sendCommand(cmd, loop) {
+function sendCommand(cmd, loop, callback) {
     var e = '';
+    var async = true;
+    if (callback == undefined) {
+        async = false;
+        callback = function(){};
+    }
   
     if(loop < 2) {
-        $.ajax('serial.php?command=' + cmd, {
-            async: false,
-            cache: false,
-            timeout: serialTimeout,
-            success: function success(data) {
+        var xhr = new XMLHttpRequest();
+        xhr.cache = false;
+        xhr.onload = function() {
+            if (xhr.status == 200) {
                 //console.log(cmd);
-                //console.log(data);
+                //console.log(xhr.responseText);
                 if(cmd == 'json') {
                     try {
-                        e = JSON.parse(data);
+                        e = JSON.parse(xhr.responseText);
                     } catch(ex) {
-                        console.log(data);
+                        console.log(xhr.responseText);
                         e = {};
                         if(loop == 1)
-                            $.notify({ message: ex + ':' + data }, { type: 'danger' });
+                            $.notify({ message: ex + ':' + xhr.responseText }, { type: 'danger' });
                         loop++;
                         e = sendCommand(cmd, loop);
                     }
                 }else{
-                    e = data;
+                    e = xhr.responseText;
                 }
-            },
-            error: function error(xhr, textStatus, errorThrown) {}
-        });
+            }
+            callback(e);
+        };
+        xhr.open('GET', 'serial.php?command=' + cmd, async);
+        xhr.send();
     }else{
         $.notify({ message: 'Recommended: Power Cycle Inverter' }, { type: 'warning' });     
     }
@@ -435,13 +442,17 @@ function openExternalApp(app,args) {
         window.location.href = 'esp8266.php';
     } else {
         data = '';
-        $.ajax('open.php?app=' + app + '&args=' + args, {
-            async: false,
-            success: function success(d) {
-                //console.log(d);
-                data = d;
+
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+            if (xhr.status == 200) {
+                //console.log(xhr.responseText);
+                data = xhr.responseText;
             }
-        });
+        };
+        xhr.open('GET', 'open.php?app=' + app + '&args=' + args, false);
+        xhr.send();
+
         return data;
     }
 };
@@ -454,35 +465,39 @@ function getJSONFloatValue(value, callback) {
     if(callback)
         sync = true;
 
-    //$.ajax(serialWDomain + ':' + serialWeb + '/serial.php?get=' + value, {
-    $.ajax('serial.php?get=' + value, {
-        async: sync,
-        timeout: serialTimeout,
-        success: function success(data) {
-            //console.log(data);
-            f = parseFloat(data);
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            //console.log(xhr.responseText);
+            f = parseFloat(xhr.responseText);
             if(isNaN(f))
                 f = 0;
             if(callback)
                 callback(f);
         }
-    });
+    };
+    xhr.open('GET', 'serial.php?get=' + value, sync);
+    xhr.send();
+
     //console.log(f);
     return f;
 };
 
-function getJSONAverageFloatValue(value,c) {
+function getJSONAverageFloatValue(value, c) {
     if(!c)
         c = 'average'; //median
     var f = 0;
-    //$.ajax(serialWDomain + ':' + serialWeb + '/serial.php?' + c + '=' + value, {
-    $.ajax('serial.php?' + c + '=' + value, {
-        async: false,
-		timeout: serialTimeout,
-        success: function success(data) {
-            f = parseFloat(data);
+
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            //console.log(xhr.responseText);
+            f = parseFloat(xhr.responseText);
         }
-    });
+    };
+    xhr.open('GET', 'serial.php?' + c + '=' + value, false);
+    xhr.send();
+
     //console.log(f);
     return f;
 };
@@ -529,7 +544,9 @@ function stopInverter() {
 function setDefaults() {
     
     sendCommand('can clear', 0);
-    $.ajax('can.php?clear=1');
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'can.php?clear=1', true);
+    xhr.send();
 
     var data = sendCommand('defaults', 0);
     //console.log(data);
@@ -547,22 +564,27 @@ function setDefaults() {
 };
 
 function giveCredit(csv) {
-    $.ajax(csv, {
-        success: function success(data) {
+
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            //console.log(xhr.responseText);
 
             var name = '';
             var url = '';
 
-            if (data.indexOf(',') != -1) {
-                var s = data.split(',');
+            if (xhr.responseText.indexOf(',') != -1) {
+                var s = xhr.responseText.split(',');
                 name = s[0];
                 url = '<br><a href="' + s[1] + '" target=_blank>Project Website</a>';
             }else{
-                name = data;
+                name = xhr.responseText;
             }
             $.notify({ message: 'Designed By: ' + name + url }, { type: 'success' });
         }
-    });
+    };
+    xhr.open('GET', csv, true);
+    xhr.send();
 };
 
 function buildTips() {
@@ -576,10 +598,11 @@ function buildTips() {
 
         var opStatus = $('#opStatus');
 
-        $.ajax('tips.csv', {
-            //async: false,
-            success: function success(data) {
-                var row = data.split('\n');
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+            if (xhr.status == 200) {
+                //console.log(xhr.responseText);
+                var row = xhr.responseText.split('\n');
                 var n = Math.floor(Math.random() * row.length);
 
                 for (var i = 0; i < row.length; i++) {
@@ -589,15 +612,18 @@ function buildTips() {
                         break;
                     }
                 }
-
-                $('[data-toggle="tooltip"]').tooltip();
-            },
-            error: function error(xhr, textStatus, errorThrown) {}
-        });
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                  return new bootstrap.Tooltip(tooltipTriggerEl)
+                });
+            }
+        };
+        xhr.open('GET', 'tips.csv', true);
+        xhr.send();
     }
 };
 
-function buildMenu(page) {
+function buildMenu(callback) {
 
     var file = 'js/menu.json';
 
@@ -605,10 +631,11 @@ function buildMenu(page) {
         file = 'js/menu-mobile.json';
     }
 
-    $.ajax(file, {
-        dataType: 'json',
-        success: function success(js) {
-
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            var js = xhr.response;
             //console.log(js);
 
             var nav = $('#mainMenu');
@@ -617,9 +644,9 @@ function buildMenu(page) {
             var button = $('<button>', { class: 'navbar-toggler navbar-toggler-right', type: 'button', 'data-toggle': 'collapse', 'data-target': '#navbarResponsive', 'aria-controls': 'navbarResponsive', 'aria-expanded': false, 'aria-label': 'Menu' });
             var span = $('<span>', { class: 'icons icon-menu' }); //navbar-toggler-icon' });
             button.append(span);
-			wrap.append(button);
+            wrap.append(button);
 
-			var div = $('<div>', { class: 'collapse navbar-collapse', id:'navbarResponsive' });
+            var div = $('<div>', { class: 'collapse navbar-collapse', id:'navbarResponsive' });
 
             for(var k in js.menu)
             {
@@ -635,7 +662,7 @@ function buildMenu(page) {
                 var _i = $('<i>', { class: 'icons ' + js.menu[k].icon });
                 
                 a.append(_i);
-                a.append($('<b>').append(' ' + js.menu[k].id));
+                a.append($('<b>', { id: js.menu[k].id }).append(' ' + js.menu[k].text));
                 li.append(a);
                 
                 if(js.menu[k].dropdown)
@@ -651,8 +678,6 @@ function buildMenu(page) {
                     for(var d in js.menu[k].dropdown)
                     {
                         //console.log(js.menu[k].dropdown[d].id);
-                        var dropdown_id = js.menu[k].dropdown[d].id;
-
                         var onclick = js.menu[k].dropdown[d].onClick;
                         if(onclick == undefined) {
 
@@ -663,7 +688,7 @@ function buildMenu(page) {
                             var dropdown_item = $('<a>', { class: 'dropdown-item', href: '#' });
 
                             var icon = $('<i>', { class: 'icons ' + js.menu[k].dropdown[d].icon });
-                            var item = $('<span>');
+                            var item = $('<span>', { id: js.menu[k].dropdown[d].id });
 
                             if (onclick.indexOf('/') != -1 && onclick.indexOf('alertify') == -1)
                             {
@@ -673,7 +698,7 @@ function buildMenu(page) {
                             }
 
                             dropdown_item.append(icon);
-                            dropdown_item.append(item.append(' ' + dropdown_id));
+                            dropdown_item.append(item.append(' ' + js.menu[k].dropdown[d].text));
                             dropdown_menu.append(dropdown_item);
                         }
                     }
@@ -686,19 +711,19 @@ function buildMenu(page) {
                 ul.append(li);
                 div.append(ul);
             }
-			wrap.append(div);
+            wrap.append(div);
 
             var col = $('<div>', { class: 'spinner-grow spinner-grow-sm text-muted d-none', id: 'loader-status' }); //.hide();
             wrap.append(col);
 
             var col = $('<div>', { class: 'col-auto mr-auto mb-auto mt-auto', id: 'opStatus' });
-			wrap.append(col);
+            wrap.append(col);
 
-			var col = $('<div>', { class: 'col-auto mb-auto mt-auto' });
+            var col = $('<div>', { class: 'col-auto mb-auto mt-auto' });
             var fwver = $('<span>', { class: 'd-none d-md-block badge bg-info border text-white invisible', id: 'fwVersion' });
             var hwver = $('<span>', { class: 'd-none d-md-block badge bg-success border text-white invisible', id: 'hwVersion', 'data-toggle': 'tooltip', 'data-html': true, 'data-original-title': sn });
             col.append(fwver).append(hwver);
-			wrap.append(col);
+            wrap.append(col);
 
             var col = $('<div>', { class: 'col-auto mb-auto mt-auto' });
             var theme_icon = $('<i>', { class: 'd-none d-md-block icons icon-status icon-day-and-night text-dark', 'data-toggle': 'tooltip', 'data-html': true });
@@ -715,20 +740,32 @@ function buildMenu(page) {
             });
             col.append(theme_icon);
             wrap.append(col);
-			nav.append(wrap);
-			
+            nav.append(wrap);
+            
+            var path = window.location.pathname;
+            var page = path.split('/').pop();
+
+            setLanguage(page);
             setTheme();
 
-            $('[data-toggle="tooltip"]').tooltip();
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+              return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
 
-            //Build the Menu before we get frozen with serial.php
-            //var path = window.location.pathname;
-            //var page = path.split('/').pop();
-            if(page === '' || page === 'index.php') {
-                initializeSerial();
-            }
+            callback();
         }
-    });
+    };
+    xhr.open('GET', file, true);
+    xhr.send();
+};
+
+function isMacintosh() {
+  return navigator.platform.indexOf('Mac') > -1
+};
+
+function isWindows() {
+  return navigator.platform.indexOf('Win') > -1
 };
 
 function detectTheme()
@@ -788,11 +825,10 @@ function buildStatus() {
 
     $('#loader-status').removeClass('d-none'); //.show();
 
-    $.ajax('serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode', {
-        //async: sync,
-        success: function success(data)
-        {
-            data = data.replace('\n\n', '\n');
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            var data = xhr.responseText.replace('\n\n', '\n');
             data = data.split('\n');
 
             //console.log(data);
@@ -887,20 +923,30 @@ function buildStatus() {
             if(os == 'windows') {
                 errors_url = 'serial.php?get=lasterr';
             }
-            $.ajax(errors_url, {
-		        success: function success(data) {
-	                if (data.indexOf('No Errors') === -1) {
-	                    img = $('<i>', { class: 'icons icon-status icon-alert', 'data-toggle': 'tooltip', 'data-html': 'true', 'data-original-title': data.replace('\n','<br>') });
-	                    img.addClass('text-warning');
-	                    $('#opStatus').append(img);
-	                    $('[data-toggle="tooltip"]').tooltip();
-	                }
-		        }
-		    });
+
+            var exhr = new XMLHttpRequest();
+            exhr.onload = function() {
+                if (exhr.status == 200) {
+                    if (xhr.responseText.indexOf('No Errors') === -1) {
+                        img = $('<i>', { class: 'icons icon-status icon-alert', 'data-toggle': 'tooltip', 'data-html': 'true', 'data-original-title': xhr.responseText.replace('\n','<br>') });
+                        img.addClass('text-warning');
+                        $('#opStatus').append(img);
+                        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+                        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                          return new bootstrap.Tooltip(tooltipTriggerEl)
+                        });
+                    }
+                }
+            };
+            exhr.open('GET', errors_url, true);
+            exhr.send();
 
             //buildTips();
             
-            $('[data-toggle="tooltip"]').tooltip();
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+              return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
 
             $('#loader-status').addClass('d-none'); //.hide();
             
@@ -908,7 +954,9 @@ function buildStatus() {
                 buildStatus();
             }, 12000);
         }
-    });
+    };
+    xhr.open('GET', 'serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode', true);
+    xhr.send();
 };
 
 function toHex(d) {
@@ -916,6 +964,14 @@ function toHex(d) {
     if(n.length & 1) //Odd
         n = '0' + n;
     return n.toUpperCase();
+};
+
+function getScript(scriptUrl, callback) {
+    const script = document.createElement('script');
+    script.src = scriptUrl;
+    script.onload = callback;
+
+    document.body.appendChild(script);
 };
 
 function deleteCookie(name, path, domain) {

@@ -4,13 +4,13 @@ if [ "$1" = "uninstall" ] ; then
 else
     cd "$(dirname "$0")"
 
-    hdiutil attach ~/Downloads/Inkscape-1.0beta2.dmg
+    hdiutil attach ~/Downloads/Inkscape-1.0.0.dmg
 
     x=1
     while [ $x -le 20 ]
     do
         if [ -d /Applications/Inkscape.app ]; then
-            rsync -avh ./Web/encoder/* ~/.config/inkscape/
+            rsync -avh ./Web/encoder/* ~/Library/Application Support/Inkscape/config/inkscape/
             exit
         fi
         x=$(( $x + 1 ))

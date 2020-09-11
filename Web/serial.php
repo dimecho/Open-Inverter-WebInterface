@@ -77,7 +77,11 @@ session_start();
 
         foreach ($output as $line) {
             if (strpos($line, "Bluetooth") == false) {
-                echo "$line\n";
+                if(isset($_GET["esptool"])) {
+                    esptoolInfo($line);
+                }else{
+                    echo "$line\n";
+                }
             }
         }
         /*
@@ -136,6 +140,32 @@ session_start();
     else if(isset($_GET["median"]))
     {
         echo calculateMedian(readArray($_GET["median"],3));
+    }
+
+    function esptoolInfo($serial)
+    {
+        $uname = strtolower(php_uname('s'));
+        if (strpos($uname, "darwin") !== false) {
+            $command = "python /usr/local/share/esptool/esptool.py --port " .$serial. " chip_id";
+        }else if (strpos($uname, "win") !== false) {
+            $command = "python.exe esptool --port " .$serial. " chip_id";
+        }else{
+           $command = "python esptool --port " .$serial. " chip_id";
+        }
+
+        exec($command, $output, $return);
+        //var_dump($output);
+        //var_dump($return);
+
+        foreach ($output as $line) {
+            //echo "$line\n";
+            if (strpos($line, "0x") == true) {
+                echo $serial;
+                echo str_replace("Chip ID:", "", $line);
+                echo "\n";
+                break;
+            }
+        }
     }
 
     function serialDevice($speed)

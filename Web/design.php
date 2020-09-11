@@ -32,7 +32,7 @@
                         <br><br>
                         <canvas id="canvas"></canvas>
                     <?php }else{ ?>
-                    <div class="text-dark"><h1>Power Stage - Design Ideas</h1></div>
+                    <div class="text-dark"><h1 id="text_title">Power Stage - Design Ideas</h1></div>
                     <br>
                         <script>
                             $(document).ready(function() {

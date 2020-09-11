@@ -1,61 +1,74 @@
 {
     "menu": [{
-        "id": "Motor",
+        "id": "menu_motor",
+        "text": "Motor",
         "icon": "icon-motor",
         "onClick": "",
         "dropdown": [{
-            "id": "Start Inverter",
+            "id": "menu_motor_start",
+            "text": "Start Inverter",
             "icon": "icon-key",
-            "onClick": "$('#startInverterMode').modal()"
+            "onClick": "new bootstrap.Modal(document.getElementById('startInverterMode'), {}).show()"
         }, {
-            "id": "Stop Inverter",
+            "id": "menu_motor_stop",
+            "text": "Stop Inverter",
             "icon": "icon-alert",
             "onClick": "stopInverter()"
         }, {
-            "id": "Reset to Default",
+            "id": "menu_motor_default",
+            "text": "Reset to Default",
             "icon": "icon-reset",
-            "onClick": "$('#resetInverterDefault').modal()"
+            "onClick": "new bootstrap.Modal(document.getElementById('resetInverterDefault'), {}).show()"
         }, {
             "id": "-"
         }, {
-            "id": "Parameters",
+            "id": "menu_motor_parameters",
+            "text": "Parameters",
             "icon": "icon-settings",
             "onClick": "/index.php"
         }, {
-            "id": "Graph",
+            "id": "menu_motor_graph",
+            "text": "Graph",
             "icon": "icon-graph-bar",
             "onClick": "/graph.php"
         }, {
             "id": "-"
         }, {
-            "id": "Auto Tuning",
+            "id": "menu_motor_tuning",
+            "text": "Auto Tuning",
             "icon": "icon-tune",
             "onClick": "/simple.php"
         }, {
-            "id": "CAN Mapping",
+            "id": "menu_motor_can",
+            "text": "CAN Mapping",
             "icon": "icon-list",
             "onClick": "/can.php"
         }]
     }, {
-        "id": "Inverter",
+        "id": "menu_inverter",
+        "text": "Inverter",
         "icon": "icon-inverter",
         "onClick": "",
         "dropdown": [{
-            "id": "Flash ESP8266",
+            "id": "menu_inverter_esp8266",
+            "text": "Flash ESP8266",
             "icon": "icon-wifi",
             "onClick": "/esp8266.php"
         }, {
-            "id": "Flash Bootloader",
+            "id": "menu_inverter_bootloader",
+            "text": "Flash Bootloader",
             "icon": "icon-chip",
             "onClick": "/bootloader.php"
         }, {
-            "id": "Flash Firmware",
+            "id": "menu_inverter_firmware",
+            "text": "Flash Firmware",
             "icon": "icon-ram",
             "onClick": "/firmware.php"
         }, {
             "id": "-"
         }, {
-            "id": "Board Test",
+            "id": "menu_inverter_test",
+            "text": "Board Test",
             "icon": "icon-test",
             "onClick": "/test.php"
         }]

@@ -1,0 +1,83 @@
+{
+    "browser_title": "Настройка Моторов",
+    "menu": {
+	    "motor": "Мотор",
+	    "motor_start": "Запуск",
+	    "motor_stop": "Остановить",
+	    "motor_default": "Сброс Параметов",
+	    "motor_parameters": "Параметры",
+	    "motor_graph": "График",
+	    "motor_db": "База Моторов",
+	    "motor_tuning": "Автотюнинг",
+	    "motor_can": "Карта CANBus",
+	    "inverter": "Инвертор",
+	    "inverter_esp8266": "Прошивка для ESP8266",
+	    "inverter_bootloader": "Загрузить Пусковую Прошивку",
+	    "inverter_firmware": "Загрузить Главную Прошивку",
+	    "inverter_source": "Компилировать Код",
+	    "inverter_test": "Проверка Платы",
+	    "inverter_sch": "Схемы",
+	    "inverter_pcb": "Компоненты",
+	    "inverter_diagrams": "Инструкция как Соединять",
+	    "console": "Терминал",
+	    "info": "Информация",
+	    "info_motor": "Классификация Двигателей",
+	    "info_wire": "Выбор проводов постоянного тока",
+	    "info_igbt": "Проверка Транзисторов (IGBT)",
+	    "info_encoder": "Кодировщик",
+	    "info_lcd": "Жидкий Дисплей (LCD)",
+	    "info_power": "Конструкцыя Мощности",
+	    "info_tips": "Советы",
+	    "uninstall": "Удалить"
+    },
+    "index.php": {
+        "backup": "Приберечь",
+    	"restore": "Восстановить",
+    	"save": "Сохранить"
+    },
+    "graph.php": {
+    	"devmode-off": "Режим Разработчика Выключено",
+	    "devmode-on": "Режим Разработчика Включин"
+	},
+	"db.php": {
+        "title": "База Данных Электродвигателей",
+        "select": "Выберите Мотор"
+    },
+    "bootloader.php": {
+        "download": "Скачать Прошивку"
+    },
+    "firmware.php": {
+	    "download": "Скачать Прошивку"
+	},
+   	"motor-class.php": {
+	    "title": "Классификация электродвигателей"
+	},
+ 	"igbt-test.php": {
+	    "title": "Проверка Транзисторов (IGBT) Пальцами"
+	},
+	"test.php": {
+        "analog": "Аналоговый",
+        "digital": "Цифровой",
+        "hardware": "Аппаратура",
+        "start": "Пуск",
+        "stop": "Стоп",
+        "download": "Скачать Прошивку на Проверку"
+    },
+    "tips.php": {
+	    "title": "Советы"
+	},
+	"design.php": {
+	    "title": "Конструкцыя Коробки Мощности - Идеи"
+	},
+	"uninstall.php": {
+	    "description": "Удалить программы установленны Open Inverter.",
+	    "everything": "Удалить Всё",
+	    "uninstall": "Удалить"
+	},
+	"esp8266.php": {
+		"download": "Скачать Прошивку",
+        "connect": "Подключите модуль ESP8266 к USB",
+        "minute" : "Подождите минутку",
+        "olimex-tip": "Припаяйте GPIO-0 к 0 и подключите TX, RX и GND (USB-TTL). Возврат к 1 после перепрошивки."
+    }
+}

@@ -1,0 +1,83 @@
+{
+    "browser_title": "Motorsteuerung",
+    "menu": {
+        "motor": "Motor",
+        "motor_start": "Starten Wechselrichter",
+        "motor_stop": "Stoppen Wechselrichter",
+        "motor_default": "Zurücksetzen",
+        "motor_parameters": "Parameter",
+        "motor_graph": "Graph",
+        "motor_db": "Motordatenbank",
+        "motor_tuning": "Automatische Einstellungen",
+        "motor_can": "Karte CANBus",
+        "inverter": "Wechselrichter",
+        "inverter_esp8266": "Laden Sie die ESP8266",
+        "inverter_bootloader": "Laden Sie die Bootloader",
+        "inverter_firmware": "Laden Sie die Firmware",
+        "inverter_source": "Kompilieren Quellcode",
+        "inverter_test": "PCB Testen",
+        "inverter_sch": "Schema",
+        "inverter_pcb": "Komponenten",
+        "inverter_diagrams": "Schaltplan",
+        "console": "Konsole",
+        "info": "Die Info",
+        "info_motor": "Motorklassifizierung",
+        "info_wire": "Auswahl des DC-Kabels",
+        "info_igbt": "IGBT Testen",
+        "info_encoder": "Encoder",
+        "info_lcd": "Arduino LCD",
+        "info_power": "Leistungsstufe",
+        "info_tips": "Rat",
+        "uninstall": "Deinstallieren"
+    },
+    "index.php": {
+        "backup": "Sicherungskopie",
+        "restore": "Wiederherstellen",
+        "save": "Speichern"
+    },
+    "graph.php": {
+        "devmode-off": "Developer Mode is OFF",
+        "devmode-on": "Developer Mode is ON"
+    },
+    "db.php": {
+        "title": "Motorkonfigurationsdatenbank",
+        "select": "Wählen Sie Motor"
+    },
+    "bootloader.php": {
+        "download": "Bootloader Herunterladen"
+    },
+    "firmware.php": {
+        "download": "Firmware Herunterladen"
+    },
+    "motor-class.php": {
+        "title": "Klassifizierung der Elektromotoren"
+    },
+    "igbt-test.php": {
+        "title": "IGBT Finger Test"
+    },
+    "test.php": {
+        "analog": "Analog",
+        "digital": "Digital",
+        "hardware": "Hardware",
+        "start": "Start",
+        "stop": "Halt",
+        "download": "Test Firmware Herunterladen"
+    },
+    "tips.php": {
+        "title": "Rat"
+    },
+    "design.php": {
+        "title": "Einstufung Boxen - Design-Ideen"
+    },
+    "uninstall.php": {
+        "description": "Entfernen Sie die von Open Inverter installierte Software.",
+        "everything": "Alles",
+        "uninstall": "Deinstallieren"
+    },
+    "esp8266.php": {
+        "download": "Firmware Herunterladen",
+        "connect": "Connect ESP8266 Module to USB",
+        "minute" : "This may take a minute",
+        "olimex-tip": "Solder GPIO-0 to 0 and connect TX, RX & GND (USB-TTL). Back to 1 after flashing."
+    }
+}

@@ -27,7 +27,9 @@ if(isset($_GET["find"])) {
 <!DOCTYPE html>
 <html>
     <head>
-        <?php include "header.php"; ?>
+        <link rel="stylesheet" type="text/css" href="css/jquery.fancybox.css">
+        <?php include "header.php" ?>
+        <script src="js/jquery.fancybox.js"></script>
         <script src="js/pcb.js"></script>
         <script>
         $(document).ready(function () {

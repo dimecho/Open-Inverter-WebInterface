@@ -1,0 +1,83 @@
+{
+    "browser_title": "Web Interface",
+    "menu": {
+        "motor": "Motor",
+        "motor_start": "Start Inverter",
+        "motor_stop": "Stop Inverter",
+        "motor_default": "Reset to Default",
+        "motor_parameters": "Parameters",
+        "motor_graph": "Graph",
+        "motor_db": "Motor Database",
+        "motor_tuning": "Auto Tuning",
+        "motor_can": "CAN Mapping",
+        "inverter": "Inverter",
+        "inverter_esp8266": "Flash ESP8266",
+        "inverter_bootloader": "Flash Bootloader",
+        "inverter_firmware": "Flash Firmware",
+        "inverter_source": "Compile from Source",
+        "inverter_test": "Board Test",
+        "inverter_sch": "Schematics",
+        "inverter_pcb": "Components",
+        "inverter_diagrams": "Wiring Diagrams",
+        "console": "Console",
+        "info": "Info",
+        "info_motor": "Motor Classification",
+        "info_wire": "DC Wire Selection",
+        "info_igbt": "IGBT Test",
+        "info_encoder": "Encoder",
+        "info_lcd": "Arduino LCD",
+        "info_power": "Power Stage",
+        "info_tips": "Tips",
+        "uninstall": "Uninstall"
+    },
+    "index.php": {
+        "backup": "Backup",
+        "restore": "Restore",
+        "save": "Save"
+    },
+    "graph.php": {
+        "devmode-off": "Developer Mode is OFF",
+        "devmode-on": "Developer Mode is ON"
+    },
+    "db.php": {
+        "title": "Motor Configuraton Database",
+        "select": "Select Motor"
+    },
+    "bootloader.php": {
+        "download": "Download Bootloader"
+    },
+    "firmware.php": {
+        "download": "Download Firmware"
+    },
+    "motor-class.php": {
+        "title": "Electric Motors Classification"
+    },
+    "igbt-test.php": {
+        "title": "IGBT Finger Test"
+    },
+    "test.php": {
+        "analog": "Analog",
+        "digital": "Digital",
+        "hardware": "Hardware",
+        "start": "Start",
+        "stop": "Stop",
+        "download": "Download Test Firmware"
+    },
+    "tips.php": {
+        "title": "Tips"
+    },
+    "design.php": {
+        "title": "Power Stage - Design Ideas"
+    },
+    "uninstall.php": {
+        "description": "Remove Software installed by Open Inverter.",
+        "everything": "Everything",
+        "uninstall": "Uninstall"
+    },
+    "esp8266.php": {
+        "download": "Download Firmware",
+        "connect": "Connect ESP8266 Module to USB",
+        "minute" : "This may take a minute",
+        "olimex-tip": "Solder GPIO-0 to 0 and connect TX, RX & GND (USB-TTL). Back to 1 after flashing."
+    }
+}

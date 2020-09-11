@@ -25,12 +25,6 @@
     <head>
         <?php include "header.php" ?>
 		<script src="js/firmware.js"></script>
-        <script>
-            $(document).ready(function() {
-                $("#firmware-interface").prop('selectedIndex', 0);
-                setInterfaceImage();
-            });
-        </script>
     </head>
     <body>
         <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="mainMenu"></div>
@@ -42,7 +36,7 @@
                     <table class="table table-active bg-light table-bordered">
                         <tr>
                             <td>
-                                <button type="button" class="btn btn-primary" onClick="window.open('https://github.com/jsphuebner/tumanako-inverter-fw-bootloader')"><i class="icons icon-download"></i> Download Bootloader</button>
+                                <button type="button" class="btn btn-primary" onClick="window.open('https://github.com/jsphuebner/tumanako-inverter-fw-bootloader')"><i class="icons icon-download"></i> <span id="text_download">Download Bootloader</span></button>
                             </td>
                         </tr>
                     </table>

@@ -213,6 +213,9 @@ var chart_pwm_datasets = [{
 	data: fill.call([],1000,0) //Array(1000).fill(0)
 }];
 
+var knobValue = 0;
+var knobTimer;
+
 var chart_can_datasets = [];
 var chart_can_zeroLineH = 2.8;
 var chart_can_zeroLineL = 2.2;
@@ -248,139 +251,100 @@ var devmode = false;
 
 $(document).ready(function () {
 
-	buildMenu();
-	
-	/*
-    $.ajax('serial.php?init=921600', {
-		success: function(data) {
-			console.log(data);
-			if (data.indexOf('921600') != -1) {
-				$.notify({ message: 'UART set to 921600 (1Mbps)' }, { type: 'success' });
+	buildMenu(function() {
+
+		/*
+	    $.ajax('serial.php?init=921600', {
+			success: function(data) {
+				console.log(data);
+				if (data.indexOf('921600') != -1) {
+					$.notify({ message: 'UART set to 921600 (1Mbps)' }, { type: 'success' });
+				}
 			}
-		}
-	});
-    */
-	
-    /*
-    $(document).click(function (e) {
-        if(xhr)
-            xhr.abort();
-    });
-    */
-	buildGraphMenu();
+		});
+	    */
+		
+	    /*
+	    $(document).click(function (e) {
+	        if(xhr)
+	            xhr.abort();
+	    });
+	    */
+		buildGraphMenu();
 
-	graphTheme();
+		graphTheme();
 
-    graphSettings();
+	    graphSettings();
 
-    $.ajax('serial.php?command=json', {
-        async: true,
-        cache: false,
-        timeout: serialTimeout,
-        success: function success(data) {
-            //console.log(cmd);
-            //console.log(data);
-            try {
-                json = JSON.parse(data);
-            } catch(ex) {
-                $.notify({ message: ex + ':' + data }, { type: 'danger' });
+	    sendCommand('json', 0, function(j) {
+	    	json = j;
+ 			if(Object.keys(json).length > 0) {
+	        	initChart();
+	        }else{
+                var xhr = new XMLHttpRequest();
+                xhr.responseType = 'json';
+		        xhr.onload = function() {
+		            if (xhr.status == 200) {
+		            	//json = JSON.parse(pxhr.responseText);
+		                json =  xhr.response;
+		            	devModeFlip();
+		            }
+		            initChart();
+		        };
+		        xhr.open('GET', 'js/parameters.json', true);
+		        xhr.send();
+	        }
+	    });
 
-                $.ajax('js/parameters.json', {
-		          async: false,
-		          dataType: 'json',
-		          success: function(data) {
-		            json = JSON.parse(data);
-		            devModeFlip();
-		          }
-		        });
-            }
-            initChart();
-        },
-        error: function error(xhr, textStatus, errorThrown) {
-    		initChart();
-        }
-    });
+	    paramReadable = {'speed':'Speed', 'potnom':'Throttle', 'tmpm':'Degree', 'tmphs':'Degree', 'udc':'Voltage', 'uac':'Voltage', 'idc':'DC Current'};
 
-    paramReadable = {'speed':'Speed', 'potnom':'Throttle', 'tmpm':'Degree', 'tmphs':'Degree', 'udc':'Voltage', 'uac':'Voltage', 'idc':'DC Current'};
+	    var canvas = document.getElementById('chartCanvas');
+	    ctx = canvas.getContext('2d');
+		
+		ctxAxis = document.getElementById('chartAxis').getContext('2d');
 
-    var canvas = document.getElementById('chartCanvas');
-    ctx = canvas.getContext('2d');
-	
-	ctxAxis = document.getElementById('chartAxis').getContext('2d');
+	    if(os === 'mobile') {
 
-    if(os === 'mobile') {
+	        Chart.defaults.global.animationSteps = 0;
+	        canvas.height = 800;
+	        ctxFont = 40;
 
-        Chart.defaults.global.animationSteps = 0;
-        canvas.height = 800;
-        ctxFont = 40;
+	    }else{
 
-    }else{
+	        Chart.defaults.global.animationSteps = 12;
+	        canvas.height = 640;
+	    }
 
-        Chart.defaults.global.animationSteps = 12;
-        canvas.height = 640;
-    }
+	    //ctx.fillStyle = 'white';
+	    /*
+	    ctx.webkitImageSmoothingEnabled = false;
+	    ctx.mozImageSmoothingEnabled = false;
+	    ctx.imageSmoothingEnabled = false;
+	    */
 
-    //ctx.fillStyle = 'white';
-    /*
-    ctx.webkitImageSmoothingEnabled = false;
-    ctx.mozImageSmoothingEnabled = false;
-    ctx.imageSmoothingEnabled = false;
-    */
+	    $('#devmode a').click(function () {
+	    	devModeFlip();
+	    });
 
-    $('#devmode a').click(function () {
-    	devModeFlip();
-    });
-	
-	$('.graphPoints').fancybox({
-		afterClose: function(){
-			var n = $('input:checked');
-			//console.log(n);
-			if (n.length > 10){
-				$.notify({ message: 'Too many points selected, 10 max' }, { type: 'warning' });
-			}else{
-				n.each(function(){
-                    if(this.id != '') {
-    					var cl = $('#' + this.id + '-jscolor');
-    					console.log(this.id + ' > #' + cl.val());
-    					
-    					var c = cl[0].style['background-color'];
-    					console.log(c);
-    					
-    					var arrayHas = false;
-                        var datasets = activeDatasets();
-
-    					for (var i = 0, l = datasets.length; i < l; i++) { // Check if in graph list
-    						//console.log(chart_motor_datasets[i].id);
-    						if(datasets[i].id == this.id){
-    							arrayHas = true;
-    							break;
-    						}
-    					}
-    					if(!arrayHas) { // Do not double graph
-    						var d = fill.call([],datasets[0].data.length,0); //new Array(datasets[0].data.length).fill(0);
-    						var dataset = {
-    							type: 'line',
-    							id: this.id,
-    							label: this.id,
-    							backgroundColor: c.replace(')',', 0.2)'),
-    							borderColor: c.replace(')',', 1)'),
-    							borderWidth: lineWidth,
-    							//hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-    							//hoverBorderColor: 'rgba(255,99,132,1)',
-    							data: d,
-                                yAxisID: 'y-axis-' + (datasets.length-1)
-    						};
-    						//console.log(dataset);
-                            datasets.push(dataset);
-                            newYAxis(this.id,dataset.yAxisID,chart.options,'left', true);
-                            //newYAxis(this.id,dataset.yAxisID,chart.options,'left', false);
-
-    						chart.update();
-    					}
-                    }
-				});
-			}
-		}
+		$('.knob').knob({
+	        'displayPrevious': true,
+	        'value': 0,
+	        change: function change(value) {
+	            if (value <= knobValue + 5) { //Avoid hard jumps
+	                //console.log(value);
+	                clearTimeout(knobTimer);
+	                knobTimer = setTimeout(function () {
+	                    setParameter('fslipspnt', value);
+	                }, 80);
+	                knobValue = value;
+	            } else {
+	                console.log('!' + value + '>' + knobValue);
+	                $('.knob').val(knobValue).trigger('change');
+	            }
+	        }
+	    });
+	    
+	    $('.knob').val(0).trigger('change');
 	});
 });
 
@@ -529,32 +493,29 @@ function devModeFlip() {
 
 function buildPointsMenu() {
 	var menu = $('#buildPointsMenu');
-	if (isEmpty(menu))
-	{
-		for(var key in json) {
-            
-			//console.log(key);
-			var row = $('<div>', { class: 'row' });
-			var col = $('<div>', { class: 'col' });
-			
-			var c = $('<input>', { class: 'form-control', type: 'checkbox', 'id': key });
-			col.append(c);
-			row.append(col);
-			
-			var l = $('<label>', { for: key }).append(key);
-			col = $('<div>', { class: 'col' });
-			col.append(l);
-			row.append(col);
 
-			var cl = $('<input>', {class: 'jscolor form-control', 'id': key+'-jscolor', value: getRandomColor() });
-			col = $('<div>', { class: 'col' });
-			col.append(cl);
-			row.append(col);
+	for(var key in json) {
+		//console.log(key);
+		var row = $('<div>', { class: 'row' });
+		var col = $('<div>', { class: 'col' });
+		
+		var c = $('<input>', { class: 'form-control', type: 'checkbox', 'id': key });
+		col.append(c);
+		row.append(col);
+		
+		var l = $('<label>', { for: key }).append(key);
+		col = $('<div>', { class: 'col' });
+		col.append(l);
+		row.append(col);
 
-            menu.append(row);
-		}
-		jscolor.installByClassName('jscolor');
+		var cl = $('<input>', {class: 'jscolor form-control', 'id': key+'-jscolor', 'data-jscolor': '{required:true, format:"hex"}', value: getRandomColor(), });
+		col = $('<div>', { class: 'col' });
+		col.append(cl);
+		row.append(col);
+
+        menu.append(row);
 	}
+	jscolor.install();
 };
 
 function getRandomColor() {
@@ -585,10 +546,10 @@ function buildGraphMenu() {
     var export_buttons = $('#buildGraphExport'); //.empty();
 
 	var btn_points_i = $('<i>', { class: 'icons icon-ok' });
-	var btn_points = $('<button>', { class: 'btn btn-primary mr-4', onClick: 'buildPointsMenu();$("#graphPoints").modal()' }).append(btn_points_i).append(' Select Points');
+	var btn_points = $('<button>', { class: 'btn btn-primary mr-4' }).append(btn_points_i).append(' Select Points');
     var btn_start = $('<button>', { class: 'btn btn-success mr-4', onClick: 'startChart()' }).append('Start Graph');
     var btn_stop = $('<button>', { class: 'btn btn-danger mr-4', onClick: 'stopChart()' }).append('Stop Graph');
-    var e_settings = $('<i>', { class: 'icons icon-status icon-settings p-2', onClick: '$("#graphSettings").modal()', 'data-toggle': 'tooltip', 'title': 'Settings' });
+    var e_settings = $('<i>', { class: 'icons icon-status icon-settings p-2', 'data-toggle': 'tooltip', 'title': 'Settings' });
     var e_pdf = $('<i>', { class: 'icons icon-status icon-pdf p-2', onClick: 'exportPDF(true)', 'data-toggle': 'tooltip', 'title': 'Export PDF' });
     var e_img = $('<i>', { class: 'icons icon-status icon-png p-2', onClick: 'exportPDF()', 'data-toggle': 'tooltip', 'title': 'Export Image' });
     var e_csv = $('<i>', { class: 'icons icon-status icon-csv p-2', onClick: 'exportCSV()', 'data-toggle': 'tooltip', 'title': 'Export CSV' });
@@ -596,6 +557,68 @@ function buildGraphMenu() {
     var z = $('#buildGraphZoom').empty();
     var input_zoom = $('<input>', { id: 'zoom', type: 'text', 'data-provide': 'slider'} );
     z.append(input_zoom);
+
+    btn_points.click(function () {
+    	buildPointsMenu();
+
+    	var graphPointsModal = document.getElementById('graphPoints');
+    	new bootstrap.Modal(graphPointsModal, {}).show();
+    	
+    	graphPointsModal.addEventListener('hidden.bs.modal', function(event){
+			var n = $('input:checked');
+			console.log(n);
+			if (n.length > 10){
+				$.notify({ message: 'Too many points selected, 10 max' }, { type: 'warning' });
+			}else{
+				n.each(function(){
+                    if(this.id != '') {
+    					var cl = $('#' + this.id + '-jscolor');
+    					console.log(this.id + ' > #' + cl.val());
+    					
+    					var c = cl[0].style['background-color'];
+    					console.log(c);
+    					
+    					var arrayHas = false;
+                        var datasets = activeDatasets();
+
+    					for (var i = 0, l = datasets.length; i < l; i++) { // Check if in graph list
+    						//console.log(chart_motor_datasets[i].id);
+    						if(datasets[i].id == this.id){
+    							arrayHas = true;
+    							break;
+    						}
+    					}
+    					if(!arrayHas) { // Do not double graph
+    						var d = fill.call([],datasets[0].data.length,0); //new Array(datasets[0].data.length).fill(0);
+    						var dataset = {
+    							type: 'line',
+    							id: this.id,
+    							label: this.id,
+    							backgroundColor: c.replace(')',', 0.2)'),
+    							borderColor: c.replace(')',', 1)'),
+    							borderWidth: lineWidth,
+    							//hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+    							//hoverBorderColor: 'rgba(255,99,132,1)',
+    							data: d,
+                                yAxisID: 'y-axis-' + (datasets.length-1)
+    						};
+    						//console.log(dataset);
+                            datasets.push(dataset);
+                            newYAxis(this.id,dataset.yAxisID,chart.options,'left', true);
+                            //newYAxis(this.id,dataset.yAxisID,chart.options,'left', false);
+
+    						chart.update();
+    					}
+                    }
+				});
+			}
+		});
+    });
+
+    e_settings.click(function () {
+    	var graphSettingsModal = new bootstrap.Modal(document.getElementById('graphSettings'), {});
+        graphSettingsModal.show();
+    });
 
     input_zoom.ionRangeSlider({
         skin: 'big',
@@ -719,45 +742,37 @@ function buildGraphMenu() {
 
     }else{
     	if(os != 'esp8266') {
-	        $.getScript('js/jspdf.js').done(function(script, textStatus) {
-	            export_buttons.append(e_pdf);
-	        });
+    		getScript('js/jspdf.js', function () {
+    			export_buttons.append(e_pdf);
+    		});
     	}
         export_buttons.append(e_csv);
 
-        var ul = $('<ul>', { class: 'nav nav-tabs', role: 'tablist'});
+        var tablist = $('<div>', { class: 'nav nav-tabs', role: 'tablist'});
         var tabcontent = $('<div>', { class: 'tab-content' });
 
         for (var i = 0; i < tabs.length; i++)
         {
-            var li = $('<li>', { class: 'nav-item'});
-            var a = $('<a>', { class: 'nav-link', href: '#graph' + i }).append(tabs[i]);
-            li.append(a);
-            ul.append(li);
-
-            var tabpanel = $('<div>', { class: 'tab-pane fade', id: 'graph' + i, role: 'tabpanel' });
-            if (i ===0){
-                tabpanel.addClass('in active');
+            var a = $('<a>', { class: 'nav-link', id: 'graph' + i + '-tab', href: '#graph' + i, 'data-toggle': 'tab', role: 'tab' }).append(tabs[i]);
+            if (i ===0) {
+                a.addClass('active');
             }
+            tablist.append(a);
 
+            var tabpanel = $('<div>', { class: 'tab-pane', id: 'graph' + i, role: 'tabpanel' });
+            if (i ===0) {
+                tabpanel.addClass('show active');
+            }
             tabcontent.append(tabpanel);
         }
 
-        menu.append(ul);
+        menu.append(tablist);
         menu.append(tabcontent);
 
         $('.nav-tabs a').click(function () {
-            $(this).tab('show');
-            //console.log(this);
-        });
 
-        $('.nav-tabs a').on('shown.bs.tab', function (event) {
-            //var x = $(event.target).text();         // active tab
-            //var y = $(event.relatedTarget).text();  // previous tab
-
-            activeTab = event.target.hash;
-            activeTabText = event.target.text;
-
+            activeTab = this.hash;
+            activeTabText = this.text;
             stopChart();
             initChart();
         });
@@ -765,7 +780,10 @@ function buildGraphMenu() {
 
     pageLimit = graphDivision * pageLimit;
 
-    $('[data-toggle="tooltip"]').tooltip();
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+	var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+	  return new bootstrap.Tooltip(tooltipTriggerEl)
+	});
 };
 
 function exportCSV() {
@@ -815,6 +833,7 @@ function exportPDF(pdf) {
     //d.setHours(10, 30, 53, 400);
 
     if (pdf) {
+    	window.jsPDF = window.jspdf.jsPDF;
         //console.log($('.tab-pane.active').find('p:hidden').text());
         var doc = new jsPDF('l', 'mm', [279, 215]);
         doc.setProperties({
@@ -2254,10 +2273,6 @@ function updateChart(value, autosize, accuracy) {
             //this.timeoutCount++;
         }
     })
-};
-
-function isEmpty( el ){
-    return !$.trim(el.html())
 };
 
 Array.prototype.max = function() {

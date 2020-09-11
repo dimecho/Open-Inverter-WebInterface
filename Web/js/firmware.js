@@ -18,37 +18,46 @@ var jtag_name = [
 
 $(document).ready(function() {
 
-	buildMenu();
-
-	if(os == 'esp8266') {
-		$('#firmware-interface').append($('<option>',{value:'uart-esp8266',selected:'selected'}).append('UART over ESP8266'));
-		$('#firmware-interface').append($('<option>',{value:'swd-esp8266'}).append('SWD over ESP8266'));
-	}else{
-		unblockSerial();
-		for (var i = 0; i < jtag_interface.length; i++) {
-			$('#firmware-interface').append($('<option>',{value:jtag_interface[i]}).append(jtag_name[i]));
-		}
-		$('#firmware-interface').prop('selectedIndex', 2);
-		$.ajax('serial.php?com=list', {
-			async: false,
-			success: function(data) {
-				//console.log(data);
-				if(data.length > 1) {
-					var s = data.split('\n');
-					for (var i = 0; i < s.length; i++) {
-						if(s[i] != '')
-							$('#firmware-interface').append($('<option>',{value:s[i]}).append(s[i]));
-					}
-					$('#firmware-interface').prop('selectedIndex', (jtag_interface.length + s.length - 2));
-				}
+	buildMenu(function() {
+		if(os == 'esp8266') {
+			$('#firmware-interface').append($('<option>',{value:'uart-esp8266',selected:'selected'}).append('UART over ESP8266'));
+			$('#firmware-interface').append($('<option>',{value:'swd-esp8266'}).append('SWD over ESP8266'));
+		}else{
+			unblockSerial();
+			for (var i = 0; i < jtag_interface.length; i++) {
+				$('#firmware-interface').append($('<option>',{value:jtag_interface[i]}).append(jtag_name[i]));
 			}
-		});
-	}
-	$('.spinner-border').addClass('d-none'); //.hide();
-	$('.input-group-addon').removeClass('d-none'); //.show();
+			$('#firmware-interface').prop('selectedIndex', 2);
+			displayHWVersion();
 
-	setInterfaceImage();
-	displayHWVersion();
+			var path = window.location.pathname;
+            var page = path.split('/').pop();
+
+			if(page != 'bootloader.php') {
+				var xhr = new XMLHttpRequest();
+		        xhr.onload = function() {
+		            if (xhr.status == 200) {
+		                //console.log(xhr.responseText);
+						if(xhr.responseText.length > 1) {
+							var s = xhr.responseText.split('\n');
+							for (var i = 0; i < s.length; i++) {
+								if(s[i] != '')
+									$('#firmware-interface').append($('<option>',{value:s[i]}).append(s[i]));
+							}
+	            			$('#firmware-interface').prop('selectedIndex', (jtag_interface.length + s.length - 2));
+						}
+		            }
+					setInterfaceImage();
+		        };
+		        xhr.open('GET', 'serial.php?com=list', true);
+		        xhr.send();
+	    	}else{
+	    		setInterfaceImage();
+	    	}
+		}
+		$('.spinner-border').addClass('d-none'); //.hide();
+		$('.input-group-addon').removeClass('d-none'); //.show();
+	});
 });
 
 $(document).on('click', '.browse', function(){
@@ -58,27 +67,33 @@ $(document).on('click', '.browse', function(){
 
 function beginESP8266SWD() {
 	
-	$.ajax('/swd/begin', {
-		dataType: 'json',
-		success: function(data) {
-			console.log(data);
-			if(data.connected === true) {
+	var xhr = new XMLHttpRequest();
+	xhr.responseType = 'json';
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            console.log(xhr.response);
+			if(xhr.response.connected === true) {
 				$.notify({ message: 'SWD over ESP8266 Connected' },{ type: 'success' });
-				$.notify({ message: 'Hardware IDCode: ' + data.idcode },{ type: 'warning' });
+				$.notify({ message: 'Hardware IDCode: ' + xhr.response.idcode },{ type: 'warning' });
 			}else{
-				$.ajax('/nvram', {
-		            dataType: 'json',
-		            success: function success(data) {
-		                if(data['nvram5'] == '1') {
+    			var nvram = new XMLHttpRequest();
+    			nvram.responseType = 'json';
+		        nvram.onload = function() {
+		            if (nvram.status == 200) {
+		    			if(nvram.response['nvram'][5] == '1') {
 		                    $.notify({ message: 'SWD over ESP8266 Not Connected, Try Reset and different Power Source (USB may not be enough)' },{ type: 'danger' });
 		                }else{
 		                	$.notify({ message: 'SWD not Enabled in <a href="esp8266.php">ESP8266 Configuration</a>' },{ type: 'danger' });
 		                }
 		            }
-		        });
+		        };
+		        nvram.open('GET', '/nvram', true);
+		        nvram.send();
 			}
-		}
-	});
+        }
+    };
+    xhr.open('GET', '/swd/begin', true);
+    xhr.send();
 };
 
 function setInterfaceImage() {
@@ -107,14 +122,14 @@ function setInterfaceImage() {
 
 		if(v.indexOf('stlink-v2') != -1) {
 			$('#jtag-image').attr('src', 'pcb/Hardware v1.0/diagrams/stlinkv2.png');
-			eval(checkSoftware('stlink'));
+			checkSoftware('stlink');
         }else if(v.indexOf('olimex-arm-jtag-swd') != -1) {
             $('#jtag-image').attr('src', 'firmware/img/olimex-arm-jtag-swd.jpg');
-            eval(checkSoftware('openocd'));
+            checkSoftware('openocd');
 		}else if(v.indexOf('interface') != -1) {
             var img = v.split('/').pop().slice(0, -4);
 			$('#jtag-image').attr('src', 'firmware/img/' + img + '.jpg');
-			eval(checkSoftware('openocd'));
+			checkSoftware('openocd');
 		}else{
 			$('#jtag-image').attr('src','firmware/img/usb_ttl.jpg');
 			$('#jtag-txt').html('Caution: Main board Olimex is powered with 3.3V - Double check your TTL-USB adapter.');
@@ -127,15 +142,15 @@ function firmwareUpload() {
 	var file = $('.file').get(0).files[0].name;
 	if (file.toUpperCase().indexOf('.BIN') !=-1 || file.toUpperCase().indexOf('.HEX') !=-1) {
 		if(os == 'esp8266') { //Special ESP8266 requirement
-			$.ajax({
-				//async: false,
-				//type: 'POST',
-				url: '/interface?i=' + $('#firmware-interface').val(),
-				success: function(data) {
-					console.log(data);
+			var xhr = new XMLHttpRequest();
+	        xhr.onload = function() {
+	            if (xhr.status == 200) {
+	                console.log(xhr.responseText);
 					$('#firmwareForm').submit();
 				}
-			});
+	        };
+	        xhr.open('GET', '/interface?i=' + $('#firmware-interface').val(), true);
+	        xhr.send();
 		}else{
 			$('#firmwareForm').submit();
 		}

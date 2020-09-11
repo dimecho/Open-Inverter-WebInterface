@@ -1,90 +1,109 @@
 {
     "menu": [{
-        "id": "Motor",
+        "id": "menu_motor",
+        "text": "Motor",
         "icon": "icon-motor",
         "onClick": "",
         "dropdown": [{
-            "id": "Start Inverter",
+            "id": "menu_motor_start",
+            "text": "Start Inverter",
             "icon": "icon-key",
-            "onClick": "$('#startInverterMode').modal()"
+            "onClick": "new bootstrap.Modal(document.getElementById('startInverterMode'), {}).show()"
         }, {
-            "id": "Stop Inverter",
+            "id": "menu_motor_stop",
+            "text": "Stop Inverter",
             "icon": "icon-alert",
             "onClick": "stopInverter()"
         }, {
-            "id": "Reset to Default",
+            "id": "menu_motor_default",
+            "text": "Reset to Default",
             "icon": "icon-reset",
-            "onClick": "$('#resetInverterDefault').modal()"
+            "onClick": "new bootstrap.Modal(document.getElementById('resetInverterDefault'), {}).show()"
         }, {
             "id": "-"
         }, {
-            "id": "Parameters",
+            "id": "menu_motor_parameters",
+            "text": "Parameters",
             "icon": "icon-settings",
             "onClick": "/index.php"
         }, {
-            "id": "Graph",
+            "id": "menu_motor_graph",
+            "text": "Graph",
             "icon": "icon-graph-bar",
             "onClick": "/graph.php"
         }, {
             "id": "-"
         }, {
-            "id": "Motor Database",
+            "id": "menu_motor_db",
+            "text": "Motor Database",
             "icon": "icon-magic",
             "onClick": "/db.php"
         }, {
             "id": "-"
         }, {
-            "id": "Auto Tuning",
+            "id": "menu_motor_tuning",
+            "text": "Auto Tuning",
             "icon": "icon-tune",
             "onClick": "/simple.php"
         }, {
-            "id": "CAN Mapping",
+            "id": "menu_motor_can",
+            "text": "CAN Mapping",
             "icon": "icon-list",
             "onClick": "/can.php"
         }]
     }, {
-        "id": "Inverter",
+        "id": "menu_inverter",
+        "text": "Inverter",
         "icon": "icon-inverter",
         "onClick": "",
         "dropdown": [{
-            "id": "Flash Firmware",
+            "id": "menu_inverter_firmware",
+            "text": "Flash Firmware",
             "icon": "icon-ram",
             "onClick": "/firmware.php"
         }, {
             "id": "-"
         }, {
-            "id": "Board Test",
+            "id": "menu_inverter_test",
+            "text": "Board Test",
             "icon": "icon-test",
             "onClick": "/test.php"
         }, {
             "id": "-"
         }, {
-            "id": "Components",
+            "id": "menu_inverter_pcb",
+            "text": "Components",
             "icon": "icon-components",
             "onClick": "/pcb.php"
         }, {
-            "id": "Wiring Diagrams",
+            "id": "menu_inverter_diagrams",
+            "text": "Wiring Diagrams",
             "icon": "icon-connect",
             "onClick": "/wiring.php"
         }]
     }, {
-        "id": "Info",
+        "id": "menu_info",
+        "text": "Info",
         "icon": "icon-info",
         "onClick": "",
         "dropdown": [{
-            "id": "Motor Classification",
+            "id": "menu_info_motor",
+            "text": "Motor Classification",
             "icon": "icon-list",
             "onClick": "/motor-class.php"
         }, {
-            "id": "IGBT Test",
+            "id": "menu_info_igbt",
+            "text": "IGBT Test",
             "icon": "icon-point-down",
             "onClick": "/igbt-test.php"
         }, {
-            "id": "Power Stage",
+            "id": "menu_info_power",
+            "text": "Power Stage",
             "icon": "icon-power",
             "onClick": "/design.php"
         }, {
-            "id": "Tips",
+            "id": "menu_info_tips",
+            "text": "Tips",
             "icon": "icon-circle-question",
             "onClick": "/tips.php"
         }]

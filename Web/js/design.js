@@ -5,18 +5,18 @@ var renderColor = 0xffffff;
 var gridColor = 0xabb2b9;
 
 $(document).ready(function () {
-    buildMenu();
+    buildMenu(function () {});
 });
 
 function initialize3D(id) {
 
-	if(theme == ".slate") {
+	if(theme == '.slate') {
 		renderColor = 0xabb2b9;
 		gridColor = 0xffffff;          
     }
 
-    $("#explode").ionRangeSlider({
-        skin: "big",
+    $('#explode').ionRangeSlider({
+        skin: 'big',
         //grid: true,
         min: 0,
         max: 30,
@@ -52,11 +52,11 @@ function initialize3D(id) {
 
     canvas = document.getElementById('canvas');
 	/*
-    canvas.addEventListener("webglcontextlost", function(event) {
+    canvas.addEventListener('webglcontextlost', function(event) {
         event.preventDefault();
     }, false);
     canvas.addEventListener(
-    "webglcontextrestored", setupWebGLStateAndResources, false);
+    'webglcontextrestored', setupWebGLStateAndResources, false);
     */
     setupWebGLStateAndResources(id);
 
@@ -132,14 +132,14 @@ function  setupWebGLStateAndResources(id) {
     //renderer.gammaFactor = 2.0;
     
     var loader = new THREE.GLTFLoader();
-    loader.setResourcePath("js/3d/textures/");
+    loader.setResourcePath('js/3d/textures/');
 
     //Provide a DRACOLoader instance to decode compressed mesh data
     var dracoLoader = new THREE.DRACOLoader();
     dracoLoader.setDecoderPath('js/3d/libs/draco/');
     loader.setDRACOLoader(dracoLoader);
     
-    loader.load("js/3d/models/" + id + ".glb", function (object) {
+    loader.load('js/3d/models/' + id + '.glb', function (object) {
 
         var movementSpeed = 0.1;
 
@@ -153,7 +153,7 @@ function  setupWebGLStateAndResources(id) {
 
             //if(mesh instanceof THREE.Mesh) {
             if(mesh.geometry) {
-                console.log(mesh);
+                //console.log(mesh);
 
                 /*
                 mesh.geometry.computeFaceNormals();
@@ -183,26 +183,27 @@ function  setupWebGLStateAndResources(id) {
 
 function fill3DTable() {
 
-    var table = $("#ideaTable");
-    var tbody = $("<tbody>");
-    var tr = $("<tr>");
-    var td = $("<td>",{align:"center"});
+    var table = $('#ideaTable');
+    var tbody = $('<tbody>');
+    var tr = $('<tr>');
+    var td = $('<td>',{align:'center'});
 
-    $.ajax("js/3d/models/index.json", {
-        contentType: "application/json",
-        dataType: "json",
-        success: function success(data) {
-            $.each(data.list, function () {
-                var a = $("<a>", { href: "design.php?id=" + this.id });
-                var img = $("<img>", { src: "js/3d/models/" + this.id + ".png", class: "img-thumbnail rounded", style: "margin:10px;width:400px;height:220px"});
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            $.each(xhr.response.list, function () {
+                var a = $('<a>', { href: 'design.php?id=' + this.id });
+                var img = $('<img>', { src: 'js/3d/models/' + this.id + '.png', class: 'img-thumbnail rounded', style: 'margin:10px;width:400px;height:220px'});
                 td.append(a.append(img));
             });
-        },
-        error: function error(request, status, error) {
-            $.notify({ message: error },{ type: 'danger' });
+        }else{
+            $.notify({ message: xhr.status },{ type: 'danger' });
         }
-    });
-
+    };
+    xhr.open('GET', 'js/3d/models/index.json', true);
+    xhr.send();
+    
     table.append(tbody.append(td.append(td)));
 };
 

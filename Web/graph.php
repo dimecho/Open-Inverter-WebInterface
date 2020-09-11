@@ -13,7 +13,6 @@
         <?php include "header.php" ?>
         <link rel="stylesheet" type="text/css" href="css/ion.rangeSlider.css" />
         <script src="js/ion.rangeSlider.js"></script>
-        <script src="js/potentiometer.js"></script>
         <script src="js/jquery.knob.js"></script>
         <script src="js/chart.js"></script>
         <script src="js/chartjs-plugin-annotation.js"></script>
@@ -61,16 +60,16 @@
             <div class="row mt-4"></div>
             <div class="row p-2 text-center">
                 <div class="col">
-                    <code id="devmode"><a href="#">Developer Mode is OFF</a></code>
+                    <code id="devmode"><a href="#" id="text_devmode-off">Developer Mode is OFF</a></code>
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="graphSettings" tabindex="-1" role="dialog" aria-labelledby="graphSettingsTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal fade" id="graphSettings">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="graphSettingsTitle">Chart Settings:</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <h5 class="modal-title">Chart Settings:</h5>
+                    <button type="button" class="close text-muted" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -129,12 +128,11 @@
             </div>
         </div>
         </div>
-        <div class="modal fade" id="graphPoints" tabindex="-1" role="dialog" aria-labelledby="graphPointsTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal" id="graphPoints">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="graphPointsTitle"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close text-muted" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -143,6 +141,15 @@
                 </div>
                 <div class="modal-footer">
                     <button class="browse btn btn-primary" type="button" data-dismiss="modal"><i class="icons icon-ok"></i> OK</button>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="modal" id="graphPointsColor">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container" id="colorWheel"></div>
                 </div>
             </div>
         </div>

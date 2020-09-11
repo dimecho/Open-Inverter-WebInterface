@@ -7,10 +7,10 @@ $(document).ready(function () {
 
     var safety = getCookie('safety');
     if (safety === undefined) {
-        //$('#safety').removeClass('d-none');
-        $('#safety').modal();
+        var safetyModal = new bootstrap.Modal(document.getElementById('safety'), {});
+        safetyModal.show();
     }else{
-        buildMenu('index.php');
+        buildMenu(function() { initializeSerial() });
     }
 
     if(theme == '.slate') {
@@ -30,10 +30,12 @@ function saveReminderCounter() {
 
 function initializeSerial() {
 
-    $.ajax('serial.php?init=115200', {
-        async: true,
-        timeout: 6400,
-        success: function(data) {
+	$('#loader-parameters').removeClass('d-none'); //.show();
+
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            var data = xhr.responseText;
             console.log(data);
 
             deleteCookie('serial.block');
@@ -41,13 +43,10 @@ function initializeSerial() {
             if(data.toUpperCase().indexOf('ERROR') != -1)
             {
                 $('#com').removeClass('d-none'); //.show();
-                //$.ajax(serialWDomain + ':' + serialWeb + '/serial.php?com=list', {
-                $.ajax('serial.php?com=list', {
-                    async: false,
-                    timeout:2000,
-                    success: function(data) {
-                       //console.log(data);
-                        var s = data.split('\n');
+                var cxhr = new XMLHttpRequest();
+                cxhr.onload = function() {
+                    if (cxhr.status == 200) {
+                        var s = cxhr.responseText.split('\n');
                         if(s.length == 2) {
                             $.notify({ message: 'Try swapping TX <-> RX' }, { type: 'warning' });
                         }else if(s.length > 1) {
@@ -55,15 +54,19 @@ function initializeSerial() {
                                 if(s[i] != '')
                                     $('#serial-interface').append($('<option>',{value:s[i]}).append(s[i]));
                             }
-                            $('#serial').modal();
-                        }else if (os === 'mac') {
-                            $('#macdrivers').find('img').attr('src','img/catalina-logo.png');
-                            $('#macdrivers').modal();
+                            var serialModal = new bootstrap.Modal(document.getElementById('serial'), {});
+                            serialModal.show();
+                        }else if (isMacintosh()) {
+                            var macdriversModal = new bootstrap.Modal(document.getElementById('macdrivers'), {});
+                            macdriversModal.show();
                         }else{
                             $.notify({ message: 'Serial not found' }, { type: 'danger' });
                         }
                     }
-                });
+                };
+                cxhr.open('GET', 'serial.php?com=list', false);
+                cxhr.send();
+                $('#loader-parameters').addClass('d-none'); //.hide();
             }else if(data.indexOf('2D') != -1) {
                 if (boot == undefined) { // Two try - prevents false-positive ESP8266
                     setCookie('boot', 1, 1);
@@ -90,17 +93,22 @@ function initializeSerial() {
             }else{
                 buildParameters();
             }
-        }, error: function (data, textStatus, errorThrown) { //only for Windows (blocking UART)
-            console.log(textStatus);
-            console.log(data);
+        }else{
+            console.log(xhr.status);
+            console.log(xhr.responseText);
+
             if (os === 'windows'){
                 $.notify({ message: 'Serial blocked ...Un-plug it!' }, { type: 'danger' });
             }
             $.notify({ message: 'Try swapping TX <-> RX' }, { type: 'warning' });
             $('#com').removeClass('d-none'); //.show();
             setCookie('serial.block', 1, 1);
+
+            $('#loader-parameters').addClass('d-none'); //.hide();
         }
-    });
+    };
+    xhr.open('GET', 'serial.php?init=115200', true);
+    xhr.send();
 };
 
 function basicChecks(json)
@@ -210,10 +218,11 @@ function boostSlipCalculator()
     div.append(row);
 
     $('#calculator').find('.modal-body').empty().append(div);
-    $('#calculator').modal();
+    var calculatorModal = new bootstrap.Modal(document.getElementById('calculator'), {});
+    calculatorModal.show();
 
-    $.getScript('js/chart.js').done(function(script, textStatus) {
-        $.getScript('js/chartjs-plugin-annotation.js').done(function(script, textStatus) {
+    getScript('js/chart.js', function () {
+        getScript('js/chartjs-plugin-annotation.js', function () {
 
             var chart_boost_datasets = {
                 type: 'line',
@@ -402,10 +411,11 @@ function MTPACalculator()
     var canvas = $('<canvas>');
 
     $('#calculator').find('.modal-body').empty().append(loader).append(canvas);
-    $('#calculator').modal();
+    var calculatorModal = new bootstrap.Modal(document.getElementById('calculator'), {});
+    calculatorModal.show();
 
-    $.getScript('js/chart.js').done(function(script, textStatus) {
-		$.getScript('js/chartjs-plugin-annotation.js').done(function(script, textStatus) {
+    getScript('js/chart.js', function () {
+		getScript('js/chartjs-plugin-annotation.js', function () {
 
 	    	//TODO: This needs a proper formula!
 	    	var fwkp = parseInt($('#fwkp').val());
@@ -641,8 +651,8 @@ function syncofsCalculator()
 	    		col1.empty();
 	    		col1.append(loader);
 
-		    	$.getScript('js/chart.js').done(function(script, textStatus) {
-		    		$.getScript('js/chartjs-plugin-annotation.js').done(function(script, textStatus) {
+		    	getScript('js/chart.js', function () {
+		    		getScript('js/chartjs-plugin-annotation.js', function () {
 
 			    		var canvas = $('<canvas>');
 			    		var red = 'rgb(255, 99, 132)';
@@ -843,7 +853,8 @@ function syncofsCalculator()
 	*/
 
     $('#calculator').find('.modal-body').empty().append(div);
-    $('#calculator').modal();
+    var calculatorModal = new bootstrap.Modal(document.getElementById('calculator'), {});
+    calculatorModal.show();
 };
 
 function pinSwapCalculator()
@@ -867,7 +878,8 @@ function pinSwapCalculator()
     div.append(row.append(col));
 
     $('#calculator').find('.modal-body').empty().append(div);
-    $('#calculator').modal();
+    var calculatorModal = new bootstrap.Modal(document.getElementById('calculator'), {});
+    calculatorModal.show();
 };
 
 function gen_stator_data(poles) {
@@ -959,202 +971,197 @@ function gen_stator_syncofs_color(poles) {
 
 function buildParameters()
 {
-    $('#loader-parameters').removeClass('d-none'); //.show();
-	
-	$.ajax('description.csv',{
-		async: true,
-        dataType : 'text',
-		success: function(data)
-		{
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+
             var parameters = [];
             var description = [];
 
-			var row = data.split('\n');
+            var row = xhr.responseText.split('\n');
 
-			for (var i = 0; i < row.length; i++) {
-				
-				var split = row[i].split(',');
+            for (var i = 0; i < row.length; i++) {
+                
+                var split = row[i].split(',');
                 
                 //console.log(split[0]);
                 //console.log(d.replace(/"/g, ''));
 
-				parameters.push(split[0]);
-				description.push(row[i].substring(split[0].length + 1).replace(/"/g, ''));
-			}
-
-            var json = sendCommand('json', 0);
-            var inputDisabled = false;
-
-            if(Object.keys(json).length == 0)
-            {
-                $.ajax('js/parameters.json', {
-                  async: false,
-                  dataType: 'json',
-                  success: function(data) {
-                    console.log(data);
-                    json = data;
-                    inputDisabled = true;
-                  }
-                });
-            }else{
-                buildStatus();
-                basicChecks(json);
+                parameters.push(split[0]);
+                description.push(row[i].substring(split[0].length + 1).replace(/"/g, ''));
             }
 
-            var legend = $('#legend').empty();
-            var menu = $('#parameters').empty();
-            var thead = $('<thead>', {class:'thead-inverse'}).append($('<tr>').append($('<th>')).append($('<th>').append('Name')).append($('<th>').append('Value')).append($('<th>').append('Type')));
-            var tbody = $('<tbody>');
-            menu.append(thead);
-            menu.append(tbody);
+	       sendCommand('json', 0, function(json) {
 
-            for(var key in json)
-            {
-                //console.log(key);
+	            var inputDisabled = false;
 
-                var tooltip = '';
-                var x = parameters.indexOf(key);
-                if(x !=-1)
-                    tooltip = description[x];
+	            if(Object.keys(json).length == 0)
+	            {
+	                var pxhr = new XMLHttpRequest();
+	                pxhr.responseType = 'json';
+	                pxhr.onload = function() {
+	                    if (pxhr.status == 200) {
+	                        console.log(pxhr.response);
+	                        json = pxhr.response;
+	                        inputDisabled = true;
+	                    }
+	                };
+	                pxhr.open('GET', 'js/parameters.json');
+	                pxhr.send();
+	            }else{
+	                buildStatus();
+	                basicChecks(json);
+	            }
 
-                var a = $('<a>');
-                var tr = $('<tr>');
+	            var legend = $('#legend').empty();
+	            var menu = $('#parameters').empty();
+	            var thead = $('<thead>', {class:'thead-inverse'}).append($('<tr>').append($('<th>')).append($('<th>').append('Name')).append($('<th>').append('Value')).append($('<th>').append('Type')));
+	            var tbody = $('<tbody>');
+	            menu.append(thead);
+	            menu.append(tbody);
 
-                //if(os === 'mobile' || esp8266 === true) {
-                    var a = $('<input>', { type:'text', 'id':key, class:'form-control', value:json[key].value, disabled: inputDisabled });
-                    a.on('change paste', function() {
-                        var element = $(this);
-                        if(element.val() != '') {
-                            validateInput(json,element.attr('id'), element.val(), function(r) {
-                                if(r === true) {
-                                    $('#save-parameters').removeClass('btn-secondary');
-                                    $('#save-parameters').addClass('btn-success');
-                                    setParameter(element.attr('id'),element.val(),false,true);
-                                    clearTimeout(saveReminderTimer);
-                                    saveReminderTimer = setInterval(saveReminderCounter, 60000);
-                                    saveReminder = true;
-                                }
-                            });
-                        }
-                    });
-                    if(os === 'mobile') {
-                        a.attr('type','number');
-                    }
-                //}else{
-                //    var a = $('<a>', { href:'#', 'id':key, 'data-type':'text', 'data-pk':'1', 'data-placement':'right', 'data-placeholder':'Required', 'data-title':json[key].unit + ' ('+ json[key].default + ')'});
-                //    a.append(json[key].value);
-                //}
+	            for(var key in json)
+	            {
+	                //console.log(key);
 
-                var category_icon = $('<i>', { class:'icons text-muted' });
+	                var tooltip = '';
+	                var x = parameters.indexOf(key);
+	                if(x !=-1)
+	                    tooltip = description[x];
 
-                if(json[key].category)
-                {
-                    var category = json[key].category;
-                    
-                    category_icon.attr('data-toggle', 'tooltip');
-                    category_icon.attr('data-html', true);
-                    category_icon.attr('title', '<h6>' + category + '</h6>');
+	                var a = $('<a>');
+	                var tr = $('<tr>');
 
-                    if(category == 'Motor')
-                    {
-                        category_icon.addClass('icon-motor');
-                    }
-                    else if(category == 'Inverter')
-                    {
-                        category_icon.addClass('icon-inverter');
-                    }
-                    else if(category == 'Charger')
-                    {
-                        category_icon.addClass('icon-plug');
-                    }
-                    else if(category == 'Throttle')
-                    {
-                        category_icon.addClass('icon-throttle');
-                    }
-                    else if(category == 'Regen')
-                    {
-                        category_icon.addClass('icon-power');
-                    }
-                    else if(category == 'Automation')
-                    {
-                        category_icon.addClass('icon-gear');
-                    }
-                    else if(category == 'Derating')
-                    {
-                        category_icon.addClass('icon-magnet');
-                    }
-                    else if(category == 'Contactor Control')
-                    {
-                        category_icon.addClass('icon-download');
-                    }
-                    else if(category == 'Aux PWM')
-                    {
-                        category_icon.addClass('icon-pwm');
-                    }
-                    else if(category == 'Testing')
-                    {
-                        category_icon.addClass('icon-test');
-					}
-                    else if(category == 'Communication')
-                    {
-                        category_icon.addClass('icon-transfer');
-                    }else{
-                        category_icon.addClass('icon-info');
-                    }
-                }
-                
-                var td1 = $('<td>').append(category_icon);
-                var td2 = $('<td>').append(key);
-                var td3 = $('<td>').append(a);
-                var td4 = $('<td>');
+	                
+	                var a = $('<input>', { type:'text', 'id':key, class:'form-control', value:json[key].value, disabled: inputDisabled });
+	                if(os === 'mobile') {
+	                    a.attr('type','number');
+	                }
+	                a.on('change paste', function() {
+	                    var element = $(this);
+	                    if(element.val() != '') {
+	                        validateInput(json,element.attr('id'), element.val(), function(r) {
+	                            if(r === true) {
+	                                $('#save-parameters').removeClass('btn-secondary');
+	                                $('#save-parameters').addClass('btn-success');
+	                                setParameter(element.attr('id'),element.val(),false,true);
+	                                clearTimeout(saveReminderTimer);
+	                                saveReminderTimer = setInterval(saveReminderCounter, 60000);
+	                                saveReminder = true;
+	                            }
+	                        });
+	                    }
+	                });
 
-                if(key == 'fwkp') {
-                    var fwkp_btn = $('<button>', {type:'button', class:'btn btn-primary', onclick:'MTPACalculator()'});
-                    var fwkp_calc = $('<i>', {class:'icons icon-magic'});
-                    td4.append(fwkp_btn.append(fwkp_calc).append(' MTPA'));
-                }else if(key == 'syncofs') {
-                    var syncofs_btn = $('<button>', {type:'button', class:'btn btn-primary', onclick:'syncofsCalculator()'});
-                    var syncofs_calc = $('<i>', {class:'icons icon-magic'});
-                    td4.append(syncofs_btn.append(syncofs_calc).append(' Calculate'));
-                }else if(key == 'pinswap') {
-                    var pinswap_btn = $('<button>', {type:'button', class:'btn btn-primary', onclick:'pinSwapCalculator()'});
-                    var pinswap_calc = $('<i>', {class:'icons icon-magic'});
-                    td4.append(pinswap_btn.append(pinswap_calc).append(' Calculate'));
-                } else if(key == 'udcnom') {
-                    var fweak_btn = $('<button>', {type:'button', class:'btn btn-primary', onclick:'boostSlipCalculator()'});
-                    var fweak_calc = $('<i>', {class:'icons icon-magic'});
-                    td4.append(fweak_btn.append(fweak_calc).append(' Calculate'));
-                }else{
-                    td4.append(json[key].unit.replace('','°'));
-                }
+	                var category_icon = $('<i>', { class:'icons text-muted' });
 
-                if(tooltip != '')
-                {
-                    td2.attr('data-toggle', 'tooltip');
-                    td2.attr('data-html', true);
-                    td2.attr('title', '<h6>' + tooltip + '</h6>');
-                }
+	                if(json[key].category)
+	                {
+	                    var category = json[key].category;
+	                    
+	                    category_icon.attr('data-toggle', 'tooltip');
+	                    category_icon.attr('data-html', true);
+	                    category_icon.attr('title', '<h6>' + category + '</h6>');
 
-                tr.append(td1).append(td2).append(td3).append(td4);
-                tbody.append(tr);
-            };
-            menu.removeClass('d-none'); //.show();
+	                    if(category == 'Motor')
+	                    {
+	                        category_icon.addClass('icon-motor');
+	                    }
+	                    else if(category == 'Inverter')
+	                    {
+	                        category_icon.addClass('icon-inverter');
+	                    }
+	                    else if(category == 'Charger')
+	                    {
+	                        category_icon.addClass('icon-plug');
+	                    }
+	                    else if(category == 'Throttle')
+	                    {
+	                        category_icon.addClass('icon-throttle');
+	                    }
+	                    else if(category == 'Regen')
+	                    {
+	                        category_icon.addClass('icon-power');
+	                    }
+	                    else if(category == 'Automation')
+	                    {
+	                        category_icon.addClass('icon-gear');
+	                    }
+	                    else if(category == 'Derating')
+	                    {
+	                        category_icon.addClass('icon-magnet');
+	                    }
+	                    else if(category == 'Contactor Control')
+	                    {
+	                        category_icon.addClass('icon-download');
+	                    }
+	                    else if(category == 'Aux PWM')
+	                    {
+	                        category_icon.addClass('icon-pwm');
+	                    }
+	                    else if(category == 'Testing')
+	                    {
+	                        category_icon.addClass('icon-test');
+	                    }
+	                    else if(category == 'Communication')
+	                    {
+	                        category_icon.addClass('icon-transfer');
+	                    }else{
+	                        category_icon.addClass('icon-info');
+	                    }
+	                }
+	                
+	                var td1 = $('<td>').append(category_icon);
+	                var td2 = $('<td>').append(key);
+	                var td3 = $('<td>').append(a);
+	                var td4 = $('<td>');
 
-            $('#saveload').removeClass('d-none');//.show();
-            
-            $('[data-toggle="tooltip"]').tooltip({
-                template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner large"></div></div>',
-                container: 'body',
-                placement: 'right',
-                html: true
+	                if(key == 'fwkp') {
+	                    var fwkp_btn = $('<button>', {type:'button', class:'btn btn-primary', onclick:'MTPACalculator()'});
+	                    var fwkp_calc = $('<i>', {class:'icons icon-magic'});
+	                    td4.append(fwkp_btn.append(fwkp_calc).append(' MTPA'));
+	                }else if(key == 'syncofs') {
+	                    var syncofs_btn = $('<button>', {type:'button', class:'btn btn-primary', onclick:'syncofsCalculator()'});
+	                    var syncofs_calc = $('<i>', {class:'icons icon-magic'});
+	                    td4.append(syncofs_btn.append(syncofs_calc).append(' Calculate'));
+	                }else if(key == 'pinswap') {
+	                    var pinswap_btn = $('<button>', {type:'button', class:'btn btn-primary', onclick:'pinSwapCalculator()'});
+	                    var pinswap_calc = $('<i>', {class:'icons icon-magic'});
+	                    td4.append(pinswap_btn.append(pinswap_calc).append(' Calculate'));
+	                } else if(key == 'udcnom') {
+	                    var fweak_btn = $('<button>', {type:'button', class:'btn btn-primary', onclick:'boostSlipCalculator()'});
+	                    var fweak_calc = $('<i>', {class:'icons icon-magic'});
+	                    td4.append(fweak_btn.append(fweak_calc).append(' Calculate'));
+	                }else{
+	                    td4.append(json[key].unit.replace('','°'));
+	                }
+
+	                if(tooltip != '')
+	                {
+	                    td2.attr('data-toggle', 'tooltip');
+	                    td2.attr('data-html', true);
+	                    td2.attr('title', '<h6>' + tooltip + '</h6>');
+	                }
+
+	                tr.append(td1).append(td2).append(td3).append(td4);
+	                tbody.append(tr);
+	            };
+	            menu.removeClass('d-none'); //.show();
+
+	            $('#saveload').removeClass('d-none');//.show();
+
+	            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+	            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+	              return new bootstrap.Tooltip(tooltipTriggerEl,{ template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner large"></div></div>',
+	                container: 'body', placement: 'right', html: true})
+	            });
+
+	            $('#loader-parameters').addClass('d-none'); //.hide();
             });
-
-            $('#loader-parameters').addClass('d-none'); //.hide();
-
-		},
-		error: function(xhr, textStatus, errorThrown){
-		}
-	});
+        }
+    };
+    xhr.open('GET', 'description.csv', true);
+    xhr.send();
 
     checkWebUpdates();
 };
@@ -1168,12 +1175,12 @@ function checkFirmwareUpdates(v)
     var check = Math.random() >= 0.5;
     if (check === true)
     {
-        $.ajax('https://api.github.com/repos/jsphuebner/stm32-sine/releases/latest', {
-            async: false,
-            dataType: 'json',
-            success: function success(data) {
-                try{
-                    var release = data.tag_name.replace('v','').replace('.R','');
+        var xhr = new XMLHttpRequest();
+        xhr.responseType = 'json';
+        xhr.onload = function() {
+            if (xhr.status == 200) {
+                try {
+                    var release = xhr.response.tag_name.replace('v','').replace('.R','');
                     var split = release.split('.');
                     var version = parseFloat(split[0]);
                     var build = parseFloat(split[1]);
@@ -1193,7 +1200,9 @@ function checkFirmwareUpdates(v)
                     }
                 } catch(e) {}
             }
-        });
+        };
+        xhr.open('GET', 'https://api.github.com/repos/jsphuebner/stm32-sine/releases/latest', true);
+        xhr.send();
     }
 };
 
@@ -1202,19 +1211,18 @@ function checkWebUpdates()
     var check = Math.random() >= 0.5;
     if (check === true)
     {
-        $.ajax('https://raw.githubusercontent.com/dimecho/Open-Inverter-WebInterface/master/Web/version.txt', {
-            async: true,
-            success: function success(data) {
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+            if (xhr.status == 200) {
                 try {
-                    var split = data.split('\n');
+                    var split = xhr.responseText.split('\n');
                     var version = parseFloat(split[0]);
                     var build = parseFloat(split[1]);
 
-                    $.ajax('version.txt', {
-                        async: true,
-                        success: function success(data) {
-
-                            var _split = data.split('\n');
+                    var vxhr = new XMLHttpRequest();
+			        vxhr.onload = function() {
+			            if (vxhr.status == 200) {
+			                var _split = vxhr.responseText.split('\n');
                             var _version = parseFloat(_split[0]);
                             var _build = parseFloat(_split[1]);
 
@@ -1241,10 +1249,14 @@ function checkWebUpdates()
                                     type: 'success'
                                 });
                             }
-                        }
-                    });
+			            }
+			        };
+			        vxhr.open('GET', 'version.txt', true);
+			        vxhr.send();
                 } catch(e) {}
             }
-        });
+        };
+        xhr.open('GET', 'https://raw.githubusercontent.com/dimecho/Open-Inverter-WebInterface/master/Web/version.txt', true);
+        xhr.send();
     }
 };

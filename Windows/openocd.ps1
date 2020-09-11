@@ -1,4 +1,4 @@
-$openocd = "$env:programfiles\xPack\OpenOCD\0.10.0-13"
+$openocd = "$env:programfiles\xPack\OpenOCD\0.10.0-14"
 
 function Elevate() {
     # Get the ID and security principal of the current user account
@@ -18,7 +18,7 @@ if($args[0] -eq "uninstall") {
 }else{
     if (-Not (Test-Path $openocd)){
 		Elevate
-        Expand-Archive -Path "$env:userprofile\Downloads\xpack-openocd-0.10.0-13-win32-x64.zip" -DestinationPath "$env:programfiles" -Force -Verbose
+        Expand-Archive -Path "$env:userprofile\Downloads\xpack-openocd-0.10.0-14-win32-x64.zip" -DestinationPath "$env:programfiles" -Force -Verbose
   	}else{
         Set-Location "$openocd\bin"
 		$FILE = $($args[0]).Replace("\","\\")
