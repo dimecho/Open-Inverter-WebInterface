@@ -19,50 +19,75 @@ var jtag_name = [
 $(document).ready(function() {
 
 	buildMenu(function() {
-		if(os == 'esp8266') {
-			$('#firmware-interface').append($('<option>',{value:'uart-esp8266',selected:'selected'}).append('UART over ESP8266'));
-			$('#firmware-interface').append($('<option>',{value:'swd-esp8266'}).append('SWD over ESP8266'));
-		}else{
-			unblockSerial();
-			for (var i = 0; i < jtag_interface.length; i++) {
-				$('#firmware-interface').append($('<option>',{value:jtag_interface[i]}).append(jtag_name[i]));
-			}
-			$('#firmware-interface').prop('selectedIndex', 2);
-			displayHWVersion();
 
-			var path = window.location.pathname;
-            var page = path.split('/').pop();
+		var interface = document.getElementById('firmware-interface');
 
-			if(page != 'bootloader.php') {
-				var xhr = new XMLHttpRequest();
-		        xhr.onload = function() {
-		            if (xhr.status == 200) {
-		                //console.log(xhr.responseText);
-						if(xhr.responseText.length > 1) {
-							var s = xhr.responseText.split('\n');
-							for (var i = 0; i < s.length; i++) {
-								if(s[i] != '')
-									$('#firmware-interface').append($('<option>',{value:s[i]}).append(s[i]));
+		if (typeof(interface) != 'undefined' && interface != null)
+		{
+			if(os == 'esp8266') {
+				var option_uart = document.createElement('option');
+				option_uart.value = 'uart-esp8266';
+				option_uart.textContent = 'UART over ESP8266';
+				interface.appendChild(option_uart);
+
+				var option_swd = document.createElement('option');
+				option_swd.value = 'swd-esp8266';
+				option_swd.textContent = 'SWD over ESP8266';
+				interface.appendChild(option_swd);
+			}else{
+				unblockSerial();
+
+				document.getElementsByClassName('spinner-border')[0].classList.remove('d-none');
+
+				for (var i = 0; i < jtag_interface.length; i++) {
+					var option = document.createElement('option');
+					option.value = jtag_interface[i];
+					option.textContent = jtag_name[i];
+					interface.appendChild(option);
+				}
+				interface.selectedIndex = 2;
+
+				displayHWVersion();
+
+				var path = window.location.pathname;
+	            var page = path.split('/').pop();
+
+				if(page != 'bootloader.php') {
+					var xhr = new XMLHttpRequest();
+			        xhr.onload = function() {
+			            if (xhr.status == 200) {
+			                //console.log(xhr.responseText);
+							if(xhr.responseText.length > 1) {
+								var s = xhr.responseText.split('\n');
+								for (var i = 0; i < s.length; i++) {
+									if(s[i] != '') {
+										var option = document.createElement('option');
+										option.value = s[i];
+										option.textContent = s[i];
+										interface.appendChild(option);
+									}
+								}
+		            			interface.selectedIndex = (jtag_interface.length + s.length - 2);
 							}
-	            			$('#firmware-interface').prop('selectedIndex', (jtag_interface.length + s.length - 2));
-						}
-		            }
-					setInterfaceImage();
-		        };
-		        xhr.open('GET', 'serial.php?com=list', true);
-		        xhr.send();
-	    	}else{
-	    		setInterfaceImage();
-	    	}
-		}
-		$('.spinner-border').addClass('d-none'); //.hide();
-		$('.input-group-addon').removeClass('d-none'); //.show();
-	});
-});
+			            }
+			            setInterfaceImage(interface.selectedIndex);
+			        };
+			        xhr.open('GET', 'serial.php?com=list', true);
+			        xhr.send();
+		    	}else{
+		    		setInterfaceImage(interface.selectedIndex);
+		    	}
+			}
+			document.getElementsByClassName('spinner-border')[0].classList.add('d-none');
+			$('.input-group-addon').removeClass('d-none'); //.show();
 
-$(document).on('click', '.browse', function(){
-	var file = $('.file');
-	file.trigger('click');
+			document.getElementById('browseFile').onclick = function () {
+				document.getElementsByClassName('file')[0].click();
+		    };
+		}else{
+			firmwareUpdateRun();
+		}
+	});
 });
 
 function beginESP8266SWD() {
@@ -96,63 +121,69 @@ function beginESP8266SWD() {
     xhr.send();
 };
 
-function setInterfaceImage() {
+function setInterfaceImage(i) {
 
-	var v = $('#firmware-interface').val();
-	
-	if(os == 'esp8266') {
-		$('#jtag-txt').html('Solder <b>GPIO-0</b> to <b>1</b> and boot ESP8266 from flash.');
-		
-		//0=Rev1, 1=Rev2, 2=Rev3, 3=Tesla
-		if (hardware == undefined) {
-			$('#hardware').modal(); //Manual Select
-        }else{
-        	if(v == 'swd-esp8266') {
-				beginESP8266SWD();
-			}
-			if(hardware == '2') {
-			 	$('#jtag-image').attr('src','pcb/v3.0/esp8266.png');
-			}else{
-			 	$('#jtag-image').attr('src','pcb/v1.0/esp8266.png');
-			}
-        }
-	}else{
-		$('#jtag-txt').html('');
-        $('#jtag-name').html(jtag_name[$('#firmware-interface option:selected').index()]);
+	var interface = document.getElementById('firmware-interface')[i];
+	//console.log(interface);
 
-		if(v.indexOf('stlink-v2') != -1) {
-			$('#jtag-image').attr('src', 'pcb/Hardware v1.0/diagrams/stlinkv2.png');
-			checkSoftware('stlink');
-        }else if(v.indexOf('olimex-arm-jtag-swd') != -1) {
-            $('#jtag-image').attr('src', 'firmware/img/olimex-arm-jtag-swd.jpg');
-            checkSoftware('openocd');
-		}else if(v.indexOf('interface') != -1) {
-            var img = v.split('/').pop().slice(0, -4);
-			$('#jtag-image').attr('src', 'firmware/img/' + img + '.jpg');
-			checkSoftware('openocd');
+	if (typeof(interface) != 'undefined' && interface != null)
+	{
+		if(os == 'esp8266') {
+			$('#jtag-txt').html('Solder <b>GPIO-0</b> to <b>1</b> and boot ESP8266 from flash.');
+			
+			//0=Rev1, 1=Rev2, 2=Rev3, 3=Tesla
+			if (hardware == undefined) {
+				$('#hardware').modal(); //Manual Select
+	        }else{
+	        	if(interface.value == 'swd-esp8266') {
+					beginESP8266SWD();
+				}
+				if(hardware == '2') {
+				 	$('#jtag-image').attr('src','pcb/v3.0/esp8266.png');
+				}else{
+				 	$('#jtag-image').attr('src','pcb/v1.0/esp8266.png');
+				}
+	        }
 		}else{
-			$('#jtag-image').attr('src','firmware/img/usb_ttl.jpg');
-			$('#jtag-txt').html('Caution: Main board Olimex is powered with 3.3V - Double check your TTL-USB adapter.');
-            $('#jtag-name').html('USB-TTL');
+			$('#jtag-txt').html('');
+	        $('#jtag-name').html(jtag_name[i]);
+
+			if(interface.value.indexOf('stlink-v2') != -1) {
+				$('#jtag-image').attr('src', 'pcb/Hardware v1.0/diagrams/stlinkv2.png');
+				checkSoftware('stlink');
+	        }else if(interface.value.indexOf('olimex-arm-jtag-swd') != -1) {
+	            $('#jtag-image').attr('src', 'firmware/img/olimex-arm-jtag-swd.jpg');
+	            checkSoftware('openocd');
+			}else if(interface.value.indexOf('interface') != -1) {
+	            var img = interface.value.split('/').pop().slice(0, -4);
+				$('#jtag-image').attr('src', 'firmware/img/' + img + '.jpg');
+				checkSoftware('openocd');
+			}else{
+				$('#jtag-image').attr('src','firmware/img/usb_ttl.jpg');
+				$('#jtag-txt').html('Caution: Main board Olimex is powered with 3.3V - Double check your TTL-USB adapter.');
+	            $('#jtag-name').html('USB-TTL');
+			}
 		}
 	}
 };
 
 function firmwareUpload() {
+
 	var file = $('.file').get(0).files[0].name;
+
 	if (file.toUpperCase().indexOf('.BIN') !=-1 || file.toUpperCase().indexOf('.HEX') !=-1) {
 		if(os == 'esp8266') { //Special ESP8266 requirement
 			var xhr = new XMLHttpRequest();
 	        xhr.onload = function() {
 	            if (xhr.status == 200) {
 	                console.log(xhr.responseText);
-					$('#firmwareForm').submit();
+					document.getElementById('firmwareForm').submit();
 				}
 	        };
 	        xhr.open('GET', '/interface?i=' + $('#firmware-interface').val(), true);
 	        xhr.send();
 		}else{
-			$('#firmwareForm').submit();
+			document.getElementById('firmwareForm').submit();
 		}
 	}else{
 		$.notify({ message: 'File must be .bin or .hex format' }, { type: 'danger' });

@@ -1,4 +1,4 @@
-$stlink = "$env:programfiles\stlink-1.3.0-win64"
+$stlink = "$env:programfiles\stlink-1.6.1-win64"
 
 function Elevate() {
     # Get the ID and security principal of the current user account
@@ -19,7 +19,7 @@ if($args[0] -eq "uninstall") {
     if (-Not (Test-Path $stlink)){
 		Elevate
 		Add-Type -AssemblyName System.IO.Compression.FileSystem
-		[System.IO.Compression.ZipFile]::ExtractToDirectory("$env:userprofile\Downloads\stlink-1.3.0-win64.zip", "$env:programfiles")
+		[System.IO.Compression.ZipFile]::ExtractToDirectory("$env:userprofile\Downloads\stlink-1.6.1-x86_64-w64-mingw32.zip", "$env:programfiles")
 	}else{
         Set-Location "$stlink\bin"
 		$FILE = $($args[0]).Replace("\","\\")

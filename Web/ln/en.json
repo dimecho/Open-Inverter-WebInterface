@@ -79,5 +79,10 @@
         "connect": "Connect ESP8266 Module to USB",
         "minute" : "This may take a minute",
         "olimex-tip": "Solder GPIO-0 to 0 and connect TX, RX & GND (USB-TTL). Back to 1 after flashing."
+    },
+    "simple.php": {
+        "opmode": "Start Inverter in Manual Mode?",
+        "cancel": "Cancel",
+        "save": "Start"
     }
 }

@@ -196,10 +196,10 @@
 				<table class="table table-active table-bordered d-none" id="esp8266-flash-select">
 					<tr align="center">
 						<td align="center">
-							<button class="btn btn-primary" type="button" id="browseLittleFS"><i class="icons icon-chip"></i> Flash LittleFS</button>
+							<button class="btn btn-primary" type="button" id="browseLittleFS" disabled><i class="icons icon-chip"></i> Flash LittleFS</button>
 						</td>
 						<td align="center">
-							<button class="btn btn-primary" type="button" id="browseSketch"><i class="icons icon-chip"></i> Flash Sketch</button>
+							<button class="btn btn-primary" type="button" id="browseSketch" disabled><i class="icons icon-chip"></i> Flash Sketch</button>
 						</td>
 					</tr>
 					<tr align="center">

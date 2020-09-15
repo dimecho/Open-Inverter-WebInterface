@@ -34,16 +34,18 @@
 	$ajax_url .= "&interface=" .urlencode($ocd_interface). "\"";
 ?>
 <script>
-	$(document).ready(function() {
+	var progressTimerCounter = 0;
 
-		clearInterval(timer);
-        timer = setInterval(progressTimer, 100);
+	function firmwareUpdateRun() {
 
 	    var xhr = new XMLHttpRequest();
         xhr.onload = function() {
             if (xhr.status == 200) {
             	var data = xhr.responseText;
 				//console.log(data);
+
+				progressTimerCounter = 100;
+				
                 deleteCookie('version');
 				$('#output').append($('<pre>').append(data));
             <?php
@@ -67,9 +69,16 @@
                     $.notify({ message: "Plugin USB-RS232-TTL" },{ type: "warning" });
                     $.notify({ message: "Unlug JTAG Programmer" },{ type: "danger" });
                 }
-                setTimeout( function (){
-                    window.location.href = 'index.php';
-                },12000);
+                if(data.indexOf('Resource busy') !=-1){
+                	$.notify({ message: "Wrong USB-TTL Selected ...Try Again" },{ type: "warning" });
+                	 setTimeout(function() {
+	                    window.location.href = 'firmware.php';
+	                },8000);
+                }else{
+	                setTimeout(function() {
+	                    window.location.href = 'index.php';
+	                },12000);
+	            }
             <?php
                 }else{ //esp8266.php
             ?>
@@ -91,7 +100,19 @@
         };
         xhr.open('GET', <?php echo $ajax_url; ?>, true);
         xhr.send();
-	});
+
+        firmwareProgress(100);
+	};
+
+	function firmwareProgress(speed) {
+	    var timer = setInterval(function(){
+	    	progressTimerCounter++;
+	    	if(progressTimerCounter == 100) {
+		        clearInterval(timer);
+		    }
+		    document.getElementsByClassName('progress-bar')[0].style.width = progressTimerCounter + '%';
+	    }, speed);
+	};
 </script>
 <div class="progress progress-striped active">
     <div class="progress-bar" style="width:0%" id="progressBar"></div>

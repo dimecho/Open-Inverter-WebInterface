@@ -10,7 +10,7 @@ else
         if [ ! -d "/usr/local/share" ]; then
             osascript -e "do shell script \"mkdir /usr/local/share; chown -R $(whoami) /usr/local/share\" with administrator privileges"
         fi
-        tar xzfv ~/Downloads/xpack-openocd-0.10.0-14-darwin-x64.tar.gz -C /usr/local/share
+        tar xfv ~/Downloads/xpack-openocd-0.10.0-14-darwin-x64.tar.gz -C /usr/local/share
 
         os_ver=$(sw_vers -productVersion)
         if [[ $os_ver == 10.15* ]]; then

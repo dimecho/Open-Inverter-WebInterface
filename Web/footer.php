@@ -106,11 +106,12 @@
             <div class="modal-body">
                 <div class="container">
                     <div class="row" align="center">
-                        <div class="col"><button type="button" class="btn btn-success" data-dismiss="modal" onClick="startInverterMode(1)">Start Auto</button></div>
-                        <div class="col"><button type="button" class="btn btn-primary" data-dismiss="modal" onClick="startInverterMode(2)">Manual Run</button></div>
+                        <div class="col"><button type="button" class="btn btn-success" data-dismiss="modal" onClick="startInverterMode(1)">Automatic</button></div>
+                        <div class="col"><button type="button" class="btn btn-primary" data-dismiss="modal" onClick="startInverterMode(2)">Manual</button></div>
                         <div class="col"><button type="button" class="btn btn-primary" data-dismiss="modal" onClick="startInverterMode(5)">Sine Wave</button></div>
                         <div class="col"><button type="button" class="btn btn-danger" data-dismiss="modal" onClick="startInverterMode(3)">Boost</button></div>
                         <div class="col"><button type="button" class="btn btn-danger" data-dismiss="modal" onClick="startInverterMode(4)">Buck</button></div>
+                        <div class="col"><button type="button" class="btn btn-info" data-dismiss="modal" onClick="startInverterMode(6)">Battery Heater</button></div>
                     </div>
                 </div>
             </div>

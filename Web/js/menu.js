@@ -91,19 +91,28 @@ function startInverterMode(mode)
         if (potnom > 20) {
             $.notify({ title: 'High RPM Warning', message: 'Adjust your Potentiometer down to zero before starting Inverter.' }, { type: 'danger' });
         } else {
-            if(closeEvent.index === 1) {
-                startInverter(1);
-            }else if(closeEvent.index === 2) {
-                startInverter(2);
-            }else if(closeEvent.index === 3) {
-                startInverter(3);
+
+            if(mode === 3) {
                 setParameter('chargemode', 3, false, true);
-            }else if(closeEvent.index === 4) {
-                startInverter(4);
+            }else if(mode === 4) {
                 setParameter('chargemode', 4, false, true);
-            }else if(closeEvent.index === 5) {
-                startInverter(5);
             }
+
+            var data = sendCommand('start ' + mode, 0);
+            //console.log(data);
+
+            if (data.indexOf('started') != -1) {
+                $.notify({ message: 'Inverter started' }, { type: 'success' });
+                /*
+                if (mode === 2 || mode === 5) {
+                    $('#potentiometer').removeClass('d-none'); //.show();
+                    $('.collapse').collapse('show');
+                }
+                */
+            } else {
+                $.notify({ icon: 'icons icon-warning', title: 'Error', message: data }, { type: 'danger' });
+            }
+
             /*
             if(closeEvent.index === 3 || closeEvent.index === 4) {
                 if(getJSONFloatValue('chargecur') === 0) {
@@ -360,24 +369,21 @@ function saveParameter(notify) {
     }
 };
 
-function setParameter(cmd, value, save, notify) {
-
-    var e = '';
+function setParameter(cmd, value, save, notify, callback) {
 
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {
         if (xhr.status == 200) {
-            e = xhr.responseText;
             if(save) {
                 saveParameter(notify);
             }
         }
+        callback(xhr.responseText);
     };
     xhr.open('GET', 'serial.php?pk=1&name=' + cmd + '&value=' + value, true);
     xhr.send();
 
     //console.log(e);
-    return e;
 };
 
 function sendCommand(cmd, loop, callback) {
@@ -500,24 +506,6 @@ function getJSONAverageFloatValue(value, c) {
 
     //console.log(f);
     return f;
-};
-
-function startInverter(mode) {
-
-    var data = sendCommand('start ' + mode, 0);
-    //console.log(data);
-
-    if (data.indexOf('started') != -1) {
-        $.notify({ message: 'Inverter started' }, { type: 'success' });
-        /*
-        if (mode === 2 || mode === 5) {
-            $('#potentiometer').removeClass('d-none'); //.show();
-            $('.collapse').collapse('show');
-        }
-        */
-    } else {
-        $.notify({ icon: 'icons icon-warning', title: 'Error', message: data }, { type: 'danger' });
-    }
 };
 
 function stopInverter() {

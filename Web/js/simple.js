@@ -1,4 +1,9 @@
 var saveTimer;
+var knobValue_syncofs = 0;
+var knobValue_manualid = 0;
+var ctxFont = 14;
+var ctxFontColor = '#808080';
+var ctxDashColor = 'black';
 
 $(document).ready(function () {
 
@@ -36,16 +41,25 @@ function simpleRow(id, txt) {
 
 function buildSimpleParameters() {
 
-    $('#loader-parameters').removeClass('d-none'); //.show();
+    document.getElementById('loader-parameters').classList.remove('d-none');
 
     sendCommand('json', 0, function(json) {
         if(Object.keys(json).length > 0)
         {
             var motor = $('#parameters_Motor').empty();
             var battery = $('#parameters_Battery').empty();
+            var tuneButtons = document.getElementsByClassName('btn');
             
             motor.append(simpleRow('polepairs', 'Poles'));
-            if(json.version.unit.indexOf('foc') == -1) {
+            if(json.version.unit.indexOf('foc') != -1) {
+                tuneButtons[1].classList.remove('d-none');
+
+            }else{
+                tuneButtons[0].classList.remove('d-none');
+                tuneButtons[2].classList.remove('d-none');
+                tuneButtons[3].classList.remove('d-none');
+                tuneButtons[4].classList.remove('d-none');
+
                 motor.append(simpleRow('udcnom', 'Motor Rating'));
                 $('#udcnom').ionRangeSlider({
                     skin: 'big',
@@ -343,35 +357,284 @@ function sanityCheck() {
     return false;
 };
 
-function modeCheck(i,fn) {
+function modeCheck(mode, callback) {
 
-    //console.log(fn);
+    var i = 0;
 
-    setTimeout(function() {
-
-        var opmode = getJSONFloatValue('opmode');
-        if (opmode === 1 || opmode === 5)
-            i = 30;
-
-        if(i === 0)
-            $.notify({ message: 'Now start the inverter with the start signal Pin 7' }, { type: 'warning' });
-
-        if (opmode === 1 || opmode === 4)
-            i = 30;
-
-        i++;
-
-        if (i < 30){
-          modeCheck(i,fn);
-        }else{
-            //Putting inverter into raw sine mode
-            startInverter(5);
-
-            fn = (typeof fn == 'function') ? fn : window[fn];
-            fn.apply(this, [0]);
+    var wait = setInterval(function() {
+        if(i === 0) {
+            $.notify({ message: 'Now Start the Inverter with a Start Signal' }, { type: 'warning' }); //Pin 7 (Rev1/2)
+        }else if(i > 30) {
+            clearInterval(wait);
+            callback();
         }
-        
+        getJSONFloatValue('opmode', function (opmode) {
+            if (opmode === mode) {
+                clearInterval(wait);
+                $.notify({ message: 'Putting inverter into raw Sine Mode' }, { type: 'warning' });
+                startInverterMode(5);
+                callback();
+            }
+        });
+        i++;
     }, 1000);
+};
+
+function syncofsTuning()
+{
+    if(sanityCheck() === true)
+    {
+        getJSONFloatValue('opmode', function (opmode) {
+            
+            if (opmode == 2)
+            {
+                var syncofsTuningModal = document.getElementById('syncofsTuning');
+                new bootstrap.Modal(syncofsTuningModal, {}).show();
+
+
+                $('#syncofs').val(0).trigger('change');
+                $('#manualid').val(0).trigger('change');
+
+                var loader = $('<div>',{ class:'spinner-border text-dark'});
+                var canvas = $('<canvas>');
+
+                $('#syncofsTuningGraph').append(loader);
+                $('#syncofsTuningGraph').append(canvas);
+
+                getScript('js/chart.js', function () {
+                    getScript('js/chartjs-plugin-annotation.js', function () {
+                        var chart_speed_datasets = {
+                            type: 'line',
+                            label: 'speed',
+                            backgroundColor: 'rgba(255,99,132, 0.5)',
+                            borderColor: 'rgba(255,99,132)',
+                            borderWidth: 2,
+                            data: [],
+                            yAxisID: 'y-axis-0',
+                        };
+
+                        var syncofs_variable = [];
+
+                        for (var i = 0; i <= 65530 ; i+=10) {
+                            syncofs_variable.push(i);
+                            chart_speed_datasets.data.push(100);
+                        }
+
+                        data = {
+                            labels: syncofs_variable,
+                            datasets: [chart_speed_datasets]
+                        };
+
+                        options = {
+                            responsive: true,
+                            //maintainAspectRatio: true,
+                            elements: {
+                                point:{
+                                    radius: 0
+                                }
+                            },
+                            tooltips: {
+                                enabled: false,
+                            },
+                            scales: {
+                                xAxes: [{
+                                    id: 'x-axis-0',
+                                    position: 'bottom',
+                                    scaleLabel: {
+                                        display: true,
+                                        fontColor: ctxFontColor,
+                                        fontSize: ctxFont,
+                                        labelString: 'syncofs'
+                                    },
+                                    ticks: {
+                                        fontColor: ctxFontColor,
+                                        fontSize: ctxFont
+                                    },
+                                    gridLines: {
+                                        color: ctxFontColor
+                                    }
+                                }],
+                                yAxes: [{
+                                    id: 'y-axis-0',
+                                    position: 'right',
+                                    ticks: {
+                                        display: false,
+                                        suggestedMin: 0,
+                                        suggestedMax: 100
+                                    },
+                                    gridLines: {
+                                        drawOnChartArea: false,
+                                    }
+                                },{
+                                    id: 'y-axis-1',
+                                    position: 'left',
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'manualid (Amps)',
+                                        fontColor: ctxFontColor,
+                                        fontSize: ctxFont
+                                    },
+                                    ticks: {
+                                        reverse: true,
+                                        display: true,
+                                        fontColor: ctxFontColor,
+                                        fontSize: ctxFont,
+                                        suggestedMin: 0,
+                                        suggestedMax: 100
+                                    },
+                                    gridLines: {
+                                        drawOnChartArea: false,
+                                        color: ctxFontColor
+                                    }
+                                }]
+                            },
+                            annotation: {
+                                annotations: [{
+                                    type: 'line',
+                                    id: 'a-line-0',
+                                    mode: 'vertical',
+                                    scaleID: 'x-axis-0',
+                                    value: knobValue_syncofs,
+                                    borderColor: 'rgb(0, 0, 0)',
+                                    borderWidth: 2,
+                                    label: {
+                                      content: "syncofs=" + knobValue_syncofs,
+                                      enabled: true,
+                                      position: 'left'
+                                    }
+                                }]
+                            }
+                        };
+
+                        loader.hide();
+                        
+                        var chart = new Chart(canvas, {
+                            type: 'line',
+                            data: data,
+                            options: options
+                        });
+
+                        $('#syncofs').knob({
+                            min: 0,
+                            max: 65535,
+                            step: 10,
+                            stopper: true,
+                            value: 0,
+                            release: function(value) {
+                               if (value <= knobValue_syncofs + 10000) { //Avoid hard jumps
+                                    //console.log(value);
+                                    knobValue_syncofs = value;
+
+                                    setParameter('syncofs', value, false, false, function () {
+                                        chart.annotation.elements['a-line-0'].options.value = knobValue_syncofs;
+                                        chart.annotation.elements['a-line-0'].options.label.content = 'syncofs=' + knobValue_syncofs;
+                                        chart.update();
+                                    });
+                                } else {
+                                    //console.log('!' + value + '>' + knobValue_syncofs);
+                                    syncofsTuning_slow();
+                                    setTimeout(function () {
+                                        $('#syncofs').val(knobValue_syncofs).trigger('change');
+                                    }, 100);
+                                }
+                            }
+                        });
+                        $('#manualid').knob({
+                            min: 0,
+                            max: 100,
+                            stopper: true,
+                            value: 0,
+                            release: function(value) {
+                                if (value <= knobValue_manualid + 10) { //Avoid hard jumps
+                                    //console.log(value);
+                                    knobValue_manualid = value;
+
+                                    if(value != 0) {
+                                        setParameter('syncofs', value, false, false, function () {
+                                            getJSONFloatValue('speed', function (v) {
+                                                var t = knobValue_syncofs/10;
+                                                if(v < 100) {
+                                                    for (var i = t; i <= (t+100); i++) {
+                                                        chart.data.datasets[0].data[i] = v;
+                                                    }
+                                                    chart.update();
+                                                }
+                                            });
+                                        });
+                                    }
+                                } else {
+                                    //console.log('!' + value + '>' + knobValue_manualid);
+                                    syncofsTuning_slow();
+                                    setTimeout(function () {
+                                        $('#manualid').val(0).trigger('change'); //Zero immediately!
+                                    }, 100);
+                                }
+                            }
+                        });
+                    });
+                });
+            }else{
+                alertifyModal([], ['text_opmode','Start Inverter in Manual Mode?',''], function() {
+                    document.getElementById('alertify_ok').onclick = function() {
+                        setParameter('opmode', '2', false, false, function() {
+                            syncofsTuning();
+                        });
+                    }
+                });
+            }
+        });
+    }
+};
+
+function alertifyModal(header, body, callback) {
+
+    if(header.length > 0) {
+        var h = document.createElement('span');
+        h.id = header[0];
+        h.textContent = header[1];
+        document.getElementById('alertify_header').textContent = '';
+        document.getElementById('alertify_header').appendChild(h);
+    }
+    if(body.length > 0) {
+        var b = document.createElement('span');
+        b.id = body[0];
+        b.textContent = body[1];
+        document.getElementById('alertify_body').textContent = '';
+        document.getElementById('alertify_body').appendChild(b);
+    }
+    var cancel = document.createElement('span');
+    cancel.id='text_cancel';
+    cancel.textContent = 'Cancel';
+    document.getElementById('alertify_cancel').textContent = '';
+    document.getElementById('alertify_cancel').appendChild(cancel);
+
+    var ok = document.createElement('span');
+    ok.id='text_start';
+    ok.textContent = 'Start';
+    document.getElementById('alertify_ok').textContent = '';
+    document.getElementById('alertify_ok').appendChild(ok);
+
+    setLanguage('simple.php');
+
+    var alertifyModal = document.getElementById('alertify');
+    new bootstrap.Modal(alertifyModal, {}).show();
+};
+
+function syncofsTuning_slow() {
+
+    var i = 10;
+
+    var blink = setInterval(function() {
+        i--;
+        if(i < 1) {
+            clearInterval(blink);
+        }
+        if (i%2 == 0){
+            document.getElementById('text_slowdown').classList.add('d-none');
+        }else{
+            document.getElementById('text_slowdown').classList.remove('d-none');
+        }
+    }, 200);
 };
 
 function boostTuning_start() {
@@ -408,13 +671,11 @@ function boostTuning_start() {
     }, function () {});
 };
 
-function boostTuning(wait) {
+function boostTuning() {
 
     if(sanityCheck() === true)
     {
-        if(wait === undefined){
-            modeCheck(0,'boostTuning');
-        }else{
+        modeCheck(1, function() {
             var ampMax = 0
             var ocurlim = getJSONFloatValue('ocurlim');
 
@@ -432,17 +693,15 @@ function boostTuning(wait) {
             }else{
                 boostTuning_start();
             }
-        }
+        });
     }
 };
 
-function fweakTuning(wait) {
+function fweakTuning() {
 
     if(sanityCheck() === true)
     {
-        if(wait === undefined){
-            modeCheck(0,'fweakTuning');
-        }else{
+        modeCheck(1, function() {
             $.notify({ message: 'Very little torque is now put on the motor. The shaft should not spin. If it does, lock it' }, { type: 'success' });
 
             var fmax = getJSONFloatValue('fmax');
@@ -491,17 +750,15 @@ function fweakTuning(wait) {
             //set values to original
             setParameter('fmax',fmax);
             setParameter('ampnom',ampnom);
-        }
+        });
     }
 };
 
-function polePairTest(wait) {
+function polePairTest() {
 
     if(sanityCheck() === true)
     {
-        if(wait === undefined){
-            modeCheck(0,'polePairTest');
-        }else{
+        modeCheck(1, function() {
             alertify.confirm('Safety Check', 'Mark your motor shaft with something to observe when it finishes a rotation\nWill now slowly spin the shaft', function () {
 
                 setParameter('ampnom',50);
@@ -519,17 +776,15 @@ function polePairTest(wait) {
                 }, 10000);
 
             }, function () {});
-        }
+        });
     }
 };
 
-function numimpTest(wait) {
+function numimpTest() {
 
     if(sanityCheck() === true)
     {
-        if (wait === undefined){
-            modeCheck(0,'numimpTest');
-        }else{
+        modeCheck(1, function() {
             alertify.confirm('Safety Check', 'We will now spin the motor shaft @60Hz and try to determine how many pulses per rotation we get\n', function () {
  
                 setParameter('numimp',8);
@@ -547,7 +802,7 @@ function numimpTest(wait) {
                     setParameter('numimp',numimp);
                 }, 2000);
             }, function () {});
-        }
+        });
     }
 };
 

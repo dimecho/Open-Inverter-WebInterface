@@ -168,12 +168,13 @@
                             <div class="input-group w-100">
                                 <div class="input-group-addon d-none w-75">
 									<form enctype="multipart/form-data" action="firmware.php" method="POST" id="firmwareForm">
-										<input name="firmware" type="file" class="file" hidden accept=".bin,.hex" onchange="firmwareUpload()">
-										<select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage()" id="firmware-interface"></select>
+										<input name="firmware" type="file" class="file" accept=".bin,.hex" onchange="firmwareUpload()" hidden>
+										<select name="interface" class="form-control" onchange="setInterfaceImage(this.selectedIndex)" id="firmware-interface"></select>
+										<input type="submit" hidden />
 									</form>
 								</div>
                                 <div class="input-group-addon d-none w-25 text-center">
-									<button class="browse btn btn-primary" type="button"><i class="icons icon-select"></i> Select stm32_sine.bin</button>
+									<button class="browse btn btn-primary" type="button" id="browseFile"><i class="icons icon-select"></i> Select stm32_sine.bin</button>
 								</div>
                             </div>
                             <br><br><h2 id="jtag-name"></h2>

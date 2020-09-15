@@ -27,7 +27,7 @@
         <div class="container bg-light">
             <div class="row">
                 <div class="col" id="buildGraphMenu">
-                    <div id="potentiometer" style="display:none">
+                    <div class="d-none" id="potentiometer">
                         <input class="knob" data-displayinput="true" data-min="0" data-max="100" data-fgcolor="#222222" data-bgcolor="#FFFFFF" value="0">
                     </div>
                 </div>
