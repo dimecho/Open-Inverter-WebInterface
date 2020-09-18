@@ -171,9 +171,10 @@
 <html>
     <head>
         <?php include "header.php"; ?>
+        <script src="js/download.js"></script>
         <script>
             $(document).ready(function() {
-                $.getScript("js/download.js").done(function(script, textStatus) {
+                buildMenu(function() {
                     download(<?php echo "\"" .$_GET['start']. "\",\"" .$_GET['crc']. "\""; ?>);
                 });
             });

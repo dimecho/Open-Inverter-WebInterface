@@ -1,33 +1,35 @@
 #!/bin/sh
+
 if [ "$1" = "uninstall" ]; then
     rm -rf "/usr/local/share/stlink"
 else
-    if [ ! -f "/usr/local/share/stlink/1.6.1/bin/st-flash" ]; then
+    if [ ! -f "/usr/local/share/stlink/$1/bin/st-flash" && -z "$2" ]; then
       #MacOS 10.15
       if [ ! -d "/usr/local/share" ]; then
         osascript -e "do shell script \"mkdir /usr/local/share; chown -R $(whoami) /usr/local/share\" with administrator privileges"
       fi
-      tar xfv ~/Downloads/stlink-1.6.1.catalina.bottle.tar.gz -C /usr/local/share
+      tar xfv ~/Downloads/stlink-$1.catalina.bottle.tar.gz -C /usr/local/share
     else
-      export PATH="$PATH:/usr/local/share/stlink/1.6.1/bin"
-      cd /usr/local/share/stlink/1.6.1/bin/
-	
+      	export PATH="$PATH:/usr/local/share/stlink/$3/bin"
+      	cd /usr/local/share/stlink/$3/bin/
+		
 		if [ "$2" = "ram" ]; then
-        ADDRESS=" 0x08001000"
-      fi
-	
-      case "$1" in
-        *".hex"*) ADDRESS="" ;;
-        *".HEX"*) ADDRESS="" ;;
-        *)        ADDRESS=" 0x08000000" ;;
-      esac
+			ADDRESS=" 0x08001000"
+		else
+			ADDRESS=" 0x08000000"
+		fi
 
-      case "$1" in
-        *".hex"*) FORMAT=" --format ihex" ;;
-        *".HEX"*) FORMAT=" --format ihex" ;;
-        *)        FORMAT="" ;;
-      esac
-	
-      st-flash --reset$FORMAT write "$1"$ADDRESS
+		case "$1" in
+		*".hex"*) ADDRESS="" ;;
+		*".HEX"*) ADDRESS="" ;;
+		esac
+
+		case "$1" in
+		*".hex"*) FORMAT=" --format ihex" ;;
+		*".HEX"*) FORMAT=" --format ihex" ;;
+		*)        FORMAT="" ;;
+		esac
+
+		st-flash --reset$FORMAT write "$1"$ADDRESS
     fi
 fi

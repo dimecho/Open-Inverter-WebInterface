@@ -63,7 +63,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body"></div>
+                    <div class="modal-body" id="calculator-content"></div>
                     <div class="modal-footer"></div>
                 </div>
             </div>

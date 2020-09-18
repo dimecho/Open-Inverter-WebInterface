@@ -6,12 +6,13 @@
     {
 		$file = urldecode($_GET["file"]);
 		$interface = urldecode($_GET["interface"]);
-		
+		$software = getSoftware();
+
 		if (strpos($interface, "interface") !== false) {
             if (strpos($interface, "stlink-v2") !== false) {
-                $command = runCommand("stlink", $file. " ram", $os, 0);
+                $command = runCommand("stlink", $file. " ram " .$software["stlink"]["download"]["version"], $os, 0);
             }else{
-                $command = runCommand("openocd", $file. " " .$interface. " ram", $os, 0);
+                $command = runCommand("openocd", $file. " " .$interface. " ram " .$software["openocd"]["download"]["version"], $os, 0);
             }
 			exec($command, $output, $return);
 			echo sys_get_temp_dir();
@@ -122,7 +123,7 @@
 				
 				if ('D' == $c) {
 					print "CRC correct!\n";
-					print "Update done!\n";
+					print "Update Done!\n";
 					$done = true;
 				}else if ('E' == $c) {
 					print "CRC error!\n";
@@ -168,8 +169,8 @@
                             <div class="input-group w-100">
                                 <div class="input-group-addon d-none w-75">
 									<form enctype="multipart/form-data" action="firmware.php" method="POST" id="firmwareForm">
-										<input name="firmware" type="file" class="file" accept=".bin,.hex" onchange="firmwareUpload()" hidden>
-										<select name="interface" class="form-control" onchange="setInterfaceImage(this.selectedIndex)" id="firmware-interface"></select>
+										<input name="firmware" type="file" class="file" accept=".bin,.hex" onchange="firmwareUpload(this.files[0].name)" hidden>
+										<select name="interface" class="form-control" onchange="setInterfaceImage(hardware,this.selectedIndex)" id="firmware-interface"></select>
 										<input type="submit" hidden />
 									</form>
 								</div>
@@ -177,7 +178,17 @@
 									<button class="browse btn btn-primary" type="button" id="browseFile"><i class="icons icon-select"></i> Select stm32_sine.bin</button>
 								</div>
                             </div>
-                            <br><br><h2 id="jtag-name"></h2>
+                            <br><br>
+                            <div class="progress progress-striped active">
+								<div class="progress-bar" style="width:0%"></div>
+							</div>
+                            <br><br>
+                            <pre id="firmware-result" style="text-align:left"></pre>
+                            <h2 id="jtag-name"></h2>
+                            <nav>
+                            	<div class="nav nav-tabs" role="tablist" id="hardwareTabs"></div>
+                        	</nav>
+                            <div class="tab-content" id="hardwareTabContent"></div>
                             <span class="badge badge-lg bg-warning" id="jtag-txt"></span><br><br>
                             <img src="" id="jtag-image" class="img-thumbnail rounded" />
 							</center>

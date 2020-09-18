@@ -5,6 +5,12 @@ var ctxFont = 14;
 var ctxFontColor = '#808080';
 var ctxDashColor = 'black';
 
+var _snshs = [0, 1, 2];
+var snshs = ['JCurve', 'Semikron (Skiip82)', 'MBB600'];
+
+var _snsm = [12, 13, 14];
+var snsm = ['KTY83-110', 'KTY84-130', 'Leaf'];
+
 $(document).ready(function () {
 
     $.notify({ message: 'Experimental Area' }, { type: 'danger' });
@@ -41,6 +47,8 @@ function simpleRow(id, txt) {
 
 function buildSimpleParameters() {
 
+  var tuneButtons = document.getElementsByClassName('btn');
+  tuneButtons[1].classList.remove('d-none');
     document.getElementById('loader-parameters').classList.remove('d-none');
 
     sendCommand('json', 0, function(json) {
@@ -329,18 +337,20 @@ function slider_adjustment(id,array) {
 
 function sanityCheck() {
 
-    var version = getJSONFloatValue('version');
+    $.notify({ message: 'Checking Safety ...' }, { type: 'success' });
+
+    //var version = getJSONFloatValue('version');
     var mprot = getJSONFloatValue('din_mprot');
     var emcystop = getJSONFloatValue('din_emcystop');
     var forward = getJSONFloatValue('din_forward');
     var reverse = getJSONFloatValue('din_reverse');
     var ocur = getJSONFloatValue('din_ocur');
-
+    /*
     if (version < 3.18){
         $.notify({ message: 'You need at least firmware version 3.18 to run this program' }, { type: 'danger' });
         return false;
     }
-
+    */
     if (mprot === 0){
         $.notify({ message: 'Motor Protection Input (Pin 11) needs to be connected to 12V to continue' }, { type: 'warning' });
     }else if (emcystop === 0) {
@@ -382,200 +392,407 @@ function modeCheck(mode, callback) {
 
 function syncofsTuning()
 {
-    if(sanityCheck() === true)
-    {
+    //if(sanityCheck() === true) {
         getJSONFloatValue('opmode', function (opmode) {
-            
+            opmode = 2; //DEBUG
+
             if (opmode == 2)
             {
                 var syncofsTuningModal = document.getElementById('syncofsTuning');
                 new bootstrap.Modal(syncofsTuningModal, {}).show();
 
+                var loader = $('<div>',{ class:'spinner-border text-dark'});
+                var canvasGraph = $('<canvas>');
+                var canvasMotor = $('<canvas>');
 
                 $('#syncofs').val(0).trigger('change');
                 $('#manualid').val(0).trigger('change');
 
-                var loader = $('<div>',{ class:'spinner-border text-dark'});
-                var canvas = $('<canvas>');
+                $('#syncofsTuningMotor').empty();
+                $('#syncofsTuningMotor').append(loader);
+                $('#syncofsTuningMotor').append(canvasMotor);
 
+                $('#syncofsTuningGraph').empty();
                 $('#syncofsTuningGraph').append(loader);
-                $('#syncofsTuningGraph').append(canvas);
+                $('#syncofsTuningGraph').append(canvasGraph);
+
+                var red = 'rgb(255, 99, 132)';
+                var blue = 'rgb(54, 162, 235)';
+                var yellow = 'rgb(255, 205, 86)';
 
                 getScript('js/chart.js', function () {
                     getScript('js/chartjs-plugin-annotation.js', function () {
-                        var chart_speed_datasets = {
-                            type: 'line',
-                            label: 'speed',
-                            backgroundColor: 'rgba(255,99,132, 0.5)',
-                            borderColor: 'rgba(255,99,132)',
-                            borderWidth: 2,
-                            data: [],
-                            yAxisID: 'y-axis-0',
-                        };
-
-                        var syncofs_variable = [];
-
-                        for (var i = 0; i <= 65530 ; i+=10) {
-                            syncofs_variable.push(i);
-                            chart_speed_datasets.data.push(100);
-                        }
-
-                        data = {
-                            labels: syncofs_variable,
-                            datasets: [chart_speed_datasets]
-                        };
-
-                        options = {
-                            responsive: true,
-                            //maintainAspectRatio: true,
-                            elements: {
-                                point:{
-                                    radius: 0
-                                }
-                            },
-                            tooltips: {
-                                enabled: false,
-                            },
-                            scales: {
-                                xAxes: [{
-                                    id: 'x-axis-0',
-                                    position: 'bottom',
-                                    scaleLabel: {
-                                        display: true,
-                                        fontColor: ctxFontColor,
-                                        fontSize: ctxFont,
-                                        labelString: 'syncofs'
-                                    },
-                                    ticks: {
-                                        fontColor: ctxFontColor,
-                                        fontSize: ctxFont
-                                    },
-                                    gridLines: {
-                                        color: ctxFontColor
-                                    }
-                                }],
-                                yAxes: [{
-                                    id: 'y-axis-0',
-                                    position: 'right',
-                                    ticks: {
-                                        display: false,
-                                        suggestedMin: 0,
-                                        suggestedMax: 100
-                                    },
-                                    gridLines: {
-                                        drawOnChartArea: false,
-                                    }
-                                },{
-                                    id: 'y-axis-1',
-                                    position: 'left',
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: 'manualid (Amps)',
-                                        fontColor: ctxFontColor,
-                                        fontSize: ctxFont
-                                    },
-                                    ticks: {
-                                        reverse: true,
-                                        display: true,
-                                        fontColor: ctxFontColor,
-                                        fontSize: ctxFont,
-                                        suggestedMin: 0,
-                                        suggestedMax: 100
-                                    },
-                                    gridLines: {
-                                        drawOnChartArea: false,
-                                        color: ctxFontColor
-                                    }
-                                }]
-                            },
-                            annotation: {
-                                annotations: [{
-                                    type: 'line',
-                                    id: 'a-line-0',
-                                    mode: 'vertical',
-                                    scaleID: 'x-axis-0',
-                                    value: knobValue_syncofs,
-                                    borderColor: 'rgb(0, 0, 0)',
-                                    borderWidth: 2,
-                                    label: {
-                                      content: "syncofs=" + knobValue_syncofs,
-                                      enabled: true,
-                                      position: 'left'
-                                    }
-                                }]
+                        getJSONFloatValue('polepairs', function ( polepairs) {
+                            polepairs = 4; //DEBUG
+                            //========================
+                            var shift_oneeighty = 0.5;
+                            var syncofs = knobValue_syncofs;
+                            if(syncofs > 512) { //TODO: check for correctness
+                                shift_oneeighty = 2;
                             }
-                        };
+                            var syncofs_angle = gen_syncofs_angle(syncofs);
+                            var visual_angle = syncofs_angle;
+                            //========================
 
-                        loader.hide();
-                        
-                        var chart = new Chart(canvas, {
-                            type: 'line',
-                            data: data,
-                            options: options
-                        });
+                            var chart_stator_datasets = {
+                                data: gen_stator_data(polepairs*2),
+                                backgroundColor: gen_stator_data_color(polepairs*2),
+                                //data: gen_stator_data(8),
+                                //backgroundColor: gen_stator_data_color(8),
+                                //borderWidth:0
+                            };
+                            var chart_syncofs_datasets = {
+                                data: gen_syncofs_data(polepairs*2,visual_angle),
+                                backgroundColor: gen_stator_syncofs_color(polepairs*2),
+                                //data: gen_syncofs_data(8,visual_angle),
+                                //backgroundColor: gen_stator_syncofs_color(8),
+                                borderWidth:0
+                            };
+                            var chart_rotor_datasets = {
+                                data: [360],
+                                backgroundColor: [],
+                                borderWidth:0
+                            };
 
-                        $('#syncofs').knob({
-                            min: 0,
-                            max: 65535,
-                            step: 10,
-                            stopper: true,
-                            value: 0,
-                            release: function(value) {
-                               if (value <= knobValue_syncofs + 10000) { //Avoid hard jumps
-                                    //console.log(value);
-                                    knobValue_syncofs = value;
+                            dataMotor = {
+                                labels: [],
+                                datasets: [chart_stator_datasets, chart_syncofs_datasets, chart_rotor_datasets]
+                            };
 
-                                    setParameter('syncofs', value, false, false, function () {
-                                        chart.annotation.elements['a-line-0'].options.value = knobValue_syncofs;
-                                        chart.annotation.elements['a-line-0'].options.label.content = 'syncofs=' + knobValue_syncofs;
-                                        chart.update();
-                                    });
-                                } else {
-                                    //console.log('!' + value + '>' + knobValue_syncofs);
-                                    syncofsTuning_slow();
-                                    setTimeout(function () {
-                                        $('#syncofs').val(knobValue_syncofs).trigger('change');
-                                    }, 100);
-                                }
+                            for (var i = 90; i > 0; i--) {
+                                dataMotor.labels.push(0-i);
                             }
-                        });
-                        $('#manualid').knob({
-                            min: 0,
-                            max: 100,
-                            stopper: true,
-                            value: 0,
-                            release: function(value) {
-                                if (value <= knobValue_manualid + 10) { //Avoid hard jumps
-                                    //console.log(value);
-                                    knobValue_manualid = value;
+                            for (var i = 0; i < 90; i++) {
+                                dataMotor.labels.push(i);
+                            }
 
-                                    if(value != 0) {
+                            optionsMotor = {
+                                //responsive: true,
+                                //maintainAspectRatio: true,
+                                rotation: Math.PI,
+                                //cutoutPercentage: 20,
+                                legend: {
+                                    display: false
+                                },
+                                /*elements: {
+                                    arc: {
+                                        borderWidth: 2
+                                    }
+                                },*/
+                                tooltips: {
+                                    enabled: false      
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        gridLines: {
+                                            display:false
+                                        },
+                                        ticks: {
+                                            display: false
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        /*gridLines: {
+                                            display:false
+                                        },*/
+                                        ticks: {
+                                            display: false
+                                        }
+                                    }]
+                                },
+                                annotation: {
+                                    //drawTime: 'afterDatasetsDraw',
+                                    annotations: [{
+                                        type: 'line',
+                                        id: 'm-line-0',
+                                        mode: 'vertical',
+                                        scaleID: 'x-axis-0',
+                                        value: visual_angle,
+                                        endValue: 0-visual_angle,
+                                        //borderColor: 'rgb(255, 0, 0)',
+                                        //borderWidth: 1,
+                                        label: {
+                                            enabled: true,
+                                            xAdjust: -50,
+                                            yAdjust: 0,
+                                            content: 'Offset ' + syncofs_angle.toFixed(1) + '°',
+                                            position: 'top'
+                                        }
+                                    },{
+                                        type: 'line',
+                                        id: 'm-line-2',
+                                        mode: 'horizontal',
+                                        scaleID: 'y-axis-0',
+                                        value: 0.5,
+                                        borderWidth: 0,
+                                        label: {
+                                            enabled: true,
+                                            yAdjust: -12,
+                                            content: '49152 (270°)',
+                                            position: 'left'
+                                        }
+                                    },{
+                                        type: 'line',
+                                        id: 'm-line-3',
+                                        mode: 'horizontal',
+                                        scaleID: 'y-axis-0',
+                                        value: 0.5,
+                                        borderWidth: 0,
+                                        label: {
+                                            enabled: true,
+                                            yAdjust: -12,
+                                            content: '16384 (90°)',
+                                            position: 'right'
+                                        }
+                                    }]
+                                }
+                            };
+
+                            loader.hide();
+
+                            var chartMotor = new Chart(canvasMotor, {
+                                type: 'pie', //'doughnut'
+                                data: dataMotor,
+                                options: optionsMotor
+                            });
+
+                            var img = new Image();
+                            img.src = 'img/rotate.png';
+                            img.onload = function() {
+
+                                //console.log(chart.canvas);
+                                var canvasPattern = document.createElement('canvas');
+                                var ctxPattern = canvasPattern.getContext('2d');
+                                canvasPattern.width  = chartMotor.canvas.parentNode.clientWidth - img.width/2;
+                                canvasPattern.height = chartMotor.canvas.parentNode.clientHeight - img.height - 10;
+
+                                //Flip Horizontally
+                                //-----------------
+                                ctxPattern.translate(canvasPattern.width, 0);
+                                ctxPattern.scale(-1, 1);
+                                //-----------------
+                                
+                                ctxPattern.drawImage(img,
+                                    canvasPattern.width / 2 - img.width / 2,
+                                    canvasPattern.height / 2 - img.height / 2
+                                );
+                                
+                                ctxPattern.fillStyle = ctxPattern.createPattern(canvasPattern, 'no-repeat');
+
+                                //DEBUG
+                                /*
+                                var link = document.createElement('a');
+                                link.download = 'canvas.png';
+                                link.href = canvasPattern.toDataURL('image/png');
+                                link.click();
+                                */
+                                
+                                chartMotor.data.datasets[2].backgroundColor = [ctxPattern.fillStyle];
+                            }
+
+                            //==========================
+                            var chart_speed_datasets = {
+                                type: 'line',
+                                label: 'speed',
+                                backgroundColor: 'rgba(255,99,132, 0.5)',
+                                borderColor: 'rgba(255,99,132)',
+                                borderWidth: 2,
+                                data: [],
+                                yAxisID: 'y-axis-0',
+                            };
+
+                            var syncofs_variable = [];
+
+                            for (var i = 0; i <= 65530 ; i+=10) {
+                                syncofs_variable.push(i);
+                                chart_speed_datasets.data.push(100);
+                            }
+
+                            data = {
+                                labels: syncofs_variable,
+                                datasets: [chart_speed_datasets]
+                            };
+
+                            options = {
+                                responsive: true,
+                                //maintainAspectRatio: true,
+                                elements: {
+                                    point:{
+                                        radius: 0
+                                    }
+                                },
+                                tooltips: {
+                                    enabled: false,
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        id: 'x-axis-0',
+                                        position: 'bottom',
+                                        scaleLabel: {
+                                            display: true,
+                                            fontColor: ctxFontColor,
+                                            fontSize: ctxFont,
+                                            labelString: 'syncofs'
+                                        },
+                                        ticks: {
+                                            fontColor: ctxFontColor,
+                                            fontSize: ctxFont
+                                        },
+                                        gridLines: {
+                                            color: ctxFontColor
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        id: 'y-axis-0',
+                                        position: 'right',
+                                        ticks: {
+                                            display: false,
+                                            suggestedMin: 0,
+                                            suggestedMax: 100
+                                        },
+                                        gridLines: {
+                                            drawOnChartArea: false
+                                        }
+                                    },{
+                                        id: 'y-axis-1',
+                                        position: 'left',
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'manualid (Amps)',
+                                            fontColor: ctxFontColor,
+                                            fontSize: ctxFont
+                                        },
+                                        ticks: {
+                                            reverse: true,
+                                            display: true,
+                                            fontColor: ctxFontColor,
+                                            fontSize: ctxFont,
+                                            suggestedMin: 0,
+                                            suggestedMax: 100
+                                        },
+                                        gridLines: {
+                                            drawOnChartArea: false
+                                        }
+                                    }]
+                                },
+                                annotation: {
+                                    annotations: [{
+                                        type: 'line',
+                                        id: 'a-line-0',
+                                        mode: 'vertical',
+                                        scaleID: 'x-axis-0',
+                                        value: knobValue_syncofs,
+                                        borderColor: 'rgb(0, 0, 0)',
+                                        borderWidth: 2,
+                                        label: {
+                                          content: "syncofs=" + knobValue_syncofs,
+                                          enabled: true,
+                                          position: 'left'
+                                        }
+                                    }]
+                                }
+                            };
+
+                            loader.hide();
+                            
+                            var chartGraph = new Chart(canvasGraph, {
+                                type: 'line',
+                                data: data,
+                                options: options
+                            });
+
+                            $('#syncofs').knob({
+                                min: 0,
+                                max: 65535,
+                                step: 10,
+                                stopper: true,
+                                value: 0,
+                                release: function(value) {
+                                     if (value <= knobValue_syncofs + 1000000) { //Avoid hard jumps
+                                   //if (value <= knobValue_syncofs + 10000) { //Avoid hard jumps
+                                        //console.log(value);
+                                        knobValue_syncofs = value;
+
+                                        polepairs = 4; //DEBUG
+                                        //========================
+                                        var shift_oneeighty = 0.5;
+                                        var syncofs = knobValue_syncofs;
+                                        if(syncofs > 512) { //TODO: check for correctness
+                                            shift_oneeighty = 2;
+                                        }
+                                        var syncofs_angle = gen_syncofs_angle(syncofs);
+                                        var visual_angle = syncofs_angle;
+
+                                        console.log(syncofs + ' @ ' + syncofs_angle.toFixed(0) + '°, Shift 180° = ' + (syncofs/shift_oneeighty) + ' @ ' + (syncofs_angle/shift_oneeighty).toFixed(1) + '°');
+                                        console.log('Visual Angle:' + visual_angle + '°');
+                                        
+                                        //========================
+                                        var chart_syncofs_datasets = {
+                                            data: gen_syncofs_data(polepairs*2,visual_angle),
+                                            backgroundColor: gen_stator_syncofs_color(polepairs*2),
+                                            //data: gen_syncofs_data(8,visual_angle),
+                                            //backgroundColor: gen_stator_syncofs_color(8),
+                                            borderWidth:0
+                                        };
+
+                                        //chartMotor.annotation.elements['m-line-0'].options.value = visual_angle;
+                                        //chartMotor.annotation.elements['m-line-0'].options.endValue = 0-visual_angle;
+                                        chartMotor.annotation.elements['m-line-0'].options.label.content = 'Offset ' + syncofs_angle.toFixed(0) + '°';
+                                        chartMotor.data.datasets[1] = chart_syncofs_datasets;
+                                        chartMotor.update();
+
                                         setParameter('syncofs', value, false, false, function () {
-                                            getJSONFloatValue('speed', function (v) {
-                                                var t = knobValue_syncofs/10;
-                                                if(v < 100) {
-                                                    for (var i = t; i <= (t+100); i++) {
-                                                        chart.data.datasets[0].data[i] = v;
-                                                    }
-                                                    chart.update();
-                                                }
-                                            });
+                                            chartGraph.annotation.elements['a-line-0'].options.value = knobValue_syncofs;
+                                            chartGraph.annotation.elements['a-line-0'].options.label.content = 'syncofs=' + knobValue_syncofs;
+                                            chartGraph.update();
                                         });
+                                    } else {
+                                        //console.log('!' + value + '>' + knobValue_syncofs);
+                                        syncofsTuning_slow();
+                                        setTimeout(function () {
+                                            $('#syncofs').val(knobValue_syncofs).trigger('change');
+                                        }, 100);
                                     }
-                                } else {
-                                    //console.log('!' + value + '>' + knobValue_manualid);
-                                    syncofsTuning_slow();
-                                    setTimeout(function () {
-                                        $('#manualid').val(0).trigger('change'); //Zero immediately!
-                                    }, 100);
                                 }
-                            }
+                            });
+                            $('#manualid').knob({
+                                min: 0,
+                                max: 100,
+                                stopper: true,
+                                value: 0,
+                                release: function(value) {
+                                    if (value <= knobValue_manualid + 10) { //Avoid hard jumps
+                                        //console.log(value);
+                                        knobValue_manualid = value;
+
+                                        if(value != 0) {
+                                            setParameter('syncofs', value, false, false, function () {
+                                                getJSONFloatValue('speed', function (v) {
+                                                    var t = knobValue_syncofs/10;
+                                                    if(v < 100) {
+                                                        for (var i = t; i <= (t+50); i++) {
+                                                            chartGraph.data.datasets[0].data[i] = v;
+                                                        }
+                                                        chartGraph.update();
+                                                    }
+                                                });
+                                            });
+                                        }
+                                    } else {
+                                        //console.log('!' + value + '>' + knobValue_manualid);
+                                        syncofsTuning_slow();
+                                        setTimeout(function () {
+                                            $('#manualid').val(0).trigger('change'); //Zero immediately!
+                                        }, 100);
+                                    }
+                                }
+                            });
                         });
                     });
                 });
             }else{
                 alertifyModal([], ['text_opmode','Start Inverter in Manual Mode?',''], function() {
-                    document.getElementById('alertify_ok').onclick = function() {
+                    document.getElementById('alertify-ok').onclick = function() {
                         setParameter('opmode', '2', false, false, function() {
                             syncofsTuning();
                         });
@@ -583,7 +800,108 @@ function syncofsTuning()
                 });
             }
         });
+    //}
+};
+
+function gen_syncofs_angle(syncofs) {
+
+    var angle = (syncofs * 360 / 65536);
+    //angle = (360/Math.floor(360 / angle)); //degree round
+    //angle = Math.round(angle * 10) / 10; //digit round
+    //angle = Math.ceil(angle * 20) / 20; //nearest 0.5
+
+    return angle;
+};
+
+function gen_stator_data(poles) {
+    var d = [];
+    for (var i = 0; i < poles; i++) {
+        d.push(360/poles);
     }
+    return d;
+};
+
+function gen_stator_data_color(poles) {
+    var red = 'rgb(255, 99, 132)';
+    var blue = 'rgb(54, 162, 235)';
+    var c = [blue];
+    for (var i = 1; i < poles; i++) {
+        if(c[i-1] == blue){
+            c.push(red);
+        }else{
+            c.push(blue);
+        }
+    }
+    return c;
+};
+
+function gen_syncofs_data(poles,angle) {
+    var divide = 1;
+    if(poles == 2) //2 poles need more segments to show angle
+        divide = 2;
+    var d = [];
+    for (var i = 0; i < poles*divide; i++) {
+        //console.log(angle + ' ' + 360/poles/divide);
+        d.push(angle);
+        d.push(360/poles/divide);
+    }
+    //console.log(d);
+    return d;
+};
+
+function gen_stator_syncofs_color(poles) {
+    var red = 'rgb(255, 99, 132)';
+    var blue = 'rgb(54, 162, 235)';
+    var yellow = 'rgb(255, 205, 86)';
+    var c = [red];
+    //for (var x = 0; x < poles/2; x++)
+    //  c.push(blue);
+    console.log('Poles:' + poles);
+
+    var marker = 0;
+    var divide = poles/2;
+    if(poles == 2) { //2 poles need more segments to show angle
+        poles = poles*2;
+       //divide = 2;
+    }
+    if(poles == 8)
+        marker = 1;
+
+    for (var i = 0; i < poles*divide; i++) {
+        //console.log(i + ' ' + c[c.length-1]);
+
+        if(i > poles*divide-2) { //end: 2 = (1 start and 1 marker)
+            for (var x = 0; x < poles/divide; x++)
+                c.push(red);
+        }else if(c[c.length-1] == blue){
+            for (var x = 0; x < poles/divide-1; x++)
+                c.push(red);
+            if(i == marker) {
+                c.push(yellow);
+                //c.push(red);
+            }else{
+                c.push(red);
+                //c.push(yellow);
+            }
+        }else if(c[c.length-1] == red){
+            for (var x = 0; x < poles/divide-1; x++)
+                c.push(blue);
+            if(i == marker) {
+                c.push(yellow);
+            }else{
+                c.push(blue);
+            }
+        }else{
+            var alt_color = red;
+            if(poles == 2 || poles == 8) {
+                alt_color = blue;
+            }
+            for (var x = 0; x < poles/divide; x++)
+                c.push(alt_color);
+        }
+    }
+    //console.log(c);
+    return c;
 };
 
 function alertifyModal(header, body, callback) {
@@ -592,29 +910,18 @@ function alertifyModal(header, body, callback) {
         var h = document.createElement('span');
         h.id = header[0];
         h.textContent = header[1];
-        document.getElementById('alertify_header').textContent = '';
-        document.getElementById('alertify_header').appendChild(h);
+        document.getElementById('alertify-header').textContent = '';
+        document.getElementById('alertify-header').appendChild(h);
     }
     if(body.length > 0) {
         var b = document.createElement('span');
         b.id = body[0];
         b.textContent = body[1];
-        document.getElementById('alertify_body').textContent = '';
-        document.getElementById('alertify_body').appendChild(b);
+        document.getElementById('alertify-body').textContent = '';
+        document.getElementById('alertify-body').appendChild(b);
     }
-    var cancel = document.createElement('span');
-    cancel.id='text_cancel';
-    cancel.textContent = 'Cancel';
-    document.getElementById('alertify_cancel').textContent = '';
-    document.getElementById('alertify_cancel').appendChild(cancel);
-
-    var ok = document.createElement('span');
-    ok.id='text_start';
-    ok.textContent = 'Start';
-    document.getElementById('alertify_ok').textContent = '';
-    document.getElementById('alertify_ok').appendChild(ok);
-
-    setLanguage('simple.php');
+    document.getElementById('alertify-cancel').textContent = inlineLanguage('cancel', 'Cancel');
+    document.getElementById('alertify-ok').textContent = inlineLanguage('start', 'Start');
 
     var alertifyModal = document.getElementById('alertify');
     new bootstrap.Modal(alertifyModal, {}).show();
@@ -806,25 +1113,21 @@ function numimpTest() {
     }
 };
 
-function tempTuningRun(t) {
+function tempTuningRun() {
 
-    var _snshs = [0, 1, 2];
-    var snshs = ['JCurve', 'Semikron (Skiip82)', 'MBB600'];
-
-    var _snsm = [12, 13, 14];
-    var snsm = ['KTY83-110', 'KTY84-130', 'Leaf'];
-
+    var t = document.getElementById('temp-current').value;
     var detect_tmphs = false;
     var detect_tmpm = false;
 
     for (var i = 0; i < _snshs.length; i++) {
 
-        var tmphs = getJSONAverageFloatValue('tmphs'); //Heatsink
+        setParameter('snshs',_snshs[i]);
 
+        var tmphs = getJSONAverageFloatValue('tmphs'); //Heatsink
         console.log(tmphs + '>' + t);
 
-        if (tmphs < (t - 1) || tmphs > (t + 1)) { //+-1 degree
-            setParameter('snshs',_snshs[i]);
+        if (tmphs < (t - 2) || tmphs > (t + 2)) { //+-2 degree
+            continue;
         }else{
             $.notify({ message: 'Heatsink Sensor: ' + snshs[i]}, { type: 'success' });
             detect_tmphs = true;
@@ -834,12 +1137,13 @@ function tempTuningRun(t) {
 
     for (var i = 0; i < _snsm.length; i++) {
 
-        var tmpm = getJSONAverageFloatValue('tmpm'); //Motor
+        setParameter('snsm',_snsm[i]);
 
+        var tmpm = getJSONAverageFloatValue('tmpm'); //Motor
         console.log(tmpm + '>' + t);
 
-        if (tmpm < (t - 1) || tmpm > (t + 1)) { //+-1 degree
-            setParameter('snsm',_snsm[i]);
+        if (tmpm < (t - 2) || tmpm > (t + 2)) { //+-2 degree
+            continue;
         }else{
             $.notify({ message: 'Motor Sensor: ' + snsm[i]}, { type: 'success' });
             detect_tmpm = true;
@@ -856,44 +1160,41 @@ function tempTuningRun(t) {
 
 function tempTuning() {
 
-	if(navigator.geolocation)
-    {
-		navigator.geolocation.getCurrentPosition(function(position)
-        {
-            var apikey = '642f15a86f86f020e97958563f5d8ebd';
-            $.ajax('http://api.openweathermap.org/data/2.5/weather?lat=' + position.coords.latitude + '&lon=' + position.coords.longitude + '&units=metric&APPID=' + apikey, {
-                dataType: 'json',
-                success: function(data) {
-            
-                    console.log(data);
+    var tempTuningModal = new bootstrap.Modal(document.getElementById('tempTuning'), {})
 
-                    var t = data.main.temp;
-                    $.notify({ message: 'Outside Temperature: ' + t}, { type: 'warning' });
+    document.getElementById('temp-current').setAttribute('placeholder',  inlineLanguage('temperature', 'Current Air Temperature (°C)'));
 
-                    tempTuningRun(t);
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    $.notify({ message: 'Error: [api.openweathermap.org] ' + xhr.status + ' ' + thrownError}, { type: 'danger' });
-                    $('.temp-tune').trigger('click');
-                }
-            });
-		},function(error) {
-            var errors = { 
-                1: 'Permission denied',
-                2: 'Position unavailable',
-                3: 'Request timeout'
-            };
-            console.log('Error: ' + errors[error.code]);
-            $('.temp-tune').trigger('click');
-            $('#temp-continue').click(function(){
-                $.fancybox.close();
-                var t = $('#temp-degree').val();
-                tempTuningRun(t);
-            });
-        });
-	}else{
-        $.notify({ message: 'Error: Navigation Unavaliable'}, { type: 'danger' });
+    var select = document.getElementsByTagName('select');
+    for (var i = 0; i < _snshs.length; i++) {
+        var option = document.createElement('option');
+        option.value = _snshs[i];
+        option.textContent = snshs[i];
+        select[0].appendChild(option);
     }
+    for (var i = 0; i < _snsm.length; i++) {
+        var option = document.createElement('option');
+        option.value = _snsm[i];
+        option.textContent = snsm[i];
+        select[1].appendChild(option);
+    }
+    document.getElementById('temp-cancel').textContent = inlineLanguage('cancel', 'Cancel');
+    document.getElementById('temp-ok').textContent = inlineLanguage('start', 'Callibrate');
+    document.getElementById('temp-ok').onclick = function() {
+        var v = document.getElementById('temp-current').value;
+        if(v == '') {
+            $.notify({ message: 'Cannot Callibrate Sensors'}, { type: 'danger' });
+            $.notify({ message: 'Current Temperature Required'}, { type: 'warning' });
+        }else{
+            tempTuningRun();
+        }
+        tempTuningModal.hide();
+    };
+
+    tempTuningModal.show();
+};
+
+function tempTuningChangeSensor(id,value) {
+    setParameter(id, value);
 };
 
 function rampFrequency(_from, to) {

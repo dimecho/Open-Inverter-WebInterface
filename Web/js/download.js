@@ -26,13 +26,14 @@ function confirmDownload(app, crc)
     xhr.onload = function() {
         if (xhr.status == 200) {
             console.log(xhr.response);
-            $('#software').find('.modal-body').empty().append('Download ' + xhr.response.title + ' - ' + xhr.response.size + 'MB');
+            document.getElementById('software-name').textContent = 'Download ' + xhr.response.title + ' - ' + xhr.response.size + 'MB';
             var softwareModal = new bootstrap.Modal(document.getElementById('software'), {});
             softwareModal.show();
-            $("#software-install").click(function() {
+
+            document.getElementById('software-install').onclick = function() {
                 //window.open(url, '_blank');
                 window.location.href = 'download.php?start=' + app + '&crc=' + crc;
-            });
+            }
         }
     };
     xhr.open('GET', 'download.php?software=' + app + '&crc=' + crc, true);

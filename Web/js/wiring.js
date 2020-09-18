@@ -1,27 +1,29 @@
 $(document).ready(function () {
-    buildMenu();
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-    xhr.onload = function() {
-        if (xhr.status == 200) {
-            for(var key in xhr.response)
-            {
-                var title = $('#' + xhr.response[key].id + ' div h5');
-                var desc = $('#' + xhr.response[key].id + ' div p');
-                var img = $('#' + xhr.response[key].id + ' img');
-                var a = $('#' + xhr.response[key].id + ' div a');
+    
+    buildMenu(function () {
+        var xhr = new XMLHttpRequest();
+        xhr.responseType = 'json';
+        xhr.onload = function() {
+            if (xhr.status == 200) {
+                for(var key in xhr.response)
+                {
+                    var title = $('#' + xhr.response[key].id + ' div h5');
+                    var desc = $('#' + xhr.response[key].id + ' div p');
+                    var img = $('#' + xhr.response[key].id + ' img');
+                    var a = $('#' + xhr.response[key].id + ' div a');
 
-                a[0].href = xhr.response[key].path + xhr.response[key].pinout;
-                a[1].href = xhr.response[key].path + xhr.response[key].wiring;
-                
-                img.attr('src', xhr.response[key].path + xhr.response[key].thumb);
-                title.append(xhr.response[key].title);
-                desc.append(xhr.response[key].description);
+                    a[0].href = xhr.response[key].path + xhr.response[key].pinout;
+                    a[1].href = xhr.response[key].path + xhr.response[key].wiring;
+                    
+                    img.attr('src', xhr.response[key].path + xhr.response[key].thumb);
+                    title.append(xhr.response[key].title);
+                    desc.append(xhr.response[key].description);
+                }
             }
-        }
-    };
-    xhr.open('GET', 'js/pcb.json', true);
-    xhr.send();
+        };
+        xhr.open('GET', 'js/pcb.json', true);
+        xhr.send();
+    });
 });
 
 function buildWiringTable(csv)

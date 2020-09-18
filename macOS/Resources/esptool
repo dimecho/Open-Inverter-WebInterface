@@ -16,15 +16,15 @@ else
 		    os_ver=$(sw_vers -productVersion)
 		    if [[ $os_ver == 10.15* ]]; then
 		    	if ! grep -q Python ~/.zprofile; then
-		    		echo \n >> ~/.zprofile
+		    		echo '\n' >> ~/.zprofile
 					echo "export PATH=\${PATH}:\${HOME}/Library/Python/2.7/bin" >> ~/.zprofile
-					echo \n >> ~/.zprofile
+					echo '\n' >> ~/.zprofile
 				fi
 			else
 				if ! grep -q Python ~/.bashrc; then
-					echo \n >> ~/.bashrc
+					echo '\n' >> ~/.bashrc
 			   		echo "export PATH=\${PATH}:\${HOME}/Library/Python/2.7/bin" >> ~/.bashrc
-			   		echo \n >> ~/.bashrc
+			   		echo '\n' >> ~/.bashrc
 				fi
 			fi
 			source ~/.zprofile

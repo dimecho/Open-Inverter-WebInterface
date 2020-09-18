@@ -197,12 +197,12 @@
             "version" : "0.10.0-14"
         },
 		"checksum" : {
-            "mac" : "",
+            "mac" : "416db49e75d798bad23c0400148cd7de",
             "windows" : "",
             "linux" : ""
         },
         "path" : {
-            "mac" : "/usr/local/share/xPacks/openocd/0.10.0-14/bin/openocd",
+            "mac" : "/usr/local/share/xpack-openocd-0.10.0-14/bin/openocd",
             "windows" : "C:\\Program Files\\xPack\\OpenOCD\\0.10.0-14\\bin\\openocd.exe",
             "linux" : "/usr/share/openocd/bin/openocd"
         }

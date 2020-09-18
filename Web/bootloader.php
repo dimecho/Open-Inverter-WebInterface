@@ -6,11 +6,12 @@
     {
         $file = urldecode($_GET["file"]);
         $interface = urldecode($_GET["interface"]);
+        $software = getSoftware();
 
         if (strpos($interface, "stlink-v2") !== false) {
-            $command = runCommand("stlink", $file, $os, 0);
+            $command = runCommand("stlink", $file. " - " .$software["stlink"]["download"]["version"], $os, 0);
         }else{
-            $command = runCommand("openocd", $file. " " .$interface, $os, 0);
+            $command = runCommand("openocd", $file. " " .$interface. " - " .$software["openocd"]["download"]["version"], $os, 0);
         }
         exec($command, $output, $return);
 		echo sys_get_temp_dir();
@@ -54,7 +55,7 @@
                                 <span class = "input-group-addon d-none w-75">
 								    <form enctype="multipart/form-data" action="bootloader.php" method="POST" id="firmwareForm">
 										<input name="firmware" type="file" class="file" accept=".bin,.hex" onchange="firmwareUpload()" hidden >
-										<select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage(this.selectedIndex)" id="firmware-interface"></select>
+										<select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage(hardware,this.selectedIndex)" id="firmware-interface"></select>
 									</form>
 								</span>
                                 <span class = "input-group-addon d-none w-25 text-center">
@@ -62,6 +63,10 @@
 								</span>
                             </div>
                             <br><br><h2 id="jtag-name"></h2>
+                            <nav>
+                                <div class="nav nav-tabs" role="tablist" id="hardwareTabs"></div>
+                            </nav>
+                            <div class="tab-content" id="hardwareTabContent"></div>
 							<span class="badge badge-lg bg-warning" id="jtag-txt"></span><br><br>
                             <img src="" id="jtag-image" class="img-thumbnail rounded" />
 							</center>

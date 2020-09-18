@@ -16,18 +16,27 @@
 		date_default_timezone_set("America/Vancouver");
 		ini_set("display_startup_errors", 1);
 		ini_set("display_errors", 1);
-		
+
+		$timeout = 10;
+		do{
+			$read = backupParameters();
+			$timeout--;
+		}while($read == '[]' && $timeout > 0);
+
 		header ("Content-Type: text/json");
 		header ("Content-Disposition: attachment; filename=\"snapshot " .date("F-j-Y g-ia"). ".json\"");
+		echo $read;
+	}
 
+	function backupParameters()
+	{
 		$read = readSerial("json\n");
 		$array = json_decode($read, true);
 		$values = array();
 		foreach ($array as $key => $value) {
 			$values[$key] = $value["value"];
 		}
-
-		echo json_encode($values, JSON_PRETTY_PRINT);
+		return json_encode($values, JSON_PRETTY_PRINT);
 	}
 	
 	function setParameters($file)

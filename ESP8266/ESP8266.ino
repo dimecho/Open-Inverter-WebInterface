@@ -89,7 +89,8 @@ char NETWORK_GATEWAY[] = "192.168.4.1";
 char NETWORK_DNS[] = "192.168.4.1";
 
 String firmwareInterface = "" ;
-StreamString firmwareStream;
+StreamString asyncLogStream;
+uint32_t serialInitialized = 0;
 
 bool phpTag[] = { false, false }; //2 level processing
 const char text_html[] = "text/html";
@@ -191,11 +192,11 @@ const char *boolStr(bool x)
 }
 //=============================
 
+ADC_MODE(ADC_VCC); //internal voltage check
+
 void setup()
 {
   Serial.begin(115200, SERIAL_8N1);
-  //Serial.setDebugOutput(false);
-  //Serial.setTimeout(1000);
 
   LittleFS.begin();
 
@@ -205,7 +206,7 @@ void setup()
   EEPROM.begin(1024);
   long e = NVRAM_Read(0).toInt();
 #if DEBUG
-  //Serial.setDebugOutput(true);
+  Serial.setDebugOutput(true);
   Serial.println(e, HEX);
 #endif
   if (e != EEPROM_ID) {
@@ -214,7 +215,7 @@ void setup()
     if (n != 0) {
       for (uint8_t i = 0; i < n; ++i) {
         Serial.println(WiFi.SSID(i));
-        if(WiFi.SSID(i) == ACCESS_POINT_SSID) {
+        if (WiFi.SSID(i) == ACCESS_POINT_SSID) {
           strcat(ACCESS_POINT_SSID, String("-" + i).c_str()); //avoid conflict
           break;
         }
@@ -624,6 +625,11 @@ void setup()
   /*-------------------------*/
 #endif
 
+  server.on("/vcc", HTTP_GET, [](AsyncWebServerRequest * request) {
+    AsyncResponseStream *response = request->beginResponseStream(text_plain);
+    response->print(ESP.getVcc());
+    request->send(response);
+  });
   server.on("/chipid", HTTP_GET, [](AsyncWebServerRequest * request) {
     AsyncResponseStream *response = request->beginResponseStream(text_plain);
     response->printf("Chip ID = 0x%08X\n", ESP.getChipId());
@@ -635,10 +641,21 @@ void setup()
     LittleFS.info(fs_info);
     request->send(200, text_plain, "<b>Format " + result + "</b><br/>Total Flash Size: " + String(ESP.getFlashChipSize()) + "<br>Filesystem Size: " + String(fs_info.totalBytes) + "<br>Filesystem Used: " + String(fs_info.usedBytes));
   });
-  server.on("/reset", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/restart", HTTP_GET, [](AsyncWebServerRequest * request) {
+    //Serial.end();
+    //Serial.begin(115200, SERIAL_8N1);
+    //serialStreamFlush(); //flush
+    Serial.print("reset\n");
+
     request->send(200, text_plain, "...");
     restartRequired = true;
     //ESP.restart();
+  });
+  server.on("/reset", HTTP_GET, [](AsyncWebServerRequest * request) {
+    NVRAM_Erase();
+    //LittleFS.format();
+    request->send(200, text_plain, "...");
+    restartRequired = true;
   });
   server.on("/nvram", HTTP_GET, [](AsyncWebServerRequest * request) {
     String out = NVRAM(1, 12, 5);
@@ -715,14 +732,13 @@ void setup()
 
     //Get "all", Format JSON, Save to FS and Send chunked.
 
-    //serialStreamFlush(); //flush
+    serialStreamFlush(); //flush
 
     File f = LittleFS.open("/snapshot.json", "w");
     f.print("{\n    \"");
 
-    Serial.print("all");
-    Serial.print('\n');
-    serialEcho(); //while (Serial.read() != '\n'); //consume echo
+    Serial.print("all\n");
+    consumeEcho('\n'); //echo
 
     do {
       memset(b, 0, sizeof(b));
@@ -753,26 +769,27 @@ void setup()
   }, SnapshotUpload);
 
   server.on("/bootloader.php", HTTP_POST, [](AsyncWebServerRequest * request) {
+
     AsyncResponseStream *response = request->beginResponseStream(text_plain);
-    response->addHeader("Cache-Control", "no-store");
-    response->addHeader("Refresh", "30; url=/firmware.php");
-    response->print(firmwareStream);
+    response->print(asyncLogStream);
     request->send(response);
+
   }, FirmwareUpload);
 
   server.on("/firmware.php", HTTP_POST, [](AsyncWebServerRequest * request) {
+
     AsyncResponseStream *response = request->beginResponseStream(text_plain);
-    response->addHeader("Cache-Control", "no-store");
-    response->addHeader("Refresh", "10; url=/index.php");
-    response->print(firmwareStream);
+    response->print(asyncLogStream);
     request->send(response);
+
   }, FirmwareUpload);
 
   server.on("/test.php", HTTP_POST, [](AsyncWebServerRequest * request) {
+
     AsyncResponseStream *response = request->beginResponseStream(text_plain);
-    response->addHeader("Cache-Control", "no-store");
-    response->print(firmwareStream);
+    response->print(asyncLogStream);
     request->send(response);
+
   }, FirmwareUpload);
 
   server.on("/serial.php", HTTP_GET, [](AsyncWebServerRequest * request) {
@@ -785,30 +802,20 @@ void setup()
 
     if (request->hasParam("init")) {
 
-      int _speed = request->getParam("init")->value().toInt();
+      uint32_t serialSpeed = request->getParam("init")->value().toInt();
 
-      //serialStreamFlush(); //flush
-      Serial.print("fastuart ");
-      if (_speed == 115200) {
-        Serial.print("0");
-      }else{
-        Serial.print(_speed);
+      if (serialInitialized == serialSpeed) { //initialized only once
+        request->send(200, text_plain, String(serialSpeed));
+      } else {
+
+        initSerial(serialSpeed);
+
+        AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
+          return Serial.readBytes(buffer, maxLen);
+        });
+        //response->addHeader("Cache-Control", "no-store");
+        request->send(response);
       }
-      Serial.print('\n');
-      //serialEcho(); //consume echo
-
-      Serial.end();
-      Serial.begin(_speed, SERIAL_8N1);
-
-      serialEcho(); //consume echo
-      Serial.print("hello");
-      Serial.print('\n');
-      
-      AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
-        return Serial.readBytes(buffer, maxLen);
-      });
-      response->addHeader("Cache-Control", "no-store");
-      request->send(response);
 
     } else if (request->hasParam("os")) {
 
@@ -823,7 +830,7 @@ void setup()
 
       Serial.print("set " + request->getParam("name")->value() + " " + request->getParam("value")->value());
       Serial.print('\n');
-      serialEcho(); //consume echo
+      consumeEcho('\n'); //echo
 
       do {
         memset(b, 0, sizeof(b));
@@ -846,7 +853,7 @@ void setup()
 
       for (byte i = 0; i < _param.length(); i++) {
         if (_param.charAt(i) == ',') {
-          serialEcho(); //while (Serial.read() != '\n'); //consume echo
+          consumeEcho('\n'); //echo
         }
       }
 
@@ -862,10 +869,9 @@ void setup()
 
       Serial.print(request->getParam("command")->value());
       Serial.print('\n');
-      serialEcho(); //while (Serial.read() != '\n'); //consume echo
+      consumeEcho('\n'); //echo
 
       AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
-        //while (!Serial.available()); //wait until available
         return Serial.readBytes(buffer, maxLen);
       });
       response->addHeader("Cache-Control", "no-store");
@@ -880,8 +886,8 @@ void setup()
 
       Serial.print("get " + request->getParam("stream")->value());
       Serial.print('\n');
-      serialEcho(); //consume echo
-      serialEcho(); //consume first read
+      consumeEcho('\n'); //echo
+      consumeEcho('\n'); //first read
 
       AsyncWebServerResponse *response = request->beginResponse(text_plain, _loop + 1, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
         Serial.print('!');
@@ -932,7 +938,7 @@ void setup()
   });
 
   server.on("/", [](AsyncWebServerRequest * request) {
-    if (LittleFS.exists("/index.php")) {
+    if (LittleFS.exists("/index.php") || LittleFS.exists("/index.php.html")) {
       request->redirect("/index.php");
     } else {
       AsyncWebServerResponse *response = request->beginResponse(200, text_html, "File System Not Found ...");
@@ -970,6 +976,9 @@ void setup()
         //response->addHeader("Cache-Control", "max-age=3600");
         request->send(response);
 
+      } else if (file.endsWith(".bin") || file.endsWith(".log")) {
+        AsyncWebServerResponse *response = request->beginResponse(LittleFS, file, contentType);
+        request->send(response);
       } else {
 
         AsyncWebServerResponse *response = request->beginResponse(LittleFS, file, contentType);
@@ -1147,6 +1156,37 @@ void loop()
   //server.handleClient();
   //ArduinoOTA.handle();
   //yield();
+}
+
+void initSerial(uint32_t serialSpeed)
+{
+  //consumeEcho('D'); //Bootloader echo
+
+  //Clear the initialization Bug
+  //-----------------------------
+  Serial.print("hello\n");
+  consumeEcho('\n'); //echo
+  consumeEcho('\n'); //reply
+  //-----------------------------
+
+  if (serialSpeed == 921600) {
+    Serial.print("fastuart 1\n");
+  } else {
+    Serial.print("fastuart 0\n");
+  }
+  consumeEcho('\n'); //echo
+  //-----------------------------
+  //Serial.end();
+  Serial.begin(serialSpeed, SERIAL_8N1);
+  serialStreamFlush(); //flush
+  //-----------------------------
+  //Clear the initialization Bug
+  //-----------------------------
+  Serial.print("hello\n");
+  //consumeEcho('\n'); //echo
+  //consumeEcho('\n'); //reply
+  //-----------------------------
+  serialInitialized = serialSpeed;
 }
 
 char* string2char(String command) {
@@ -1358,6 +1398,8 @@ String getContentType(String filename)
   else if (filename.endsWith(".ttf")) return "font/ttf";
   else if (filename.endsWith(".woff")) return "font/woff";
   else if (filename.endsWith(".woff2")) return "font/woff2";
+  else if (filename.endsWith(".bin")) return "application/octet-stream";
+  else if (filename.endsWith(".log")) return text_plain;
   return text_plain;
 }
 
@@ -1406,16 +1448,16 @@ void WebUpload(AsyncWebServerRequest *request, String filename, size_t index, ui
 void SnapshotUpload(AsyncWebServerRequest * request, String filename, size_t index, uint8_t *data, size_t len, bool final)
 {
   if (!index) {
-    LittleFS.remove("/" + filename);
+    request->_tempFile = LittleFS.open(filename, "w");
+    asyncLogStream.clear();
   }
 
-  File fsUpload = LittleFS.open("/" + filename, "a");
-  fsUpload.write(data, len);
-  fsUpload.close();
+  request->_tempFile.write(data, len);
 
   if (final) {
+    request->_tempFile.close();
 
-    File f = LittleFS.open("/" + filename, "r");
+    File f = LittleFS.open(filename, "r");
     while (f.available()) {
       String cmd = f.readStringUntil('\n');
       cmd.replace("\t", "");
@@ -1424,43 +1466,44 @@ void SnapshotUpload(AsyncWebServerRequest * request, String filename, size_t ind
       cmd.replace(",", "");
       cmd.replace(":", " ");
       if (!cmd.startsWith("{") && !cmd.endsWith("}")) {
+        asyncLogStream.println("set " + cmd);
         Serial.print("set " + cmd);
         Serial.print('\n');
       }
     }
     f.close();
-    LittleFS.remove("/" + filename);
 
-    Serial.print("save");
-    Serial.print('\n');
+    Serial.print("save\n");
+
+    LittleFS.remove(filename);
   }
 }
 
 void FirmwareUpload(AsyncWebServerRequest * request, String filename, size_t index, uint8_t *data, size_t len, bool final)
 {
   if (!index) {
-    LittleFS.remove("/" + filename);
-    //firmwareStream.clear();
+    request->_tempFile = LittleFS.open(filename, "w");
+
+    if (LittleFS.exists(filename + ".log"))
+      LittleFS.remove(filename + ".log");
+    asyncLogStream.clear();
   }
 
-  File fsUpload = LittleFS.open("/" + filename, "a");
-  fsUpload.write(data, len);
-  fsUpload.close();
+  request->_tempFile.write(data, len);
 
   if (final) {
 
-    File f = LittleFS.open("/" + filename, "r");
-    uint32_t len = f.size();
+    request->_tempFile.close();
+
+    File f = LittleFS.open(filename, "r");
+    File fs = LittleFS.open(filename + ".log", "w");
+
     uint32_t addr = (uint32_t)0x08000000;
     uint32_t addrEnd = (uint32_t)0x0801ffff;
 
     if (request->url() == "/firmware.php") {
       addr = (uint32_t)0x08001000;
     }
-
-    firmwareStream.println("<pre>");
-    firmwareStream.println("\ninterface: ");
-    firmwareStream.println(firmwareInterface);
 
     if (firmwareInterface == "swd-esp8266") {
       //==================
@@ -1477,14 +1520,14 @@ void FirmwareUpload(AsyncWebServerRequest * request, String filename, size_t ind
         delay(500);
         timeout--;
       }
-      firmwareStream.println("debug: ");
-      firmwareStream.print(String(debugHalt));
-      firmwareStream.println("size: ");
-      firmwareStream.print(String(len));
+      asyncLog(fs, "debug: ");
+      asyncLog(fs, String(debugHalt));
+      asyncLog(fs, "size: ");
+      asyncLog(fs, String(len));
 
       if (target.begin() && target.getIDCODE(idcode)) {
-        firmwareStream.println("idcode: ");
-        firmwareStream.print(String(idcode));
+        asyncLog(fs, "idcode: ");
+        asyncLog(fs, String(idcode));
 
         //Erase until end of flash
 
@@ -1495,12 +1538,12 @@ void FirmwareUpload(AsyncWebServerRequest * request, String filename, size_t ind
         while (f.available()) {
           //char b = char(f.read());
 
-          //firmwareStream.println("0x");
-          //firmwareStream.print(String(addr, HEX));
+          //asyncLogStream.println("0x");
+          //asyncLogStream.print(String(addr, HEX));
 
           //uint32_t data = f.read();
-          //firmwareStream.println("=0x");
-          //firmwareStream.print(String(data, HEX));
+          //asyncLogStream.println("=0x");
+          //asyncLogStream.print(String(data, HEX));
 
           //target.debugHalt();
           //target.memStoreByte(addr, f.read());
@@ -1510,151 +1553,168 @@ void FirmwareUpload(AsyncWebServerRequest * request, String filename, size_t ind
 
           addr++;
         }
-        firmwareStream.println("jolly good!"); //st-flash lingo
+        asyncLog(fs, "jolly good!"); //st-flash lingo
       } else {
-        firmwareStream.println("SWD not connected");
+        asyncLog(fs, "SWD not connected");
       }
-      //request->send(response);
 
     } else {
       //==================
       // STM32 UPDATER
       //==================
-      uint8_t timeout = 0;
       char c;
+      uint32_t timeout = millis();
       const size_t PAGE_SIZE_BYTES = 1024;
-      //int pages = (len / PAGE_SIZE_BYTES) + 1;
-      uint8_t pages = (len + PAGE_SIZE_BYTES - 1) / PAGE_SIZE_BYTES;
+      //int pages = (request->_tempFile.size() / PAGE_SIZE_BYTES) + 1;
+      uint8_t pages = (f.size() + PAGE_SIZE_BYTES - 1) / PAGE_SIZE_BYTES;
 
-      firmwareStream.println("File length is " + String(len) + " bytes/" + String(pages) + " pages");
+      asyncLog(fs, "File length is " + String(f.size()) + " bytes/" + String(pages) + " pages");
 
-      //Serial.end();
-      Serial.begin(115200, SERIAL_8N1);
+      serialStreamFlush();
+
+      asyncLog(fs, "Resetting device...");
 
       //Clear the initialization Bug
       //-----------------------------
-      Serial.print("hello");
-      Serial.print('\n');
-      serialEcho(); //while (Serial.read() != '\n'); //echo
-      serialEcho(); //while (Serial.read() != '\n'); //reply
+      Serial.print("hello\n");
+      //consumeEcho('\n'); //echo
+      //consumeEcho('\n'); //reply
       //-----------------------------
-      firmwareStream.println("Resetting device...");
-      Serial.print("reset");
-      Serial.print('\n');
+      Serial.print("reset\n");
+      consumeEcho('t'); //echo -> reset
+
+      //Serial.end();
+      //Serial.begin(115200, SERIAL_8N1);
 
       do {
         c = Serial.read();
-        /*
-          server.sendContent(String(c));
-          delay(10);
-          timeout++;
-        */
-      } while (c != 'S' && c != '2'); // && timeout < 255);
+      } while (c != 'S' && c != '2');
 
-      firmwareStream.println("\n" + String(timeout) + "\n");
+      //NO DELAY HERE!!!
 
       if (c == '2')
       {
-        firmwareStream.println("Bootloader v2 detected");
         Serial.write(0xAA); //Send magic
         while (Serial.read() != 'S');
+
+        asyncLog(fs, "Bootloader v2 detected");
       }
 
-      if (timeout < 255)
+      if (millis() - timeout < 4000)
       {
-        firmwareStream.println("Sending number of pages.." + String(pages));
         Serial.write(pages);
-
         while (Serial.read() != 'P'); //Wait for page request
+
+        asyncLog(fs, "Sending number of pages.." + String(pages));
 
         uint8_t page = 0;
         bool done = false;
 
         while (done != true)
         {
-          firmwareStream.println("Sending page " + String(page) + "...");
+          asyncLog(fs, "Sending page " + String(page) + "...");
 
           f.seek(page * PAGE_SIZE_BYTES);
-
-          char data[PAGE_SIZE_BYTES];
-          size_t bytesRead = f.readBytes(data, sizeof(data));
+          char bufferRead[PAGE_SIZE_BYTES];
+          size_t bytesRead = f.readBytes(bufferRead, sizeof(bufferRead));
 
           while (bytesRead < PAGE_SIZE_BYTES) //Fill ramaining bytes with zeros, prevents corrupted endings
-            data[bytesRead++] = 0xff;
+            bufferRead[bytesRead++] = 0xff;
 
-          uint32_t crc = crc32((uint32_t*)data, PAGE_SIZE_BYTES / 4, 0xffffffff);
+          uint32_t crc = crc32((uint32_t*)bufferRead, PAGE_SIZE_BYTES / 4, 0xffffffff);
 
-          while (c != 'C')
-          {
-            //Serial.write(data);
-            Serial.write((uint8_t*)data, sizeof(data));
+          //asyncLog(fs, "Sending bytes " + String(sizeof(bufferRead)));
 
+          while (c != 'C') {
+            Serial.write((uint8_t*)bufferRead, sizeof(bufferRead));
             while (!Serial.available()); //wait until available
             c = Serial.read();
 
             if (c == 'T')
             {
-              firmwareStream.println("Transmission Error");
+              asyncLog(fs, "Transmission Error");
             }
           }
-          firmwareStream.println("Sending CRC...");
 
-          //Serial.write(crc);
-          Serial.write((uint8_t*)&crc, sizeof(uint32_t));
+          asyncLog(fs, "Sending CRC...");
+
+          Serial.write((char*)&crc, sizeof(uint32_t));
           while (!Serial.available()); //wait until available
           c = Serial.read();
 
           if ('D' == c)
           {
-            firmwareStream.println("CRC correct!");
-            firmwareStream.println("Update done!");
+            asyncLog(fs, "CRC correct!");
+            asyncLog(fs, "Update Done!");
 
             done = true;
           }
           else if ('E' == c)
           {
-            firmwareStream.println("CRC error!");
+            asyncLog(fs, "CRC error!");
           }
           else if ('P' == c)
           {
-            firmwareStream.println("CRC correct!");
+            asyncLog(fs, "CRC correct!");
             page++;
           }
         }
       } else {
-        firmwareStream.println("STM32 is bricked - Try pressing reset button during upload");
+        asyncLog(fs, "STM32 is bricked - Try pressing reset button during upload");
       }
     }
     f.close();
+    fs.close();
 
-    LittleFS.remove("/" + filename);
-    firmwareStream.println("</pre>");
-    //request->send(response);
+    LittleFS.remove(filename);
   }
 }
 
-void serialEcho()
+void asyncLog(File fs, String text)
 {
-  uint8_t timeout = 255;
-  while (char c = Serial.read() != '\n' && timeout > 0) {
+  asyncLogStream.println(text);
+  fs.println(text);
+}
+
+void consumeEcho(char echo)
+{
+  char c;
+  uint16_t timeout = 2048;
+
+  while (Serial.available() <= 0 && timeout > 0) {
     timeout--;
+  }
+  if (timeout > 0) {
+    timeout = 1024;
+    while (timeout > 0 && c != echo) {
+      if (Serial.available())
+        c = Serial.read();
+      timeout--;
+    }
   }
 }
 
 void serialStreamFlush()
 {
-  char b[64];
+  char b[255];
   size_t len = 0;
-  uint8_t timeout = 255;
+  uint16_t timeout = 2048;
 
   Serial.print('\n');
-  serialEcho(); //while (Serial.read() != '\n'); //consume echo
+  consumeEcho('\n'); //consume echo
 
-  do {
-    memset(b, 0, sizeof(b));
-    len = Serial.readBytes(b, sizeof(b) - 1);
+  while (Serial.available() <= 0 && timeout > 0) {
     timeout--;
-  } while (len > 0 && timeout > 0);
+  }
+
+  if (timeout > 0) {
+    //timeout = 1024;
+    do {
+      memset(b, 0, sizeof(b));
+      len = Serial.readBytes(b, sizeof(b) - 1);
+      //timeout--;
+    } while (len > 0);
+  }
 }
 
 static uint32_t crc32_word(uint32_t Crc, uint32_t Data)

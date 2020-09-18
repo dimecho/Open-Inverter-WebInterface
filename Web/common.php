@@ -1,5 +1,30 @@
 <?php
     
+    if(isset($_GET["find"])) {
+
+        $path = 'pcb/';
+        $ext = $_GET["ext"];
+        $find = $_GET["find"]. "." . $ext;
+        
+        if(isset($_GET["hw"])) {
+            findImage($path. $_GET["hw"], $find, $ext);
+        }else{
+            foreach(glob($path. '*', GLOB_ONLYDIR) as $dirname) {
+                findImage($dirname, $find, $ext);
+            }
+        }
+    }
+
+    function findImage($dir, $find, $ext)
+    {
+        foreach (glob("$dir/*." .$ext) as $filename) {
+            if (strpos($filename, $find) !== false) {
+                echo $filename;
+                exit;
+            }
+        }
+    }
+
     function detectOS()
     {
         $uname = strtolower(php_uname('s'));
@@ -68,7 +93,7 @@
 
     function runCommand($command,$args,$os,$console)
     {
-        $command = commandOSCorrection($command,$args,$os);
+        $command = commandOSCorrection($command,trim($args),$os);
 		
         if ($os === "mac") {
             if($console === 1) {

@@ -1,29 +1,3 @@
-<?php
-
-function findImage($dir, $find)
-{
-    foreach (glob("$dir/bom/img/*.jpg") as $filename) {
-        if (strpos($filename, $find) !== false) {
-            echo $filename;
-            exit;
-        }
-    }
-}
-
-if(isset($_GET["find"])) {
-
-    $path = 'pcb/';
-    $find = $_GET["find"]. ".jpg";
-
-    if($_GET["smd"] == 1) {
-        findImage($path. "Hardware v3.0", $find);
-    }else{
-        foreach(glob($path. '*', GLOB_ONLYDIR) as $dirname) {
-            findImage($dirname, $find);
-        }
-    }
-}else{
-?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -33,14 +7,15 @@ if(isset($_GET["find"])) {
         <script src="js/pcb.js"></script>
         <script>
         $(document).ready(function () {
-            buildMenu();
-            <?php
-            if(isset($_GET["hardware"])){
-                echo "loadComponents('" . $_GET["hardware"] . "');";
-            }else{
-                echo "loadList();";
-            }
-            ?>
+            buildMenu(function () {
+                <?php
+                if(isset($_GET["hardware"])){
+                    echo "loadComponents('" . $_GET["hardware"] . "');";
+                }else{
+                    echo "loadList();";
+                }
+                ?>
+            });
         });
         </script>
         <style>
@@ -132,6 +107,3 @@ if(isset($_GET["find"])) {
         </div>
     </body>
 </html>
-<?php
-}
-?>

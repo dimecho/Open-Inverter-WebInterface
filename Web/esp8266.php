@@ -205,7 +205,7 @@
 					<tr align="center">
 						<td colspan="2">
 							<div class="progress progress-striped active">
-								<div class="progress-bar" style="width:1%"></div>
+								<div class="progress-bar" style="width:0%"></div>
 							</div>
 						</td>
 					</tr>

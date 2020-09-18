@@ -10,7 +10,15 @@ $(document).ready(function () {
         var safetyModal = new bootstrap.Modal(document.getElementById('safety'), {});
         safetyModal.show();
     }else{
-        buildMenu(function() { initializeSerial() });
+        buildMenu(function() { 
+            if(os == 'esp8266') {
+                //buildParameters(115200,0);
+                //initializeSerial(921600,0);
+                initializeSerial(115200,0);
+            }else{
+                initializeSerial(115200,0);
+            }
+        });
     }
 
     if(theme == '.slate') {
@@ -28,9 +36,11 @@ function saveReminderCounter() {
     $.notify({ message: 'Don\'t forget to Save Settings!' }, { type: 'warning' });
 };
 
-function initializeSerial() {
+function initializeSerial(speed,loop) {
 
-	$('#loader-parameters').removeClass('d-none'); //.show();
+    var e_com = document.getElementById('com');
+    var e_loader = document.getElementById('loader-parameters');
+    e_loader.classList.remove('d-none');
 
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {
@@ -40,9 +50,28 @@ function initializeSerial() {
 
             deleteCookie('serial.block');
 
-            if(data.toUpperCase().indexOf('ERROR') != -1)
-            {
-                $('#com').removeClass('d-none'); //.show();
+            if(data == '') {
+                if(loop == 0) {
+                    var xhrRestart = new XMLHttpRequest();
+                    xhrRestart .onload = function() {
+                        $.notify({ message: 'No Communication' }, { type: 'danger' });
+                        $.notify({ message: 'Attempting to Restart Inverter ...' }, { type: 'warning' });
+                        setTimeout(function () {
+                            //location.reload();
+                            initializeSerial(115200,1);
+                        }, 2000);
+                    };
+                    xhrRestart.open('GET', '/restart', true);
+                    xhrRestart.send();
+                }else{
+                    deleteCookie('boot');
+                    e_loader.classList.add('d-none');
+                    e_com.classList.remove('d-none');
+                    $.notify({ message: 'Power Cycle Inverter' }, { type: 'warning' });
+                }
+            }else if(data.toUpperCase().indexOf('ERROR') != -1) {
+                e_loader.classList.add('d-none');
+                e_com.classList.remove('d-none');
                 var cxhr = new XMLHttpRequest();
                 cxhr.onload = function() {
                     if (cxhr.status == 200) {
@@ -66,7 +95,6 @@ function initializeSerial() {
                 };
                 cxhr.open('GET', 'serial.php?com=list', false);
                 cxhr.send();
-                $('#loader-parameters').addClass('d-none'); //.hide();
             }else if(data.indexOf('2D') != -1) {
                 if (boot == undefined) { // Two try - prevents false-positive ESP8266
                     setCookie('boot', 1, 1);
@@ -81,17 +109,17 @@ function initializeSerial() {
                 }
             }else if(data.indexOf('9600') != -1) {
                 $.notify({ message: 'Serial speed is 9600 baud, Power cycle' }, { type: 'danger' });
-                $('#com').removeClass('d-none'); //.show();
+                e_com.classList.remove('d-none');
             }else if(data.indexOf('w}') != -1) {
                 $.notify({ message: 'Serial speed incorrect, Refresh' }, { type: 'danger' });
-                $('#com').removeClass('d-none'); //.show();
+                e_com.classList.remove('d-none');
             }else if(data.indexOf('test pin') != -1) {
                 $.notify({ message: 'STM32 Test firmware detected' }, { type: 'danger' });
                 setTimeout(function () {
                     window.location.href = 'test.php';
                 }, 2600);
             }else{
-                buildParameters();
+                buildParameters(speed,loop);
             }
         }else{
             console.log(xhr.status);
@@ -101,13 +129,13 @@ function initializeSerial() {
                 $.notify({ message: 'Serial blocked ...Un-plug it!' }, { type: 'danger' });
             }
             $.notify({ message: 'Try swapping TX <-> RX' }, { type: 'warning' });
-            $('#com').removeClass('d-none'); //.show();
+            e_com.classList.remove('d-none');
             setCookie('serial.block', 1, 1);
 
-            $('#loader-parameters').addClass('d-none'); //.hide();
+            e_loader.classList.add('d-none');
         }
     };
-    xhr.open('GET', 'serial.php?init=115200', true);
+    xhr.open('GET', 'serial.php?init=' + speed, true);
     xhr.send();
 };
 
@@ -619,11 +647,13 @@ function syncofsCalculator()
 
     if(os != 'esp8266' && os != 'mobile') {
         col1.append(img);
+        row.append(col1);
+        div.append(row.append(col1));
     }
 
     col2.append(p).append(input1).append(input2);
     col2.append(btn.append('Save'));
-    div.append(row.append(col1).append(col2));
+    div.append(row.append(col2));
 
     input1.on('input',function(e) {
     	var shift_oneeighty = 0.5;
@@ -638,196 +668,9 @@ function syncofsCalculator()
 	        if(syncofs > 512) { //TODO: check for correctness
 	        	shift_oneeighty = 2;
 	        }
-	        
-	        var syncofs_angle = (syncofs * 360 / 65536)
-	        syncofs_angle = (360/Math.floor(360 / syncofs_angle)); //degree round
-	        //syncofs_angle = Math.round(syncofs_angle * 10) / 10; //digit round
-	        //syncofs_angle = Math.ceil(syncofs_angle * 20) / 20; //nearest 0.5
+	        var syncofs_angle = (syncofs * 360 / 65536);
 
 	        input2.val(syncofs + ' @ ' + syncofs_angle.toFixed(1) + '°, Shift 180° = ' + (syncofs/shift_oneeighty) + ' @ ' + (syncofs_angle/shift_oneeighty).toFixed(1) + '°');
-			
-			if(os != 'mobile')
-		    {
-	    		col1.empty();
-	    		col1.append(loader);
-
-		    	getScript('js/chart.js', function () {
-		    		getScript('js/chartjs-plugin-annotation.js', function () {
-
-			    		var canvas = $('<canvas>');
-			    		var red = 'rgb(255, 99, 132)';
-			    		var blue = 'rgb(54, 162, 235)';
-			    		var yellow = 'rgb(255, 205, 86)';
-			    		var visual_angle = Math.round(syncofs_angle)*2;
-
-			    		var chart_stator_datasets = {
-		        			data: gen_stator_data(polepairs*2),
-		        			backgroundColor: gen_stator_data_color(polepairs*2),
-		        			//data: gen_stator_data(8),
-		        			//backgroundColor: gen_stator_data_color(8),
-		        			//borderWidth:0
-				        };
-				       	var chart_syncofs_datasets = {
-				       		data: gen_syncofs_data(polepairs*2,visual_angle*2),
-		        			backgroundColor: gen_stator_syncofs_color(polepairs*2),
-		        			//data: gen_syncofs_data(8,visual_angle),
-		        			//backgroundColor: gen_stator_syncofs_color(8),
-		        			borderWidth:0
-				        };
-				        var chart_rotor_datasets = {
-		        			data: [360],
-		        			backgroundColor: [],
-		        			borderWidth:0
-				        };
-
-				        data = {
-				            labels: [],
-				            datasets: [chart_stator_datasets, chart_syncofs_datasets, chart_rotor_datasets]
-				        };
-
-				        for (var i = 90; i > 0; i--) {
-				        	data.labels.push(0-i);
-				        }
-				        for (var i = 0; i < 90; i++) {
-				        	data.labels.push(i);
-				        }
-
-				        options = {
-				        	//responsive: true,
-							//maintainAspectRatio: true,
-				            rotation: Math.PI,
-				            //cutoutPercentage: 20,
-				            legend: {
-				            	display: false
-				            },
-				            /*elements: {
-					            arc: {
-					                borderWidth: 2
-					            }
-					        },*/
-					        tooltips: {
-						        enabled: false      
-						    },
-				            scales: {
-				            	xAxes: [{
-				            		gridLines: {
-						                display:false
-						            },
-					                ticks: {
-					                	display: false
-					                }
-					            }],
-					            yAxes: [{
-					            	/*gridLines: {
-						                display:false
-						            },*/
-					                ticks: {
-					                	display: false
-					                }
-					            }]
-					        },
-					        annotation: {
-					        	//drawTime: 'afterDatasetsDraw',
-								annotations: [{
-									type: 'line',
-			                        id: 'a-line-0',
-			                        mode: 'vertical',
-			                        scaleID: 'x-axis-0',
-			                        value: visual_angle,
-			                        endValue: 0-visual_angle,
-			                        borderWidth: 0,
-			                        label: {
-			                        	enabled: true,
-			                        	xAdjust: -60,
-			                          	yAdjust: 32,
-			                          	content: syncofs + ' (' + syncofs_angle.toFixed(1) + '°)',
-			                          	position: 'top'
-			                        }
-								},{
-									type: 'line',
-			                        id: 'a-line-1',
-			                        mode: 'vertical',
-			                        scaleID: 'x-axis-0',
-			                        value: 0,
-			                        borderWidth: 0,
-			                        label: {
-			                        	enabled: true,
-			                          	content: 'Angle=0',
-			                          	position: 'top'
-			                        }
-								},{
-									type: 'line',
-			                        id: 'a-line-2',
-			                        mode: 'horizontal',
-			                        scaleID: 'y-axis-0',
-			                        value: 0.5,
-			                        borderWidth: 0,
-			                        label: {
-			                        	enabled: true,
-			                        	yAdjust: -12,
-			                          	content: '49152 (270°)',
-			                         	position: 'left'
-			                        }
-								},{
-									type: 'line',
-			                        id: 'a-line-3',
-			                        mode: 'horizontal',
-			                        scaleID: 'y-axis-0',
-			                        value: 0.5,
-			                        borderWidth: 0,
-			                        label: {
-			                        	enabled: true,
-			                        	yAdjust: -12,
-			                          	content: '16384 (90°)',
-			                          	position: 'right'
-			                        }
-								}]
-							}
-				        };
-
-						var chart = new Chart(canvas, {
-				            type: 'pie', //'doughnut'
-				            data: data,
-				            options: options
-				        });
-
-						loader.hide();
-		    			col1.append(canvas);
-
-			    		var img = new Image();
-			    		img.src = 'img/rotate.png';
-						img.onload = function() {
-
-							//console.log(chart.canvas);
-							var canvasPattern = document.createElement('canvas');
-							var ctxPattern = canvasPattern.getContext('2d');
-							canvasPattern.width  = chart.canvas.parentNode.clientWidth - img.width / 2;
-    						canvasPattern.height = chart.canvas.parentNode.clientHeight + img.height;
-
-    						//Flip Horizontally
-    						//-----------------
-    						ctxPattern.translate(canvasPattern.width, 0);
-							ctxPattern.scale(-1, 1);
-							//-----------------
-
-							ctxPattern.drawImage(img,
-								canvasPattern.width / 2 - img.width / 2,
-        						canvasPattern.height / 2 - img.height / 2
-        					);
-							ctxPattern.fillStyle = ctxPattern.createPattern(canvasPattern, 'no-repeat');
-
-							//DEBUG
-							/*
-        					var link = document.createElement('a');
-							link.download = 'canvas.png';
-							link.href = canvasPattern.toDataURL('image/png');
-							link.click();
-							*/
-							chart.data.datasets[2].backgroundColor = [ctxPattern.fillStyle];
-						}
-		    		});
-			    });
-		    }
         }
 	});
 
@@ -852,7 +695,8 @@ function syncofsCalculator()
 	syncofs=16384 (90 degree)
 	*/
 
-    $('#calculator').find('.modal-body').empty().append(div);
+    $('#calculator-content').empty().append(div);
+
     var calculatorModal = new bootstrap.Modal(document.getElementById('calculator'), {});
     calculatorModal.show();
 };
@@ -863,7 +707,7 @@ function pinSwapCalculator()
     var row = $('<div>',{class:'row'});
     var col = $('<div>',{class:'col'});
     var pre = $('<pre>').append(
-        '3-bit Binary Field\n \
+        '\n \3-bit Binary Field\n \
         --------------------------\n \
         PWM----Resolver----Current\n\n \
         001 = 1 Swap Currents ony\n \
@@ -882,96 +726,11 @@ function pinSwapCalculator()
     calculatorModal.show();
 };
 
-function gen_stator_data(poles) {
-	var d = [];
-	for (var i = 0; i < poles; i++) {
-		d.push(360/poles);
-	}
-	return d;
-};
-
-function gen_stator_data_color(poles) {
-	var red = 'rgb(255, 99, 132)';
-	var blue = 'rgb(54, 162, 235)';
-	var c = [blue];
-	for (var i = 1; i < poles; i++) {
-		if(c[i-1] == blue){
-			c.push(red);
-		}else{
-			c.push(blue);
-		}
-	}
-	return c;
-};
-
-function gen_syncofs_data(poles,angle) {
-	var divide = 1;
-	if(poles == 2) //2 poles need more segments to show angle
-		divide = 2;
-	var d = [];
-	for (var i = 0; i < poles*divide; i++) {
-		d.push(angle);
-		d.push(360/poles/divide);
-	}
-	//console.log(d);
-	return d;
-};
-
-function gen_stator_syncofs_color(poles) {
-	var red = 'rgb(255, 99, 132)';
-	var blue = 'rgb(54, 162, 235)';
-	var yellow = 'rgb(255, 205, 86)';
-	var c = [red];
-	//for (var x = 0; x < poles/2; x++)
-	//	c.push(blue);
-	console.log('Poles:' + poles);
-
-	var marker = 0;
-	var divide = poles/2;
-	if(poles == 2) { //2 poles need more segments to show angle
-		poles = poles*2;
-		divide = 2;
-	}
-	if(poles == 8)
-		marker = 1;
-
-	for (var i = 0; i < poles*divide; i++) {
-		//console.log(i + ' ' + c[c.length-1]);
-		if(i > poles*divide-2) { //end: 2 = (1 start and 1 marker)
-			for (var x = 0; x < poles/divide; x++)
-				c.push(red);
-		}else if(c[c.length-1] == blue){
-			for (var x = 0; x < poles/divide-1; x++)
-				c.push(red);
-			if(i == marker) {
-				c.push(yellow);
-			}else{
-				c.push(red);
-			}
-		}else if(c[c.length-1] == red){
-			for (var x = 0; x < poles/divide-1; x++)
-				c.push(blue);
-			if(i == marker) {
-				c.push(yellow);
-			}else{
-				c.push(blue);
-			}
-		}else{
-			var alt_color = red;
-			if(poles == 2 || poles == 8) {
-				alt_color = blue;
-			}
-			for (var x = 0; x < poles/divide; x++)
-				c.push(alt_color);
-		}
-	}
-	//console.log(c);
-	return c;
-};
-
-function buildParameters()
+function buildParameters(speed, loop)
 {
     var xhr = new XMLHttpRequest();
+    xhr.speed = speed;
+    xhr.loop = loop;
     xhr.onload = function() {
         if (xhr.status == 200) {
 
@@ -997,17 +756,22 @@ function buildParameters()
 
 	            if(Object.keys(json).length == 0)
 	            {
-	                var pxhr = new XMLHttpRequest();
-	                pxhr.responseType = 'json';
-	                pxhr.onload = function() {
-	                    if (pxhr.status == 200) {
-	                        console.log(pxhr.response);
-	                        json = pxhr.response;
-	                        inputDisabled = true;
-	                    }
-	                };
-	                pxhr.open('GET', 'js/parameters.json');
-	                pxhr.send();
+                    if(os == 'esp8266' && loop == 0) {
+                        initializeSerial(115200,1); //try lower speed
+                        return;
+                    }else{
+    	                var pxhr = new XMLHttpRequest();
+    	                pxhr.responseType = 'json';
+    	                pxhr.onload = function() {
+    	                    if (pxhr.status == 200) {
+    	                        console.log(pxhr.response);
+    	                        json = pxhr.response;
+    	                        inputDisabled = true;
+    	                    }
+    	                };
+    	                pxhr.open('GET', 'js/parameters.json');
+    	                pxhr.send();
+                    }
 	            }else{
 	                buildStatus();
 	                basicChecks(json);

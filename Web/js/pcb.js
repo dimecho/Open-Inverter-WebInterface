@@ -167,6 +167,10 @@ function buildTable(title, csv, notes) {
                 tooltipTriggerEl.addEventListener('show.bs.tooltip', function () {
                     //console.log($(this).attr('img'));
                     var e = $(this);
+                    var findURL =  'common.php?find=' + e.attr('value') + '&ext=jpg';
+                    if(e.attr('smd') == 1){
+                        findURL += '&hw=Hardware v3.0/bom/img';
+                    }
                     var xhr = new XMLHttpRequest();
                     xhr.cache = true;
                     xhr.onload = function() {
@@ -182,7 +186,7 @@ function buildTable(title, csv, notes) {
                                     tooltip.update();
                                 }
                             };
-                            finder.open('GET', 'pcb.php?find=' + e.attr('value')+ '&smd=' + e.attr('smd'), false);
+                            finder.open('GET', findURL, false);
                             finder.send();
                         }
                     };

@@ -26,7 +26,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body"></div>
+            <div class="modal-body" id="software-name"></div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                 <button class="btn btn-success" type="button" data-dismiss="modal" id="software-install">Install</button>
@@ -48,6 +48,9 @@
                     <option value=0>Hardware v1.0</option>
                     <option value=1>Hardware v2.0</option>
                     <option value=2>Hardware v3.0</option>
+                    <option value=3>Hardware Tesla</option>
+                    <option value=4>Hardware Blue-Pill</option>
+                    <option value=5>Hardware Prius</option>
                 </select>
             </div>
             <div class="modal-footer">

@@ -13,6 +13,7 @@
 		}
 
         $interface = urldecode($_POST["interface"]);
+        $software = getSoftware();
 
         if ($os === "windows") {
             $file = str_replace("/","\\",$file);
@@ -20,9 +21,9 @@
         }
 
         if (strpos($interface, "stlink-v2") !== false) {
-            $command = runCommand("stlink", $file, $os, 0);
+            $command = runCommand("stlink", $file. " - " .$software["stlink"]["download"]["version"], $os, 0);
         }else{
-            $command = runCommand("openocd", $file. " " .$interface, $os, 0);
+            $command = runCommand("openocd", $file. " " .$interface. " - " .$software["openocd"]["download"]["version"], $os, 0);
         }
         exec($command, $output, $return);
 

@@ -34,22 +34,6 @@ $(document).ready(function () {
     //DEBUG
     //os = 'mobile';
 
-    /*
-    if (serialPort === undefined) {
-        $.ajax('js/serial.json', {
-            dataType: 'json',
-            success: function(data) {
-                serialPort = data.serial.port;
-                serialWeb = data.serial.web;
-                serialTimeout = data.serial.timeout * 1000;
-                setCookie('serial', serialPort, 1);
-                setCookie('serial_web', serialWeb, 1);
-                setCookie('serial_timeout', serialTimeout, 1);
-            }
-        });
-    }
-    */
-
     var version = getCookie('version') || 0;
     if (version == 0) {
         xhr.onload = function() {
@@ -136,8 +120,8 @@ function titleVersion(version)
 
 function displayFWVersion(fwrev)
 {
-    $('#fwVersion').empty().append('Firmware v' + fwrev);
-    $('#fwVersion').removeClass('invisible');
+    document.getElementById('fwVersion').textContent = 'Firmware v' + fwrev;
+    document.getElementById('fwVersion').classList.remove('invisible');
     if(fwrev < 3.59)
     {
         $.notify({ message: 'Firmware Update Recommended!' }, { type: 'danger' });
@@ -148,8 +132,13 @@ function displayHWVersion()
 {
     if (hardware != undefined) {
         console.log(hardware + ':' + hardware_name[hardware]);
-        $('#hwVersion').empty().append(hardware_name[hardware]);
-        $('#hwVersion').removeClass('invisible');
+
+        document.getElementById('hwVersion').textContent = hardware_name[hardware];
+        document.getElementById('hwVersion').classList.remove('invisible');
+        document.getElementById('hwVersion').onclick = function() {
+            var hardwareModal = new bootstrap.Modal(document.getElementById('hardware'), {});
+            hardwareModal.show();
+        }
     }
 
     if (sn == undefined) {
@@ -190,6 +179,7 @@ function selectHardware()
     hardware = $('#hwver').val();
     setCookie('hardware', hardware, 1);
     displayHWVersion();
+    //location.reload(); 
 };
 
 function isInt(n){
@@ -333,7 +323,7 @@ function validateInput(json, id, value, callback)
                 }
             }
 
-            var notify = $.notify({ message: id + ' = ' + $.trim(value) },{ type: 'warning' });
+            var notify = $.notify({ message: id + ' = ' + value.trim() },{ type: 'warning' });
 			if(callback)
 				callback(true);
         }
@@ -354,22 +344,25 @@ function saveParameter(notify) {
     clearTimeout(saveReminderTimer);
     saveReminder = false;
 
-    var data = sendCommand('save', 0);
+    sendCommand('save', 0, function(data){
+        if(notify) {
+            if(data.indexOf('stored') != -1)
+            {
+                //TODO: CRC32 check on entire params list
 
-    if(notify) {
-
-        if(data.indexOf('stored') != -1)
-        {
-            //TODO: CRC32 check on entire params list
-
-            $.notify({ message: data },{ type: 'success' });
-        }else{
-            $.notify({ icon: 'icons icon-alert', title: 'Error', message: data },{ type: 'danger' });
+                $.notify({ message: data },{ type: 'success' });
+            }else{
+                $.notify({ icon: 'icons icon-alert', title: 'Error', message: data },{ type: 'danger' });
+            }
         }
-    }
+    });
 };
 
 function setParameter(cmd, value, save, notify, callback) {
+
+    if (callback == undefined) {
+        callback = function(){};
+    }
 
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {
@@ -394,7 +387,7 @@ function sendCommand(cmd, loop, callback) {
         callback = function(){};
     }
   
-    if(loop < 2) {
+    if(loop < 3) {
         var xhr = new XMLHttpRequest();
         xhr.cache = false;
         xhr.onload = function() {
@@ -421,7 +414,7 @@ function sendCommand(cmd, loop, callback) {
         xhr.open('GET', 'serial.php?command=' + cmd, async);
         xhr.send();
     }else{
-        $.notify({ message: 'Recommended: Power Cycle Inverter' }, { type: 'warning' });     
+        $.notify({ message: 'Power Cycle Inverter' }, { type: 'warning' });     
     }
     return e;
 };
@@ -531,24 +524,26 @@ function stopInverter() {
 
 function setDefaults() {
     
-    sendCommand('can clear', 0);
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'can.php?clear=1', true);
-    xhr.send();
-
-    var data = sendCommand('defaults', 0);
-    //console.log(data);
-
-    if (data.indexOf('Defaults loaded') != -1) {
-        sendCommand('save', 0);
-        $.notify({ message: 'Inverter reset to Default' }, { type: 'success' });
-    } else {
-        $.notify({ icon: 'icons icon-warning', title: 'Error', message: data }, { type: 'danger' });
+    var loader = document.getElementById('loader-parameters');
+    if (typeof(loader) != 'undefined' && interface != null) {
+        loader.classList.remove('d-none');
     }
 
-    setTimeout(function () {
-        window.location.href = 'index.php';
-    }, 2000);
+    sendCommand('can clear', 0, function() {
+        sendCommand('defaults', 0, function(data) {
+            //console.log(data);
+            if (data.indexOf('Defaults loaded') != -1) {
+                sendCommand('save', 0, function() {
+                    $.notify({ message: 'Inverter reset to Default' }, { type: 'success' });
+                    setTimeout(function() {
+                        window.location.href = 'index.php';
+                    }, 2000);
+                });
+            } else {
+                $.notify({ icon: 'icons icon-warning', title: 'Error', message: data }, { type: 'danger' });
+            }
+        });
+    });
 };
 
 function giveCredit(csv) {
@@ -977,7 +972,7 @@ function setCookie(name, value, exdays) {
     var exdate = new Date();
     exdate.setDate(exdate.getDate() + exdays);
     var c_value = escape(value) + (exdays == null ? '' : '; expires=' + exdate.toUTCString());
-    document.cookie = name + '=' + c_value;
+    document.cookie = name + '=' + c_value + '; SameSite=Lax';
 };
 
 function getCookie(name) {

@@ -3,6 +3,14 @@
     <head>
         <?php include "header.php" ?>
         <link rel="stylesheet" type="text/css" href="css/ion.rangeSlider.css" />
+        <style>
+			.modal.modal-wide .modal-dialog {
+			  width: 90%;
+			}
+			.modal-wide .modal-body {
+			  overflow-y: auto;
+			}
+		</style>
         <script src="js/ion.rangeSlider.js"></script>
         <script src="js/jquery.knob.js"></script>
         <script src="js/simple.js"></script>
@@ -19,23 +27,23 @@
                         <div class="row"><hr></div>
                         <div class="row">
                             <div class="col">
-								<button type="button" class="btn btn-primary d-none" type="button" onclick="boostTuning()"><i class="icons icon-power"></i> Boost Tuning</button>
-                                <button type="button" class="btn btn-primary d-none" type="button" onclick="syncofsTuning()"><i class="icons icon-power"></i> Syncofs Tuning</button>
+								<button type="button" class="btn btn-primary d-none" onclick="boostTuning()"><i class="icons icon-power"></i> Boost Tuning</button>
+                                <button type="button" class="btn btn-primary d-none" onclick="syncofsTuning()"><i class="icons icon-power"></i> Syncofs Tuning</button>
                             </div>
                             <div class="col">
-								<button type="button" class="btn btn-primary d-none" type="button" onclick="fweakTuning()"><i class="icons icon-tune"></i> Fweak Tuning</button>
+								<button type="button" class="btn btn-primary d-none" onclick="fweakTuning()"><i class="icons icon-tune"></i> Fweak Tuning</button>
                             </div>
 							<div class="col">
-								<button type="button" class="btn btn-primary d-none" type="button" onclick="polePairTest()"><i class="icons icon-connect"></i> Pole Pair Test</button>
+								<button type="button" class="btn btn-primary d-none" onclick="polePairTest()"><i class="icons icon-connect"></i> Pole Pair Test</button>
                             </div>
 							<div class="col">
-								<button type="button" class="btn btn-primary d-none" type="button" onclick="numimpTest()"><i class="icons icon-encoder"></i> Encoder Pulse Test</button>
+								<button type="button" class="btn btn-primary d-none" onclick="numimpTest()"><i class="icons icon-encoder"></i> Encoder Pulse Test</button>
                             </div>
                         </div>
 						<div class="row"><hr></div>
 						<div class="row">
                             <div class="col">
-								<button type="button" class="btn btn-success" type="button" onclick="tempTuning()"><i class="icons icon-temp"></i> Temp Sensors</button>
+								<button type="button" class="btn btn-success" onclick="tempTuning()"><i class="icons icon-temp"></i> Temp Sensors</button>
                             </div>
                             <div class="col">
                             </div>
@@ -48,32 +56,10 @@
                     </div>
                     <br>
                     <center><div class="spinner-border text-dark d-none" id="loader-parameters"></div></center>
-                    <table class="table table-active bg-light table-bordered"><tr><td><h4>Motor</h4></td></tr></table>
+                    <table class="table table-active bg-light table-bordered"><tr><td><h4><i class="icons icon-motor"></i> Motor</h4></td></tr></table>
                     <table class="table table-active bg-light table-bordered table-striped table-hover" id="parameters_Motor"></table>
-                    <table class="table table-active bg-light table-bordered"><tr><td><h4>Battery</h4></td></tr></table>
+                    <table class="table table-active bg-light table-bordered"><tr><td><h4><i class="icons icon-power"></i> Battery</h4></td></tr></table>
                     <table class="table table-active bg-light table-bordered table-striped table-hover" id="parameters_Battery"></table>
-                    <a class="temp-tune" data-fancybox data-src="#temp-tune" href="javascript:;"></a>
-                    <div class="d-none" id="temp-tune" style="width:60%;border-radius:5px">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col">
-                                    Current Temperature (&#8451;):
-                                </div>
-                                 <div class="col">
-                                    <input type="text" class="form-control" id="temp-degree">
-                                </div>
-                            </div>
-                            <div class="row"><hr></div>
-                            <div class="row">
-                                <div class="col" align="center">
-                                    <button class="btn btn-danger" type="button" onClick="$.fancybox.close();"><i class="glyphicon glyphicon-remove"></i> Cancel</button>
-                                </div>
-                                <div class="col" align="center">
-                                    <button class="btn btn-success" type="button" id="temp-continue"><i class="glyphicon glyphicon-ok"></i> Continue</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -81,43 +67,42 @@
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content bg-light">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="alertify_header"></h5>
+                        <h5 class="modal-title" id="alertify-header"></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body" id="alertify_body"></div>
+                    <div class="modal-body" id="alertify-body"></div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal" id="alertify_cancel"></button>
-                        <button class="btn btn-success" type="button" data-dismiss="modal" id="alertify_ok"></button>
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal" id="alertify-cancel"></button>
+                        <button class="btn btn-success" type="button" data-dismiss="modal" id="alertify-ok"></button>
                     </div>
                 </div>
             </div>
         </div>
         <div class="modal" id="syncofsTuning">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-dialog modal-xl modal-dialog-centered" style="width: 90%; overflow-y: auto;">
                 <div class="modal-content bg-light">
                     <div class="modal-body">
                         <div class="container">
-                            <div class="row">
+                            <div class="row" >
                                 <div class="col" align="center">
                                     <h3>syncofs</h3>
                                 </div>
                                 <div class="col" align="center">
-                                    <h3>manualid</h3>
+                                	<h3 class="text-danger d-none" id="text_slowdown">Slow Down!</h3>
+                                    <h3 class="text-warning d-none" id="text_close">Getting Close</h3>
+                                    <h3 class="text-success d-none" id="text_found">Found!</h3>
                                 </div>
-                            </div>
-                            <div class="row" style="height: 20px;">
                                 <div class="col" align="center">
-                                    <h2 class="text-danger d-none" id="text_slowdown">Slow Down!</h2>
-                                    <h2 class="text-warning d-none" id="text_close">Getting Close</h2>
-                                    <h2 class="text-success d-none" id="text_found">Found!</h2>
+                                    <h3>manualid</h3>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col" align="center">
                                     <input class="dial notstored adjuster" data-displayinput="true" data-min="0" data-max="100" data-fgcolor="#222222" data-bgcolor="#FFFFFF" value="0" id="syncofs">
                                 </div>
+                                <div class="col" align="center" id="syncofsTuningMotor"></div>
                                 <div class="col" align="center">
                                     <input class="dial notstored adjuster" data-displayinput="true" data-min="0" data-max="100" data-fgcolor="#222222" data-bgcolor="#FFFFFF" value="0" id="manualid">
                                 </div>
@@ -126,6 +111,31 @@
                                 <div class="col" id="syncofsTuningGraph"></div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="tempTuning">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content bg-light">
+                    <div class="modal-body" id="temp-body">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" id="temp-current" name="temp-current" class="form-control" placeholder="">
+                            </div>
+                            <div class="input-group w-100">
+                                <span class = "input-group-addon w-50">
+                                    <select class="form-control" onchange="tempTuningChangeSensor('snshs',this.options[this.selectedIndex].value)"></select>
+                                </span>
+                                <span class = "input-group-addon w-50">
+                                    <select class="form-control" onchange="tempTuningChangeSensor('snsm',this.options[this.selectedIndex].value)"></select>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal" id="temp-cancel"></button>
+                        <button class="btn btn-success" type="button" id="temp-ok"></button>
                     </div>
                 </div>
             </div>

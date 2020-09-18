@@ -142,8 +142,8 @@ fi
 #==============
 #Compress Files
 #==============
-purgecss --css data/css/bootstrap.css --content data/*.php,data/js/*.js --whitelist alert-success,alert-danger,alert-warning --output data/css/bootstrap.css
-purgecss --css data/css/bootstrap.slate.css --content data/*.php,data/js/*.js --whitelist alert-success,alert-danger,alert-warning  --output data/css/bootstrap.slate.css
+#purgecss --css data/css/bootstrap.css --content data/*.php,data/js/*.js --whitelist alert-success,alert-danger,alert-warning --output data/css/bootstrap.css
+#purgecss --css data/css/bootstrap.slate.css --content data/*.php,data/js/*.js --whitelist alert-success,alert-danger,alert-warning  --output data/css/bootstrap.slate.css
 
 #for f in $(find data -name '*.php'); do
 #    java -jar tools/htmlcompressor-1.5.3.jar --preserve-php --type html -o "$f" "$f"
@@ -162,5 +162,5 @@ for f in $(find data -type f -name '*.*' ! -name '*.bin' ! -name '*.php' ! -name
 done
 
 #./tools/mklittlefs -c ./data/ -b 8192 -p 256 -s $(($(du -ks data | cut -f1) * 1024)) flash-littlefs.bin
-./tools/mklittlefs -c ./data/ -b 8192 -p 256 -s 750000 flash-littlefs.bin
+./tools/mklittlefs -c ./data/ -b 8192 -p 256 -s 780000 flash-littlefs.bin
 #./tools/mklittlefs -i flash-littlefs.bin

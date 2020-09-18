@@ -34,7 +34,7 @@
 	$ajax_url .= "&interface=" .urlencode($ocd_interface). "\"";
 ?>
 <script>
-	var progressTimerCounter = 0;
+	var timerUploadCounter = 0;
 
 	function firmwareUpdateRun() {
 
@@ -44,41 +44,18 @@
             	var data = xhr.responseText;
 				//console.log(data);
 
-				progressTimerCounter = 100;
+				timerUploadCounter = 100;
 				
                 deleteCookie('version');
 				$('#output').append($('<pre>').append(data));
             <?php
                 if (basename($_SERVER['PHP_SELF']) == "bootloader.php"){
 			?>
-				if(data.indexOf('shutdown command invoked') !=-1 || data.indexOf('jolly good') !=-1)
-				{
-					$.notify({ message: "Bootloader Complete" },{ type: "success" });
-					$.notify({ message: "...Next Flash Firmware" },{ type: "warning" });
-					setTimeout( function (){
-						window.location.href = "firmware.php";
-					},8000);
-				}
+				progressBootloaderAnalisys(data)
 			<?php
                 }else if (basename($_SERVER['PHP_SELF']) == "firmware.php"){
             ?>
-            	if(data.indexOf('shutdown command invoked') !=-1 || data.indexOf('jolly good') !=-1 || data.indexOf('Update done') !=-1){
-                    $.notify({ message: "Flash Complete" },{ type: "success" });
-                }
-                if(data.indexOf('shutdown command invoked') !=-1 || data.indexOf('jolly good') !=-1){
-                    $.notify({ message: "Plugin USB-RS232-TTL" },{ type: "warning" });
-                    $.notify({ message: "Unlug JTAG Programmer" },{ type: "danger" });
-                }
-                if(data.indexOf('Resource busy') !=-1){
-                	$.notify({ message: "Wrong USB-TTL Selected ...Try Again" },{ type: "warning" });
-                	 setTimeout(function() {
-	                    window.location.href = 'firmware.php';
-	                },8000);
-                }else{
-	                setTimeout(function() {
-	                    window.location.href = 'index.php';
-	                },12000);
-	            }
+            	progressFirmwareAnalisys(data);
             <?php
                 }else{ //esp8266.php
             ?>
@@ -106,11 +83,11 @@
 
 	function firmwareProgress(speed) {
 	    var timer = setInterval(function(){
-	    	progressTimerCounter++;
-	    	if(progressTimerCounter == 100) {
+	    	timerUploadCounter++;
+	    	if(timerUploadCounter == 100) {
 		        clearInterval(timer);
 		    }
-		    document.getElementsByClassName('progress-bar')[0].style.width = progressTimerCounter + '%';
+		    document.getElementsByClassName('progress-bar')[0].style.width = timerUploadCounter + '%';
 	    }, speed);
 	};
 </script>

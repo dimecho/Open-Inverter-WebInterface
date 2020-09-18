@@ -1,36 +1,34 @@
 #!/bin/sh
 
-xPacksPath="/usr/local/share/xPacks/openocd/0.10.0-14"
-
 if [ "$1" = "uninstall" ]; then
-    rm -rf "$xPacksPath"
+    rm -rf "/usr/local/share/xPacks/openocd/$2"
 else
-    if [ ! -f "$xPacksPath/bin/openocd" ]; then
+    if [ ! -f "/usr/local/share/xpack-openocd-$1/bin/openocd" && -z "$2" ]; then
         #MacOS 10.15
         if [ ! -d "/usr/local/share" ]; then
             osascript -e "do shell script \"mkdir /usr/local/share; chown -R $(whoami) /usr/local/share\" with administrator privileges"
         fi
-        tar xfv ~/Downloads/xpack-openocd-0.10.0-14-darwin-x64.tar.gz -C /usr/local/share
+        tar xfv ~/Downloads/xpack-openocd-$1-darwin-x64.tar.gz -C /usr/local/share
 
         os_ver=$(sw_vers -productVersion)
         if [[ $os_ver == 10.15* ]]; then
-            if ! grep -q $xPacksPath ~/.zprofile; then
-                echo \n >> ~/.zprofile
-                echo "export PATH=\${PATH}:$xPacksPath/bin" >> ~/.zprofile
-                echo \n >> ~/.zprofile
+            if ! grep -q xpack-openocd-$1 ~/.zprofile; then
+                echo '\n' >> ~/.zprofile
+                echo "export PATH=\${PATH}:/usr/local/share/xpack-openocd-$1/bin" >> ~/.zprofile
+                echo '\n' >> ~/.zprofile
             fi
         else
-            if ! grep -q $xPacksPath ~/.bashrc; then
-                echo \n >> ~/.bashrc
-                echo "export PATH=\${PATH}:$xPacksPath/bin" >> ~/.bashrc
-                echo \n >> ~/.bashrc
+            if ! grep -q xpack-openocd-$1 ~/.bashrc; then
+                echo '\n' >> ~/.bashrc
+                echo "export PATH=\${PATH}:/usr/local/share/xpack-openocd-$1/bin" >> ~/.bashrc
+                echo '\n' >> ~/.bashrc
             fi
         fi
         source ~/.zprofile
     else
-        export PATH="$PATH:$xPacksPath/bin"
 
-        cd $xPacksPath/scripts
+        export PATH="$PATH:/usr/local/share/xpack-openocd-$4/bin"
+        cd /usr/local/share/xpack-openocd-$4/scripts
         
         #halt
         #flash erase_sector 0 0 last
@@ -39,15 +37,16 @@ else
         #The main firmware must be linked to start at address 0x08001000
         #The bootloader starts at address 0x08000000 and can be 4k in size
 
+        if [ "$3" = "ram" ]; then
+            ADDRESS=" 0x08001000"
+        else
+            ADDRESS=" 0x08000000"
+        fi
+
         case "$1" in
           *".hex"*) ADDRESS="" ;;
           *".HEX"*) ADDRESS="" ;;
-          *)        ADDRESS=" 0x08000000" ;;
         esac
-
-        if [ "$3" = "ram" ]; then
-            ADDRESS=" 0x08001000"
-        fi
 
         openocd -f ./$2 -f ./board/olimex_stm32_h103.cfg  -c "init" -c "reset halt" -c "flash write_image erase unlock \"$1\"$ADDRESS" -c "reset" -c "shutdown" 
     fi

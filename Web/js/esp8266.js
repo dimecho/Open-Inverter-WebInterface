@@ -1,3 +1,6 @@
+var timerProgress;
+var timerProgressCounter = 0;
+
 $(document).ready(function() {
 
     buildMenu(function() {
@@ -13,6 +16,7 @@ $(document).ready(function() {
                     console.log(nvram.response);
 
                     document.getElementById('esp8266-nvram').classList.remove('d-none');
+                    
                     if(nvram.response['nvram'][1] == '0') {
                         $('#WiFiModeAP').prop('checked', true);
                     }else{
@@ -44,6 +48,9 @@ $(document).ready(function() {
                     $('#WiFiDNS').val(nvram.response['nvram'][11]);
                     $('.spinner-border').addClass('d-none'); //.hide();
                     $('#parameters').removeClass('d-none'); //.show();
+
+                    document.getElementById('browseLittleFS').disabled = false;
+                    document.getElementById('browseSketch').disabled = false;
                 }else{
                     document.getElementById('formSketch').action = 'esp8266.php';
                     document.getElementById('formLittleFS').action = 'esp8266.php';
@@ -122,15 +129,6 @@ $(document).ready(function() {
                     progressTimer(40, function() {
                         document.getElementById('formLittleFS').submit();
                     });
-                    /*
-                        $.ajax('/reset', {
-                        success: function success(data) {
-                            progressTimer(40, function(){
-                                document.getElementById('formLittleFS').submit();
-                            });
-                        }
-                    });
-                    */
                 }
             };
             xhr.open('GET', '/format', false);
@@ -182,14 +180,15 @@ function setInterfaceImage(i) {
 };
 
 function progressTimer(speed, callback) {
-    var i = 0;
-    var timer = setInterval(function() {
-        i++;
-        if(i == 100) {
-            clearInterval(timer);
+    clearInterval(timerProgress);
+
+    timerProgress = setInterval(function() {
+        timerProgressCounter++;
+        if(timerProgressCounter == 100) {
+            clearInterval(timerProgress);
             callback();
         }
-        document.getElementsByClassName('progress-bar')[0].style.width = i + '%';
+        document.getElementsByClassName('progress-bar')[0].style.width = timerProgressCounter + '%';
     }, speed);
 };
 
