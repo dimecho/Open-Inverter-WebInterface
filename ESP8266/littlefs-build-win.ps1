@@ -1,3 +1,16 @@
+function Elevate() {
+  # Get the ID and security principal of the current user account
+  $myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent()
+  $myWindowsPrincipal = New-Object System.Security.Principal.WindowsPrincipal($myWindowsID)
+
+  # Check to see if we are currently running "as Administrator"
+  if (!$myWindowsPrincipal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)){
+        Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -File ""$PSCommandPath""" -verb runas
+    exit
+  }
+}
+
+cd $PSScriptRoot
 #==============
 #Copy Files
 #==============
@@ -20,7 +33,7 @@ foreach ($file in $cssfiles) {
   Copy-Item "..\Web\css\$file" -Destination .\data\css
 }
 
-$jsfiles = 'esp8266.js', 'jquery.core.js', 'jquery.knob.js', 'potentiometer.js', 'bootstrap.js', 'ion.rangeSlider.js', 'bootstrap-notify.js', 'firmware.js', 'can.js', 'graph.js', 'jscolor.js', 'index.js', 'menu.js', 'simple.js', 'chart.js', 'chartjs-plugin-annotation.js', 'chartjs-plugin-datalabels.js', 'test.js', 'mobile.js', 'language.js'
+$jsfiles = 'esp8266.js', 'jquery.core.js', 'jquery.knob.js', 'bootstrap.js', 'ion.rangeSlider.js', 'bootstrap-notify.js', 'firmware.js', 'can.js', 'graph.js', 'jscolor.js', 'index.js', 'menu.js', 'simple.js', 'chart.js', 'chartjs-plugin-annotation.js', 'chartjs-plugin-datalabels.js', 'test.js', 'mobile.js', 'language.js', 'test.json'
 foreach ($file in $jsfiles) {
   Copy-Item "..\Web\js\$file" -Destination .\data\js
 }
@@ -37,8 +50,7 @@ Copy-Item "..\Web\pcb\Hardware v1.0\diagrams\test.png" -Destination .\data\pcb\v
 Copy-Item "..\Web\pcb\Hardware v1.0\diagrams\esp8266.png" -Destination .\data\pcb\v1.0
 Copy-Item "..\Web\pcb\Hardware v3.0\diagrams\test.png" -Destination .\data\pcb\v3.0
 Copy-Item "..\Web\pcb\Hardware v3.0\diagrams\esp8266.png" -Destination .\data\pcb\v3.0
-Copy-Item ..\Web\font\icons.ttf -Destination .\data\font
-#Copy-Item ..\Web\font\icons.woff2 -Destination .\data\font
+Copy-Item ..\Web\font\icons.woff2 -Destination .\data\font
 #Copy-Item ..\Web\font\icons.woff -Destination .\data\font
 
 #================
@@ -68,20 +80,28 @@ if(!(Test-Path .\tools -PathType Container)) {
     New-Item -ItemType "directory" -Path .\tools
 }
 
-if (-Not (Test-Path .\tools\yuicompressor-2.4.8.jar)) {
+if (!(Test-Path .\tools\yuicompressor-2.4.8.jar)) {
 	Invoke-WebRequest -OutFile .\tools\yuicompressor-2.4.8.zip -Uri "https://github.com/yui/yuicompressor/releases/download/v2.4.8/yuicompressor-2.4.8.zip"
 }
 
-if (-Not (Test-Path .\tools\closure-compiler-v20190929.jar)) {
-	Invoke-WebRequest -OutFile .\tools\compiler-20190929.zip -Uri "https://dl.google.com/closure-compiler/compiler-20190929.zip"
+if (!(Test-Path .\tools\closure-compiler-v20200224.jar)) {
+	Invoke-WebRequest -OutFile .\tools\compiler-20200224.zip -Uri "https://dl.google.com/closure-compiler/compiler-20200224.zip"
 }
 
-if (-Not (Test-Path .\tools\mklittlefs.exe)) {
-	Invoke-WebRequest -OutFile .\tools\mklittlefs-0.2.3-arduino-esp8266-win32.zip -Uri "https://github.com/igrr/mklittlefs/releases/download/0.2.3/mklittlefs-0.2.3-arduino-esp8266-win32.zip"
+if (!(Test-Path .\tools\mklittlefs.exe)) {
+	Invoke-WebRequest -OutFile .\tools\x86_64-w64-mingw32-mklittlefs-295fe9b.zip -Uri "https://github.com/earlephilhower/mklittlefs/releases/download/3.0.0/x86_64-w64-mingw32-mklittlefs-295fe9b.zip"
 }
 
-if (-Not (Test-Path .\tools\bin\gzip.exe)) {
-	Invoke-WebRequest -OutFile .\tools\gzip-1.3.12-1-bin.zip -Uri "http://sourceforge.mirrorservice.org/g/gn/gnuwin32/gzip/1.3.12-1/gzip-1.3.12-1-bin.zip"
+if (!(Test-Path "C:\ProgramData\chocolatey\bin\gzip.exe")) {
+	#Invoke-WebRequest -OutFile .\tools\gzip-1.3.12-1-bin.zip -Uri "http://sourceforge.mirrorservice.org/g/gn/gnuwin32/gzip/1.3.12-1/gzip-1.3.12-1-bin.zip"
+  if(!(Test-Path "C:\ProgramData\chocolatey" -PathType Container)) {
+    if (!(Test-Path .\tools\chocolatey.ps1)) {
+      Invoke-WebRequest -OutFile .\tools\chocolatey.ps1 -Uri "https://chocolatey.org/install.ps1"
+    }
+    Elevate
+    Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -File ""$PSScriptRoot\tools\chocolatey.ps1""" -NoNewWindow -Wait
+  }
+  Start-Process powershell -ArgumentList "choco install gzip -y" -NoNewWindow -Wait
 }
 
 Get-ChildItem .\tools -Filter *.zip | 
@@ -89,7 +109,7 @@ Foreach-Object {
     Expand-Archive -Path $_.FullName -DestinationPath .\tools -Force
     Remove-Item $_.FullName -ErrorAction SilentlyContinue
 }
-Move-Item .\tools\mklittlefs-0.2.3-arduino-esp8266-win32\mklittlefs.exe -Destination .\tools -ErrorAction SilentlyContinue
+Move-Item .\tools\mklittlefs\mklittlefs.exe -Destination .\tools -ErrorAction SilentlyContinue
 Remove-Item -Recurse -Force .\tools\mklittlefs-0.2.3-arduino-esp8266-win32 -ErrorAction SilentlyContinue
 
 #==============
@@ -99,16 +119,16 @@ Remove-Item -Recurse -Force .\tools\mklittlefs-0.2.3-arduino-esp8266-win32 -Erro
 Get-ChildItem .\data\css -Filter *.css | 
 Foreach-Object {
     Write-Host $_.FullName
-    Start-Process java -ArgumentList "-jar ""$PSScriptRoot\tools\yuicompressor-2.4.8.jar"" --type css -o .\littlefs\css\$($_.Name) .\littlefs\css\$($_.Name)" -NoNewWindow -Wait
+    Start-Process java -ArgumentList "-jar ""$PSScriptRoot\tools\yuicompressor-2.4.8.jar"" --type css -o ""$PSScriptRoot\data\css\$($_.Name)"" ""$PSScriptRoot\data\css\$($_.Name)""" -NoNewWindow -Wait
 }
 
 Get-ChildItem .\data\js -Filter *.js | 
 Foreach-Object {
     Write-Host $_.FullName
-    Start-Process java -ArgumentList "-jar ""$PSScriptRoot\tools\closure-compiler-v20190929.jar"" --js_output_file .\littlefs\js\$($_.Name) --js .\littlefs\js\$($_.Name)" -NoNewWindow -Wait
+    Start-Process java -ArgumentList "-jar ""$PSScriptRoot\tools\closure-compiler-v20190929.jar"" --js_output_file ""$PSScriptRoot\data\js\$($_.Name)"" --js ""$PSScriptRoot\data\js\$($_.Name)""" -NoNewWindow -Wait
 }
 
-Get-ChildItem .\data -Recurse -Exclude *.bin -Exclude *.php -Exclude *.key -Exclude *.cer -Filter *.* | 
+Get-ChildItem .\data -Recurse -Exclude *.bin,*.php,*.key,*.cer -Filter *.* | 
 Foreach-Object {
     if (-Not (Test-Path $_.FullName -PathType Container)) {
         Start-Process .\tools\bin\gzip.exe -ArgumentList $_.FullName -NoNewWindow -Wait
