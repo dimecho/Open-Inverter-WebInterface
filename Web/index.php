@@ -8,7 +8,7 @@
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", "/format");
                 xhr.send();
-                alert("File System not compressed! Please flash SPIFFS binary.");
+                alert("File System not compressed! Please flash LittleFS binary.");
                 window.location.href = "/update";
             }
             function addListeners(xhr) {

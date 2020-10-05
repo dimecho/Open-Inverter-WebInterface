@@ -424,6 +424,17 @@ function syncofsTuning()
                     getScript('js/chartjs-plugin-annotation.js', function () {
                         getJSONFloatValue('polepairs', function ( polepairs) {
                             polepairs = 4; //DEBUG
+
+                            //========================
+                            var poleArray = 0;
+                            var poles    =  [2, 4, 6, 8,  12];
+                            var windings =  [4, 8, 9, 12, 18];
+                            for (var i = 0; i < poles.length; i++) {
+                                if((polepairs*2) == poles[i]) {
+                                    poleArray = i;
+                                    break;
+                                }
+                            }
                             //========================
                             var shift_oneeighty = 0.5;
                             var syncofs = knobValue_syncofs;
@@ -435,8 +446,8 @@ function syncofsTuning()
                             //========================
 
                             var chart_stator_datasets = {
-                                data: gen_stator_data(polepairs*2),
-                                backgroundColor: gen_stator_data_color(polepairs*2),
+                                data: gen_stator_data(windings[poleArray]),
+                                backgroundColor: gen_stator_data_color(windings[poleArray]),
                                 //data: gen_stator_data(8),
                                 //backgroundColor: gen_stator_data_color(8),
                                 //borderWidth:0
@@ -458,7 +469,7 @@ function syncofsTuning()
                                 labels: [],
                                 datasets: [chart_stator_datasets, chart_syncofs_datasets, chart_rotor_datasets]
                             };
-
+                            
                             for (var i = 90; i > 0; i--) {
                                 dataMotor.labels.push(0-i);
                             }
@@ -467,7 +478,7 @@ function syncofsTuning()
                             }
 
                             optionsMotor = {
-                                //responsive: true,
+                                responsive: true,
                                 //maintainAspectRatio: true,
                                 rotation: Math.PI,
                                 //cutoutPercentage: 20,
@@ -484,50 +495,101 @@ function syncofsTuning()
                                 },
                                 scales: {
                                     xAxes: [{
+                                        id: 'mx-axis-0',
                                         gridLines: {
                                             display:false
                                         },
+                                        scaleLabel: {
+                                            display: true,
+                                            fontColor: ctxFontColor,
+                                            fontSize: ctxFont,
+                                            //labelString: 'X'
+                                        },
                                         ticks: {
-                                            display: false
+                                            display: false,
+                                            suggestedMin: -90,
+                                            suggestedMax: 90
                                         }
                                     }],
                                     yAxes: [{
-                                        /*gridLines: {
-                                            display:false
-                                        },*/
+                                        id: 'my-axis-0',
+                                        gridLines: {
+                                            display: true
+                                        },
+                                        scaleLabel: {
+                                            display: true,
+                                            fontColor: ctxFontColor,
+                                            fontSize: ctxFont,
+                                            //labelString: 'Y'
+                                        },
                                         ticks: {
-                                            display: false
+                                            display: false,
+                                            suggestedMin: -90,
+                                            suggestedMax: 90
                                         }
                                     }]
                                 },
                                 annotation: {
                                     //drawTime: 'afterDatasetsDraw',
-                                    annotations: [{
+                                    annotations: [
+                                    {
                                         type: 'line',
                                         id: 'm-line-0',
                                         mode: 'vertical',
-                                        scaleID: 'x-axis-0',
-                                        value: visual_angle,
-                                        endValue: 0-visual_angle,
-                                        //borderColor: 'rgb(255, 0, 0)',
-                                        //borderWidth: 1,
+                                        scaleID: 'mx-axis-0',
+                                        value: 0,
+                                        endValue: 0,
+                                        borderColor: 'rgb(91, 194, 54)',
+                                        borderWidth: 2,
+                                        label: {
+                                            enabled: false,
+                                            xAdjust: 0,
+                                            yAdjust: 0,
+                                            content: '0°',
+                                            position: 'top'
+                                        }
+                                    },{
+                                        type: 'line',
+                                        id: 'q-line-0',
+                                        mode: 'vertical',
+                                        scaleID: 'mx-axis-0',
+                                        value: 40,
+                                        endValue: -40,
+                                        borderColor: 'rgb(0, 0, 0)',
+                                        borderWidth: 1,
                                         label: {
                                             enabled: true,
-                                            xAdjust: -50,
+                                            xAdjust: 0,
                                             yAdjust: 0,
-                                            content: 'Offset ' + syncofs_angle.toFixed(1) + '°',
+                                            content: 'q-axis',
                                             position: 'top'
+                                        }
+                                    },{
+                                        type: 'line',
+                                        id: 'd-line-0',
+                                        mode: 'horizontal',
+                                        scaleID: 'my-axis-0',
+                                        value: -80,
+                                        endValue: 80,
+                                        borderColor: 'rgb(0, 0, 0)',
+                                        borderWidth: 1,
+                                        label: {
+                                            enabled: true,
+                                            xAdjust: 0,
+                                            yAdjust: 0,
+                                            content: 'd-axis',
+                                            position: 'right'
                                         }
                                     },{
                                         type: 'line',
                                         id: 'm-line-2',
                                         mode: 'horizontal',
-                                        scaleID: 'y-axis-0',
-                                        value: 0.5,
+                                        scaleID: 'my-axis-0',
+                                        value: 0,
                                         borderWidth: 0,
                                         label: {
                                             enabled: true,
-                                            yAdjust: -12,
+                                            yAdjust: 0,
                                             content: '49152 (270°)',
                                             position: 'left'
                                         }
@@ -535,12 +597,12 @@ function syncofsTuning()
                                         type: 'line',
                                         id: 'm-line-3',
                                         mode: 'horizontal',
-                                        scaleID: 'y-axis-0',
-                                        value: 0.5,
+                                        scaleID: 'my-axis-0',
+                                        value: 0,
                                         borderWidth: 0,
                                         label: {
                                             enabled: true,
-                                            yAdjust: -12,
+                                            yAdjust: 0,
                                             content: '16384 (90°)',
                                             position: 'right'
                                         }
@@ -685,7 +747,7 @@ function syncofsTuning()
                                         borderColor: 'rgb(0, 0, 0)',
                                         borderWidth: 2,
                                         label: {
-                                          content: "syncofs=" + knobValue_syncofs,
+                                          content: "syncofs=" + knobValue_syncofs + ' (0°)',
                                           enabled: true,
                                           position: 'left'
                                         }

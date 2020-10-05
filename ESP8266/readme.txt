@@ -13,7 +13,7 @@ Build (From Source Code)
 
     [Build]
 
-    1) Run ./littlefs-build-mac.sh (littlefs-build-win.ps1 Windows) build filesystem
+    1) Run ./littlefs-build-mac (littlefs-build-win.ps1 Windows) build filesystem
     2) Open ESP8266.ino with Arduino IDE
     3) Sketch -> Export compiled Binary
 
@@ -24,8 +24,8 @@ Setup (New from Factory)
     1) Solder GPIO-0 bridge to 0 to enable UART
     2) Connect ESP8266 to USB-Serial-TTL (Note: 3.3V ONLY!)
     3) Plugin to computer and check/install TTL-USB drivers
-    4) Run ./sketch.sh (sketch.ps1 Windows) flash "flash-sketch.bin"
-    5) Run ./littlefs.sh (littlefs.ps1 Windows) flash "flash-littlefs.bin"
+    4) Run ./sketch (sketch.ps1 Windows) flash "flash-sketch.bin"
+    5) Run ./littlefs (littlefs.ps1 Windows) flash "flash-littlefs.bin"
     6) Solder GPIO-0 bridge back to 1 to enable FLASH
     7) Connect to inverter UART (see Wiring)
 
@@ -39,8 +39,8 @@ Setup (Upgrade Existing)
     [Computer]
 
     1) Connect to ESP8266 USB-Serial-TTL
-    2) Run ./sketch.sh (sketch.ps1 Windows) flash "flash-sketch.bin"
-    3) Run ./littlefs.sh (littlefs.ps1 Windows) flash "flash-spiffs.bin"
+    2) Run ./sketch (sketch.ps1 Windows) flash "flash-sketch.bin"
+    3) Run ./littlefs (littlefs.ps1 Windows) flash "flash-littlefs.bin"
 
 Wiring
           ______

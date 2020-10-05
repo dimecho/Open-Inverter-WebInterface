@@ -4,7 +4,8 @@
    1) https://github.com/me-no-dev/ESPAsyncWebServer
    2) https://github.com/me-no-dev/ESPAsyncTCP
 */
-#define VERSION               1.0
+#include "version.h"
+
 #define DEBUG                 false
 #define EEPROM_ID             0x3BDAB100 //Identify Sketch by EEPROM
 
@@ -73,7 +74,7 @@ AsyncWebServer server(80);
 
 DNSServer dnsServer;
 
-int WIFI_PHY_MODE = 1; //WIFI_PHY_MODE_11B = 1, WIFI_PHY_MODE_11G = 2, WIFI_PHY_MODE_11N = 3
+int WIFI_PHY_MODE = 2; //WIFI_PHY_MODE_11B = 1, WIFI_PHY_MODE_11G = 2, WIFI_PHY_MODE_11N = 3
 float WIFI_PHY_POWER = 20.5; //Max = 20.5dbm
 int ACCESS_POINT_MODE = 0;
 char ACCESS_POINT_SSID[] = "Inverter";
@@ -1238,7 +1239,7 @@ String NVRAM(uint8_t from, uint8_t to, uint8_t skip)
   String out = "{\n";
 
   out += "\t\"nvram\": [\"";
-  out += VERSION;
+  out += _VERSION;
   out += "\",";
 
   for (uint8_t i = from; i <= to; i++) {
@@ -1399,7 +1400,6 @@ String getContentType(String filename)
   else if (filename.endsWith(".woff")) return "font/woff";
   else if (filename.endsWith(".woff2")) return "font/woff2";
   else if (filename.endsWith(".bin")) return "application/octet-stream";
-  else if (filename.endsWith(".log")) return text_plain;
   return text_plain;
 }
 
