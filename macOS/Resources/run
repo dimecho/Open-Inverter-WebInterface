@@ -57,59 +57,9 @@ openBrowser()
     fi
 }
 
-checkDrivers()
-{
-    #mac-usb-serial Drivers
-    for dir in `ls /Library/Extensions/`; do
-        if [[ $dir == *osx-* ]] ; then
-            echo $dir
-            return
-        fi
-    done
-
-    #Free Drivers
-    for dir in `ls ./kext`; do
-
-        crc1=$(md5 -q ./kext/$dir/Contents/MacOS/${dir%.*})
-        ver1=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "./kext/$dir/Contents/Info.plist")
-        if [ ! -d "/Library/Extensions/$dir" ]; then
-            installDrivers
-            return
-        else
-            crc2=$(md5 -q /Library/Extensions/$dir/Contents/MacOS/${dir%.*})
-            ver2=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "/Library/Extensions/$dir/Contents/Info.plist")
-            #verlt $ver2 $ver1 && echo "yes" || echo "no"
-            if [ "$crc1" != "$crc2" ]; then
-                verlt $ver2 $ver1 && installDrivers
-                return
-            fi
-        fi
-    done
-}
-
-installDrivers()
-{
-    openBrowser http://$myIP:8080/drivers.html &
-    sleep 4
-    echo "============================"
-    echo "Installing RS232-USB Drivers"
-    echo "============================"
-    osascript -e "do shell script \"./driver\" with administrator privileges"
-}
-
-verlte() {
-    [  "$1" = "`echo -e "$1\n$2" | sort -V | head -n1`" ]
-}
-
-verlt() {
-    [ "$1" = "$2" ] && return 1 || verlte $1 $2
-}
-
 pkill -9 php
 #/usr/bin/php -S 0.0.0.0:8080 -t "$(dirname "$0")/Web/" &
 /usr/bin/php -S 127.0.0.1:8080 -t "$(dirname "$0")/Web/" &
 sleep 2
-
-#checkDrivers
 
 checkUSB

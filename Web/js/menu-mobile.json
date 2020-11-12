@@ -37,7 +37,7 @@
             "id": "menu_motor_db",
             "text": "Motor Database",
             "icon": "icon-magic",
-            "onClick": "/db.php"
+            "onClick": "https://openinverter.org/parameters"
         }, {
             "id": "-"
         }, {

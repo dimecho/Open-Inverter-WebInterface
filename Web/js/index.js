@@ -10,13 +10,50 @@ $(document).ready(function () {
         var safetyModal = new bootstrap.Modal(document.getElementById('safety'), {});
         safetyModal.show();
     }else{
-        buildMenu(function() { 
+        buildMenu(function() {
+
+            var token = document.getElementById('parameters-token');
+            var share = document.getElementById('parameters-share');
+
             if(os == 'esp8266') {
-                //buildParameters(115200,0);
+                
                 //initializeSerial(921600,0);
                 initializeSerial(115200,0);
+
+                var nvram = new XMLHttpRequest();
+                nvram.responseType = 'json';
+                nvram.onload = function() {
+                    if (nvram.status == 200 && nvram.response != null) {
+                        share.action = nvram.response['nvram'][12] + '/api.php';
+                        token.value = nvram.response['nvram'][14];
+                    }
+                };
+                nvram.open('GET', '/nvram', true);
+                nvram.send();
             }else{
                 initializeSerial(115200,0);
+
+				token.value = (getCookie('token') || '');
+                //share.action = 'http://localhost/parameters/api.php'; //DEBUG
+            }
+
+            token.onchange = function()
+            {
+                var expr = /^[0-9a-f]{8}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{12}$/i;
+    
+                if (expr.test(this.value))
+                {
+                	 if(os == 'esp8266') {
+	                    var xhr = new XMLHttpRequest();
+	                    xhr.open('GET', '/nvram?offset=15&value=' + this.value, true);
+						xhr.send();
+	                }else{
+	                    setCookie('token', this.value, 120);
+	                }
+	                 $.notify({ message: 'Subscribed to ' + this.value }, { type: 'success' });
+                }else{
+                    $.notify({ message: 'Invalid Token. GUID Format' }, { type: 'warning' });
+                }
             }
         });
     }
@@ -86,8 +123,11 @@ function initializeSerial(speed,loop) {
                             var serialModal = new bootstrap.Modal(document.getElementById('serial'), {});
                             serialModal.show();
                         }else if (isMacintosh()) {
-                            var macdriversModal = new bootstrap.Modal(document.getElementById('macdrivers'), {});
-                            macdriversModal.show();
+                            var driversModal = new bootstrap.Modal(document.getElementById('usb-ttl-drivers'), {});
+                            if(os == 'mac') {
+                                document.getElementById('usb-ttl-mac').style.display = 'block';
+                            }
+                            driversModal.show();
                         }else{
                             $.notify({ message: 'Serial not found' }, { type: 'danger' });
                         }
@@ -156,7 +196,8 @@ function basicChecks(json)
 			$.notify({ message: 'Field weakening "fweak" might be too high' }, { type: 'warning' });
 		}
 	}
-    if(json.version.unit.indexOf('foc') == -1)
+    var v = json.version.unit || '';
+    if(v.toString().indexOf('foc') == -1)
     {
         var fweak = setDefaultValue(json.fweak, 0);
         var fslipmax = setDefaultValue(json.fslipmax, 0);
@@ -726,6 +767,23 @@ function pinSwapCalculator()
     calculatorModal.show();
 };
 
+function parseEnum(unit)
+{
+    var expr = /(\-{0,1}[0-9]+)=([a-zA-Z0-9_\-\.]+)[,\s]{0,2}|([a-zA-Z0-9_\-\.]+)[,\s]{1,2}/g;
+    var enums = new Array();
+    var res = expr.exec(unit);
+
+    if (res)
+    {
+        do
+        {
+            enums[res[1]] = res[2];
+        } while (res = expr.exec(unit))
+        return enums;
+    }
+    return false;
+};
+
 function buildParameters(speed, loop)
 {
     var xhr = new XMLHttpRequest();
@@ -759,23 +817,12 @@ function buildParameters(speed, loop)
                     if(os == 'esp8266' && loop == 0) {
                         initializeSerial(115200,1); //try lower speed
                         return;
-                    }else{
-    	                var pxhr = new XMLHttpRequest();
-    	                pxhr.responseType = 'json';
-    	                pxhr.onload = function() {
-    	                    if (pxhr.status == 200) {
-    	                        console.log(pxhr.response);
-    	                        json = pxhr.response;
-    	                        inputDisabled = true;
-    	                    }
-    	                };
-    	                pxhr.open('GET', 'js/parameters.json');
-    	                pxhr.send();
                     }
 	            }else{
 	                buildStatus();
 	                basicChecks(json);
 	            }
+                document.getElementById('parameters-json').value = JSON.stringify(json);
 
 	            var legend = $('#legend').empty();
 	            var menu = $('#parameters').empty();
@@ -795,9 +842,14 @@ function buildParameters(speed, loop)
 
 	                var a = $('<a>');
 	                var tr = $('<tr>');
-
 	                
-	                var a = $('<input>', { type:'text', 'id':key, class:'form-control', value:json[key].value, disabled: inputDisabled });
+	                var a = $('<input>', { type:'number', min:json[key].minimum, max:json[key].maximum, 'id':key, class:'form-control', value:json[key].value, disabled: inputDisabled });
+                    var df = json[key].default || '';
+                    if(df.toString().indexOf('.') != -1) {
+                        a.attr('step', 0.05);
+                    }else{
+                        a.attr('step', 1);
+                    }
 	                if(os === 'mobile') {
 	                    a.attr('type','number');
 	                }
@@ -806,8 +858,10 @@ function buildParameters(speed, loop)
 	                    if(element.val() != '') {
 	                        validateInput(json,element.attr('id'), element.val(), function(r) {
 	                            if(r === true) {
-	                                $('#save-parameters').removeClass('btn-secondary');
-	                                $('#save-parameters').addClass('btn-success');
+	                                $('#share-parameters').removeClass('btn-secondary');
+	                                $('#share-parameters').addClass('btn-success');
+                                    $('#save-parameters').removeClass('btn-secondary');
+                                    $('#save-parameters').addClass('btn-success');
 	                                setParameter(element.attr('id'),element.val(),false,true);
 	                                clearTimeout(saveReminderTimer);
 	                                saveReminderTimer = setInterval(saveReminderCounter, 60000);
@@ -928,6 +982,34 @@ function buildParameters(speed, loop)
     xhr.send();
 
     checkWebUpdates();
+};
+
+function installDrivers()
+{
+    document.getElementById('usb-ttl-select').style.display = 'none';
+
+    var drivers = document.querySelectorAll("input[type='checkbox']");
+
+    var args = '';
+    for(var i = 0; i < drivers.length; i++) {
+        if(drivers[i].checked == true) {
+            args += ',' + drivers[i].name;
+        }
+    }
+    if(args == '') {
+        document.getElementById('usb-ttl-select').style.display = 'block';
+    }else{
+        openExternalApp('driver',args.substring(1));
+        
+        var timerProgressCounter = 0;
+        var timerProgress = setInterval(function() {
+            timerProgressCounter++;
+            if(timerProgressCounter == 100) {
+                clearInterval(timerProgress);
+            }
+            document.getElementById('usb-ttl-progress').style.width = timerProgressCounter + '%';
+        }, 100);
+    }
 };
 
 function checkFirmwareUpdates(v)

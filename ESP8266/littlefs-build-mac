@@ -19,7 +19,7 @@ for i in "${array[@]}"; do
     cp -rf ../Web/$i data
 done
 
-array=(mobile.css animate.css bootstrap.css bootstrap.slate.css ion.rangeSlider.css icons.css style.css)
+array=(mobile.css animate.css ion.rangeSlider.css icons.css style.css)
 for i in "${array[@]}"; do
     cp -rf ../Web/css/$i data/css
 done
@@ -34,6 +34,9 @@ array=(background.png)
 for i in "${array[@]}"; do
     cp -rf ../Web/img/$i data/img
 done
+
+purgecss --css ../Web/css/bootstrap.css --content data/*.php,data/js/*.js --whitelist alert-success,alert-danger,alert-warning --output data/css/bootstrap.css
+purgecss --css ../Web/css/bootstrap.slate.css --content data/*.php,data/js/*.js --whitelist alert-success,alert-danger,alert-warning  --output data/css/bootstrap.slate.css
 
 #cp -rf ./server.key data/
 #cp -rf ./server.cer data/
@@ -142,9 +145,6 @@ fi
 #==============
 #Compress Files
 #==============
-#purgecss --css data/css/bootstrap.css --content data/*.php,data/js/*.js --whitelist alert-success,alert-danger,alert-warning --output data/css/bootstrap.css
-#purgecss --css data/css/bootstrap.slate.css --content data/*.php,data/js/*.js --whitelist alert-success,alert-danger,alert-warning  --output data/css/bootstrap.slate.css
-
 #for f in $(find data -name '*.php'); do
 #    java -jar tools/htmlcompressor-1.5.3.jar --preserve-php --type html -o "$f" "$f"
 #done

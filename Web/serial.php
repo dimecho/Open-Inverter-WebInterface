@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-    //header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Origin: *");
     header("Content-Type: text/plain");
     header("Cache-Control: no-cache");
 
@@ -99,7 +99,7 @@ session_start();
         }
         */
     }
-    else if(isset($_GET["pk"]) && isset($_GET["name"]) && isset($_GET["value"]))
+    else if(isset($_GET["set"]) && isset($_GET["name"]) && isset($_GET["value"]))
     {
         echo readSerial("set " .$_GET["name"]. " " .$_GET["value"]. "\n");
     }

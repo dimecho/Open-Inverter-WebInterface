@@ -32,6 +32,11 @@
             "icon": "icon-graph-bar",
             "onClick": "/graph.php"
         }, {
+            "id": "menu_motor_db",
+            "text": "Motor Database",
+            "icon": "icon-magic",
+            "onClick": "https://openinverter.org/parameters"
+        }, {
             "id": "-"
         }, {
             "id": "menu_motor_tuning",

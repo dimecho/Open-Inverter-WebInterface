@@ -30,19 +30,22 @@
 
 	function backupParameters()
 	{
-		$read = readSerial("json\n");
+		readSerial("\n");
+		return readSerial("json\n")
+		/*
 		$array = json_decode($read, true);
 		$values = array();
 		foreach ($array as $key => $value) {
 			$values[$key] = $value["value"];
 		}
 		return json_encode($values, JSON_PRETTY_PRINT);
+		*/
 	}
 	
 	function setParameters($file)
 	{
 		$string = file_get_contents($file);
-		$params = (array)json_decode($string);
+		$params = json_decode($string);
 		
 		$uart = fopen($_SESSION["serial"], "r+"); //Read & Write
 		//stream_set_blocking($uart, 1); //O_NONBLOCK
@@ -55,7 +58,11 @@
 		foreach ($params as $name => $attributes)
 		{
 			//echo $name. ">" .$params[$name];
-			fwrite($uart, "set " .$name. " " .$params[$name]. "\n");
+			if(isset($params[$name]["value"])) {
+				fwrite($uart, "set " .$name. " " .$params[$name]["value"]. "\n");
+			}else{
+				fwrite($uart, "set " .$name. " " .$params[$name]. "\n");
+			}
 			fread($uart,1);
 		}
 		

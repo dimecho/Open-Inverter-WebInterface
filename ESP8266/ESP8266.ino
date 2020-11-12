@@ -7,7 +7,7 @@
 #include "version.h"
 
 #define DEBUG                 false
-#define EEPROM_ID             0x3BDAB100 //Identify Sketch by EEPROM
+#define EEPROM_ID             0x3BDAB101 //Identify Sketch by EEPROM
 
 #define ASYNC_TCP_SSL_ENABLED false
 String HTTPS_FQDN = "inverter.openinverter.org"; //DNS resolution to 192.168.4.1
@@ -74,7 +74,7 @@ AsyncWebServer server(80);
 
 DNSServer dnsServer;
 
-int WIFI_PHY_MODE = 2; //WIFI_PHY_MODE_11B = 1, WIFI_PHY_MODE_11G = 2, WIFI_PHY_MODE_11N = 3
+int WIFI_PHY_MODE = 1; //WIFI_PHY_MODE_11B = 1, WIFI_PHY_MODE_11G = 2, WIFI_PHY_MODE_11N = 3
 float WIFI_PHY_POWER = 20.5; //Max = 20.5dbm
 int ACCESS_POINT_MODE = 0;
 char ACCESS_POINT_SSID[] = "Inverter";
@@ -88,6 +88,10 @@ char NETWORK_IP[] = "192.168.4.1";
 char NETWORK_SUBNET[] = "255.255.255.0";
 char NETWORK_GATEWAY[] = "192.168.4.1";
 char NETWORK_DNS[] = "192.168.4.1";
+char SUBSCRIPTION_URL[] = "https://openinverter.org/parameters";
+int SUBSCRIPTION_REFRESH = 0;
+char SUBSCRIPTION_TOKEN[] = "";
+char SUBSCRIPTION_STAMP[] = "";
 
 String firmwareInterface = "" ;
 StreamString asyncLogStream;
@@ -237,6 +241,10 @@ void setup()
     NVRAM_Write(10, NETWORK_SUBNET);
     NVRAM_Write(11, NETWORK_GATEWAY);
     NVRAM_Write(12, NETWORK_DNS);
+    NVRAM_Write(13, SUBSCRIPTION_URL);
+    NVRAM_Write(14, String(SUBSCRIPTION_REFRESH));
+    NVRAM_Write(15, SUBSCRIPTION_TOKEN);
+    NVRAM_Write(16, SUBSCRIPTION_STAMP);
 
     LittleFS.format();
   } else {
@@ -260,6 +268,13 @@ void setup()
     nvram.toCharArray(NETWORK_GATEWAY, nvram.length() + 1);
     nvram = NVRAM_Read(12);
     nvram.toCharArray(NETWORK_DNS, nvram.length() + 1);
+    nvram = NVRAM_Read(13);
+    nvram.toCharArray(SUBSCRIPTION_URL, nvram.length() + 1);
+    SUBSCRIPTION_REFRESH = NVRAM_Read(14).toInt();
+    nvram = NVRAM_Read(15);
+    nvram.toCharArray(SUBSCRIPTION_TOKEN, nvram.length() + 1);
+    nvram = NVRAM_Read(16);
+    nvram.toCharArray(SUBSCRIPTION_STAMP, nvram.length() + 1);
   }
   //EEPROM.end();
 
@@ -631,6 +646,11 @@ void setup()
     response->print(ESP.getVcc());
     request->send(response);
   });
+  server.on("/baud", HTTP_GET, [](AsyncWebServerRequest * request) {
+    AsyncResponseStream *response = request->beginResponseStream(text_plain);
+    response->print(serialInitialized);
+    request->send(response);
+  });
   server.on("/chipid", HTTP_GET, [](AsyncWebServerRequest * request) {
     AsyncResponseStream *response = request->beginResponseStream(text_plain);
     response->printf("Chip ID = 0x%08X\n", ESP.getChipId());
@@ -659,8 +679,15 @@ void setup()
     restartRequired = true;
   });
   server.on("/nvram", HTTP_GET, [](AsyncWebServerRequest * request) {
-    String out = NVRAM(1, 12, 5);
-    request->send(200, text_json, out);
+    if (request->params() > 0) {
+        int i = request->getParam(0)->value().toInt();
+        String v = request->getParam(1)->value();
+        NVRAM_Write(i, v);
+        request->send(200, text_plain, v);
+      } else {
+        String out = NVRAM(1, 15, 5);
+        request->send(200, text_json, out);
+      }
   });
   server.on("/nvram", HTTP_POST, [](AsyncWebServerRequest * request) {
 
@@ -669,7 +696,7 @@ void setup()
     uint8_t skip = -1;
 
     //skip confirm password (6)
-    from = 1, to = 12, skip = 6;
+    from = 1, to = 14, skip = 6;
 
     for (uint8_t i = from; i <= to; i++) {
 
@@ -809,7 +836,33 @@ void setup()
         request->send(200, text_plain, String(serialSpeed));
       } else {
 
-        initSerial(serialSpeed);
+        //consumeEcho('D'); //Bootloader echo
+
+        //Clear the initialization Bug
+        //-----------------------------
+        Serial.print("hello\n");
+        consumeEcho('\n'); //echo
+        consumeEcho('\n'); //reply
+        //-----------------------------
+        if (serialSpeed == 921600) {
+          Serial.print("fastuart 1\n");
+          consumeEcho('\n'); //echo
+        } else if (serialInitialized == 921600) {
+          Serial.print("fastuart 0\n");
+          consumeEcho('\n'); //echo
+        }
+        //-----------------------------
+        //Serial.end();
+        Serial.begin(serialSpeed, SERIAL_8N1);
+        //serialStreamFlush(); //flush
+        //-----------------------------
+        //Clear the initialization Bug
+        //-----------------------------
+        Serial.print("hello\n");
+        //consumeEcho('\n'); //echo
+        //consumeEcho('\n'); //reply
+        //-----------------------------
+        serialInitialized = serialSpeed;
 
         AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
           return Serial.readBytes(buffer, maxLen);
@@ -822,9 +875,10 @@ void setup()
 
       request->send(200, text_plain, "esp8266");
 
-    } else if (request->hasParam("pk") && request->hasParam("name") && request->hasParam("value")) {
+    } else if (request->hasParam("set") && request->hasParam("name") && request->hasParam("value")) {
 
       AsyncResponseStream *response = request->beginResponseStream(text_plain);
+      response->addHeader("Access-Control-Allow-Origin", "*");
       response->addHeader("Cache-Control", "no-store");
 
       //serialStreamFlush(); //flush
@@ -922,7 +976,11 @@ void setup()
       request->send(response);
     } else {
       String file = request->url();
-      readPHP(file);
+      bool php_html = LittleFS.exists(file + ".html");
+
+      if (!php_html) {
+        readPHP(file);
+      }
 
       AsyncWebServerResponse *response = request->beginResponse(LittleFS, file + ".html", text_html);
       request->send(response);
@@ -1159,37 +1217,6 @@ void loop()
   //yield();
 }
 
-void initSerial(uint32_t serialSpeed)
-{
-  //consumeEcho('D'); //Bootloader echo
-
-  //Clear the initialization Bug
-  //-----------------------------
-  Serial.print("hello\n");
-  consumeEcho('\n'); //echo
-  consumeEcho('\n'); //reply
-  //-----------------------------
-
-  if (serialSpeed == 921600) {
-    Serial.print("fastuart 1\n");
-  } else {
-    Serial.print("fastuart 0\n");
-  }
-  consumeEcho('\n'); //echo
-  //-----------------------------
-  //Serial.end();
-  Serial.begin(serialSpeed, SERIAL_8N1);
-  serialStreamFlush(); //flush
-  //-----------------------------
-  //Clear the initialization Bug
-  //-----------------------------
-  Serial.print("hello\n");
-  //consumeEcho('\n'); //echo
-  //consumeEcho('\n'); //reply
-  //-----------------------------
-  serialInitialized = serialSpeed;
-}
-
 char* string2char(String command) {
   if (command.length() != 0) {
     char *p = const_cast<char*>(command.c_str());
@@ -1244,7 +1271,12 @@ String NVRAM(uint8_t from, uint8_t to, uint8_t skip)
 
   for (uint8_t i = from; i <= to; i++) {
     if (skip == -1 || i != skip) {
-      out += "\"" + NVRAM_Read(i) + "\",";
+      String escaped = NVRAM_Read(i);
+      //escaped.replace("/", "\\/");
+      
+      out += "\"";
+      out += escaped;
+      out += "\",";
     }
   }
 
@@ -1256,7 +1288,7 @@ String NVRAM(uint8_t from, uint8_t to, uint8_t skip)
 
 void NVRAM_Erase()
 {
-  for (uint16_t i = 0 ; i < EEPROM.length() ; i++) {
+  for (uint32_t i = 0 ; i < EEPROM.length() ; i++) {
     EEPROM.write(i, 255);
   }
   EEPROM.commit();
@@ -1264,7 +1296,7 @@ void NVRAM_Erase()
 
 void NVRAM_Write(uint32_t address, String txt)
 {
-  char arrayToStore[32];
+  char arrayToStore[48];
   memset(arrayToStore, 0, sizeof(arrayToStore));
   txt.toCharArray(arrayToStore, sizeof(arrayToStore)); // Convert string to array.
 
@@ -1274,7 +1306,7 @@ void NVRAM_Write(uint32_t address, String txt)
 
 String NVRAM_Read(uint32_t address)
 {
-  char arrayToStore[32];
+  char arrayToStore[48];
   EEPROM.get(address * sizeof(arrayToStore), arrayToStore);
 
   return String(arrayToStore);

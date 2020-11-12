@@ -50,15 +50,15 @@
     "arm" : {
         "title" : "ARM Embedded Compiler",
         "download" : {
-             "mac" : "https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2019q4/RC2.1/gcc-arm-none-eabi-9-2019-q4-major-mac.tar.bz2",
-            "windows" : "https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2019q4/RC2.1/gcc-arm-none-eabi-9-2019-q4-major-win32.exe.bz2",
+             "mac" : "https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2019q4/RC2.1/gcc-arm-none-eabi-9-2019-q4-major-mac.tar.bz2",
+            "windows" : "https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2019q4/RC2.1/gcc-arm-none-eabi-9-2019-q4-major-win32-sha2.exe",
             "linux" : "",
             "size" : 110,
             "version" : "9.4"
         },
 		"checksum" : {
             "mac" : "241b64f0578db2cf146034fc5bcee3d4",
-            "windows" : "033151c92a5cd986e4cbea058f93d91b",
+            "windows" : "",
             "linux" : ""
         },
         "path" : {

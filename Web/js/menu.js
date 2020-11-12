@@ -15,6 +15,7 @@ var hardware_name = [
 var statusRefreshTimer;
 var saveReminderTimer;
 var saveReminder = false;
+var synchronousPause = false;
 
 $(document).ready(function () {
 
@@ -163,13 +164,18 @@ function unblockSerial()
 
 function selectSerial()
 {
+    synchronousPause = true;
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {
         if (xhr.status == 200) {
             console.log(xhr.responseText);
             location.reload();
         }
+        synchronousPause = false;
     };
+    xhr.onerror = function() {
+        synchronousPause = false;
+    }
     xhr.open('GET', 'serial.php?serial=' + $('#serial-interface').val(), true);
     xhr.send();
 };
@@ -195,26 +201,37 @@ function checkSoftware(app, args, callback) {
     if (callback == undefined)
         callback = function(){};
 
+    synchronousPause = true;
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {
         if (xhr.status == 200) {
             console.log(xhr.responseText);
             eval(xhr.responseText);
+
+            synchronousPause = false;
             callback(xhr.responseText);
         }
     };
+    xhr.onerror = function() {
+        synchronousPause = false;
+    }
     xhr.open('GET', 'install.php?check=' + app + '&args=' + args, true);
     xhr.send();
 };
 
 function openConsole(){
 
+    synchronousPause = true;
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {
         if (xhr.status == 200) {
             console.log(xhr.responseText);
         }
+        synchronousPause = false;
     };
+    xhr.onerror = function() {
+        synchronousPause = false;
+    }
     xhr.open('GET', 'open.php?console=1', true);
     xhr.send();
 };
@@ -350,6 +367,9 @@ function saveParameter(notify) {
             {
                 //TODO: CRC32 check on entire params list
 
+                $('#save-parameters').removeClass('btn-success');
+                $('#save-parameters').addClass('btn-secondary');
+
                 $.notify({ message: data },{ type: 'success' });
             }else{
                 $.notify({ icon: 'icons icon-alert', title: 'Error', message: data },{ type: 'danger' });
@@ -358,12 +378,17 @@ function saveParameter(notify) {
     });
 };
 
+function shareParameter() {
+    document.getElementById('parameters-share').submit();
+};
+
 function setParameter(cmd, value, save, notify, callback) {
 
     if (callback == undefined) {
         callback = function(){};
     }
 
+    synchronousPause = true;
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {
         if (xhr.status == 200) {
@@ -371,9 +396,13 @@ function setParameter(cmd, value, save, notify, callback) {
                 saveParameter(notify);
             }
         }
+        synchronousPause = false;
         callback(xhr.responseText);
     };
-    xhr.open('GET', 'serial.php?pk=1&name=' + cmd + '&value=' + value, true);
+    xhr.onerror = function() {
+        synchronousPause = false;
+    }
+    xhr.open('GET', 'serial.php?set=1&name=' + cmd + '&value=' + value, true);
     xhr.send();
 
     //console.log(e);
@@ -388,6 +417,7 @@ function sendCommand(cmd, loop, callback) {
     }
   
     if(loop < 3) {
+        synchronousPause = true;
         var xhr = new XMLHttpRequest();
         xhr.cache = false;
         xhr.onload = function() {
@@ -409,8 +439,12 @@ function sendCommand(cmd, loop, callback) {
                     e = xhr.responseText;
                 }
             }
+            synchronousPause = false;
             callback(e);
         };
+        xhr.onerror = function() {
+            synchronousPause = false;
+        }
         xhr.open('GET', 'serial.php?command=' + cmd, async);
         xhr.send();
     }else{
@@ -420,14 +454,18 @@ function sendCommand(cmd, loop, callback) {
 };
 
 function downloadSnapshot() {
+    synchronousPause = true;
+
     window.location.href = 'snapshot.php';
+    
+    synchronousPause = false;
 };
 
 function uploadSnapshot() {
     $('.fileUpload').trigger('click');
 };
 
-function openExternalApp(app,args) {
+function openExternalApp(app,args, callback) {
 
     //console.log(app);
     
@@ -441,14 +479,19 @@ function openExternalApp(app,args) {
         window.location.href = 'esp8266.php';
     } else {
         data = '';
-
+    
+        synchronousPause = true;
         var xhr = new XMLHttpRequest();
         xhr.onload = function() {
             if (xhr.status == 200) {
                 //console.log(xhr.responseText);
                 data = xhr.responseText;
             }
+            synchronousPause = false;
         };
+        xhr.onerror = function() {
+            synchronousPause = false;
+        }
         xhr.open('GET', 'open.php?app=' + app + '&args=' + args, false);
         xhr.send();
 
@@ -464,8 +507,10 @@ function getJSONFloatValue(value, callback) {
     if(callback)
         sync = true;
 
+    synchronousPause = true;
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {
+        synchronousPause = false;
         if (xhr.status == 200) {
             //console.log(xhr.responseText);
             f = parseFloat(xhr.responseText);
@@ -475,6 +520,9 @@ function getJSONFloatValue(value, callback) {
                 callback(f);
         }
     };
+    xhr.onerror = function() {
+        synchronousPause = false;
+    }
     xhr.open('GET', 'serial.php?get=' + value, sync);
     xhr.send();
 
@@ -487,13 +535,18 @@ function getJSONAverageFloatValue(value, c) {
         c = 'average'; //median
     var f = 0;
 
+    synchronousPause = true;
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {
         if (xhr.status == 200) {
             //console.log(xhr.responseText);
             f = parseFloat(xhr.responseText);
         }
+        synchronousPause = false;
     };
+    xhr.onerror = function() {
+        synchronousPause = false;
+    }
     xhr.open('GET', 'serial.php?' + c + '=' + value, false);
     xhr.send();
 
@@ -525,7 +578,7 @@ function stopInverter() {
 function setDefaults() {
     
     var loader = document.getElementById('loader-parameters');
-    if (typeof(loader) != 'undefined' && interface != null) {
+    if (typeof(loader) != undefined) {
         loader.classList.remove('d-none');
     }
 
@@ -803,6 +856,13 @@ function loadTheme() {
 };
 
 function buildStatus() {
+
+    if(synchronousPause == true) {
+        statusRefreshTimer = setTimeout(function () {               
+            buildStatus();
+        }, 12000);
+        return;
+    }
 
     clearTimeout(statusRefreshTimer);
 

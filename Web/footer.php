@@ -4,7 +4,7 @@
         <div class="modal-content bg-light">
             <div class="modal-header">
                 <h5 class="modal-title">Select Serial Interface:</h5>
-                <button type="button" class="close text-muted" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close btn text-muted" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -22,7 +22,7 @@
         <div class="modal-content bg-light">
             <div class="modal-header">
                 <h5 class="modal-title">Software Install</h5>
-                <button type="button" class="close text-muted" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close btn text-muted" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -39,7 +39,7 @@
         <div class="modal-content bg-light">
             <div class="modal-header">
                 <h5 class="modal-title">Select Hardware Version:</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close btn" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -64,7 +64,7 @@
         <div class="modal-content bg-light">
             <div class="modal-header">
                 <h5 class="modal-title"></h5>
-                <button type="button" class="close text-muted" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close btn text-muted" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -102,7 +102,7 @@
         <div class="modal-content bg-light">
             <div class="modal-header">
                 <h5 class="modal-title">Inverter Mode</h5>
-                <button type="button" class="close text-muted" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close btn text-muted" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -127,7 +127,7 @@
         <div class="modal-content bg-light">
             <div class="modal-header">
                 <h5 class="modal-title">Reset Inverter</h5>
-                <button type="button" class="close text-muted" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close btn text-muted" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

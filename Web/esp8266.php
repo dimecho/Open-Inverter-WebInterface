@@ -188,7 +188,24 @@
 								    	<input type="text" id="WiFiDNS" name="WiFiDNS" class="form-control" placeholder="DNS Address (8.8.8.8)" required>
 									</div>
 								</div>
-								<center><button type="submit" class="btn btn-success"><i class="icons icon-ok"></i> Save</button></center>
+								<div class="form-group">
+                        			<legend>Subscription:</legend>
+									<div class="input-group">
+										<div class="input-group-addon"><i class="icons icon-share p-3"></i></div>
+								    	<input type="text" id="SubscriptionURL" name="SubscriptionURL" class="form-control" placeholder="Subscription URL" required>
+									</div>
+									<div class="input-group">
+										<div class="input-group-addon"><i class="icons icon-share p-3"></i></div>
+										<select id="SubscriptionRefresh" class="form-control" name="SubscriptionRefresh">
+											<option value=0>Always</option>
+											<option value=1>Daily</option>
+											<option value=2>Weekly</option>
+										</select>
+									</div>
+								</div>
+								<div class="mt-4">
+									<center><button type="submit" class="btn btn-success"><i class="icons icon-ok"></i> Save</button></center>
+								</div>
                             </form>
                         </td>
                     </tr>
@@ -226,5 +243,6 @@
 </body>
 </html>
 <?php
+	include "footer.php";
 	}
 ?>

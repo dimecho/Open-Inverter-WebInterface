@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		320A739C22E962B8004A2351 /* DesignSparkPCB.app in Resources */ = {isa = PBXBuildFile; fileRef = 320A739B22E962B8004A2351 /* DesignSparkPCB.app */; };
 		3235CA8D219BA856009022D0 /* minicom in Resources */ = {isa = PBXBuildFile; fileRef = 3235CA8C219BA856009022D0 /* minicom */; };
+		324716AA255C8F4100F20025 /* driver in Resources */ = {isa = PBXBuildFile; fileRef = 324716A9255C8F4100F20025 /* driver */; };
 		3249F2A21D599E3900ECF5B4 /* openscad in Resources */ = {isa = PBXBuildFile; fileRef = 3249F2A11D599E3900ECF5B4 /* openscad */; };
 		324C22E81CF429E7003A1AF5 /* eagle in Resources */ = {isa = PBXBuildFile; fileRef = 324C22E71CF429E7003A1AF5 /* eagle */; };
 		32724CE821E1DD7200127D21 /* avr in Resources */ = {isa = PBXBuildFile; fileRef = 32724CE721E1DD7200127D21 /* avr */; };
@@ -24,15 +24,14 @@
 		32D5A3431D6AD27C008F9EFB /* arm in Resources */ = {isa = PBXBuildFile; fileRef = 32D5A3421D6AD27C008F9EFB /* arm */; };
 		32DE5F911CF0D03000113FCF /* Web in Resources */ = {isa = PBXBuildFile; fileRef = 32DE5F901CF0D03000113FCF /* Web */; };
 		32EBDE5D1D6ADB6A00CF5BEC /* source in Resources */ = {isa = PBXBuildFile; fileRef = 32EBDE5C1D6ADB6A00CF5BEC /* source */; };
-		32F25DD31CF24A2600494B1C /* driver in Resources */ = {isa = PBXBuildFile; fileRef = 32F25DD21CF24A2600494B1C /* driver */; };
 		32F6A265235254A900A9400D /* esptool in Resources */ = {isa = PBXBuildFile; fileRef = 32F6A264235254A800A9400D /* esptool */; };
 		32FD004D22E7E8CA00D11242 /* dfu in Resources */ = {isa = PBXBuildFile; fileRef = 32FD004C22E7E8CA00D11242 /* dfu */; };
 		32FFA9FC1D18D6FB00E5BBF0 /* openocd in Resources */ = {isa = PBXBuildFile; fileRef = 32FFA9FB1D18D6FB00E5BBF0 /* openocd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		320A739B22E962B8004A2351 /* DesignSparkPCB.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; name = DesignSparkPCB.app; path = macOS/Resources/DesignSparkPCB.app; sourceTree = "<group>"; };
 		3235CA8C219BA856009022D0 /* minicom */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = minicom; path = macOS/Resources/minicom; sourceTree = "<group>"; };
+		324716A9255C8F4100F20025 /* driver */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = driver; path = macOS/Resources/driver; sourceTree = "<group>"; };
 		3249F2A11D599E3900ECF5B4 /* openscad */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = openscad; path = macOS/Resources/openscad; sourceTree = "<group>"; };
 		324C22E71CF429E7003A1AF5 /* eagle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = eagle; path = macOS/Resources/eagle; sourceTree = "<group>"; };
 		32724CE721E1DD7200127D21 /* avr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = avr; path = macOS/Resources/avr; sourceTree = "<group>"; };
@@ -50,7 +49,6 @@
 		32D5A3421D6AD27C008F9EFB /* arm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = arm; path = macOS/Resources/arm; sourceTree = "<group>"; };
 		32DE5F901CF0D03000113FCF /* Web */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Web; sourceTree = "<group>"; };
 		32EBDE5C1D6ADB6A00CF5BEC /* source */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = source; path = macOS/Resources/source; sourceTree = "<group>"; };
-		32F25DD21CF24A2600494B1C /* driver */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = driver; path = macOS/Resources/driver; sourceTree = "<group>"; };
 		32F6A264235254A800A9400D /* esptool */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = esptool; path = macOS/Resources/esptool; sourceTree = "<group>"; };
 		32FD004C22E7E8CA00D11242 /* dfu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = dfu; path = macOS/Resources/dfu; sourceTree = "<group>"; };
 		32FFA9FB1D18D6FB00E5BBF0 /* openocd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = openocd; path = macOS/Resources/openocd; sourceTree = "<group>"; };
@@ -105,7 +103,7 @@
 				32724CE721E1DD7200127D21 /* avr */,
 				32724CEB21E1DDA700127D21 /* cantact */,
 				32FD004C22E7E8CA00D11242 /* dfu */,
-				32F25DD21CF24A2600494B1C /* driver */,
+				324716A9255C8F4100F20025 /* driver */,
 				324C22E71CF429E7003A1AF5 /* eagle */,
 				32F6A264235254A800A9400D /* esptool */,
 				32D281EF1CF00EF200606B12 /* inkscape */,
@@ -116,7 +114,6 @@
 				32EBDE5C1D6ADB6A00CF5BEC /* source */,
 				32836C6A21C9F09D0009C3D5 /* stlink */,
 				32D281F21CF00EF200606B12 /* xquartz */,
-				320A739B22E962B8004A2351 /* DesignSparkPCB.app */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -181,7 +178,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				324C22E81CF429E7003A1AF5 /* eagle in Resources */,
-				32F25DD31CF24A2600494B1C /* driver in Resources */,
 				32DE5F911CF0D03000113FCF /* Web in Resources */,
 				328002011D6AAA4A001C5E4E /* run in Resources */,
 				32EBDE5D1D6ADB6A00CF5BEC /* source in Resources */,
@@ -191,6 +187,7 @@
 				32724CE821E1DD7200127D21 /* avr in Resources */,
 				32D5A3431D6AD27C008F9EFB /* arm in Resources */,
 				32724CEA21E1DD9D00127D21 /* arduino in Resources */,
+				324716AA255C8F4100F20025 /* driver in Resources */,
 				32FD004D22E7E8CA00D11242 /* dfu in Resources */,
 				32724CEC21E1DDA800127D21 /* cantact in Resources */,
 				32D281B91CF0066F00606B12 /* Main.storyboard in Resources */,
@@ -199,7 +196,6 @@
 				32FFA9FC1D18D6FB00E5BBF0 /* openocd in Resources */,
 				3235CA8D219BA856009022D0 /* minicom in Resources */,
 				32D281F81CF00EF200606B12 /* xquartz in Resources */,
-				320A739C22E962B8004A2351 /* DesignSparkPCB.app in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,7 +335,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 41;
 				INFOPLIST_FILE = macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
@@ -356,7 +352,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 41;
 				INFOPLIST_FILE = macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;

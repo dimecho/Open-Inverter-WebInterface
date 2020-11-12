@@ -46,6 +46,9 @@ $(document).ready(function() {
                     $('#WiFiSubnet').val(nvram.response['nvram'][9]);
                     $('#WiFiGateway').val(nvram.response['nvram'][10]);
                     $('#WiFiDNS').val(nvram.response['nvram'][11]);
+                    $('#SubscriptionURL').val(nvram.response['nvram'][12]);
+                    $('#SubscriptionRefresh').val(nvram.response['nvram'][13]);
+
                     $('.spinner-border').addClass('d-none'); //.hide();
                     $('#parameters').removeClass('d-none'); //.show();
 
