@@ -44,13 +44,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <select name="hardware" class="form-control" form="hardwareForm" id="hwver">
-                    <option value=0>Hardware v1.0</option>
-                    <option value=1>Hardware v2.0</option>
-                    <option value=2>Hardware v3.0</option>
-                    <option value=3>Hardware Tesla</option>
-                    <option value=4>Hardware Blue-Pill</option>
-                    <option value=5>Hardware Prius</option>
+                <select name="hardware" class="form-control" form="hardwareForm" id="hardware-select">
                 </select>
             </div>
             <div class="modal-footer">

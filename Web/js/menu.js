@@ -9,8 +9,28 @@ var hardware_name = [
     'Hardware v2.0',
     'Hardware v3.0',
     'Hardware Tesla',
+    'Hardware Tesla M3',
     'Hardware Blue-Pill',
-    'Hardware Prius'
+    'Hardware Prius',
+    'Hardware Prius MG1'
+];
+var statusParam = [
+    'opmode',
+    'udc',
+    'udcmin',
+    'tmpm',
+    'tmphs',
+    'deadtime',
+    'din_start',
+    'din_mprot',
+    'chargemode'
+];
+var statusParamDynamic = [
+    'opmode',
+    'udc',
+    'udcmin',
+    'tmpm',
+    'tmphs'
 ];
 var statusRefreshTimer;
 var saveReminderTimer;
@@ -131,6 +151,15 @@ function displayFWVersion(fwrev)
 
 function displayHWVersion()
 {
+    var hwOptions = document.getElementById('hardware-select');
+    hwOptions.innerHTML = '';
+    for (var i = 0; i < hardware_name.length; i++) {
+        var option = document.createElement('option');
+        option.setAttribute('value', i);
+        option.textContent = hardware_name[i];
+        hwOptions.appendChild(option);
+    }
+
     if (hardware != undefined) {
         console.log(hardware + ':' + hardware_name[hardware]);
 
@@ -182,7 +211,7 @@ function selectSerial()
 
 function selectHardware()
 {
-    hardware = $('#hwver').val();
+    hardware = $('#hardware-select').val();
     setCookie('hardware', hardware, 1);
     displayHWVersion();
     //location.reload(); 
@@ -376,10 +405,6 @@ function saveParameter(notify) {
             }
         }
     });
-};
-
-function shareParameter() {
-    document.getElementById('parameters-share').submit();
 };
 
 function setParameter(cmd, value, save, notify, callback) {
@@ -855,150 +880,199 @@ function loadTheme() {
     }
 };
 
-function buildStatus() {
+function buildStatus(parameters) {
+
+    clearTimeout(statusRefreshTimer);
 
     if(synchronousPause == true) {
-        statusRefreshTimer = setTimeout(function () {               
-            buildStatus();
+        statusRefreshTimer = setTimeout(function () {        
+            buildStatus(parameters);
         }, 12000);
         return;
     }
 
-    clearTimeout(statusRefreshTimer);
+    document.getElementById('loader-status').classList.remove('d-none');
+    var opStatus = document.getElementById('opStatus');
 
-    $('#loader-status').removeClass('d-none'); //.show();
+    if(parameters == undefined) //reinitialize
+    {
+        parameters = statusParam;
+        opStatus.innerHTML = '';
 
+        var div = document.createElement('div');
+        div.className = 'd-inline small';
+        var checkbox = document.createElement('input');
+        checkbox.className = 'form-check-input';
+        checkbox.setAttribute('type', 'checkbox');
+        if(getCookie('status-refresh') != undefined) {
+            checkbox.checked = true;
+        }
+        checkbox.onclick = function()
+        {
+            if(this.checked) {
+                setCookie('status-refresh', this.checked, 360);
+                buildStatus();
+            }else{
+                deleteCookie('status-refresh');
+                clearTimeout(statusRefreshTimer);
+            }
+        }
+        div.textContent = 'Refresh';
+        div.appendChild(checkbox);
+        opStatus.appendChild(div);
+    }
+
+    synchronousPause = true;
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {
         if (xhr.status == 200) {
             var data = xhr.responseText.replace('\n\n', '\n');
             data = data.split('\n');
-
             //console.log(data);
 
             $('.tooltip').remove();
 
-            var opStatus = $('#opStatus').empty();
-            var img = $('<i>', { class: 'icons icon-status icon-key', 'data-toggle': 'tooltip', 'data-html': true });
-
+            var img = statusIcon('icon-key', '');
             if(data[0] !== '') {
 
                 //$('#potentiometer').addClass('d-none'); //.hide();
 
-                if (parseFloat(data[15]) === 3) {
-                    img.attr('data-original-title', 'Boost Mode');
-                    img.addClass('text-warning');
+                if (parseFloat(data[9]) === 3) {
+                    img.setAttribute('data-original-title', 'Boost Mode');
+                    img.classList.add('text-warning');
                 } else if (parseFloat(data[15]) === 4) {
-                    img.attr('data-original-title', 'Buck Mode');
-                    img.addClass('text-warning');
+                    img.setAttribute('data-original-title', 'Buck Mode');
+                    img.classList.add('text-warning');
                 }else if (parseFloat(data[0]) === 0) {
-                    img.attr('data-original-title', 'Off');
-                    img.addClass('text-danger');
+                    img.setAttribute('data-original-title', 'Off');
+                    img.classList.add('text-danger');
                 } else if (parseFloat(data[0]) === 1) {
                     if (parseFloat(data[6]) === 1) {
-                        img.attr('data-original-title', 'Pulse Only - Do not leave ON');
-                        img.addClass('text-warning');
+                        img.setAttribute('data-original-title', 'Pulse Only - Do not leave ON');
+                        img.classList.add('text-warning');
                     } else {
-                        img.attr('data-original-title', 'Running');
-                        img.addClass('text-success');
+                        img.setAttribute('data-original-title', 'Running');
+                        img.classList.add('text-success');
                     }
                 } else if (parseFloat(data[0]) === 2) {
-                    img.attr('data-original-title', 'Manual Mode');
-                    img.addClass('text-success');
-                    $('#potentiometer').removeClass('d-none'); //.show();
+                    img.setAttribute('data-original-title', 'Manual Mode');
+                    img.classList.add('text-success');
+                    //$('#potentiometer').removeClass('d-none'); //.show();
                 }
-                opStatus.append(img);
                 //========================
                 /*
                 if(json.ocurlim.value > 0){
                     div.append($('<i>', {'data-src':'img/amperage.svg'}));
                 }
-                opStatus.append(div);
+                opStatus.appendChild(div);
                 */
                 //========================
-                img = $('<i>', { class: 'icons icon-status icon-battery', 'data-toggle': 'tooltip', 'data-html': true, 'data-original-title': data[1] + 'V' });
+                img = statusIcon('icon-battery', data[1] + 'V');
                 if (parseFloat(data[1]) > parseFloat(data[2]) && parseFloat(data[1]) > 10 && parseFloat(data[1]) < 520) { // && parseFloat(data[15]) !== 0) {
-                    img.addClass('text-success');
+                    img.classList.add('text-success');
                 } else {
-                    img.addClass('text-danger');
+                    img.classList.add('text-danger');
                 }
-                opStatus.append(img);
                 //========================
-                img = $('<i>', { class: 'icons icon-status icon-temp', 'data-toggle': 'tooltip', 'data-html': true, 'data-original-title': data[3] + '&#8451;'});
                 if (parseFloat(data[3]) > 150 || parseFloat(data[4]) > 150) {
-                    img.addClass('text-danger');
-                    opStatus.append(img);
+                    img = statusIcon('icon-temp', data[3] + '&#8451;');
+                    img.classList.add('text-danger');
                 } else if (parseFloat(data[3]) < 0 || parseFloat(data[4]) < 0 || parseFloat(data[3]) > 100 || parseFloat(data[4]) > 100) {
-                    img.addClass('text-warning');
-                    opStatus.append(img);
+                    img = statusIcon('icon-temp', data[3] + '&#8451;');
+                    img.classList.add('text-warning');
                 }
                 //========================
-                img = $('<i>', { class: 'icons icon-status icon-magnet', 'data-toggle': 'tooltip', 'data-html': true, 'data-original-title': data[5] + 'ms' });
-                if(parseFloat(data[5]) < 22){
-                    img.addClass('text-danger');
-                    opStatus.append(img);
+                if(parseFloat(data[5]) < 22) {
+                    img = statusIcon('icon-magnet', data[5] + 'ms');
+                    img.classList.add('text-danger');
                 }
                 //========================
                 /*
                 img = $('<i>', { class: 'icons icon-status icon-speedometer', 'data-toggle': 'tooltip', 'data-html': true, 'data-original-title': '<h6>' + speed + 'RPM</h6>' });
                 if (speed > 6000) {
                     img.addClass('text-danger');
-                    opStatus.append(img);
+                    opStatus.appendChild(img);
                 } else if (speed > 3000) {
                     img.addClass('text-warning');
-                    opStatus.append(img);
+                    opStatus.appendChild(img);
                 }
                 */
                 //========================
-                if (parseFloat(data[7]) != 1 && parseFloat(data[15]) === 0) {
-                    img = $('<i>', { class: 'icons icon-status icon-alert', 'data-toggle': 'tooltip', 'data-html': 'true', 'data-original-title': 'Probably forgot PIN 11 to 12V' });
-                    img.addClass('text-warning');
-                    opStatus.append(img);
+                if (parseFloat(data[7]) != 1 && parseFloat(data[9]) === 0) {
+                    img = statusIcon('icon-alert text-warning', 'Probably forgot PIN 11 to 12V');
                 }
             }else{
-                img = $('<i>', { class: 'icons icon-status icon-alert', 'data-toggle': 'tooltip', 'data-html': 'true', 'data-original-title': 'Inverter Disconnected' });
-                img.addClass('text-warning');
-                opStatus.append(img);
+                img = statusIcon('icon-alert text-warning', 'Inverter Disconnected');
             }
             
-            //$('#opStatus').empty().append(opStatus);
-            var errors_url = 'serial.php?command=errors';
-            if(os == 'windows') {
-                errors_url = 'serial.php?get=lasterr';
-            }
-
-            var exhr = new XMLHttpRequest();
-            exhr.onload = function() {
-                if (exhr.status == 200) {
-                    if (xhr.responseText.indexOf('No Errors') === -1) {
-                        img = $('<i>', { class: 'icons icon-status icon-alert', 'data-toggle': 'tooltip', 'data-html': 'true', 'data-original-title': xhr.responseText.replace('\n','<br>') });
-                        img.addClass('text-warning');
-                        $('#opStatus').append(img);
-                        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
-                        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                          return new bootstrap.Tooltip(tooltipTriggerEl)
-                        });
-                    }
+            statusIconErrors(function() {
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                  return new bootstrap.Tooltip(tooltipTriggerEl)
+                });
+                if(getCookie('status-refresh') != undefined) {
+                    statusRefreshTimer = setTimeout(function() {
+                        buildStatus(statusParamDynamic);
+                    }, 12000);
                 }
-            };
-            exhr.open('GET', errors_url, true);
-            exhr.send();
-
-            //buildTips();
-            
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-              return new bootstrap.Tooltip(tooltipTriggerEl)
+                document.getElementById('loader-status').classList.add('d-none');
             });
-
-            $('#loader-status').addClass('d-none'); //.hide();
-            
-            statusRefreshTimer = setTimeout(function () {               
-                buildStatus();
-            }, 12000);
+            //buildTips();
         }
-    };
-    xhr.open('GET', 'serial.php?get=opmode,udc,udcmin,tmpm,tmphs,deadtime,din_start,din_mprot,chargemode', true);
+    }
+    xhr.onerror = function() {
+        synchronousPause = false;
+    }
+    xhr.open('GET', 'serial.php?get=' + parameters.join(','), true);
+    xhr.send();
+};
+
+function statusIcon(icon, value) {
+
+    var img = document.getElementById('status-' + icon);
+
+    if(img === null)
+    {
+        var opStatus = document.getElementById('opStatus');
+
+        img = document.createElement('i');
+        img.className = 'icons icon-status ' + icon;
+        img.setAttribute('id', 'status-' + icon);
+        img.setAttribute('data-toggle', 'tooltip');
+        img.setAttribute('data-html', true);
+
+        opStatus.appendChild(img);
+    }
+    img.setAttribute('data-original-title', value);
+
+    return img;
+};
+
+function statusIconErrors(callback) {
+
+    var errors_url = 'serial.php?command=errors';
+    if(os == 'windows') {
+        errors_url = 'serial.php?get=lasterr';
+    }
+
+    synchronousPause = true;
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            if (xhr.responseText.indexOf('No Errors') === -1) {
+                var img = statusIcon('icon-alert', xhr.responseText.replace('\n','<br>'));
+                img.classList.add('text-warning');
+                document.getElementById('opStatus').appendChild(img);
+            }
+            synchronousPause = false;
+            callback();
+        }
+    }
+    xhr.onerror = function() {
+        synchronousPause = false;
+        callback();
+    }
+    xhr.open('GET', errors_url, true);
     xhr.send();
 };
 

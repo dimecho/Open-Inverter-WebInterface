@@ -26,6 +26,8 @@ $(document).ready(function () {
                     if (nvram.status == 200 && nvram.response != null) {
                         share.action = nvram.response['nvram'][12] + '/api.php';
                         token.value = nvram.response['nvram'][14];
+                        if(token.value != '')
+                            checkSubscriptionToken(token.value, nvram.response['nvram'][15], share.action, false);
                     }
                 };
                 nvram.open('GET', '/nvram', true);
@@ -33,8 +35,12 @@ $(document).ready(function () {
             }else{
                 initializeSerial(115200,0);
 
-				token.value = (getCookie('token') || '');
                 //share.action = 'http://localhost/parameters/api.php'; //DEBUG
+				token.value = (getCookie('token') || '');
+                var timestamp = (getCookie('timestamp') || '');
+
+                if(token.value != '')
+                    checkSubscriptionToken(token.value, timestamp, share.action, false);
             }
 
             token.onchange = function()
@@ -43,16 +49,15 @@ $(document).ready(function () {
     
                 if (expr.test(this.value))
                 {
-                	 if(os == 'esp8266') {
-	                    var xhr = new XMLHttpRequest();
-	                    xhr.open('GET', '/nvram?offset=15&value=' + this.value, true);
-						xhr.send();
-	                }else{
-	                    setCookie('token', this.value, 120);
-	                }
-	                 $.notify({ message: 'Subscribed to ' + this.value }, { type: 'success' });
+                    $.notify({ message: 'Subscribed to ' + this.value }, { type: 'success' });
                 }else{
+                    this.value = '';
                     $.notify({ message: 'Invalid Token. GUID Format' }, { type: 'warning' });
+                }
+                if(os == 'esp8266') {
+                    setNVRAM('15', this.value);
+                }else{
+                    setCookie('token', this.value, 120);
                 }
             }
         });
@@ -68,6 +73,53 @@ $(document).ready(function () {
             return 'Are you sure you want to leave?';
     }
 });
+
+function checkSubscriptionToken(token, stamp, url, forceUpdate)
+{
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            var params = xhr.response;
+            
+            if(Object.keys(params).length > 0)
+            {
+                var timestamp = params.timestamp;
+                delete params['timestamp'];
+
+                if(stamp == timestamp && !forceUpdate) {
+                    $.notify({ message: 'Subscription up to date' }, { type: 'success' });
+                }
+                else if(forceUpdate || confirm('Subscription is updated, Apply?'))
+                {
+                    $.notify({ message: 'Applying new Subscription from ' + timestamp }, { type: 'warning' });
+
+                    for(var key in params) {
+                        setParameter(key, params[key], false, false);
+                    }
+                    if(os == 'esp8266') {
+                        setNVRAM('16', timestamp);
+                    }else{
+                        setCookie('timestamp', timestamp, 120);
+                    }
+                    $.notify({ message: 'Subscription re-newed'}, { type: 'success' });
+
+                    buildParameters(115200, 0);
+                }
+            }else{
+                $.notify({ message: 'Subscription Not Found'}, { type: 'warning' });
+            }
+        }else{
+            $.notify({ message: 'Subscription Error'}, { type: 'danger' });
+        }
+    };
+    xhr.open('GET', url + '?token=' + token, true);
+    xhr.send();
+};
+
+function shareParameter() {
+    document.getElementById('parameters-share').submit();
+};
 
 function saveReminderCounter() {
     $.notify({ message: 'Don\'t forget to Save Settings!' }, { type: 'warning' });
@@ -814,8 +866,8 @@ function buildParameters(speed, loop)
 
 	            if(Object.keys(json).length == 0)
 	            {
-                    if(os == 'esp8266' && loop == 0) {
-                        initializeSerial(115200,1); //try lower speed
+                    if(xhr.loop == 0) {
+                        initializeSerial(115200, (xhr.loop + 1)); //try lower speed
                         return;
                     }
 	            }else{
@@ -1010,6 +1062,13 @@ function installDrivers()
             document.getElementById('usb-ttl-progress').style.width = timerProgressCounter + '%';
         }, 100);
     }
+};
+
+function setNVRAM(offset, value)
+{
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/nvram?offset=' + offset + '&value=' + value, true);
+    xhr.send();
 };
 
 function checkFirmwareUpdates(v)
