@@ -22,9 +22,25 @@
  */
 
 #include <Arduino.h>
+#include <StreamString.h>
 #include <stdarg.h>
 #include "arm_debug.h"
 #include "arm_reg.h"
+#include "flashloader/stm32x.h"
+//#include "flashloader/stm32f0.h"
+
+/*
+Additional Research:
+    https://research.kudelskisecurity.com/2019/05/16/swd-arms-alternative-to-jtag
+    https://research.kudelskisecurity.com/2019/07/31/swd-part-2-the-mem-ap
+    https://www.silabs.com/documents/public/application-notes/an0062.pdf
+    https://www.silabs.com/documents/public/example-code/an0062-efm32-programming-guide.zip
+    https://github.com/m-mcgowan/embedded-swd/blob/master/firmware/swd.h
+    http://markding.github.io/swd_programing_sram
+    https://github.com/MarkDing/swd_programing_sram
+    https://www.cnblogs.com/shangdawei/p/4753040.html
+    https://www.cnblogs.com/shangdawei/p/3164075.html
+*/
 
 ARMDebug::ARMDebug(unsigned clockPin, unsigned dataPin, LogLevel logLevel)
     : clockPin(clockPin), dataPin(dataPin), logLevel(logLevel)
@@ -47,21 +63,8 @@ bool ARMDebug::begin()
     wireWrite(0xFFFFFFFF, 32);
     wireWrite(0, 32);
     wireWrite(0, 32);
-	
-	/*
-	wireWrite(0xFFFFFFFF, 16);
-	wireWrite(0xFFFFFFFF, 32);
-	wireWrite(0xFFFFFFFF, 18);
-	wireWrite(0xE79E, 16); // 0b0111100111100111
-	//wireWrite(0xE73C, 16); // 0b0011110011100111
-	wireWrite(0xFFFFFFFF, 32);
-	wireWrite(0xFFFFFFFF, 18);
-	wireWrite(0, 16);
-	
-	// Read the SW-DP IDCODE register to synchronize
-	wireWrite(0xA5, 8);
-	*/
-	
+
+	//The host must read IDCODE register after line request sequence.
     uint32_t idcode;
     if (!getIDCODE(idcode))
         return false;
@@ -74,6 +77,16 @@ bool ARMDebug::begin()
         return false;
 
     return true;
+}
+
+bool ARMDebug::reset()
+{
+    //Force reset even if BOOT0 is tied to GND
+    if (apWrite(MEM_TAR, REG_SCB_AIRCR))
+        if (apWrite(MEM_DRW, 0x05FA0004))
+            return true;
+
+    return false;
 }
 
 bool ARMDebug::getIDCODE(uint32_t &idcode)
@@ -89,6 +102,9 @@ bool ARMDebug::getIDCODE(uint32_t &idcode)
 
 bool ARMDebug::debugPortPowerup()
 {
+    //Power up debug domain
+    //dpWrite(4, 0x50000000);
+
     // Initialize CTRL/STAT, request system and debugger power-up
     if (!dpWrite(CTRLSTAT, false, CSYSPWRUPREQ | CDBGPWRUPREQ))
         return false;
@@ -170,12 +186,13 @@ bool ARMDebug::debugHalt()
         while (haltRetries) {
             haltRetries--;
 
-            if (!apWrite(MEM_DRW, 0xA05F0003))
+            //DHCSR bits C_STOP and C_DEBUGEN (2 + 1)
+            if (!apWrite(MEM_DRW, 0xA05F0003)) //STEP AND HALT
                 continue;
             if (!apRead(MEM_DRW, dhcsr))
                 continue;
 
-            if (dhcsr & (1 << 17)) {
+            if (dhcsr & (1 << 17)) { //checking whether it actually is halted (0x30000)
                 // Halted!
                 break;
             }
@@ -190,6 +207,304 @@ bool ARMDebug::debugHalt()
     }
 
     return true;
+}
+
+bool ARMDebug::debugHaltOnReset(uint8_t enable)
+{
+    /* 
+    //Enable TRC (Trace and Debug blocks) (including DWT)
+    DEMCR &= ~0x01000000; //disable
+    DEMCR |= 0x01000000; //enable
+    */
+
+	// Vector catch is the mechanism for generating a debug event 
+    // and entering Debug state when a particular exception occurs
+
+    uint32_t VC_CORERESET = 0x0;
+    if(enable == 1)
+        VC_CORERESET = 0x1; //Halt after Reset set VC_CORERESET bit to 1
+
+    if (apWrite(MEM_TAR, REG_SCB_DEMCR))
+        if (apWrite(MEM_DRW, VC_CORERESET))
+            return true;
+
+    return false;
+}
+
+bool ARMDebug::debugReset()
+{
+    if (apWrite(MEM_TAR, REG_SCB_AIRCR))
+        if (apWrite(MEM_DRW, 0xFA050004))
+            return true;
+
+    return false;
+}
+
+bool ARMDebug::debugStep()
+{
+    if (apWrite(MEM_TAR, REG_SCB_DHCSR))
+        if (apWrite(MEM_DRW, 0xA05F0005))
+            return true;
+    return false;
+}
+
+bool ARMDebug::debugRun()
+{
+	const uint32_t DHCSR_DEBUG_KEY = 0xA05F0000;
+
+    if (apWrite(MEM_TAR, REG_SCB_DHCSR))
+        if (apWrite(MEM_DRW, DHCSR_DEBUG_KEY))
+            return true;
+    return false;
+}
+
+bool ARMDebug::flashloaderSRAM()
+{
+    uint32_t i, size, addr = MEMAP_SRAM_START;
+
+    size = sizeof(flashloader_raw);
+    for (i = 0; i < size; i++)
+        memStoreByte(addr + i, flashloader_raw[i]);
+}
+
+bool ARMDebug::flashloaderRUN(uint32_t addr, unsigned count)
+{
+    uint32_t buf_addr = MEMAP_SRAM_START + sizeof(flashloader_raw); //flashloader end address
+
+    // Update vector table entry in 0xe000ed08 to SRAM start position 0x20000000
+    //memStore(REG_SCB_VTOR, MEMAP_SRAM_START); //Debugger to check the core VTOR register
+
+    // https://www.st.com/resource/en/programming_manual/cd00228163-stm32f10xxx-20xxx-21xxx-l1xxxx-cortex-m3-programming-manual-stmicroelectronics.pdf
+
+    // Update R15(PC) with reset vector address. It locates at second word position in firmware.
+    /*
+    The Program Counter (PC) is register R15. It contains the current program address.
+    On reset, the processor loads the PC with the value of the reset vector, which is at address 0x00000004.
+    */
+    //regWrite(15, flashloader_raw[1] & 0xFFFFFFFE); // R15
+    //Serial.printf("Flasloader Program Counter %08x\n", flashloader_raw[1] & 0xFFFFFFFE);
+
+    // Update R13(SP) with stack address defined in first word in firmware.
+    /*
+    The Stack Pointer (SP) is register R13. In Thread mode, bit[1] of the CONTROL register indicates the stack pointer to use:
+    0 = Main Stack Pointer (MSP). This is the reset value.
+    1 = Process Stack Pointer (PSP).
+    On reset, the processor loads the MSP with the value from address 0x00000000.
+    */
+    //regWrite(13, flashloader_raw[0]);              // R13
+    //Serial.printf("Flasloader Stack Pointer %08x\n", flashloader_raw[0]);
+
+    // Flashloader Variables
+    // ----------------------
+    // Communication implemented by using fixed-address variables that both parties check (flashloader <-> CPU R0, R1, R2, R3)
+    log(LOG_NORMAL,"Flasloader Buffer Start %08x\n", buf_addr);
+    log(LOG_NORMAL, "Flasloader Page Count %d\n", count / 2);
+    
+    //OpenOCD stm32x.h
+    regWrite(0, buf_addr);    // Source
+    regWrite(1, addr);        // Target
+    regWrite(2, count / 2);   // Count(16 bits half words)
+    //regWrite(3, 0);         // Result
+    /*
+    //ST-Link stm32f0.h
+    regWrite(0, buf_addr);    // Source
+    regWrite(1, addr);        // Target
+    regWrite(2, count / 2);   // Count(16 bits half words)
+    regWrite(3, 0);           // Flash Base 0
+    //if (addr >= MEMAP_FLASH_BANK2_START)
+    //    regWrite(3, REG_FPEC_FLASH_BANK2_OFS); // Flash Base 0 with Offset
+    */
+    regWrite(15, MEMAP_SRAM_START);
+
+    //Debug
+    uint32_t r0, r1, r2, r3, r15;
+    regRead(0, r0);
+    regRead(1, r1);
+    regRead(2, r2);
+    regRead(3, r3);
+    regRead(15, r15);
+    log(LOG_NORMAL, "R0:%08x R1:%08x R2:%08x R3:%08x R15:%08x \n", r0, r1, r2, r3, r15);
+
+    //unlockFlash();
+
+    //Run code
+    memStore(REG_SCB_DHCSR, 0xA05F0000);
+
+    flashWait();
+}
+
+bool ARMDebug::flashFinalize(uint32_t addr)
+{
+    uint32_t r13, r15;
+
+    // Set stack
+    apRead(addr, r13);
+    regWrite(15, r13);
+    // Set PC to the reset routine
+    apRead(addr + 4, r15);
+    regWrite(15, r15);
+
+    debugRun();
+
+    return true;
+}
+
+bool ARMDebug::writeBufferSRAM(uint32_t addr, const uint8_t *data, unsigned count)
+{
+    // Write the buffer right after the loader
+    uint32_t i, buf_addr = MEMAP_SRAM_START + sizeof(flashloader_raw) + addr; //flashloader end address
+
+    for (i = 0; i < count; i++)
+    {
+        memStoreByte(buf_addr + i, data[i]);
+        memWait();
+    }
+}
+
+bool ARMDebug::lockFlash()
+{
+	uint32_t flashlock;
+	apRead(REG_FPEC_FLASH_CR, flashlock);
+
+	if (!(flashlock & FLASH_CR_LOCK))
+    {
+    	if (apWrite(REG_FPEC_FLASH_CR, FLASH_CR_LOCK))
+    		return true;
+    }
+    return false;
+}
+
+bool ARMDebug::unlockFlash()
+{
+    //https://ioprog.com/2018/05/23/using-flash-memory-on-the-stm32f103
+
+    //FLASH_CR default value is 0x80000000. Bit 7 is reset by hardware after detecting unlock sequence. So expected value is 0x00
+    /*
+    uint32_t flashlock;
+	apRead(REG_FPEC_FLASH_CR, flashlock);
+    log(LOG_NORMAL, "Flash Unlock Check %08x\n",flashlock);
+    */
+
+	//if (flashlock & FLASH_CR_LOCK) {
+    	/*
+	    An unlocking sequence should be written to the FLASH_KEYR register to open up the FPEC block.
+	    This sequence consists of two write cycles, where two key values (KEY1 and KEY2) are written to the FLASH_KEYR address
+	    */
+        memStore(REG_FPEC_FLASH_KEYR, REG_FPEC_KEY_KEY1);
+        memStore(REG_FPEC_FLASH_KEYR, REG_FPEC_KEY_KEY2);
+        flashWait();
+	    //Authorize the programming of the option bytes by writing the same set of KEYS (KEY1 and KEY2) to the FLASH_OPTKEYR register
+	    //memStore(REG_FPEC_FLASH_OPTKEYR, REG_FPEC_KEY_KEY1);
+	    //memStore(REG_FPEC_FLASH_OPTKEYR, REG_FPEC_KEY_KEY2);
+        //flashWait();
+    //}
+    //Any wrong sequence locks up the FPEC block and FLASH_CR register until the next reset.
+
+    return true;
+}
+
+int ARMDebug::flashWait()
+{
+	//Programming error flags. Cleared by writing this value into FLASH_CR
+	const uint32_t FLASH_SR_ERROR_FLAGS = 0xF0;
+	const uint32_t FLASH_SR_BUSY = 1<<16;
+    const uint32_t FLASH_SR_WRPRTERR = 4;
+
+    uint32_t timeout = 10000;
+    uint32_t start = millis();
+    uint32_t status;
+
+    for (;;)
+	{
+		apRead(REG_FPEC_FLASH_SR, status);
+        //if (status & FLASH_SR_WRPRTERR)
+        //    return -2;
+        if (!(status & FLASH_SR_BUSY))
+            break;
+		if (millis()-start > timeout)
+		{
+            log(LOG_ERROR, "Flash Wait Timeout %08x\n",status);
+			return -1;
+		}
+	}
+	if (status & FLASH_SR_ERROR_FLAGS)
+	{
+		// clear the errors
+		memStore(REG_FPEC_FLASH_SR, status & ~FLASH_SR_ERROR_FLAGS);
+	}
+
+    return 0;
+}
+
+bool ARMDebug::flashEraseAll()
+{
+    unlockFlash();
+
+    uint32_t flashcr;
+    if (apRead(REG_FPEC_FLASH_CR, flashcr))
+    {
+        log(LOG_NORMAL, "FLASH_CR Before %08x\n",flashcr);
+        flashcr &= ~FLASH_CR_PG;    // ensure PG bit low
+        flashcr &= ~FLASH_CR_PER;   // ensure PER is low
+        log(LOG_NORMAL, "FLASH_CR After %08x\n",flashcr);
+
+        memStore(REG_FPEC_FLASH_CR, flashcr |=  FLASH_CR_MER); // set MER bit
+        memStore(REG_FPEC_FLASH_CR, flashcr |=  FLASH_CR_STRT); // set STRT bit
+
+        flashWait();
+
+        return true;
+    }
+
+    return false;
+}
+
+bool ARMDebug::flashErase(uint32_t addr)
+{
+    unlockFlash();
+
+    uint32_t flashcr;
+    if (apRead(REG_FPEC_FLASH_CR, flashcr))
+    {
+        log(LOG_NORMAL, "FLASH_CR Before %08x\n",flashcr);
+        flashcr &= ~FLASH_CR_PG;    // ensure PG bit low
+        flashcr &= ~FLASH_CR_MER;   // ensure MER is low
+        log(LOG_NORMAL, "FLASH_CR After %08x\n",flashcr);
+
+        memStore(REG_FPEC_FLASH_CR, flashcr |= FLASH_CR_PER);   // set PER bit
+        memStore(REG_FPEC_FLASH_AR, addr);
+        memStore(REG_FPEC_FLASH_CR, flashcr |= FLASH_CR_STRT);  // set STRT bit
+
+        flashWait();
+        return true;
+    }
+
+    return false;
+}
+
+bool ARMDebug::flashWrite(uint32_t addr, uint32_t data)
+{
+	flashWait();
+
+    unlockFlash();
+
+    uint32_t flashcr;
+    if (apRead(REG_FPEC_FLASH_CR, flashcr))
+    {
+        apWrite(REG_FPEC_FLASH_CR, flashcr &= ~1);  // ensure PER is low
+        apWrite(REG_FPEC_FLASH_CR, flashcr &= ~2);  // ensure MER is low
+        apWrite(REG_FPEC_FLASH_CR, flashcr |= 0);   // set PG bit
+
+        //Perform the data write (half-word) at the desired address
+        memStoreHalf(addr, data >> 16);
+        memStoreHalf(addr + 2, data & 0x0000FFFF);
+
+        flashWait();
+    }else{
+    	return false;
+    }
+
+	return true;
 }
 
 bool ARMDebug::regTransactionHandshake()
@@ -782,39 +1097,65 @@ void ARMDebug::log(int level, const char *fmt, ...)
     }
 }
 
-void ARMDebug::hexDump(uint32_t addr, unsigned count, int level)
+void ARMDebug::binDump(uint32_t addr, uint8_t* &buffer)
 {
-    // Hex dump target memory to the log
+    // Hex dump target memory to buffer
 
-    if (level <= logLevel && Serial) {
-        va_list ap;
-        char buffer[32];
-        LogLevel oldLogLevel;
+    va_list ap;
+    LogLevel oldLogLevel;
+    setLogLevel(LOG_NONE, oldLogLevel); //force log level none
 
-        setLogLevel(LOG_NONE, oldLogLevel);
+    uint8_t byte;
+    memLoadByte(addr, byte);
 
-        while (count) {
-            snprintf(buffer, sizeof buffer, "%08x:", addr);
-            Serial.print(buffer);
+    *buffer = byte;
+    
+    setLogLevel(oldLogLevel); //restore previous log level
+}
 
-            for (unsigned x = 0; count && x < 4; x++) {
-                uint32_t word;
-                if (memLoad(addr, word)) {
-                    snprintf(buffer, sizeof buffer, " %08x", word);
-                    Serial.print(buffer);
-                } else {
-                    Serial.print(" (error )");
-                }
+void ARMDebug::hexDump(uint32_t addr, unsigned count, StreamString &data)
+{
+    // Hex dump target memory to StreamString
 
-                count--;
-                addr += 4;
+    va_list ap;
+    char buffer[32];
+    LogLevel oldLogLevel;
+    setLogLevel(LOG_NONE, oldLogLevel); //force log level none
+
+    while (count) {
+        snprintf(buffer, sizeof buffer, "%08x:", addr);
+        data.print(buffer);
+
+        for (unsigned x = 0; count && x < 4; x++) {
+            uint32_t word;
+            if (memLoad(addr, word)) {
+
+                /*
+                word = ((word << 8) & 0xFF00FF00) | ((word >> 8) & 0xFF00FF); 
+                word = (word << 16) | ((word >> 16) & 0xFFFF);
+                snprintf(buffer, sizeof buffer, " %08x", word);
+                */
+
+                uint8_t bytes[3];
+                bytes[0] = (word >> 0)  & 0xFF;
+                bytes[1] = (word >> 8)  & 0xFF;
+                bytes[2] = (word >> 16) & 0xFF;
+                bytes[3] = (word >> 24) & 0xFF;
+                //snprintf(buffer, sizeof buffer, " | %02x %02x %02x %02x", bytes[3], bytes[2], bytes[1], bytes[0]); // big-endian
+                snprintf(buffer, sizeof buffer, " | %02x %02x %02x %02x", bytes[0], bytes[1], bytes[2], bytes[3]); // little-endian (reversed)
+
+                data.print(buffer);
+            } else {
+                data.print(" (error )");
             }
 
-            Serial.println();
+            count--;
+            addr += 4; //int32 word = 4 individual bytes
         }
 
-        setLogLevel(oldLogLevel);
+        data.println();
     }
+    setLogLevel(oldLogLevel); //restore previous log level
 }
 
 void ARMDebug::setLogLevel(LogLevel newLevel)

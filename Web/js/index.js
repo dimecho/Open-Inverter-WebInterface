@@ -874,7 +874,7 @@ function buildParameters(speed, loop)
 	                buildStatus();
 	                basicChecks(json);
 	            }
-                document.getElementById('parameters-json').value = JSON.stringify(json);
+                document.getElementById('parameters-json').value = JSON.stringify(json); //json;
 
 	            var legend = $('#legend').empty();
 	            var menu = $('#parameters').empty();

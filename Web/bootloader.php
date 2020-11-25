@@ -53,22 +53,50 @@
 							<div class="spinner-border text-dark"></div>
                             <div class="input-group w-100">
                                 <span class = "input-group-addon d-none w-75">
-								    <form enctype="multipart/form-data" action="bootloader.php" method="POST" id="firmwareForm">
-										<input name="firmware" type="file" class="file" accept=".bin,.hex" onchange="firmwareUpload()" hidden >
+								    <form enctype="multipart/form-data" action="bootloader.php" method="POST" id="firmware-form">
+										<input name="firmware" type="file" class="file" accept=".bin,.hex" onchange="firmwareUpload(this.files[0])" hidden >
 										<select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage(hardware,this.selectedIndex)" id="firmware-interface"></select>
 									</form>
 								</span>
                                 <span class = "input-group-addon d-none w-25 text-center">
-									<button class="browse btn btn-primary" type="button" id="browseFile"><i class="icons icon-select"></i> Select stm32_loader.bin</button>
+									<button class="browse btn btn-primary" type="button" id="browseFile"><i class="icons icon-select"></i> Select Bootloader</button>
 								</span>
                             </div>
-                            <br><br><h2 id="jtag-name"></h2>
+                            <br><br>
+                            <div class="progress progress-striped active">
+                                <div class="progress-bar" style="width:0%"></div>
+                            </div>
+                            <div class="form-check" style="text-align:left">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="firmware-result-show">
+                                       Show Details
+                                </label>
+                            </div>
+                            <br><br>
+                            <pre id="firmware-result" style="text-align:left"></pre>
+                            <h2 id="jtag-name"></h2>
                             <nav>
                                 <div class="nav nav-tabs" role="tablist" id="hardwareTabs"></div>
                             </nav>
                             <div class="tab-content" id="hardwareTabContent"></div>
-							<span class="badge badge-lg bg-warning" id="jtag-txt"></span><br><br>
+							<span class="badge badge-lg bg-warning mb-3" id="jtag-txt"></span>
                             <img src="" id="jtag-image" class="img-thumbnail rounded" />
+                            <div class="container d-none" id="swd-options">
+                                <div class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger" onClick="window.open('/swd/zero')"><i class="icons icon-reset"></i> <span id="text_swd_erase">Erase Flash</span></button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success" onClick="hardResetSWD()"><i class="icons icon-flash"></i> <span id="text_swd_reset">Hard Reset</span></button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-primary" onClick="window.open('/swd/hex?bootloader')"><i class="icons icon-chip"></i> <span id="text_swd_download_hex_boot">Bootloader Hex</span></button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-primary" onClick="window.open('/swd/bin?bootloader')"><i class="icons icon-binary"></i> <span id="text_swd_download_bin_boot">Bootloader Bin</span></button>
+                                    </div>
+                                </div>
+                            </div>
 							</center>
                             <?php
     							}

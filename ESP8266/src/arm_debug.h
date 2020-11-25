@@ -25,7 +25,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-
 class ARMDebug
 {
 public:
@@ -53,8 +52,47 @@ public:
      */
     bool begin();
 
+    // Hard reset
+    bool reset();
+
     // Turn on debugging and enter halt state
     bool debugHalt();
+
+    // Enable halt-on-reset
+    bool debugHaltOnReset(uint8_t enable);
+
+    // Reset the core
+    bool debugReset();
+
+    // Step command
+    bool debugStep();
+
+    // CPU continue its execution
+    bool debugRun();
+
+    // Progaramming SRAM with flashloader
+    bool flashloaderSRAM();
+    bool flashFinalize(uint32_t addr);
+    bool flashloaderRUN(uint32_t addr, unsigned count);
+    bool writeBufferSRAM(uint32_t addr, const uint8_t *data, unsigned count);
+
+    // Locking the Flash memory
+    bool lockFlash();
+
+    // Unlocking the Flash memory
+    bool unlockFlash();
+
+    // Wait for FPEC_FLASH_CR to change
+    int flashWait();
+
+    // Flash Mass Erase
+    bool flashEraseAll();
+
+    // Erase Flash by Sector (Page)
+    bool flashErase(uint32_t addr);
+
+    // Writes to flash (and erase operations)
+    bool flashWrite(uint32_t addr, uint32_t data);
 
     // CPU register operations, when halted (via DCRSR)
     bool regWrite(unsigned num, uint32_t data);
@@ -84,9 +122,12 @@ public:
 
     // Write to the log, printf-style
     void log(int level, const char *fmt, ...);
-
-    // Hex dump target memory words to the log
-    void hexDump(uint32_t addr, unsigned count, int level = LOG_NORMAL);
+    
+    // Hex dump target memory to buffer
+    void binDump(uint32_t addr, uint8_t* &buffer);
+    
+    // Hex dump target memory to StreamString
+    void hexDump(uint32_t addr, unsigned count, StreamString &data);
 
     // Change log levels, optionally returning the old level so it can be restored.
     void setLogLevel(LogLevel newLevel);
@@ -144,6 +185,21 @@ public:
         RDBUFF = 0xC
     };
 
+    // DCB_DHCSR bit and field definitions
+    enum DCB_DHCSRBit {
+        DBGKEY      = (0xA05F << 16),
+        C_DEBUGEN   = (1 << 0),
+        C_HALT      = (1 << 1),
+        C_STEP      = (1 << 2),
+        C_MASKINTS  = (1 << 3),
+        S_REGRDY    = (1 << 16),
+        S_HALT      = (1 << 17),
+        S_SLEEP     = (1 << 18),
+        S_LOCKUP    = (1 << 19),
+        S_RETIRE_ST = (1 << 24),
+        S_RESET_ST  = (1 << 25)
+    };
+
     // CTRL/STAT bits
     enum CtrlStatBit {
         CSYSPWRUPACK = 1 << 31,
@@ -156,10 +212,10 @@ public:
 
     // Memory Access Port registers
     enum MemPortReg {
-        MEM_CSW = 0x00,
-        MEM_TAR = 0x04,
-        MEM_DRW = 0x0C,
-        MEM_IDR = 0xFC,
+        MEM_CSW = 0x00, //Control and Status Word Register
+        MEM_TAR = 0x04, //Transfer Address Register
+        MEM_DRW = 0x0C, //Data Read/Write Register
+        MEM_IDR = 0xFC, //Identification Register
     };
 
     // MEM-AP CSW bits
@@ -179,6 +235,24 @@ public:
         CSW_DBGSWENABLE     = 1 << 31
     };
 
+    // FPEC Flash CR bits
+    enum FlashCRBit {
+        FLASH_CR_PG       = (1 << 0), //Programming
+        FLASH_CR_PER      = (1 << 1), //Page erase
+        FLASH_CR_MER      = (1 << 2), //Mass erase
+        FLASH_CR_STRT     = (1 << 6), //Start
+        FLASH_CR_OPTWRE   = (1 << 9), //Option bytes write enable
+        FLASH_CR_PSIZE_8  = (0 << 8),
+        FLASH_CR_PSIZE_16 = (1 << 8),
+        FLASH_CR_PSIZE_32 = (2 << 8),
+        FLASH_CR_PSIZE_64 = (3 << 8),
+        FLASH_CR_LOCK     = (1 << 31) //Lock 0x0080
+    };
+
+    inline uint32_t FLASH_CR_SNB(uint8_t sector) {
+        return sector << 3;
+    }
+    
     static const unsigned CSW_DEFAULTS = CSW_DBGSWENABLE | CSW_MASTER_DEBUG | CSW_HPROT;
     static const unsigned DEFAULT_RETRIES = 50;
 

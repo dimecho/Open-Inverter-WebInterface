@@ -898,28 +898,6 @@ function buildStatus(parameters) {
     {
         parameters = statusParam;
         opStatus.innerHTML = '';
-
-        var div = document.createElement('div');
-        div.className = 'd-inline small';
-        var checkbox = document.createElement('input');
-        checkbox.className = 'form-check-input';
-        checkbox.setAttribute('type', 'checkbox');
-        if(getCookie('status-refresh') != undefined) {
-            checkbox.checked = true;
-        }
-        checkbox.onclick = function()
-        {
-            if(this.checked) {
-                setCookie('status-refresh', this.checked, 360);
-                buildStatus();
-            }else{
-                deleteCookie('status-refresh');
-                clearTimeout(statusRefreshTimer);
-            }
-        }
-        div.textContent = 'Refresh';
-        div.appendChild(checkbox);
-        opStatus.appendChild(div);
     }
 
     synchronousPause = true;
@@ -932,6 +910,28 @@ function buildStatus(parameters) {
 
             $('.tooltip').remove();
 
+            var refresh = document.createElement('div');
+            refresh.className = 'd-inline small';
+            var checkbox = document.createElement('input');
+            checkbox.className = 'form-check-input';
+            checkbox.setAttribute('type', 'checkbox');
+            if(getCookie('status-refresh') != undefined) {
+                checkbox.checked = true;
+            }
+            checkbox.onclick = function()
+            {
+                if(this.checked) {
+                    setCookie('status-refresh', this.checked, 360);
+                    buildStatus();
+                }else{
+                    deleteCookie('status-refresh');
+                    clearTimeout(statusRefreshTimer);
+                }
+            }
+            refresh.textContent = 'Refresh';
+            refresh.appendChild(checkbox);
+            opStatus.appendChild(refresh);
+
             var img = statusIcon('icon-key', '');
             if(data[0] !== '') {
 
@@ -939,24 +939,24 @@ function buildStatus(parameters) {
 
                 if (parseFloat(data[9]) === 3) {
                     img.setAttribute('data-original-title', 'Boost Mode');
-                    img.classList.add('text-warning');
+                    statusIconColor('icon-key', 'text-warning');
                 } else if (parseFloat(data[15]) === 4) {
                     img.setAttribute('data-original-title', 'Buck Mode');
-                    img.classList.add('text-warning');
+                    statusIconColor('icon-key', 'text-warning');
                 }else if (parseFloat(data[0]) === 0) {
                     img.setAttribute('data-original-title', 'Off');
-                    img.classList.add('text-danger');
+                    statusIconColor('icon-key', 'text-danger');
                 } else if (parseFloat(data[0]) === 1) {
                     if (parseFloat(data[6]) === 1) {
                         img.setAttribute('data-original-title', 'Pulse Only - Do not leave ON');
-                        img.classList.add('text-warning');
+                        statusIconColor('icon-key', 'text-warning');
                     } else {
                         img.setAttribute('data-original-title', 'Running');
-                        img.classList.add('text-success');
+                        statusIconColor('icon-key', 'text-success');
                     }
                 } else if (parseFloat(data[0]) === 2) {
                     img.setAttribute('data-original-title', 'Manual Mode');
-                    img.classList.add('text-success');
+                    statusIconColor('icon-key', 'text-success');
                     //$('#potentiometer').removeClass('d-none'); //.show();
                 }
                 //========================
@@ -969,40 +969,35 @@ function buildStatus(parameters) {
                 //========================
                 img = statusIcon('icon-battery', data[1] + 'V');
                 if (parseFloat(data[1]) > parseFloat(data[2]) && parseFloat(data[1]) > 10 && parseFloat(data[1]) < 520) { // && parseFloat(data[15]) !== 0) {
-                    img.classList.add('text-success');
+                	statusIconColor('icon-battery', 'text-success');
                 } else {
-                    img.classList.add('text-danger');
+                	statusIconColor('icon-battery', 'text-danger');
                 }
                 //========================
                 if (parseFloat(data[3]) > 150 || parseFloat(data[4]) > 150) {
-                    img = statusIcon('icon-temp', data[3] + '&#8451;');
-                    img.classList.add('text-danger');
+                    img = statusIcon('icon-temp', data[3] + '&#8451;', 'text-danger');
                 } else if (parseFloat(data[3]) < 0 || parseFloat(data[4]) < 0 || parseFloat(data[3]) > 100 || parseFloat(data[4]) > 100) {
-                    img = statusIcon('icon-temp', data[3] + '&#8451;');
-                    img.classList.add('text-warning');
+                    img = statusIcon('icon-temp', data[3] + '&#8451;', 'text-warning');
                 }
                 //========================
                 if(parseFloat(data[5]) < 22) {
-                    img = statusIcon('icon-magnet', data[5] + 'ms');
-                    img.classList.add('text-danger');
+                    img = statusIcon('icon-magnet', data[5] + 'ms', 'text-danger');
                 }
                 //========================
                 /*
-                img = $('<i>', { class: 'icons icon-status icon-speedometer', 'data-toggle': 'tooltip', 'data-html': true, 'data-original-title': '<h6>' + speed + 'RPM</h6>' });
+                img = statusIcon('icon-speed', '<h6>' + speed + 'RPM</h6>');
                 if (speed > 6000) {
-                    img.addClass('text-danger');
-                    opStatus.appendChild(img);
+                	statusIconColor('icon-speed', 'text-danger');
                 } else if (speed > 3000) {
-                    img.addClass('text-warning');
-                    opStatus.appendChild(img);
+                	statusIconColor('icon-speed', 'text-warning');
                 }
                 */
                 //========================
                 if (parseFloat(data[7]) != 1 && parseFloat(data[9]) === 0) {
-                    img = statusIcon('icon-alert text-warning', 'Probably forgot PIN 11 to 12V');
+                    img = statusIcon('icon-alert', 'Probably forgot PIN 11 to 12V', 'text-warning');
                 }
             }else{
-                img = statusIcon('icon-alert text-warning', 'Inverter Disconnected');
+                img = statusIcon('icon-alert', 'Inverter Disconnected', 'text-warning');
             }
             
             statusIconErrors(function() {
@@ -1017,7 +1012,6 @@ function buildStatus(parameters) {
                 }
                 document.getElementById('loader-status').classList.add('d-none');
             });
-            //buildTips();
         }
     }
     xhr.onerror = function() {
@@ -1027,7 +1021,7 @@ function buildStatus(parameters) {
     xhr.send();
 };
 
-function statusIcon(icon, value) {
+function statusIcon(icon, value, color) {
 
     var img = document.getElementById('status-' + icon);
 
@@ -1043,9 +1037,17 @@ function statusIcon(icon, value) {
 
         opStatus.appendChild(img);
     }
+    if(color != undefined)
+    	img.classList.add(color);
+
     img.setAttribute('data-original-title', value);
 
     return img;
+};
+
+function statusIconColor(icon, value) {
+    var img = document.getElementById('status-' + icon);
+    img.className = 'icons icon-status ' + icon + ' ' + value;
 };
 
 function statusIconErrors(callback) {
@@ -1060,9 +1062,12 @@ function statusIconErrors(callback) {
     xhr.onload = function() {
         if (xhr.status == 200) {
             if (xhr.responseText.indexOf('No Errors') === -1) {
-                var img = statusIcon('icon-alert', xhr.responseText.replace('\n','<br>'));
-                img.classList.add('text-warning');
-                document.getElementById('opStatus').appendChild(img);
+            	var img = statusIcon('icon-error', xhr.responseText.replace('\n','<br>'), 'icon-alert');
+                statusIconColor('icon-error', 'icon-alert text-warning');
+            }else{
+            	var img = document.getElementById('status-icon-error');
+            	if(img != null)
+            		document.getElementById('opStatus').removeChild(img);
             }
             synchronousPause = false;
             callback();

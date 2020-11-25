@@ -29,11 +29,6 @@ String HTTPS_FQDN = "inverter.openinverter.org"; //DNS resolution to 192.168.4.1
       return connect(IPAddress(addr.addr), port);
   #endif
 */
-/*
-  #define LFS_READ_SIZE 256
-  #define LFS_PROG_SIZE 256
-  #define LFS_BLOCK_SIZE 4096
-*/
 
 //#include <RemoteDebug.h>
 //#include <ArduinoOTA.h>
@@ -44,9 +39,11 @@ String HTTPS_FQDN = "inverter.openinverter.org"; //DNS resolution to 192.168.4.1
 
 #ifdef ESP32
 #include <WiFi.h>
+#include <ESP32Ticker.h>
 #include <AsyncTCP.h>
 #include <Update.h>
 #elif defined(ESP8266)
+#include <Ticker.h>
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #endif
@@ -75,7 +72,7 @@ AsyncWebServer server(80);
 DNSServer dnsServer;
 
 int WIFI_PHY_MODE = 1; //WIFI_PHY_MODE_11B = 1, WIFI_PHY_MODE_11G = 2, WIFI_PHY_MODE_11N = 3
-float WIFI_PHY_POWER = 20.5; //Max = 20.5dbm
+float WIFI_PHY_POWER = 25; //Max = 20.5dbm or 25dbm
 int ACCESS_POINT_MODE = 0;
 char ACCESS_POINT_SSID[] = "Inverter";
 char ACCESS_POINT_PASSWORD[] = "inverter123";
@@ -93,7 +90,8 @@ int SUBSCRIPTION_REFRESH = 0;
 char SUBSCRIPTION_TOKEN[] = "";
 char SUBSCRIPTION_STAMP[] = "";
 
-String firmwareInterface = "" ;
+String firmwareInterface = "";
+String firmwareFile = "";
 StreamString asyncLogStream;
 uint32_t serialInitialized = 0;
 
@@ -161,35 +159,20 @@ int CAN_ID_FILTERS[10];
 long unsigned int CANmsgId;
 unsigned char CANmsg[8];
 #endif
-//=========================
-//Experimental SWD Debugger
-//=========================
+//============
+//SWD Debugger
+//============
 /*
   https://github.com/scanlime/esp8266-arm-swd
 */
-
 #include "src/arm_debug.h"
-
+uint32_t addr = 0x08000000;
+uint32_t addrEnd = 0x0801ffff;
+uint32_t addrNext = 0x00000000;
 const uint8_t swd_clock_pin = 4; //GPIO4 (D2)
 const uint8_t swd_data_pin = 5; //GPIO5 (D1)
 
-//ARMDebug target(swd_clock_pin, swd_data_pin);
-
-// Turn the log level back up for debugging; but by default, we have it
-// completely off so that even failures happen quickly, to keep the web app responsive.
-ARMDebug target(swd_clock_pin, swd_data_pin, ARMDebug::LOG_NONE);
-
-/*
-  uint32_t intArg(const char *name)
-  {
-  // Like server.arg(name).toInt(), but it handles integer bases other than 10
-  // with C-style prefixes (0xNUMBER for hex, or 0NUMBER for octal)
-
-  uint8_t tmp[64];
-  server.arg(name).getBytes(tmp, sizeof tmp, 0);
-  return strtoul((char*) tmp, 0, 0);
-  }
-*/
+ARMDebug swd(swd_clock_pin, swd_data_pin, ARMDebug::LOG_NONE);
 
 const char *boolStr(bool x)
 {
@@ -350,16 +333,10 @@ void setup()
   //Async Web Server
   //===============
   /*
-    -------------------------
-    Experimental SWD Debugger
-    -------------------------
+    ------------
+    SWD Debugger
+    ------------
   */
-  server.on("/swd/reset", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(200, text_json, boolStr(target.debugPortReset()));
-  });
-  server.on("/swd/halt", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(200, text_json, boolStr(target.debugHalt()));
-  });
   server.on("/swd/begin", HTTP_GET, [](AsyncWebServerRequest * request) {
     // See if we can communicate. If so, return information about the target.
     // This shouldn't reset the target, but it does need to communicate,
@@ -368,145 +345,203 @@ void setup()
     // If all is well, this returns some identifying info about the target.
 
     uint32_t idcode;
-    target.getIDCODE(idcode);
-    //Debug.println(idcode);
 
-    if (target.begin() && target.getIDCODE(idcode)) {
-      char result[128];
+    if (swd.begin() && swd.getIDCODE(idcode)) {
 
-      // Note the room left in the API for future platforms detected,
-      // even though it requires refactoring a bit.
+      AsyncResponseStream *response = request->beginResponseStream(text_json);
+      response->printf("{\"connected\": true, \"idcode\": \"0x%02x\" }", idcode);
+      request->send(response);
 
-      snprintf(result, sizeof result, "{\"connected\": true, \"idcode\": %lu}", idcode);
-
-      request->send(200, text_json, result);
     } else {
       request->send(200, text_json, "{\"connected\": false}");
     }
   });
-  server.on("/swd/mem/read", HTTP_GET, [](AsyncWebServerRequest * request) {
-    uint32_t addr = request->getParam("addr")->value().toInt(); ////intArg("addr");
-    uint32_t count = constrain(addr, 1, 1024);
-    uint32_t value;
-    String output = "[";
+  server.on("/swd/halt", HTTP_GET, [](AsyncWebServerRequest * request) {
+    //swd.debugHalt();
 
-    while (count) {
-      if (target.memLoad(addr, value)) {
-        output += value;
-      } else {
-        output += "null";
-      }
-      addr += 4;
-      count--;
-      if (count) {
-        output += ",";
-      }
-    }
-    output += "]\n";
-    request->send(200, text_json, output);
+    //Set MEM-AP TAR to 0xE000EDF0 (DHCSR)
+    swd.apWrite(0x4, 0xE000EDF0);
+    //Write to MEM-AP DRW, writing the DHCSR bits C_STOP and C_DEBUGEN
+    swd.apWrite(0xc, 0xA05F0003);
+
+    request->send(200, text_plain, "");
   });
-  server.on("/swd/mem/write", HTTP_GET, [](AsyncWebServerRequest * request) {
-    // Interprets the argument list as a list of stores to make in order.
-    // The key in the key=value pair consists of an address with an optional
-    // width prefix ('b' = byte wide, 'h' = half width, default = word)
-    // The address can be a '.' to auto-increment after the previous store.
-    //
-    // Returns a confirmation and result for each store, as JSON.
+  server.on("/swd/run", HTTP_GET, [](AsyncWebServerRequest * request) {
+    //swd.debugRun();
 
-    uint32_t addr = -1;
-    String output = "[\n";
+    //Set MEM-AP TAR to 0xE000EDF0 (DHCSR)
+    swd.apWrite(0x4, 0xE000EDF0);
+    //Write to MEM-AP DRW, resetting the DHCSR bits
+    swd.apWrite(0xc, 0xA05F0000);
 
-    for (int i = 0; request->getParam(i)->name().length()  > 0; i++) {
-      uint8_t arg[64];
-      request->getParam(i)->name().getBytes(arg, sizeof arg, 0);
-
-      uint8_t *addrString = &arg[arg[0] == 'b' || arg[0] == 'h'];
-      if (addrString[0] != '.') {
-        addr = strtoul((char*) addrString, 0, 0);
-      }
-
-      uint8_t valueString[64];
-      request->getParam(i)->name().getBytes(valueString, sizeof valueString, 0);
-      uint32_t value = strtoul((char*) valueString, 0, 0);
-
-      bool result;
-      const char *storeType = "word";
-
-      switch (arg[0]) {
-        case 'b':
-          value &= 0xff;
-          storeType = "byte";
-          result = target.memStoreByte(addr, value);
-          addr++;
-          break;
-
-        case 'h':
-          storeType = "half";
-          value &= 0xffff;
-          result = target.memStoreHalf(addr, value);
-          addr += 2;
-          break;
-
-        default:
-          result = target.memStore(addr, value);
-          addr += 4;
-          break;
-      }
-
-      char buf[128];
-      snprintf(buf, sizeof buf,
-               "%s{\"store\": \"%s\", \"addr\": %lu, \"value\": %lu, \"result\": %s}",
-               i ? "," : "", storeType, addr, value, boolStr(result));
-      output += buf;
-    }
-    output += "\n]";
-    request->send(200, text_json, output);
+    request->send(200, text_plain, "");
   });
-  server.on("/swd/reg/read", HTTP_GET, [](AsyncWebServerRequest * request) {
-    uint32_t addr = request->getParam("addr")->value().toInt(); //intArg("addr");
-    uint32_t count = constrain(addr, 1, 1024);
-    uint32_t value;
-    String output = "[";
-
-    while (count) {
-      if (target.regRead(addr >> 2, value)) {
-        output += value;
-      } else {
-        output += "null";
-      }
-      addr += 4;
-      count--;
-      if (count) {
-        output += ",";
-      }
+  server.on("/swd/reset", HTTP_GET, [](AsyncWebServerRequest * request) {
+    //swd.debugReset()
+    if (request->hasParam("hard")) {
+      swd.reset();
+    } else {
+      //Set MEM-AP TAR to 0xE000ED0C (AIRCR)
+      swd.apWrite(0x4, 0xE000ED0C);
+      //Write to MEM-AP DRW, writing the AIRCR bits
+      swd.apWrite(0xc, 0xFA050004);
     }
-    output += "]\n";
-    request->send(200, text_json, output);
+
+    request->send(200, text_plain, "");
   });
-  server.on("/swd/reg/write", HTTP_GET, [](AsyncWebServerRequest * request) {
-    String output = "[\n";
+  server.on("/swd/uid", HTTP_GET, [](AsyncWebServerRequest * request) {
 
-    for (int i = 0; request->getParam(i)->name().length() > 0; i++) {
-      uint8_t addrString[64];
-      request->getParam(i)->name().getBytes(addrString, sizeof addrString, 0);
-      uint32_t addr = strtoul((char*) addrString, 0, 0);
+    // STM32F103 Reference Manual, Chapter 30.2 Unique device ID register (96 bits)
+    // http://www.st.com/st-web-ui/static/active/en/resource/technical/document/reference_manual/CD00171190.pdf
 
-      uint8_t valueString[64];
-      request->getParam(i)->name().getBytes(valueString, sizeof valueString, 0);
-      uint32_t value = strtoul((char*) valueString, 0, 0);
+    uint32_t REG_U_ID = 0x1FFFF7E8; //96 bits long, read using 3 read operations
 
-      bool result = target.regWrite(addr >> 2, value);
+    uint16_t off0;
+    uint16_t off2;
+    uint32_t off4;
+    uint32_t off8;
 
-      char buf[128];
-      snprintf(buf, sizeof buf,
-               "%s{\"addr\": %lu, \"value\": %lu, \"result\": %s}",
-               i ? "," : "", addr, value, boolStr(result));
-      output += buf;
+    swd.memLoadHalf(REG_U_ID + 0x0, off0);
+    swd.memLoadHalf(REG_U_ID + 0x2, off2);
+    swd.memLoad(REG_U_ID + 0x4, off4);
+    swd.memLoad(REG_U_ID + 0x8, off8);
+
+    AsyncResponseStream *response = request->beginResponseStream(text_json);
+    response->printf("{\"uid\": \"0x%04x-0x%04x-0x%08x-0x%08x\" }", off0, off2, off4, off8);
+    request->send(response);
+  });
+  server.on("/swd/zero", HTTP_GET, [](AsyncWebServerRequest * request) {
+
+    if (swd.begin()) {
+
+      addr = 0x08000000;
+      addrEnd = 0x0801ffff;
+      addrNext = addr;
+
+      ESP.wdtDisable(); // Software WDT OFF
+      hw_wdt_disable(); // Hardware WDT OFF
+
+      swd.debugHalt();
+      swd.debugHaltOnReset(1);
+      swd.reset();
+      swd.unlockFlash();
+      swd.flashEraseAll();
+      swd.debugHaltOnReset(0);
+      //swd.debugReset();
+
+      AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
+
+#if DEBUG
+        Serial.printf("------ %08x ------\n", addrNext);
+#endif
+        if (addrNext > addrEnd) {
+          swd.debugReset();
+          return 0;
+        }
+
+        StreamString data;
+        data.printf("%08x:", addrNext);
+
+        uint32_t eraseBuffer[4];
+        memset(eraseBuffer, 0xff, sizeof(eraseBuffer));
+
+        for (int i = 0; i < 4; i++)
+        {
+          data.printf(" | %02x %02x %02x %02x", (uint8_t)(eraseBuffer[i] >> 0), (uint8_t)(eraseBuffer[i] >> 8), (uint8_t)(eraseBuffer[i] >> 16), (uint8_t)(eraseBuffer[i] >> 24));
+          addrNext += 4;
+        }
+        data.println();
+
+        return data.readBytes(buffer, data.available());
+      });
+      request->send(response);
+
+    } else {
+      request->send(200, text_plain, "SWD Error");
     }
-    output += "\n]";
-    request->send(200, text_json, output);
   });
+  server.on("/swd/hex", HTTP_GET, [](AsyncWebServerRequest * request) {
 
+    if (swd.begin()) {
+
+      if (request->hasParam("bootloader")) {
+        addr = 0x08000000;
+        addrEnd = 0x08000fff;
+      } else if (request->hasParam("flash")) {
+        addr = 0x08001000;
+        addrEnd = 0x0801ffff;
+      } else if (request->hasParam("ram")) {
+        addr = 0x20000000;
+        addrEnd = 0x200003ff; //Note: Read is limited to 0x200003ff but you can write to higher portion of RAM
+      }
+      addrNext = addr;
+
+      ESP.wdtDisable(); // Software WDT OFF
+      hw_wdt_disable(); // Hardware WDT OFF
+
+      AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
+
+        if (addrNext >= addrEnd)
+          return 0;
+#if DEBUG
+        Serial.printf("------ %08x ------\n", addrNext);
+#endif
+        StreamString data;
+        uint8_t PAGE_SIZE = 12; //8 pages = 2756 bytes plain-text chunks, cannot be over maxLen (4096)
+        
+        if (addrNext + (PAGE_SIZE * 4) >= addrEnd) //adjust last chunk
+            PAGE_SIZE = ((addrEnd - addrNext) / 4) + 1;
+
+        swd.hexDump(addrNext, PAGE_SIZE, data); //total data is x4 (swd reads in chunks of 4)
+        addrNext += PAGE_SIZE * 4;
+
+        return data.readBytes(buffer, data.available());
+      });
+      request->send(response);
+
+    } else {
+      request->send(200, text_plain, "SWD Error");
+    }
+  });
+  server.on("/swd/bin", HTTP_GET, [](AsyncWebServerRequest * request) {
+
+    if (swd.begin()) {
+
+      String filename = "flash.bin";
+
+      if (request->hasParam("bootloader")) {
+        addr = 0x08000000;
+        addrEnd = 0x08000fff;
+        filename = "bootloader.bin";
+      } else if (request->hasParam("flash")) {
+        addr = 0x08001000;
+        addrEnd = 0x0801ffff;
+      }
+      addrNext = addr;
+
+      ESP.wdtDisable(); // Software WDT OFF
+      hw_wdt_disable(); // Hardware WDT OFF
+
+      AsyncWebServerResponse *response = request->beginChunkedResponse("application/octet-stream", [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
+
+        if (addrNext > addrEnd)
+          return 0;
+#if DEBUG
+        Serial.printf("------ %08x ------\n", addrNext);
+#endif
+        swd.memLoadByte(addrNext, *buffer);
+        addrNext++;
+
+        return 1;
+      });
+
+      response->addHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+      request->send(response);
+
+    } else {
+      request->send(200, text_plain, "SWD Error");
+    }
+  });
 #ifndef ARDUINO_MOD_WIFI_ESP8266
   /*
     -------------------------
@@ -680,14 +715,14 @@ void setup()
   });
   server.on("/nvram", HTTP_GET, [](AsyncWebServerRequest * request) {
     if (request->params() > 0) {
-        int i = request->getParam(0)->value().toInt();
-        String v = request->getParam(1)->value();
-        NVRAM_Write(i, v);
-        request->send(200, text_plain, v);
-      } else {
-        String out = NVRAM(1, 15, 5);
-        request->send(200, text_json, out);
-      }
+      int i = request->getParam(0)->value().toInt();
+      String v = request->getParam(1)->value();
+      NVRAM_Write(i, v);
+      request->send(200, text_plain, v);
+    } else {
+      String out = NVRAM(1, 15, 5);
+      request->send(200, text_json, out);
+    }
   });
   server.on("/nvram", HTTP_POST, [](AsyncWebServerRequest * request) {
 
@@ -796,20 +831,211 @@ void setup()
     request->redirect("/index.php");
   }, SnapshotUpload);
 
-  server.on("/bootloader.php", HTTP_POST, [](AsyncWebServerRequest * request) {
-
-    AsyncResponseStream *response = request->beginResponseStream(text_plain);
-    response->print(asyncLogStream);
-    request->send(response);
-
-  }, FirmwareUpload);
-
   server.on("/firmware.php", HTTP_POST, [](AsyncWebServerRequest * request) {
 
-    AsyncResponseStream *response = request->beginResponseStream(text_plain);
-    response->print(asyncLogStream);
-    request->send(response);
+    ESP.wdtDisable(); // Software WDT OFF
+    hw_wdt_disable(); // Hardware WDT OFF
 
+    //==================
+    // SWD UPDATER
+    //==================
+    if (firmwareInterface == "swd-esp8266") {
+      if (swd.begin()) {
+
+        swd.debugHalt();
+        swd.debugHaltOnReset(1);
+        swd.reset();
+        swd.unlockFlash();
+
+        AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
+
+          StreamString data;
+          File fs = LittleFS.open(firmwareFile, "r");
+          fs.seek(addrNext - addr);
+#if DEBUG
+          Serial.println(addrNext - addr);
+          Serial.println(fs.available());
+#endif
+          if (addrNext >= addrEnd || fs.available() == 0)
+          {
+            swd.flashFinalize(addr);
+            swd.debugHaltOnReset(0);
+            swd.reset(); //hard-reset
+
+            fs.close();
+            LittleFS.remove(firmwareFile);
+            return 0;
+          }
+          swd.debugHalt();
+          swd.flashloaderSRAM();
+
+          uint8_t PAGE_SIZE = 12; //8 pages = 2756 bytes plain-text chunks, cannot be over maxLen (4096)
+          uint32_t addrBuffer = 0x00000000;
+          uint32_t addrIndex = addrNext;
+          for (uint16_t p = 0; p < PAGE_SIZE; p++)
+          {
+#if DEBUG
+            Serial.printf("------ %08x ------\n", addrIndex);
+#endif
+            if (fs.available() == 0)
+              break;
+
+            data.printf("%08x:", addrIndex);
+
+            for (int i = 0; i < 4; i++)
+            {
+              if (fs.available() == 0)
+                break;
+
+              char sramBuffer[4];
+              fs.readBytes(sramBuffer, 4);
+
+              swd.writeBufferSRAM(addrBuffer, (uint8_t*)sramBuffer, sizeof(sramBuffer));
+              data.printf(" | %02x %02x %02x %02x", sramBuffer[0], sramBuffer[1], sramBuffer[2], sramBuffer[3]);
+
+              addrIndex += 4;
+              addrBuffer += 4;
+            }
+            data.println();
+          }
+          swd.flashloaderRUN(addrNext, addrBuffer);
+          addrNext = addrIndex;
+
+          fs.close();
+          
+          do {
+            PAGE_SIZE--;
+          } while (PAGE_SIZE);
+          
+          //Serial.println((char*)buffer);
+          return data.readBytes(buffer, data.available());
+        });
+        request->send(response);
+      } else {
+        AsyncResponseStream *response = request->beginResponseStream(text_plain);
+        response->print("SWD not connected");
+        request->send(response);
+      }
+    } else {
+      //==================
+      // STM32 UPDATER
+      //==================
+      AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
+        StreamString data;
+        File fs = LittleFS.open(firmwareFile, "r");
+
+        if (addrNext >= addrEnd || fs.available() == 0)
+        {
+          fs.close();
+          LittleFS.remove(firmwareFile);
+          return 0;
+        }
+
+        uint32_t timeout = millis();
+        uint16_t PAGE_SIZE_BYTES = 1024;
+        //int pages = (request->_tempFile.size() / PAGE_SIZE_BYTES) + 1;
+        uint8_t pages = (fs.size() + PAGE_SIZE_BYTES - 1) / PAGE_SIZE_BYTES;
+
+        char c;
+        if (addrNext == addr) //starting
+        {
+          data.println("File length is " + String(fs.size()) + " bytes/" + String(pages) + " pages");
+
+          serialStreamFlush();
+
+          data.println("Resetting device...");
+
+          //Clear the initialization Bug
+          //-----------------------------
+          Serial.print("hello\n");
+          //consumeEcho('\n'); //echo
+          //consumeEcho('\n'); //reply
+          //-----------------------------
+          Serial.print("reset\n");
+          consumeEcho('t'); //echo -> reset
+
+          //Serial.end();
+          //Serial.begin(115200, SERIAL_8N1);
+
+          do {
+            c = Serial.read();
+          } while (c != 'S' && c != '2');
+
+          //NO DELAY HERE!!!
+
+          if (c == '2')
+          {
+            Serial.write(0xAA); //Send magic
+            while (Serial.read() != 'S');
+
+            data.println("Bootloader v2 detected");
+          }
+
+          if (millis() - timeout < 4000)
+          {
+            Serial.write(pages);
+            while (Serial.read() != 'P'); //Wait for page request
+
+            data.println("Sending number of pages.." + String(pages));
+          } else {
+            data.println("STM32 is bricked - Try pressing reset button during upload");
+            data.readBytes(buffer, data.available());
+            return 0;
+          }
+        }
+
+        uint8_t page = (addrNext - addr ) / PAGE_SIZE_BYTES;
+        data.println("Sending page " + String(page) + "...");
+
+        char bufferRead[PAGE_SIZE_BYTES];
+        fs.seek(addrNext - addr);
+        size_t bytesRead = fs.readBytes(bufferRead, sizeof(bufferRead));
+
+        while (bytesRead < PAGE_SIZE_BYTES) //Fill ramaining bytes with zeros, prevents corrupted endings
+          bufferRead[bytesRead++] = 0xff;
+
+        uint32_t crc = crc32((uint32_t*)bufferRead, PAGE_SIZE_BYTES / 4, 0xffffffff);
+
+        //data.println("Sending bytes " + String(sizeof(bufferRead)));
+
+        while (c != 'C') {
+          Serial.write((uint8_t*)bufferRead, sizeof(bufferRead));
+          while (!Serial.available()); //wait until available
+          c = Serial.read();
+
+          if (c == 'T')
+          {
+            data.println("Transmission Error");
+          }
+        }
+
+        data.println("Sending CRC...");
+
+        Serial.write((char*)&crc, sizeof(uint32_t));
+        while (!Serial.available()); //wait until available
+        c = Serial.read();
+
+        if ('D' == c)
+        {
+          data.println("CRC correct!");
+          data.println("Update Done!");
+          addrNext = addrEnd;
+        }
+        else if ('E' == c)
+        {
+          data.println("CRC error!");
+        }
+        else if ('P' == c)
+        {
+          data.println("CRC correct!");
+          addrNext += PAGE_SIZE_BYTES;
+        }
+
+        fs.close();
+        return data.readBytes(buffer, data.available());
+      });
+      request->send(response);
+    }
   }, FirmwareUpload);
 
   server.on("/test.php", HTTP_POST, [](AsyncWebServerRequest * request) {
@@ -1020,7 +1246,7 @@ void setup()
 
     if (php || php_html)
     {
-      digitalWrite(LED_BUILTIN, HIGH);
+      digitalWrite(LED_BUILTIN, LOW); //ON
       String contentType = getContentType(file);
 
       if (file.endsWith(".php"))
@@ -1045,7 +1271,7 @@ void setup()
         //response->addHeader("Cache-Control", "max-age=3600");
         request->send(response);
       }
-      digitalWrite(LED_BUILTIN, LOW);
+      digitalWrite(LED_BUILTIN, HIGH); //OFF
     } else {
       request->send(404, text_plain, "404: Not Found");
     }
@@ -1077,6 +1303,8 @@ void setup()
           return size;
         }
         file.close();
+
+        free(nbuf); //free what you malloc()
       }
 #if DEBUG
       Serial.print("[WEB] SSL File: ");
@@ -1151,6 +1379,7 @@ void setup()
   //ArduinoOTA.begin();
 
   pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH); //OFF
 
   //===================
   //Remote Telnet Debug
@@ -1273,7 +1502,7 @@ String NVRAM(uint8_t from, uint8_t to, uint8_t skip)
     if (skip == -1 || i != skip) {
       String escaped = NVRAM_Read(i);
       //escaped.replace("/", "\\/");
-      
+
       out += "\"";
       out += escaped;
       out += "\",";
@@ -1516,196 +1745,33 @@ void FirmwareUpload(AsyncWebServerRequest * request, String filename, size_t ind
   if (!index) {
     request->_tempFile = LittleFS.open(filename, "w");
 
-    if (LittleFS.exists(filename + ".log"))
-      LittleFS.remove(filename + ".log");
-    asyncLogStream.clear();
+    //if (LittleFS.exists(filename + ".log"))
+    //  LittleFS.remove(filename + ".log");
+    //asyncLogStream.clear();
   }
 
   request->_tempFile.write(data, len);
 
-  if (final) {
-
-    request->_tempFile.close();
-
-    File f = LittleFS.open(filename, "r");
-    File fs = LittleFS.open(filename + ".log", "w");
-
-    uint32_t addr = (uint32_t)0x08000000;
-    uint32_t addrEnd = (uint32_t)0x0801ffff;
-
-    if (request->url() == "/firmware.php") {
-      addr = (uint32_t)0x08001000;
-    }
-
-    if (firmwareInterface == "swd-esp8266") {
-      //==================
-      // SWD UPDATER
-      //==================
-      uint32_t idcode;
-      uint32_t SWD_idcode = 463475831; //0x1BA01477 - page:1089
-      bool debugHalt = false;
-      uint8_t timeout = 10;
-      while (idcode != SWD_idcode && timeout > 0) {
-        target.begin();
-        target.getIDCODE(idcode);
-        debugHalt = target.debugHalt();
-        delay(500);
-        timeout--;
-      }
-      asyncLog(fs, "debug: ");
-      asyncLog(fs, String(debugHalt));
-      asyncLog(fs, "size: ");
-      asyncLog(fs, String(len));
-
-      if (target.begin() && target.getIDCODE(idcode)) {
-        asyncLog(fs, "idcode: ");
-        asyncLog(fs, String(idcode));
-
-        //Erase until end of flash
-
-        for (int i = addr; i <= addrEnd; i++) {
-          target.apWrite(addr, 0); //zero it
-        }
-
-        while (f.available()) {
-          //char b = char(f.read());
-
-          //asyncLogStream.println("0x");
-          //asyncLogStream.print(String(addr, HEX));
-
-          //uint32_t data = f.read();
-          //asyncLogStream.println("=0x");
-          //asyncLogStream.print(String(data, HEX));
-
-          //target.debugHalt();
-          //target.memStoreByte(addr, f.read());
-          //target.memStore(addr, data);
-          //target.memStoreAndVerify(addr, f.read());
-          target.apWrite(addr, f.read());
-
-          addr++;
-        }
-        asyncLog(fs, "jolly good!"); //st-flash lingo
-      } else {
-        asyncLog(fs, "SWD not connected");
-      }
-
+  if (final)
+  {
+    firmwareFile = request->_tempFile.name();
+    if (request->_tempFile.size() <= 4096 ) { //bootloader
+      addr = 0x08000000;
+      addrEnd = 0x08000fff;
     } else {
-      //==================
-      // STM32 UPDATER
-      //==================
-      char c;
-      uint32_t timeout = millis();
-      const size_t PAGE_SIZE_BYTES = 1024;
-      //int pages = (request->_tempFile.size() / PAGE_SIZE_BYTES) + 1;
-      uint8_t pages = (f.size() + PAGE_SIZE_BYTES - 1) / PAGE_SIZE_BYTES;
-
-      asyncLog(fs, "File length is " + String(f.size()) + " bytes/" + String(pages) + " pages");
-
-      serialStreamFlush();
-
-      asyncLog(fs, "Resetting device...");
-
-      //Clear the initialization Bug
-      //-----------------------------
-      Serial.print("hello\n");
-      //consumeEcho('\n'); //echo
-      //consumeEcho('\n'); //reply
-      //-----------------------------
-      Serial.print("reset\n");
-      consumeEcho('t'); //echo -> reset
-
-      //Serial.end();
-      //Serial.begin(115200, SERIAL_8N1);
-
-      do {
-        c = Serial.read();
-      } while (c != 'S' && c != '2');
-
-      //NO DELAY HERE!!!
-
-      if (c == '2')
-      {
-        Serial.write(0xAA); //Send magic
-        while (Serial.read() != 'S');
-
-        asyncLog(fs, "Bootloader v2 detected");
-      }
-
-      if (millis() - timeout < 4000)
-      {
-        Serial.write(pages);
-        while (Serial.read() != 'P'); //Wait for page request
-
-        asyncLog(fs, "Sending number of pages.." + String(pages));
-
-        uint8_t page = 0;
-        bool done = false;
-
-        while (done != true)
-        {
-          asyncLog(fs, "Sending page " + String(page) + "...");
-
-          f.seek(page * PAGE_SIZE_BYTES);
-          char bufferRead[PAGE_SIZE_BYTES];
-          size_t bytesRead = f.readBytes(bufferRead, sizeof(bufferRead));
-
-          while (bytesRead < PAGE_SIZE_BYTES) //Fill ramaining bytes with zeros, prevents corrupted endings
-            bufferRead[bytesRead++] = 0xff;
-
-          uint32_t crc = crc32((uint32_t*)bufferRead, PAGE_SIZE_BYTES / 4, 0xffffffff);
-
-          //asyncLog(fs, "Sending bytes " + String(sizeof(bufferRead)));
-
-          while (c != 'C') {
-            Serial.write((uint8_t*)bufferRead, sizeof(bufferRead));
-            while (!Serial.available()); //wait until available
-            c = Serial.read();
-
-            if (c == 'T')
-            {
-              asyncLog(fs, "Transmission Error");
-            }
-          }
-
-          asyncLog(fs, "Sending CRC...");
-
-          Serial.write((char*)&crc, sizeof(uint32_t));
-          while (!Serial.available()); //wait until available
-          c = Serial.read();
-
-          if ('D' == c)
-          {
-            asyncLog(fs, "CRC correct!");
-            asyncLog(fs, "Update Done!");
-
-            done = true;
-          }
-          else if ('E' == c)
-          {
-            asyncLog(fs, "CRC error!");
-          }
-          else if ('P' == c)
-          {
-            asyncLog(fs, "CRC correct!");
-            page++;
-          }
-        }
-      } else {
-        asyncLog(fs, "STM32 is bricked - Try pressing reset button during upload");
-      }
+      addr = 0x08001000;
+      addrEnd = 0x0801ffff;
     }
-    f.close();
-    fs.close();
-
-    LittleFS.remove(filename);
+    addrNext = addr;
+    //addrIndex = addr;
+    request->_tempFile.close();
   }
 }
 
 void asyncLog(File fs, String text)
 {
-  asyncLogStream.println(text);
-  fs.println(text);
+  asyncLogStream.print(text);
+  fs.print(text);
 }
 
 void consumeEcho(char echo)
@@ -1747,6 +1813,14 @@ void serialStreamFlush()
       //timeout--;
     } while (len > 0);
   }
+}
+
+void hw_wdt_disable() {
+  *((volatile uint32_t*) 0x60000900) &= ~(1); // Hardware WDT OFF
+}
+
+void hw_wdt_enable() {
+  *((volatile uint32_t*) 0x60000900) |= 1; // Hardware WDT ON
 }
 
 static uint32_t crc32_word(uint32_t Crc, uint32_t Data)

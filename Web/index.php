@@ -54,7 +54,7 @@
             <div class="row" align="center" id="parameters-table">
                 <div class="col">
                     <form action="https://openinverter.org/parameters/api.php" method="POST" enctype="multipart/form-data" id="parameters-share">
-                        <input type="text" hidden id="parameters-json" name="data"></input>
+                        <input type="text" hidden id="parameters-json" name="data" />
                         <div class="input-group mb-3">
                             <div class="input-group-text">Subscription</div>
                             <input type="text" class="form-control" id="parameters-token" name="token" placeholder="Token">

@@ -1,16 +1,16 @@
 var jtag_interface = [
+    'interface/stlink-v2.cfg',
 	'interface/ftdi/olimex-arm-usb-ocd-h.cfg',
 	'interface/ftdi/olimex-arm-usb-tiny-h.cfg',
-    'interface/stlink-v2.cfg',
     'interface/ftdi/olimex-arm-jtag-swd.cfg',
 	'interface/parport.cfg',
 	'interface/ftdi/jtag-lock-pick_tiny_2.cfg'
 ];
 
 var jtag_name = [
+    'ST-Link v2.0',
 	'Olimex OCD-H',
 	'Olimex Tiny-H',
-    'ST-Link v2.0',
     'Olimex JTAG-SWD',
 	'JTAG Wiggler',
 	'Lock-Pick Tiny v2.0'
@@ -24,19 +24,24 @@ $(document).ready(function() {
 	buildMenu(function() {
 
 		var interface = document.getElementById('firmware-interface');
+		document.getElementsByClassName('spinner-border')[0].classList.remove('d-none');
 
-		if (typeof(interface) != 'undefined' && interface != null)
+		if (typeof(interface) != undefined && interface != null)
 		{
-			if(os == 'esp8266') {
-				var option_uart = document.createElement('option');
-				option_uart.value = 'uart-esp8266';
-				option_uart.textContent = 'UART over ESP8266';
-				interface.appendChild(option_uart);
+			var path = window.location.pathname;
+	        var page = path.split('/').pop();
 
-				var option_swd = document.createElement('option');
-				option_swd.value = 'swd-esp8266';
-				option_swd.textContent = 'SWD over ESP8266';
-				interface.appendChild(option_swd);
+			if(os == 'esp8266') {
+
+				var jtag_interface = ['swd-esp8266'];
+				var jtag_name = ['SWD over ESP8266'];
+
+				if(page != 'bootloader.php') {
+					jtag_interface.push('uart-esp8266');
+					jtag_name.push('UART over ESP8266');
+				}
+
+				displayHWVersion();
 
 				var xhr = new XMLHttpRequest();
 		        xhr.onload = function() {
@@ -46,22 +51,13 @@ $(document).ready(function() {
 							$.notify({ message: 'ESP Reporting Low Voltage'},{ type: 'danger' });
 							$.notify({ message: 'Check 3.3V Regulator (' + v + 'V)'},{ type: 'warning' });
 						}
+						beginESP8266SWD(hardware);
 		            }
 		        };
 		        xhr.open('GET', '/vcc', true);
 		        xhr.send();
 			}else{
 				unblockSerial();
-
-				document.getElementsByClassName('spinner-border')[0].classList.remove('d-none');
-
-				for (var i = 0; i < jtag_interface.length; i++) {
-					var option = document.createElement('option');
-					option.value = jtag_interface[i];
-					option.textContent = jtag_name[i];
-					interface.appendChild(option);
-				}
-				interface.selectedIndex = 2;
 
 				displayHWVersion();
 
@@ -101,9 +97,6 @@ $(document).ready(function() {
 					document.getElementById('hardwareTabContent').appendChild(pane);
 				}
 
-				var path = window.location.pathname;
-	            var page = path.split('/').pop();
-
 				if(page != 'bootloader.php') {
 					var xhr = new XMLHttpRequest();
 			        xhr.onload = function() {
@@ -130,6 +123,14 @@ $(document).ready(function() {
 		    		setInterfaceImage(hardware,interface.selectedIndex);
 		    	}
 			}
+
+			for (var i = 0; i < jtag_interface.length; i++) {
+				var option = document.createElement('option');
+				option.value = jtag_interface[i];
+				option.textContent = jtag_name[i];
+				interface.appendChild(option);
+			}
+
 			document.getElementsByClassName('spinner-border')[0].classList.add('d-none');
 			$('.input-group-addon').removeClass('d-none'); //.show();
 
@@ -143,7 +144,7 @@ $(document).ready(function() {
 	});
 });
 
-function beginESP8266SWD() {
+function beginESP8266SWD(hw) {
 	
 	var xhr = new XMLHttpRequest();
 	xhr.responseType = 'json';
@@ -153,24 +154,32 @@ function beginESP8266SWD() {
 			if(xhr.response.connected === true) {
 				$.notify({ message: 'SWD over ESP8266 Connected' },{ type: 'success' });
 				$.notify({ message: 'Hardware IDCode: ' + xhr.response.idcode },{ type: 'warning' });
+				document.getElementById('swd-options').classList.remove('d-none');
 			}else{
-    			var nvram = new XMLHttpRequest();
-    			nvram.responseType = 'json';
-		        nvram.onload = function() {
-		            if (nvram.status == 200) {
-		    			if(nvram.response['nvram'][5] == '1') {
-		                    $.notify({ message: 'SWD over ESP8266 Not Connected, Try Reset and different Power Source (USB may not be enough)' },{ type: 'danger' });
-		                }else{
-		                	$.notify({ message: 'SWD not Enabled in <a href="esp8266.php">ESP8266 Configuration</a>' },{ type: 'danger' });
-		                }
-		            }
-		        };
-		        nvram.open('GET', '/nvram', true);
-		        nvram.send();
+				if (hw == undefined) {
+        			var hardwareModal = new bootstrap.Modal(document.getElementById('hardware'), {});
+            		hardwareModal.show();
+				}else if(hw == '2') {
+				 	$('#jtag-image').attr('src','pcb/v3.0/esp8266.png');
+				}else{
+				 	$('#jtag-image').attr('src','pcb/v1.0/esp8266.png');
+				}
 			}
         }
     };
     xhr.open('GET', '/swd/begin', true);
+    xhr.send();
+};
+
+function hardResetSWD() {
+
+	var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            $.notify({ message: 'Hardware Reset' }, { type: 'success' });
+        }
+    };
+    xhr.open('GET', '/swd/reset?hard', true);
     xhr.send();
 };
 
@@ -179,24 +188,15 @@ function setInterfaceImage(hw, i) {
 	var interface = document.getElementById('firmware-interface')[i];
 	//console.log(interface);
 
-	if (typeof(interface) != 'undefined' && interface != null)
+	if (typeof(interface) != undefined && interface != null)
 	{
 		if(os == 'esp8266') {
-			$('#jtag-txt').html('Solder <b>GPIO-0</b> to <b>1</b> and boot ESP8266 from flash.');
 			
-			if (hw == undefined) {
-				var hardwareModal = new bootstrap.Modal(document.getElementById('hardware'), {});
-        		hardwareModal.show();
-	        }else{
-	        	if(interface.value == 'swd-esp8266') {
-					beginESP8266SWD();
-				}
-				if(hw == '2') {
-				 	$('#jtag-image').attr('src','pcb/v3.0/esp8266.png');
-				}else{
-				 	$('#jtag-image').attr('src','pcb/v1.0/esp8266.png');
-				}
-	        }
+        	if(interface.value == 'swd-esp8266') {
+				beginESP8266SWD(hw);
+			}else{
+				document.getElementById('swd-options').classList.add('d-none');
+			}
 		}else{
 			$('#jtag-txt').html('');
 	        $('#jtag-name').html(jtag_name[i]);
@@ -248,54 +248,81 @@ function setInterfaceImage(hw, i) {
 
 function firmwareUpload(file) {
 
-	var oForm = document.getElementById('firmwareForm');
+	var oForm = document.getElementById('firmware-form');
+	var results = document.getElementById('firmware-result');
+	var results_show = document.getElementById('firmware-result-show');
+	
+	results.textContent = "";
 
-	if (file.toUpperCase().indexOf('.BIN') !=-1 || file.toUpperCase().indexOf('.HEX') !=-1) {
-
-		if(os == 'esp8266') { //Special ESP8266 requirement
-			
-			progressTimer(100, function() {});
-
-			var xhr = new XMLHttpRequest();
-	        xhr.onload = function() {
-	            if (xhr.status == 200) {
-	                console.log(xhr.responseText);
-
-	                var xhrForm = new XMLHttpRequest();
-					xhrForm.onload = function() {
-						console.log(xhrForm.responseText);
-						timerProgressCounter = 100;
-						if(xhrForm.responseText == ''){
-							progressFirmwareAnalisysLogFile(file);
-						}else{
-							document.getElementById('firmware-result').textContent = xhrForm.responseText;
-							progressFirmwareAnalisys(xhrForm.responseText);
-						}
-					};
-					xhrForm.onerror = function() {
-						console.log(xhrForm.responseText);
-						timerProgressCounter = 100;
-						if(xhrForm.responseText == ''){
-							progressFirmwareAnalisysLogFile(file);
-						}else{
-							document.getElementById('firmware-result').textContent = xhrForm.responseText;
-							progressFirmwareAnalisys(xhrForm.responseText);
-						}
-					};
-					xhrForm.open(oForm.method, oForm.action, true);
-					xhrForm.send(new FormData (oForm));
-					//oForm.submit();
-				}
-	        };
-	        xhr.open('GET', '/interface?i=' + document.getElementById('firmware-interface').value, true);
-	        xhr.send();
-		}else{
-			 progressTimer(5, function() {
-                oForm.submit();
-            });
+	if(os == 'esp8266') {
+		
+		if (file.name.toUpperCase().indexOf('.BIN') == -1) {
+			$.notify({ message: 'File must be .bin format' }, { type: 'danger' });
+			return;
 		}
+		var interface = document.getElementById('firmware-interface');
+
+		var xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+            if (xhr.status == 200) {
+                console.log(xhr.responseText);
+
+                var xhrSubmit = new XMLHttpRequest();
+                //xhrSubmit.seenBytes = 0;
+				xhrSubmit.onreadystatechange = function() {
+					if(xhrSubmit.readyState == 3) {
+					    var data = xhrSubmit.responseText; //xhrSubmit.response.substr(xhrSubmit.seenBytes);
+					    //console.log(data);
+					    if(results_show.checked)
+					    	results.textContent = data;
+
+					    if(data == '' || data.indexOf('Error') != -1) {
+					    	$.notify({ message: 'Error ' + data }, { type: 'danger' });
+					    }else{
+						    var s = data.split('\n');
+							//console.log("pages: " + s.length + " Size: " + ((s.length-1) * 16));
+
+						    var progress = Math.round(100 * ((s.length-1) * 16) / file.size);
+						    document.getElementsByClassName('progress-bar')[0].style.width = progress + '%';
+						    //xhrSubmit.seenBytes = data.length;
+						}
+					}else if(xhrSubmit.readyState == 4 && xhrSubmit.status == 200) {
+						document.getElementsByClassName('progress-bar')[0].style.width = '100%';
+						if(file.size <= 4096) {
+							progressBootloaderAnalisys('jolly good');
+						}else{
+							progressFirmwareAnalisys('jolly good');
+						}
+					}
+				};
+				xhrSubmit.onerror = function() {
+					var data = xhrSubmit.responseText;
+					//console.log(data);
+
+					results.textContent = data;
+					$.notify({ message: 'Error: Flashing Stopped'},{ type: 'danger' });
+				};
+				xhrSubmit.open('POST', '/firmware.php', true);
+				xhrSubmit.send(new FormData (oForm));
+				//oForm.submit();
+
+				if(interface.value == 'swd-esp8266' && file.size > 4096) {
+					setTimeout( function () {
+						$.notify({ message: 'Patience, Firmware takes 2-3 minutes ...'},{ type: 'warning' });
+					},10000);
+				}
+			}
+        };
+        xhr.open('GET', '/interface?i=' + interface.value, true);
+        xhr.send();
 	}else{
-		$.notify({ message: 'File must be .bin or .hex format' }, { type: 'danger' });
+		if (file.name.toUpperCase().indexOf('.BIN') == -1 || file.name.toUpperCase().indexOf('.HEX') == -1) {
+			$.notify({ message: 'File must be .bin or .hex format' }, { type: 'danger' });
+			return;
+		}
+		progressTimer(5, function() {
+            oForm.submit();
+        });
 	}
 };
 
@@ -305,34 +332,22 @@ function progressBootloaderAnalisys(data) {
 	{
 		$.notify({ message: "Bootloader Complete" },{ type: "success" });
 		$.notify({ message: "...Next Flash Firmware" },{ type: "warning" });
-		setTimeout( function (){
+		setTimeout( function () {
 			window.location.href = "firmware.php";
 		},8000);
 	}
-};
-
-function progressFirmwareAnalisysLogFile(file) {
-	var xhr = new XMLHttpRequest();
-   	xhr.onload = function() {
-        if (xhr.status == 200) {
-        	document.getElementById('firmware-result').textContent = xhr.responseText;
-            progressFirmwareAnalisys(xhr.responseText);
-        }
-    };
-    xhr.open('GET', file + ".log", true);
-    xhr.send();
 };
 
 function progressFirmwareAnalisys(data) {
 
 	if(data.indexOf('shutdown command invoked') !=-1 || data.indexOf('jolly good') !=-1 || data.indexOf('Update Done') !=-1){
         $.notify({ message: "Flash Complete" },{ type: "success" });
-         setTimeout(function() {
+        setTimeout(function() {
             window.location.href = 'index.php';
         },10000);
     }else if(data.indexOf('CRC error') !=-1){
-			$.notify({ message: "Detected CRC Errors" },{ type: "danger" });
-			$.notify({ message: "Check RX/TX Cables" },{ type: "warning" });
+		$.notify({ message: "Detected CRC Errors" },{ type: "danger" });
+		$.notify({ message: "Check RX/TX Cables" },{ type: "warning" });
     }else if(data.indexOf('Resetting device ...') !=-1){
     	$.notify({ message: "Detected Reset Issue" },{ type: "danger" });
     	$.notify({ message: "Check STM32 Reset Capacitor" },{ type: "warning" });

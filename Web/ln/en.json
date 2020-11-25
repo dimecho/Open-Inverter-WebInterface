@@ -44,10 +44,18 @@
         "select": "Select Motor"
     },
     "bootloader.php": {
-        "download": "Download Bootloader"
+        "download": "Download Bootloader",
+        "swd_erase": "Erase Flash",
+        "swd_reset": "Hard Reset",
+        "swd_download_hex_boot": "Bootloader Hex",
+        "swd_download_bin_boot": "Bootloader Bin"
     },
     "firmware.php": {
-        "download": "Download Firmware"
+        "download": "Download Firmware",
+        "swd_erase": "Erase Flash",
+        "swd_reset": "Hard Reset",
+        "swd_download_hex_flash": "Firmware Hex",
+        "swd_download_bin_flash": "Firmware Bin"
     },
     "motor-class.php": {
         "title": "Electric Motors Classification"
