@@ -487,10 +487,10 @@ void setup()
         Serial.printf("------ %08x ------\n", addrNext);
 #endif
         StreamString data;
-        uint8_t PAGE_SIZE = 12; //8 pages = 2756 bytes plain-text chunks, cannot be over maxLen (4096)
-        
+        uint8_t PAGE_SIZE = 8; //8 pages = 2756 bytes plain-text chunks, cannot be over maxLen (4096)
+
         if (addrNext + (PAGE_SIZE * 4) >= addrEnd) //adjust last chunk
-            PAGE_SIZE = ((addrEnd - addrNext) / 4) + 1;
+          PAGE_SIZE = ((addrEnd - addrNext) / 4) + 1;
 
         swd.hexDump(addrNext, PAGE_SIZE, data); //total data is x4 (swd reads in chunks of 4)
         addrNext += PAGE_SIZE * 4;
@@ -869,7 +869,7 @@ void setup()
           swd.debugHalt();
           swd.flashloaderSRAM();
 
-          uint8_t PAGE_SIZE = 12; //8 pages = 2756 bytes plain-text chunks, cannot be over maxLen (4096)
+          uint8_t PAGE_SIZE = 10; //8 pages = 2756 bytes plain-text chunks, cannot be over maxLen (4096)
           uint32_t addrBuffer = 0x00000000;
           uint32_t addrIndex = addrNext;
           for (uint16_t p = 0; p < PAGE_SIZE; p++)
@@ -902,11 +902,12 @@ void setup()
           addrNext = addrIndex;
 
           fs.close();
-          
+
+          uint8_t timeout = 200;
           do {
-            PAGE_SIZE--;
-          } while (PAGE_SIZE);
-          
+            timeout--;
+          } while (timeout);
+
           //Serial.println((char*)buffer);
           return data.readBytes(buffer, data.available());
         });
