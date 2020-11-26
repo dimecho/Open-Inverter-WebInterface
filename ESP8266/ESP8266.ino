@@ -169,6 +169,8 @@ unsigned char CANmsg[8];
 uint32_t addr = 0x08000000;
 uint32_t addrEnd = 0x0801ffff;
 uint32_t addrNext = 0x00000000;
+uint32_t addrIndex = 0x08000000;
+uint32_t addrBuffer = 0x00000000;
 const uint8_t swd_clock_pin = 4; //GPIO4 (D2)
 const uint8_t swd_data_pin = 5; //GPIO5 (D1)
 
@@ -843,7 +845,7 @@ void setup()
       if (swd.begin()) {
 
         swd.debugHalt();
-        swd.debugHaltOnReset(1);
+        swd.debugHaltOnReset(1); //reset lock into halt
         swd.reset();
         swd.unlockFlash();
 
@@ -851,27 +853,26 @@ void setup()
 
           StreamString data;
           File fs = LittleFS.open(firmwareFile, "r");
-          fs.seek(addrNext - addr);
+          fs.seek(addrIndex - addr); //resume file read from last position
 #if DEBUG
-          Serial.println(addrNext - addr);
+          Serial.println(addrIndex - addr);
           Serial.println(fs.available());
 #endif
-          if (addrNext >= addrEnd || fs.available() == 0)
+          if (addrNext > addrEnd || fs.available() == 0) //the end
           {
-            swd.flashFinalize(addr);
-            swd.debugHaltOnReset(0);
+            swd.debugHaltOnReset(0); //no reset halt lock
             swd.reset(); //hard-reset
 
             fs.close();
             LittleFS.remove(firmwareFile);
             return 0;
           }
+          
           swd.debugHalt();
-          swd.flashloaderSRAM();
+          if(addrBuffer == 0x00000000) //load flashloader to SRAM @ 0x20000000
+            swd.flashloaderSRAM();
 
-          uint8_t PAGE_SIZE = 10; //8 pages = 2756 bytes plain-text chunks, cannot be over maxLen (4096)
-          uint32_t addrBuffer = 0x00000000;
-          uint32_t addrIndex = addrNext;
+          uint8_t PAGE_SIZE = 8; //8 pages = 2756 bytes plain-text chunks, cannot be over maxLen (4096)
           for (uint16_t p = 0; p < PAGE_SIZE; p++)
           {
 #if DEBUG
@@ -886,11 +887,10 @@ void setup()
             {
               if (fs.available() == 0)
                 break;
-
               char sramBuffer[4];
               fs.readBytes(sramBuffer, 4);
 
-              swd.writeBufferSRAM(addrBuffer, (uint8_t*)sramBuffer, sizeof(sramBuffer));
+              swd.writeBufferSRAM(addrBuffer, (uint8_t*)sramBuffer, sizeof(sramBuffer)); //append to SRAM after flashloader
               data.printf(" | %02x %02x %02x %02x", sramBuffer[0], sramBuffer[1], sramBuffer[2], sramBuffer[3]);
 
               addrIndex += 4;
@@ -898,15 +898,15 @@ void setup()
             }
             data.println();
           }
-          swd.flashloaderRUN(addrNext, addrBuffer);
-          addrNext = addrIndex;
+          if(addrBuffer > 1024 || fs.available() == 0) //Run flashloader from SRAM (STM32F103 has 32Kb)
+          {
+            swd.flashloaderRUN(addrNext, addrBuffer);
+            addrBuffer = 0x00000000;
+            addrNext = addrIndex;
+            delay(2000);
+          }
 
           fs.close();
-
-          uint8_t timeout = 200;
-          do {
-            timeout--;
-          } while (timeout);
 
           //Serial.println((char*)buffer);
           return data.readBytes(buffer, data.available());
@@ -985,7 +985,7 @@ void setup()
           }
         }
 
-        uint8_t page = (addrNext - addr ) / PAGE_SIZE_BYTES;
+        uint8_t page = (addrNext - addr) / PAGE_SIZE_BYTES;
         data.println("Sending page " + String(page) + "...");
 
         char bufferRead[PAGE_SIZE_BYTES];
@@ -1764,7 +1764,9 @@ void FirmwareUpload(AsyncWebServerRequest * request, String filename, size_t ind
       addrEnd = 0x0801ffff;
     }
     addrNext = addr;
-    //addrIndex = addr;
+    addrIndex = addr;
+    addrBuffer = 0x00000000;
+
     request->_tempFile.close();
   }
 }
