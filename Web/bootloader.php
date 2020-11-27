@@ -55,7 +55,8 @@
                                 <span class = "input-group-addon d-none w-75">
 								    <form enctype="multipart/form-data" action="bootloader.php" method="POST" id="firmware-form">
 										<input name="firmware" type="file" class="file" accept=".bin,.hex" onchange="firmwareUpload(this.files[0])" hidden >
-										<select name="interface" class="form-control" form="firmwareForm" onchange="setInterfaceImage(hardware,this.selectedIndex)" id="firmware-interface"></select>
+										<select name="interface" class="form-control" form="firmware-form" onchange="setInterfaceImage(hardware,this.selectedIndex)" id="firmware-interface"></select>
+                                        <input type="submit" hidden />
 									</form>
 								</span>
                                 <span class = "input-group-addon d-none w-25 text-center">

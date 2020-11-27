@@ -268,11 +268,12 @@ function firmwareUpload(file) {
                 console.log(xhr.responseText);
 
                 var xhrSubmit = new XMLHttpRequest();
-                //xhrSubmit.seenBytes = 0;
+                xhrSubmit.seenBytes = 0;
 				xhrSubmit.onreadystatechange = function() {
 					if(xhrSubmit.readyState == 3) {
 					    var data = xhrSubmit.responseText; //xhrSubmit.response.substr(xhrSubmit.seenBytes);
 					    //console.log(data);
+					    
 					    if(results_show.checked)
 					    	results.textContent = data;
 
@@ -282,16 +283,24 @@ function firmwareUpload(file) {
 						    var s = data.split('\n');
 							//console.log("pages: " + s.length + " Size: " + ((s.length-1) * 16));
 
-						    var progress = Math.round(100 * ((s.length-1) * 16) / file.size);
+							var progress = 0;
+							if(interface.value == 'swd-esp8266') {
+						    	progress = Math.round(100 * ((s.length-1) * 16) / file.size);
+							}else{
+								var pages = (file.size / 1024) + 1;
+								progress = Math.round(100 * ((s.length-1) / 3) / pages);
+							}
 						    document.getElementsByClassName('progress-bar')[0].style.width = progress + '%';
-						    //xhrSubmit.seenBytes = data.length;
+						    xhrSubmit.seenBytes = data.length;
 						}
 					}else if(xhrSubmit.readyState == 4 && xhrSubmit.status == 200) {
 						document.getElementsByClassName('progress-bar')[0].style.width = '100%';
+
+						var status = xhrSubmit.response.substr(xhrSubmit.seenBytes);
 						if(file.size <= 4096) {
 							progressBootloaderAnalisys('jolly good');
 						}else{
-							progressFirmwareAnalisys('jolly good');
+							progressFirmwareAnalisys(status);
 						}
 					}
 				};
@@ -301,6 +310,7 @@ function firmwareUpload(file) {
 
 					results.textContent = data;
 					$.notify({ message: 'Error: Flashing Stopped'},{ type: 'danger' });
+					$.notify({ message: 'Power Cycle Recommended'},{ type: 'warning' });
 				};
 				xhrSubmit.open('POST', '/firmware.php', true);
 				xhrSubmit.send(new FormData (oForm));
@@ -345,6 +355,8 @@ function progressFirmwareAnalisys(data) {
         setTimeout(function() {
             window.location.href = 'index.php';
         },10000);
+    }else if(data.indexOf('bricked') !=-1){
+    	$.notify({ message: "STM32 is bricked - Try SWD Flashing" },{ type: "danger" });
     }else if(data.indexOf('CRC error') !=-1){
 		$.notify({ message: "Detected CRC Errors" },{ type: "danger" });
 		$.notify({ message: "Check RX/TX Cables" },{ type: "warning" });

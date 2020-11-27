@@ -838,16 +838,17 @@ void setup()
     ESP.wdtDisable(); // Software WDT OFF
     hw_wdt_disable(); // Hardware WDT OFF
 
-    //==================
-    // SWD UPDATER
-    //==================
     if (firmwareInterface == "swd-esp8266") {
+      //==================
+      // SWD UPDATER
+      //==================
       if (swd.begin()) {
 
         swd.debugHalt();
         swd.debugHaltOnReset(1); //reset lock into halt
         swd.reset();
         swd.unlockFlash();
+        swd.debugHaltOnReset(0); //no reset halt lock
 
         AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
 
@@ -858,18 +859,16 @@ void setup()
           Serial.println(addrIndex - addr);
           Serial.println(fs.available());
 #endif
-          if (addrNext > addrEnd || fs.available() == 0) //the end
+          if (addrNext >= addrEnd || fs.available() == 0) //the end
           {
-            swd.debugHaltOnReset(0); //no reset halt lock
             swd.reset(); //hard-reset
-
             fs.close();
             LittleFS.remove(firmwareFile);
             return 0;
           }
-          
+
           swd.debugHalt();
-          if(addrBuffer == 0x00000000) //load flashloader to SRAM @ 0x20000000
+          if (addrBuffer == 0x00000000) //load flashloader to SRAM @ 0x20000000
             swd.flashloaderSRAM();
 
           uint8_t PAGE_SIZE = 8; //8 pages = 2756 bytes plain-text chunks, cannot be over maxLen (4096)
@@ -898,12 +897,12 @@ void setup()
             }
             data.println();
           }
-          if(addrBuffer > 1024 || fs.available() == 0) //Run flashloader from SRAM (STM32F103 has 32Kb)
+          if (addrBuffer > 1024 || fs.available() == 0) //Run flashloader from SRAM (STM32F103 has 32Kb)
           {
             swd.flashloaderRUN(addrNext, addrBuffer);
             addrBuffer = 0x00000000;
             addrNext = addrIndex;
-            delay(2000);
+            delay(2400);
           }
 
           fs.close();
@@ -919,77 +918,86 @@ void setup()
       }
     } else {
       //==================
-      // STM32 UPDATER
+      // UART UPDATER
       //==================
       AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
+
         StreamString data;
         File fs = LittleFS.open(firmwareFile, "r");
+        fs.seek(addrNext - addr); //resume file read from last position
 
-        if (addrNext >= addrEnd || fs.available() == 0)
+        char c;
+        uint32_t timeout;
+        size_t PAGE_SIZE_BYTES = 1024;
+        uint8_t pages = (fs.size() / PAGE_SIZE_BYTES) + 1;
+        //uint8_t pages = (fs.size() + PAGE_SIZE_BYTES - 1) / PAGE_SIZE_BYTES;
+
+        if (addrIndex > (addr + pages) || addrBuffer >= pages || fs.available() == 0)
         {
           fs.close();
           LittleFS.remove(firmwareFile);
           return 0;
         }
 
-        uint32_t timeout = millis();
-        uint16_t PAGE_SIZE_BYTES = 1024;
-        //int pages = (request->_tempFile.size() / PAGE_SIZE_BYTES) + 1;
-        uint8_t pages = (fs.size() + PAGE_SIZE_BYTES - 1) / PAGE_SIZE_BYTES;
-
-        char c;
-        if (addrNext == addr) //starting
+        if (addrBuffer == 0x00000000) //starting
         {
-          data.println("File length is " + String(fs.size()) + " bytes/" + String(pages) + " pages");
-
-          serialStreamFlush();
+          data.printf("File length is %d bytes/%d pages\n", fs.size(), pages);
 
           data.println("Resetting device...");
 
-          //Clear the initialization Bug
-          //-----------------------------
-          Serial.print("hello\n");
-          //consumeEcho('\n'); //echo
-          //consumeEcho('\n'); //reply
-          //-----------------------------
+          serialStreamFlush();
+          serialFlushInitBug();
+          
+          Serial.print("fastuart 0\n");
+          consumeEcho('\n'); //echo
+          
+          //Serial.end();
+          Serial.begin(115200, SERIAL_8N1);
+          serialStreamFlush();
+          serialFlushInitBug();
+          
           Serial.print("reset\n");
           consumeEcho('t'); //echo -> reset
 
-          //Serial.end();
-          //Serial.begin(115200, SERIAL_8N1);
-
+          timeout = millis();
           do {
             c = Serial.read();
-          } while (c != 'S' && c != '2');
+          } while (millis() - timeout < 4000 && c != 'S' && c != '2');
 
           //NO DELAY HERE!!!
 
-          if (c == '2')
+          if (c == '2') //version 2 bootloader
           {
             Serial.write(0xAA); //Send magic
-            while (Serial.read() != 'S');
+
+            timeout = millis();
+            do {
+              c = Serial.read();
+            } while (millis() - timeout < 4000 && c != 'S');
 
             data.println("Bootloader v2 detected");
           }
 
-          if (millis() - timeout < 4000)
-          {
+          if (millis() - timeout < 4000) {
             Serial.write(pages);
-            while (Serial.read() != 'P'); //Wait for page request
+            timeout = millis();
+            do {
+              c = Serial.read();
+            } while (millis() - timeout < 4000 && c != 'P');//Wait for page request
 
-            data.println("Sending number of pages.." + String(pages));
+            data.printf("Sending number of pages.. %d\n", pages);
+            
           } else {
-            data.println("STM32 is bricked - Try pressing reset button during upload");
-            data.readBytes(buffer, data.available());
-            return 0;
+            data.println("STM32 is bricked - Try SWD Flashing");
+            addrBuffer = pages + 1;
+            fs.close();
+            return data.readBytes(buffer, data.available());
           }
         }
 
-        uint8_t page = (addrNext - addr) / PAGE_SIZE_BYTES;
-        data.println("Sending page " + String(page) + "...");
+        data.printf("Sending page %d offset %d...\n", addrBuffer, fs.available());
 
         char bufferRead[PAGE_SIZE_BYTES];
-        fs.seek(addrNext - addr);
         size_t bytesRead = fs.readBytes(bufferRead, sizeof(bufferRead));
 
         while (bytesRead < PAGE_SIZE_BYTES) //Fill ramaining bytes with zeros, prevents corrupted endings
@@ -997,39 +1005,43 @@ void setup()
 
         uint32_t crc = crc32((uint32_t*)bufferRead, PAGE_SIZE_BYTES / 4, 0xffffffff);
 
-        //data.println("Sending bytes " + String(sizeof(bufferRead)));
+        //data.printf("Sending bytes %d\n", sizeof(bufferRead));
 
-        while (c != 'C') {
-          Serial.write((uint8_t*)bufferRead, sizeof(bufferRead));
+        Serial.write((uint8_t*)bufferRead, sizeof(bufferRead));
+        while (!Serial.available()); //wait until available
+        c = Serial.read();
+
+        if ('C' == c) {
+          Serial.write((char*)&crc, sizeof(uint32_t));
           while (!Serial.available()); //wait until available
           c = Serial.read();
 
-          if (c == 'T')
-          {
-            data.println("Transmission Error");
-          }
+          data.println("Sending CRC...");
         }
-
-        data.println("Sending CRC...");
-
-        Serial.write((char*)&crc, sizeof(uint32_t));
-        while (!Serial.available()); //wait until available
-        c = Serial.read();
 
         if ('D' == c)
         {
           data.println("CRC correct!");
           data.println("Update Done!");
-          addrNext = addrEnd;
+          addrBuffer = pages + 1;
         }
         else if ('E' == c)
         {
           data.println("CRC error!");
+          timeout = millis();
+          do {
+            c = Serial.read();
+            if (c == 'T') {
+              data.println("Transmission Error");
+            }
+          } while (millis() - timeout < 4000 && c != 'T');
+          addrIndex++;
         }
         else if ('P' == c)
         {
           data.println("CRC correct!");
           addrNext += PAGE_SIZE_BYTES;
+          addrBuffer++;
         }
 
         fs.close();
@@ -1050,7 +1062,9 @@ void setup()
   server.on("/serial.php", HTTP_GET, [](AsyncWebServerRequest * request) {
 
     //NOTE: AsyncWebServer library does not allow delay or yield, but Serial.readString(); uses yield();
-
+    ESP.wdtDisable(); // Software WDT OFF
+    hw_wdt_disable(); // Hardware WDT OFF
+    
     char b[255];
     size_t len = 0;
     String output = "";
@@ -1064,12 +1078,7 @@ void setup()
       } else {
 
         //consumeEcho('D'); //Bootloader echo
-
-        //Clear the initialization Bug
-        //-----------------------------
-        Serial.print("hello\n");
-        consumeEcho('\n'); //echo
-        consumeEcho('\n'); //reply
+        serialFlushInitBug();
         //-----------------------------
         if (serialSpeed == 921600) {
           Serial.print("fastuart 1\n");
@@ -1081,13 +1090,8 @@ void setup()
         //-----------------------------
         //Serial.end();
         Serial.begin(serialSpeed, SERIAL_8N1);
-        //serialStreamFlush(); //flush
-        //-----------------------------
-        //Clear the initialization Bug
-        //-----------------------------
-        Serial.print("hello\n");
-        //consumeEcho('\n'); //echo
-        //consumeEcho('\n'); //reply
+        serialStreamFlush();
+        serialFlushInitBug();
         //-----------------------------
         serialInitialized = serialSpeed;
 
@@ -1745,10 +1749,6 @@ void FirmwareUpload(AsyncWebServerRequest * request, String filename, size_t ind
 {
   if (!index) {
     request->_tempFile = LittleFS.open(filename, "w");
-
-    //if (LittleFS.exists(filename + ".log"))
-    //  LittleFS.remove(filename + ".log");
-    //asyncLogStream.clear();
   }
 
   request->_tempFile.write(data, len);
@@ -1780,41 +1780,34 @@ void asyncLog(File fs, String text)
 void consumeEcho(char echo)
 {
   char c;
-  uint16_t timeout = 2048;
+  uint32_t timeout = millis();
+  do {
+    if (Serial.available() > 0)
+      c = Serial.read();
+  } while (millis() - timeout < 1024 && c != echo);
+}
 
-  while (Serial.available() <= 0 && timeout > 0) {
-    timeout--;
-  }
-  if (timeout > 0) {
-    timeout = 1024;
-    while (timeout > 0 && c != echo) {
-      if (Serial.available())
-        c = Serial.read();
-      timeout--;
-    }
-  }
+void serialFlushInitBug()
+{
+    //Clear the initialization Bug
+    Serial.print("hello");
+    Serial.print('\n');
+    consumeEcho('\n'); //echo
+    consumeEcho('\n'); //reply
 }
 
 void serialStreamFlush()
 {
   char b[255];
   size_t len = 0;
-  uint16_t timeout = 2048;
-
+  
   Serial.print('\n');
   consumeEcho('\n'); //consume echo
-
-  while (Serial.available() <= 0 && timeout > 0) {
-    timeout--;
-  }
-
-  if (timeout > 0) {
-    //timeout = 1024;
-    do {
+  
+  uint32_t timeout = millis();
+  while (millis() - timeout < 2048 && Serial.available() > 0) {
       memset(b, 0, sizeof(b));
       len = Serial.readBytes(b, sizeof(b) - 1);
-      //timeout--;
-    } while (len > 0);
   }
 }
 
