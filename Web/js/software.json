@@ -123,7 +123,7 @@
         },
         "path" : {
             "mac" : "/usr/bin/python",
-            "windows" : "~\\AppData\\Local\\Programs\\Python\\Python38\\python.exe",
+            "windows" : "~\\AppData\\Local\\Programs\\Python\\Python3{x}\\python.exe",
             "linux" : "/usr/bin/python"
         }
     },
@@ -202,8 +202,8 @@
             "linux" : ""
         },
         "path" : {
-            "mac" : "/usr/local/share/xpack-openocd-0.10.0-14/bin/openocd",
-            "windows" : "C:\\Program Files\\xPack\\OpenOCD\\0.10.0-14\\bin\\openocd.exe",
+            "mac" : "/usr/local/share/xpack-openocd-0.10.0-{x}/bin/openocd",
+            "windows" : "C:\\Program Files\\xPack\\OpenOCD\\0.10.0-{x}\\bin\\openocd.exe",
             "linux" : "/usr/share/openocd/bin/openocd"
         }
     },
@@ -222,8 +222,8 @@
             "linux" : ""
         },
         "path" : {
-            "mac" : "/usr/local/share/stlink/1.6.1/bin/st-flash",
-            "windows" : "C:\\Program Files\\stlink-1.6.1-win64\\bin\\st-flash.exe",
+            "mac" : "/usr/local/share/stlink/1.6.{x}/bin/st-flash",
+            "windows" : "C:\\Program Files\\stlink-1.6.{x}-win64\\bin\\st-flash.exe",
             "linux" : ""
         }
     },
@@ -242,9 +242,9 @@
             "linux" : ""
         },
         "path" : {
-            "mac" : "/Applications/EAGLE-9.6.2/Eagle.app/Contents/MacOS/Eagle",
-            "windows" : "C:\\EAGLE 9.6.2\\eagle.exe",
-            "linux" : "/opt/Autodesk/eagle-9.6.2/eagle"
+            "mac" : "/Applications/EAGLE-9.6.{x}/Eagle.app/Contents/MacOS/Eagle",
+            "windows" : "C:\\EAGLE 9.6.{x}\\eagle.exe",
+            "linux" : "/opt/Autodesk/eagle-9.6.{x}/eagle"
         }
     },
     "designsparkpcb" : {
@@ -342,8 +342,8 @@
             "linux" : ""
         },
         "path" : {
-            "mac" : "/usr/local/Cellar/dfu-util/0.9/bin/dfu-util",
-            "windows" : "C:\\Program Files (x86)\\STMicroelectronics\\Software\\DfuSe v3.0.6\\Bin\\DfuSeDemo.exe",
+            "mac" : "/usr/local/Cellar/dfu-util/0.{x}/bin/dfu-util",
+            "windows" : "C:\\Program Files (x86)\\STMicroelectronics\\Software\\DfuSe v3.0.{x}\\Bin\\DfuSeDemo.exe",
             "linux" : ""
         }
     },
@@ -362,9 +362,9 @@
             "linux" : ""
         },
         "path" : {
-            "mac" : "~/Downloads/mphidflash-1.6-osx-64",
-            "windows" : "~\\Downloads\\mphidflash-1.6-win-32.exe",
-            "linux" : "~/Downloads/mphidflash-1.6-linux-64"
+            "mac" : "~/Downloads/mphidflash-1.{x}-osx-64",
+            "windows" : "~\\Downloads\\mphidflash-1.{x}-win-32.exe",
+            "linux" : "~/Downloads/mphidflash-1.{x}-linux-64"
         }
     },
     "source" : {

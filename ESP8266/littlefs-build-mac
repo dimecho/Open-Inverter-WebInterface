@@ -162,5 +162,5 @@ for f in $(find data -type f -name '*.*' ! -name '*.bin' ! -name '*.php' ! -name
 done
 
 #./tools/mklittlefs -c ./data/ -b 8192 -p 256 -s $(($(du -ks data | cut -f1) * 1024)) flash-littlefs.bin
-./tools/mklittlefs -c ./data/ -b 8192 -p 256 -s 780000 flash-littlefs.bin
+./tools/mklittlefs -c ./data/ -b 8192 -p 256 -s 800000 flash-littlefs.bin
 #./tools/mklittlefs -i flash-littlefs.bin

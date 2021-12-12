@@ -32,8 +32,8 @@ String HTTPS_FQDN = "inverter.openinverter.org"; //DNS resolution to 192.168.4.1
 
 //#include <RemoteDebug.h>
 //#include <ArduinoOTA.h>
+//#include <AESLib.h>
 #include <EEPROM.h>
-#include <AESLib.h>
 #include <flash_hal.h>
 #include <StreamString.h>
 
@@ -159,18 +159,20 @@ int CAN_ID_FILTERS[10];
 long unsigned int CANmsgId;
 unsigned char CANmsg[8];
 #endif
-//============
-//SWD Debugger
-//============
+
+//SWD over ESP8266
 /*
   https://github.com/scanlime/esp8266-arm-swd
 */
 #include "src/arm_debug.h"
+//#include "src/flashloader/stm32x.h"
+//#include "src/flashloader/stm32f0.h"
 uint32_t addr = 0x08000000;
 uint32_t addrEnd = 0x0801ffff;
 uint32_t addrNext = 0x00000000;
 uint32_t addrIndex = 0x08000000;
 uint32_t addrBuffer = 0x00000000;
+uint32_t addrSRAM = 0x20000000;
 const uint8_t swd_clock_pin = 4; //GPIO4 (D2)
 const uint8_t swd_data_pin = 5; //GPIO5 (D1)
 
@@ -263,8 +265,12 @@ void setup()
   }
   //EEPROM.end();
 
+#ifdef WIFI_IS_OFF_AT_BOOT
+  enableWiFiAtBootTime();
+#endif
   WiFi.setPhyMode((WiFiPhyMode_t)WIFI_PHY_MODE);
   WiFi.setOutputPower(WIFI_PHY_POWER);
+  WiFi.setSleepMode(WIFI_NONE_SLEEP);
 
   IPAddress ip, gateway, subnet, dns;
   ip.fromString(NETWORK_IP);
@@ -277,6 +283,7 @@ void setup()
     //WiFi Access Point Mode
     //=====================
     WiFi.mode(WIFI_AP);
+    WiFi.persistent(false);
     WiFi.softAPConfig(ip, gateway, subnet);
     WiFi.softAP(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD, ACCESS_POINT_CHANNEL, ACCESS_POINT_HIDE);
     //Serial.println(WiFi.softAPIP());
@@ -299,7 +306,6 @@ void setup()
     if (NETWORK_DHCP == 0) {
       WiFi.config(ip, dns, gateway, subnet);
     }
-    WiFi.persistent(false);
     WiFi.disconnect(true);
     WiFi.begin(ACCESS_POINT_SSID, ACCESS_POINT_PASSWORD);  //Connect to the WiFi network
     //WiFi.enableAP(0);
@@ -310,7 +316,8 @@ void setup()
       //If client mode fails ESP8266 will not be accessible
       //Set Emergency AP SSID for re-configuration
       NVRAM_Write(1, "0");
-      NVRAM_Write(4, "_" + String(ACCESS_POINT_SSID));
+      NVRAM_Write(4, "_Inverter");
+      NVRAM_Write(5, "");
       delay(5000);
       ESP.restart();
     }
@@ -413,15 +420,14 @@ void setup()
     request->send(response);
   });
   server.on("/swd/zero", HTTP_GET, [](AsyncWebServerRequest * request) {
-
+    
+     //ESP.wdtDisable(); // Software WDT OFF
+ 
     if (swd.begin()) {
 
       addr = 0x08000000;
       addrEnd = 0x0801ffff;
       addrNext = addr;
-
-      ESP.wdtDisable(); // Software WDT OFF
-      hw_wdt_disable(); // Hardware WDT OFF
 
       swd.debugHalt();
       swd.debugHaltOnReset(1);
@@ -463,6 +469,8 @@ void setup()
     }
   });
   server.on("/swd/hex", HTTP_GET, [](AsyncWebServerRequest * request) {
+    
+      //ESP.wdtDisable(); // Software WDT OFF
 
     if (swd.begin()) {
 
@@ -477,9 +485,6 @@ void setup()
         addrEnd = 0x200003ff; //Note: Read is limited to 0x200003ff but you can write to higher portion of RAM
       }
       addrNext = addr;
-
-      ESP.wdtDisable(); // Software WDT OFF
-      hw_wdt_disable(); // Hardware WDT OFF
 
       AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
 
@@ -506,6 +511,8 @@ void setup()
     }
   });
   server.on("/swd/bin", HTTP_GET, [](AsyncWebServerRequest * request) {
+    
+//ESP.wdtDisable(); // Software WDT OFF
 
     if (swd.begin()) {
 
@@ -520,9 +527,6 @@ void setup()
         addrEnd = 0x0801ffff;
       }
       addrNext = addr;
-
-      ESP.wdtDisable(); // Software WDT OFF
-      hw_wdt_disable(); // Hardware WDT OFF
 
       AsyncWebServerResponse *response = request->beginChunkedResponse("application/octet-stream", [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
 
@@ -803,7 +807,7 @@ void setup()
     f.print("{\n    \"");
 
     Serial.print("all\n");
-    consumeEcho('\n'); //echo
+    consumeEcho(); //echo
 
     do {
       memset(b, 0, sizeof(b));
@@ -835,8 +839,7 @@ void setup()
 
   server.on("/firmware.php", HTTP_POST, [](AsyncWebServerRequest * request) {
 
-    ESP.wdtDisable(); // Software WDT OFF
-    hw_wdt_disable(); // Hardware WDT OFF
+    //ESP.wdtDisable(); // Software WDT OFF
 
     if (firmwareInterface == "swd-esp8266") {
       //==================
@@ -848,11 +851,14 @@ void setup()
         swd.debugHaltOnReset(1); //reset lock into halt
         swd.reset();
         swd.unlockFlash();
-        swd.debugHaltOnReset(0); //no reset halt lock
+
+        pinMode(LED_BUILTIN, OUTPUT);
 
         AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
-
+          
           StreamString data;
+          //size_t flashloader_size = sizeof(flashloader_raw);
+          
           File fs = LittleFS.open(firmwareFile, "r");
           fs.seek(addrIndex - addr); //resume file read from last position
 #if DEBUG
@@ -861,6 +867,7 @@ void setup()
 #endif
           if (addrNext >= addrEnd || fs.available() == 0) //the end
           {
+            swd.debugHaltOnReset(0); //no reset halt lock
             swd.reset(); //hard-reset
             fs.close();
             LittleFS.remove(firmwareFile);
@@ -868,10 +875,37 @@ void setup()
           }
 
           swd.debugHalt();
-          if (addrBuffer == 0x00000000) //load flashloader to SRAM @ 0x20000000
+          if (addrBuffer == 0x00000000)
+          {
+            //load flashloader to SRAM @ 0x20000000
+            //--- esp8266 core v 2.x -----
             swd.flashloaderSRAM();
+            //--- esp8266 core v 3.x -----
+            /*
+            for (int i = 0; i < flashloader_size; i++)
+            {
+              data.printf("%08x:", addrSRAM);
+              for (int x = 0; x < 4; x++)
+              {
+                data.print(" |");
+                for (int y = 0; y < 4; y++) {
+                  data.printf(" %02x", flashloader_raw[i]);
+                  swd.memStoreByte(addrSRAM, flashloader_raw[i]);
+                  swd.memWait();
+                  addrSRAM++;
+                  i++;
+                }
+                i++;
+              }
+              data.println();
+            }
+            */
+            //----------------------------
+          }
+          
+          digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
 
-          uint8_t PAGE_SIZE = 8; //8 pages = 2756 bytes plain-text chunks, cannot be over maxLen (4096)
+          uint8_t PAGE_SIZE = 8; //plain-text chunks, cannot be over beginChunkedResponse->maxLen (4096)
           for (uint16_t p = 0; p < PAGE_SIZE; p++)
           {
 #if DEBUG
@@ -879,17 +913,27 @@ void setup()
 #endif
             if (fs.available() == 0)
               break;
-
+            
             data.printf("%08x:", addrIndex);
 
             for (int i = 0; i < 4; i++)
             {
               if (fs.available() == 0)
                 break;
+                
               char sramBuffer[4];
               fs.readBytes(sramBuffer, 4);
-
+              //--- esp8266 core v 2.x -----
               swd.writeBufferSRAM(addrBuffer, (uint8_t*)sramBuffer, sizeof(sramBuffer)); //append to SRAM after flashloader
+              //--- esp8266 core v 3.x -----
+              /*
+              for (int x= 0; x < 4; x++) {
+                swd.memStoreByte(addrSRAM, sramBuffer[x]);
+                swd.memWait();
+                addrSRAM++;
+              }
+              */
+              //----------------------------
               data.printf(" | %02x %02x %02x %02x", sramBuffer[0], sramBuffer[1], sramBuffer[2], sramBuffer[3]);
 
               addrIndex += 4;
@@ -897,19 +941,63 @@ void setup()
             }
             data.println();
           }
-          if (addrBuffer > 1024 || fs.available() == 0) //Run flashloader from SRAM (STM32F103 has 32Kb)
-          {
-            swd.flashloaderRUN(addrNext, addrBuffer);
-            addrBuffer = 0x00000000;
-            addrNext = addrIndex;
-            delay(2400);
-          }
-
+          //Run flashloader from SRAM (STM32F103 has 32Kb - can only read 1Kb unprotected)
+          //--- esp8266 core v 2.x -----
+          swd.flashloaderRUN(addrNext, addrBuffer);
+          //--- esp8266 core v 3.x -----
+          /*
+          addrSRAM = 0x20000000;
+          uint32_t buf_addr = addrSRAM + flashloader_size; //flashloader end address
+          uint32_t buf_end = buf_addr + addrBuffer; //SRAM workarea without flashloader
+          //OpenOCD stm32x.h
+          swd.regWrite(0, buf_addr);        // Source
+          swd.regWrite(1, addrNext);        // Target
+          swd.regWrite(2, addrBuffer / 2);  // Count(16 bits half words)
+          */
+          /*
+          //OpenOCD stm32f1x.s
+          swd.regWrite(0, 0x40022000);      // Flash Base
+          swd.regWrite(1, addrBuffer / 2);  // Count(16 bits half words)
+          swd.regWrite(2, buf_addr);        // Workarea start
+          swd.regWrite(3, buf_end);         // Workarea end
+          swd.regWrite(4, addrNext);        // Target
+          */
+          /*
+          //ST-Link stm32f0.h
+          swd.regWrite(0, buf_addr);        // Source
+          swd.regWrite(1, addrNext);        // Target
+          swd.regWrite(2, addrBuffer / 2);  // Count(16 bits half words)
+          //swd.regWrite(3, 0);               // Flash base offset 0
+          //Program Counter (PC)
+          swd.regWrite(15, addrSRAM);
+          */
+          /*
+          //Debug
+          uint32_t r0, r1, r2, r3, r4, r15;
+          swd.regRead(0, r0);
+          swd.regRead(1, r1);
+          swd.regRead(2, r2);
+          swd.regRead(3, r3);
+          swd.regRead(4, r4);
+          swd.regRead(15, r15);
+          data.printf("\nR0:%08x R1:%08x R2:%08x R3:%08x R4:%08x R15:%08x\n\n", r0, r1, r2, r3, r4, r15);
+          */
+          /*
+          //Run code
+          uint32_t REG_SCB_DHCSR = 0xE000EDF0;
+          swd.memStore(REG_SCB_DHCSR, 0xA05F0000);
+          swd.flashWait();
+          */
+          //----------------------------
+          addrBuffer = 0x00000000;
+          addrNext = addrIndex;
+        
           fs.close();
 
           //Serial.println((char*)buffer);
           return data.readBytes(buffer, data.available());
         });
+        
         request->send(response);
       } else {
         AsyncResponseStream *response = request->beginResponseStream(text_plain);
@@ -947,17 +1035,18 @@ void setup()
 
           serialStreamFlush();
           serialFlushInitBug();
-          
+
           Serial.print("fastuart 0\n");
-          consumeEcho('\n'); //echo
-          
+          consumeEcho(); //echo
+
           //Serial.end();
           Serial.begin(115200, SERIAL_8N1);
           serialStreamFlush();
           serialFlushInitBug();
-          
+
           Serial.print("reset\n");
-          consumeEcho('t'); //echo -> reset
+          char b[255];
+          Serial.readBytesUntil('t', b, sizeof(b) - 1); //echo -> reset
 
           timeout = millis();
           do {
@@ -986,7 +1075,7 @@ void setup()
             } while (millis() - timeout < 4000 && c != 'P');//Wait for page request
 
             data.printf("Sending number of pages.. %d\n", pages);
-            
+
           } else {
             data.println("STM32 is bricked - Try SWD Flashing");
             addrBuffer = pages + 1;
@@ -1049,6 +1138,8 @@ void setup()
       });
       request->send(response);
     }
+
+    //ESP.wdtFeed(); // WDT Reset
   }, FirmwareUpload);
 
   server.on("/test.php", HTTP_POST, [](AsyncWebServerRequest * request) {
@@ -1062,9 +1153,8 @@ void setup()
   server.on("/serial.php", HTTP_GET, [](AsyncWebServerRequest * request) {
 
     //NOTE: AsyncWebServer library does not allow delay or yield, but Serial.readString(); uses yield();
-    ESP.wdtDisable(); // Software WDT OFF
-    hw_wdt_disable(); // Hardware WDT OFF
-    
+    //ESP.wdtDisable(); // Software WDT OFF
+
     char b[255];
     size_t len = 0;
     String output = "";
@@ -1073,19 +1163,20 @@ void setup()
 
       uint32_t serialSpeed = request->getParam("init")->value().toInt();
 
-      if (serialInitialized == serialSpeed) { //initialized only once
-        request->send(200, text_plain, String(serialSpeed));
-      } else {
+      AsyncResponseStream *response = request->beginResponseStream(text_plain);
+      response->println(serialSpeed);
+
+      if (serialInitialized != serialSpeed) { //initialized only once
 
         //consumeEcho('D'); //Bootloader echo
         serialFlushInitBug();
         //-----------------------------
         if (serialSpeed == 921600) {
           Serial.print("fastuart 1\n");
-          consumeEcho('\n'); //echo
+          consumeEcho(); //echo
         } else if (serialInitialized == 921600) {
           Serial.print("fastuart 0\n");
-          consumeEcho('\n'); //echo
+          consumeEcho(); //echo
         }
         //-----------------------------
         //Serial.end();
@@ -1095,12 +1186,12 @@ void setup()
         //-----------------------------
         serialInitialized = serialSpeed;
 
-        AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
-          return Serial.readBytes(buffer, maxLen);
-        });
-        //response->addHeader("Cache-Control", "no-store");
-        request->send(response);
+        if (Serial.available()) {
+          Serial.readBytes(b, sizeof(b) - 1);
+          response->printf("%s", b);
+        }
       }
+      request->send(response);
 
     } else if (request->hasParam("os")) {
 
@@ -1108,54 +1199,44 @@ void setup()
 
     } else if (request->hasParam("set") && request->hasParam("name") && request->hasParam("value")) {
 
-      AsyncResponseStream *response = request->beginResponseStream(text_plain);
-      response->addHeader("Access-Control-Allow-Origin", "*");
-      response->addHeader("Cache-Control", "no-store");
+      String _param_name = request->getParam("name")->value();
+      String _param_value = request->getParam("value")->value();
 
-      //serialStreamFlush(); //flush
-
-      Serial.print("set " + request->getParam("name")->value() + " " + request->getParam("value")->value());
+      Serial.print("set " + _param_name  + " " + _param_value);
       Serial.print('\n');
-      consumeEcho('\n'); //echo
-
-      do {
-        memset(b, 0, sizeof(b));
-        len = Serial.readBytes(b, sizeof(b) - 1);
-        response->printf("%s", b);
-      } while (len > 0);
-
-      request->send(response);
-
-    } else if (request->hasParam("get")) {
-
-      //serialStreamFlush(); //flush
-
-      String _param = request->getParam("get")->value();
-
-      Serial.print("get " + _param);
-      Serial.print('\n');
-
-      _param += ","; //Support multi-value
-
-      for (byte i = 0; i < _param.length(); i++) {
-        if (_param.charAt(i) == ',') {
-          consumeEcho('\n'); //echo
-        }
-      }
+      consumeEcho(); //echo
 
       AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
         return Serial.readBytes(buffer, maxLen);
       });
+      response->addHeader("Access-Control-Allow-Origin", "*");
       response->addHeader("Cache-Control", "no-store");
+      request->send(response);
+
+    } else if (request->hasParam("get")) {
+      
+      String _param = request->getParam("get")->value();
+
+      serialStreamFlush(); //flush
+
+      Serial.print("get " + _param);
+      Serial.print('\n');
+      consumeEcho(); //echo
+      
+      AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
+        return Serial.readBytes(buffer, maxLen);
+      });
       request->send(response);
 
     } else if (request->hasParam("command")) {
 
-      //serialStreamFlush(); //flush
+      String _param = request->getParam("command")->value();
 
-      Serial.print(request->getParam("command")->value());
+      serialStreamFlush(); //flush
+
+      Serial.print(_param);
       Serial.print('\n');
-      consumeEcho('\n'); //echo
+      consumeEcho(); //echo
 
       AsyncWebServerResponse *response = request->beginChunkedResponse(text_plain, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
         return Serial.readBytes(buffer, maxLen);
@@ -1168,12 +1249,12 @@ void setup()
       uint16_t _loop = request->getParam("loop")->value().toInt();
       uint16_t _delay = request->getParam("delay")->value().toInt();
 
-      //serialStreamFlush(); //flush
+      serialStreamFlush(); //flush
 
       Serial.print("get " + request->getParam("stream")->value());
       Serial.print('\n');
-      consumeEcho('\n'); //echo
-      consumeEcho('\n'); //first read
+      consumeEcho(); //echo
+      consumeEcho(); //first read
 
       AsyncWebServerResponse *response = request->beginResponse(text_plain, _loop + 1, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
         Serial.print('!');
@@ -1183,6 +1264,7 @@ void setup()
       response->addHeader("Cache-Control", "no-store");
       request->send(response);
     }
+    //ESP.wdtFeed(); // WDT Reset
   });
   server.on("/graph.php", HTTP_GET, [](AsyncWebServerRequest * request) {
 
@@ -1252,6 +1334,7 @@ void setup()
     if (php || php_html)
     {
       digitalWrite(LED_BUILTIN, LOW); //ON
+
       String contentType = getContentType(file);
 
       if (file.endsWith(".php"))
@@ -1777,46 +1860,43 @@ void asyncLog(File fs, String text)
   fs.print(text);
 }
 
-void consumeEcho(char echo)
+void consumeEcho()
 {
+  //ESP.wdtDisable(); // Software WDT OFF
+
   char c;
   uint32_t timeout = millis();
   do {
-    if (Serial.available() > 0)
+    if(Serial.available() > 0)
       c = Serial.read();
-  } while (millis() - timeout < 1024 && c != echo);
+  } while (millis() - timeout < 256 && c != '\n');
 }
 
 void serialFlushInitBug()
 {
-    //Clear the initialization Bug
-    Serial.print("hello");
-    Serial.print('\n');
-    consumeEcho('\n'); //echo
-    consumeEcho('\n'); //reply
+  //Clear the initialization Bug
+  Serial.print("hello");
+  Serial.print('\n');
+  consumeEcho(); //echo
+  consumeEcho(); //reply
 }
 
 void serialStreamFlush()
 {
+  Serial.print('\n');
+  consumeEcho(); //consume echo
+
+  //ESP.wdtDisable(); // Software WDT OFF
+
   char b[255];
   size_t len = 0;
-  
-  Serial.print('\n');
-  consumeEcho('\n'); //consume echo
-  
+
   uint32_t timeout = millis();
-  while (millis() - timeout < 2048 && Serial.available() > 0) {
-      memset(b, 0, sizeof(b));
+  do {
+    memset(b, 0, sizeof(b));
+    if(Serial.available() > 0)
       len = Serial.readBytes(b, sizeof(b) - 1);
-  }
-}
-
-void hw_wdt_disable() {
-  *((volatile uint32_t*) 0x60000900) &= ~(1); // Hardware WDT OFF
-}
-
-void hw_wdt_enable() {
-  *((volatile uint32_t*) 0x60000900) |= 1; // Hardware WDT ON
+  } while (millis() - timeout < 1024 && len != 0);
 }
 
 static uint32_t crc32_word(uint32_t Crc, uint32_t Data)

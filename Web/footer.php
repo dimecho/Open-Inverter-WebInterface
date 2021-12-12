@@ -4,15 +4,13 @@
         <div class="modal-content bg-light">
             <div class="modal-header">
                 <h5 class="modal-title">Select Serial Interface:</h5>
-                <button type="button" class="close btn text-muted" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <select name="interface" class="form-control" form="serialForm" id="serial-interface"></select>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" type="button" data-dismiss="modal" onClick="selectSerial()"><i class="icons icon-save"></i> Save</button>
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal" onClick="selectSerial()"><i class="icons icon-save"></i> Save</button>
             </div>
         </div>
     </div>
@@ -22,14 +20,12 @@
         <div class="modal-content bg-light">
             <div class="modal-header">
                 <h5 class="modal-title">Software Install</h5>
-                <button type="button" class="close btn text-muted" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="software-name"></div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <button class="btn btn-success" type="button" data-dismiss="modal" id="software-install">Install</button>
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-success" type="button" data-bs-dismiss="modal" id="software-install">Install</button>
             </div>
         </div>
     </div>
@@ -39,16 +35,14 @@
         <div class="modal-content bg-light">
             <div class="modal-header">
                 <h5 class="modal-title">Select Hardware Version:</h5>
-                <button type="button" class="close btn" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <select name="hardware" class="form-control" form="hardwareForm" id="hardware-select">
                 </select>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" type="button" data-dismiss="modal" onClick="selectHardware()"><i class="icons icon-save"></i> Save</button>
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal" onClick="selectHardware()"><i class="icons icon-save"></i> Save</button>
             </div>
         </div>
     </div>
@@ -58,9 +52,7 @@
         <div class="modal-content bg-light">
             <div class="modal-header">
                 <h5 class="modal-title"></h5>
-                <button type="button" class="close btn text-muted" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container">
@@ -86,7 +78,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <center><button type="button" class="btn btn-danger" data-dismiss="modal" onClick="setCookie('safety', 1, 360);location.reload();"><i class="icons icon-power"></i> I Agree</button></center>
+                <center><button type="button" class="btn btn-danger" data-bs-dismiss="modal" onClick="setCookie('safety', 1, 360);location.reload();"><i class="icons icon-power"></i> I Agree</button></center>
             </div>
         </div>
     </div>
@@ -96,23 +88,21 @@
         <div class="modal-content bg-light">
             <div class="modal-header">
                 <h5 class="modal-title">Inverter Mode</h5>
-                <button type="button" class="close btn text-muted" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container">
                     <div class="row" align="center">
-                        <div class="col"><button type="button" class="btn btn-success" data-dismiss="modal" onClick="startInverterMode(1)">Automatic</button></div>
-                        <div class="col"><button type="button" class="btn btn-primary" data-dismiss="modal" onClick="startInverterMode(2)">Manual</button></div>
-                        <div class="col"><button type="button" class="btn btn-primary" data-dismiss="modal" onClick="startInverterMode(5)">Sine Wave</button></div>
-                        <div class="col"><button type="button" class="btn btn-danger" data-dismiss="modal" onClick="startInverterMode(3)">Boost</button></div>
-                        <div class="col"><button type="button" class="btn btn-danger" data-dismiss="modal" onClick="startInverterMode(4)">Buck</button></div>
-                        <div class="col"><button type="button" class="btn btn-info" data-dismiss="modal" onClick="startInverterMode(6)">Battery Heater</button></div>
+                        <div class="col"><button type="button" class="btn btn-success" data-bs-dismiss="modal" onClick="startInverterMode(1)">Automatic</button></div>
+                        <div class="col"><button type="button" class="btn btn-primary" data-bs-dismiss="modal" onClick="startInverterMode(2)">Manual</button></div>
+                        <div class="col"><button type="button" class="btn btn-primary" data-bs-dismiss="modal" onClick="startInverterMode(5)">Sine Wave</button></div>
+                        <div class="col"><button type="button" class="btn btn-danger" data-bs-dismiss="modal" onClick="startInverterMode(3)">Boost</button></div>
+                        <div class="col"><button type="button" class="btn btn-danger" data-bs-dismiss="modal" onClick="startInverterMode(4)">Buck</button></div>
+                        <div class="col"><button type="button" class="btn btn-info" data-bs-dismiss="modal" onClick="startInverterMode(6)">Battery Heater</button></div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer mr-auto">Warning: Before starting the inverter set the throttle control to zero.</div>
+            <div class="modal-footer me-auto">Warning: Before starting the inverter set the throttle control to zero.</div>
         </div>
     </div>
 </div>
@@ -121,14 +111,12 @@
         <div class="modal-content bg-light">
             <div class="modal-header">
                 <h5 class="modal-title">Reset Inverter</h5>
-                <button type="button" class="close btn text-muted" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">All Settings will be Reset to Default!</div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="setDefaults()"> Reset</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onClick="setDefaults()"> Reset</button>
             </div>
         </div>
     </div>

@@ -32,22 +32,22 @@
                     <hr>
                     <div class="d-none spinner-border text-dark" id="loader-parameters"></div>
                     <i class="d-none icons icon-com display-2" id="com"></i>
-                    <div class="d-none container table-active table-bordered" id="saveload">
-                        <div class="row p-2">
-                            <div class="col">
+                    <table class="table table-active bg-light table-bordered d-none" id="saveload">
+                        <tr align="center">
+                            <td align="center">
                                 <button type="button" class="btn btn-secondary" onclick="downloadSnapshot()"><i class="icons icon-down"></i> Backup</button>
-                            </div>
-                            <div class="col">
+                            </td>
+                            <td align="center">
                                 <button type="button" class="btn btn-secondary" onclick="uploadSnapshot()"><i class="icons icon-up"></i> Restore</button>
-                            </div>
-                            <div class="col">
+                            </td>
+                                <td align="center">
                                 <button type="button" class="btn btn-secondary" id="share-parameters" onclick="shareParameter()"><i class="icons icon-share"></i> Share</button>
-                            </div>
-                            <div class="col">
+                            </td>
+                            <td align="center">
                                 <button type="button" class="btn btn-secondary" id="save-parameters" onclick="saveParameter(true)"><i class="icons icon-save"></i> Save</button>
-                            </div>
-                        </div>
-                    </div>
+                            </td>
+                        </tr>
+                    </table>
                     <hr>
                 </div>
             </div>
@@ -69,9 +69,7 @@
                 <div class="modal-content bg-light">
                     <div class="modal-header">
                         <h5 class="modal-title"></h5>
-                        <button type="button" class="close btn text-muted" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="calculator-content"></div>
                     <div class="modal-footer"></div>
@@ -83,9 +81,7 @@
 	            <div class="modal-content bg-light">
 	                <div class="modal-header">
 	                    <h5 class="modal-title">USB-TTL Drivers</h5>
-	                    <button type="button" class="close btn text-muted" data-dismiss="modal" aria-label="Close">
-	                        <span aria-hidden="true">&times;</span>
-	                    </button>
+	                    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
 	                </div>
 	                <div class="modal-body">
 	                	<div class="mb-3 hidden" id="usb-ttl-mac">Recommended Drivers: <a href="https://www.mac-usb-serial.com" target="_blank">mac-usb-serial.com</a></div>
@@ -117,9 +113,7 @@
                 <div class="modal-content bg-light">
                     <div class="modal-header">
                         <h5 class="modal-title">Inverter Progress</h5>
-                        <button type="button" class="close btn text-muted" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div id="inverter-status">

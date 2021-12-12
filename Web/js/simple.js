@@ -482,9 +482,6 @@ function syncofsTuning()
                                 //maintainAspectRatio: true,
                                 rotation: Math.PI,
                                 //cutoutPercentage: 20,
-                                legend: {
-                                    display: false
-                                },
                                 /*elements: {
                                     arc: {
                                         borderWidth: 2
@@ -494,8 +491,7 @@ function syncofsTuning()
                                     enabled: false      
                                 },
                                 scales: {
-                                    xAxes: [{
-                                        id: 'mx-axis-0',
+                                    'x-axis-0': {
                                         gridLines: {
                                             display:false
                                         },
@@ -510,9 +506,8 @@ function syncofsTuning()
                                             suggestedMin: -90,
                                             suggestedMax: 90
                                         }
-                                    }],
-                                    yAxes: [{
-                                        id: 'my-axis-0',
+                                    },
+                                    'y-axis-0': {
                                         gridLines: {
                                             display: true
                                         },
@@ -527,86 +522,91 @@ function syncofsTuning()
                                             suggestedMin: -90,
                                             suggestedMax: 90
                                         }
-                                    }]
+                                    }
                                 },
-                                annotation: {
-                                    //drawTime: 'afterDatasetsDraw',
-                                    annotations: [
-                                    {
-                                        type: 'line',
-                                        id: 'm-line-0',
-                                        mode: 'vertical',
-                                        scaleID: 'mx-axis-0',
-                                        value: 0,
-                                        endValue: 0,
-                                        borderColor: 'rgb(91, 194, 54)',
-                                        borderWidth: 2,
-                                        label: {
-                                            enabled: false,
-                                            xAdjust: 0,
-                                            yAdjust: 0,
-                                            content: '0°',
-                                            position: 'top'
-                                        }
-                                    },{
-                                        type: 'line',
-                                        id: 'q-line-0',
-                                        mode: 'vertical',
-                                        scaleID: 'mx-axis-0',
-                                        value: 40,
-                                        endValue: -40,
-                                        borderColor: 'rgb(0, 0, 0)',
-                                        borderWidth: 1,
-                                        label: {
-                                            enabled: true,
-                                            xAdjust: 0,
-                                            yAdjust: 0,
-                                            content: 'q-axis',
-                                            position: 'top'
-                                        }
-                                    },{
-                                        type: 'line',
-                                        id: 'd-line-0',
-                                        mode: 'horizontal',
-                                        scaleID: 'my-axis-0',
-                                        value: -80,
-                                        endValue: 80,
-                                        borderColor: 'rgb(0, 0, 0)',
-                                        borderWidth: 1,
-                                        label: {
-                                            enabled: true,
-                                            xAdjust: 0,
-                                            yAdjust: 0,
-                                            content: 'd-axis',
-                                            position: 'right'
-                                        }
-                                    },{
-                                        type: 'line',
-                                        id: 'm-line-2',
-                                        mode: 'horizontal',
-                                        scaleID: 'my-axis-0',
-                                        value: 0,
-                                        borderWidth: 0,
-                                        label: {
-                                            enabled: true,
-                                            yAdjust: 0,
-                                            content: '49152 (270°)',
-                                            position: 'left'
-                                        }
-                                    },{
-                                        type: 'line',
-                                        id: 'm-line-3',
-                                        mode: 'horizontal',
-                                        scaleID: 'my-axis-0',
-                                        value: 0,
-                                        borderWidth: 0,
-                                        label: {
-                                            enabled: true,
-                                            yAdjust: 0,
-                                            content: '16384 (90°)',
-                                            position: 'right'
-                                        }
-                                    }]
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    },
+                                    annotation: {
+                                        //drawTime: 'afterDatasetsDraw',
+                                        annotations: [
+                                        {
+                                            type: 'line',
+                                            id: 'm-line-0',
+                                            mode: 'vertical',
+                                            scaleID: 'x-axis-0',
+                                            value: 0,
+                                            endValue: 0,
+                                            borderColor: 'rgb(91, 194, 54)',
+                                            borderWidth: 2,
+                                            label: {
+                                                enabled: false,
+                                                xAdjust: 0,
+                                                yAdjust: 0,
+                                                content: '0°',
+                                                position: 'top'
+                                            }
+                                        },{
+                                            type: 'line',
+                                            id: 'q-line-0',
+                                            mode: 'vertical',
+                                            scaleID: 'x-axis-0',
+                                            value: 40,
+                                            endValue: -40,
+                                            borderColor: 'rgb(0, 0, 0)',
+                                            borderWidth: 1,
+                                            label: {
+                                                enabled: true,
+                                                xAdjust: 0,
+                                                yAdjust: 0,
+                                                content: 'q-axis',
+                                                position: 'top'
+                                            }
+                                        },{
+                                            type: 'line',
+                                            id: 'd-line-0',
+                                            mode: 'horizontal',
+                                            scaleID: 'y-axis-0',
+                                            value: -80,
+                                            endValue: 80,
+                                            borderColor: 'rgb(0, 0, 0)',
+                                            borderWidth: 1,
+                                            label: {
+                                                enabled: true,
+                                                xAdjust: 0,
+                                                yAdjust: 0,
+                                                content: 'd-axis',
+                                                position: 'right'
+                                            }
+                                        },{
+                                            type: 'line',
+                                            id: 'm-line-2',
+                                            mode: 'horizontal',
+                                            scaleID: 'y-axis-0',
+                                            value: 0,
+                                            borderWidth: 0,
+                                            label: {
+                                                enabled: true,
+                                                yAdjust: 0,
+                                                content: '49152 (270°)',
+                                                position: 'left'
+                                            }
+                                        },{
+                                            type: 'line',
+                                            id: 'm-line-3',
+                                            mode: 'horizontal',
+                                            scaleID: 'y-axis-0',
+                                            value: 0,
+                                            borderWidth: 0,
+                                            label: {
+                                                enabled: true,
+                                                yAdjust: 0,
+                                                content: '16384 (90°)',
+                                                position: 'right'
+                                            }
+                                        }]
+                                    }
                                 }
                             };
 
@@ -687,8 +687,7 @@ function syncofsTuning()
                                     enabled: false,
                                 },
                                 scales: {
-                                    xAxes: [{
-                                        id: 'x-axis-0',
+                                    'x-axis-0': {
                                         position: 'bottom',
                                         scaleLabel: {
                                             display: true,
@@ -703,9 +702,8 @@ function syncofsTuning()
                                         gridLines: {
                                             color: ctxFontColor
                                         }
-                                    }],
-                                    yAxes: [{
-                                        id: 'y-axis-0',
+                                    },
+                                    'y-axis-0': {
                                         position: 'right',
                                         ticks: {
                                             display: false,
@@ -715,8 +713,8 @@ function syncofsTuning()
                                         gridLines: {
                                             drawOnChartArea: false
                                         }
-                                    },{
-                                        id: 'y-axis-1',
+                                    },
+                                    'y-axis-1': {
                                         position: 'left',
                                         scaleLabel: {
                                             display: true,
@@ -735,23 +733,25 @@ function syncofsTuning()
                                         gridLines: {
                                             drawOnChartArea: false
                                         }
-                                    }]
+                                    }
                                 },
-                                annotation: {
-                                    annotations: [{
-                                        type: 'line',
-                                        id: 'a-line-0',
-                                        mode: 'vertical',
-                                        scaleID: 'x-axis-0',
-                                        value: knobValue_syncofs,
-                                        borderColor: 'rgb(0, 0, 0)',
-                                        borderWidth: 2,
-                                        label: {
-                                          content: "syncofs=" + knobValue_syncofs + ' (0°)',
-                                          enabled: true,
-                                          position: 'left'
-                                        }
-                                    }]
+                                plugins: {
+                                    annotation: {
+                                        annotations: [{
+                                            type: 'line',
+                                            id: 'a-line-0',
+                                            mode: 'vertical',
+                                            scaleID: 'x-axis-0',
+                                            value: knobValue_syncofs,
+                                            borderColor: 'rgb(0, 0, 0)',
+                                            borderWidth: 2,
+                                            label: {
+                                              content: "syncofs=" + knobValue_syncofs + ' (0°)',
+                                              enabled: true,
+                                              position: 'left'
+                                            }
+                                        }]
+                                    }
                                 }
                             };
 
@@ -799,7 +799,7 @@ function syncofsTuning()
 
                                         //chartMotor.annotation.elements['m-line-0'].options.value = visual_angle;
                                         //chartMotor.annotation.elements['m-line-0'].options.endValue = 0-visual_angle;
-                                        chartMotor.annotation.elements['m-line-0'].options.label.content = 'Offset ' + syncofs_angle.toFixed(0) + '°';
+                                        chartMotor.plugins.annotation.elements['m-line-0'].options.label.content = 'Offset ' + syncofs_angle.toFixed(0) + '°';
                                         chartMotor.data.datasets[1] = chart_syncofs_datasets;
                                         chartMotor.update();
 

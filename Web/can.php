@@ -12,7 +12,7 @@
             <div class="row">
                 <div class="col">
                     <div class="container bg-light">
-                        <div class="row"><hr></div>
+                        <div class="row m-3"></div>
                         <div class="row">
                             <div class="col col-md-4">
                                 <p class="d-none" id="can-interface-label">CAN Interface:</p>
@@ -36,7 +36,7 @@
 								<img src="" class="img-thumbnail rounded pop" />
                             </div>
                         </div>
-                        <div class="row"><hr></div>
+                        <div class="row m-3"></div>
                         <div class="row">
                             <div class="col" id="can-app"></div>
                             <div class="col" id="can-firmware"></div>
@@ -47,10 +47,10 @@
                                <button type="button" class="btn btn-success" onClick="saveCANMapping()"><i class="icons icon-save"></i> Save CAN</button>
                             </div>
                         </div>
-                        <div class="row"><hr></div>
+                        <div class="row m-3"></div>
                     </div>
 					<center>
-						<div class="spinner-border text-dark" id="loader-parameters"></div>
+						<div class="spinner-border text-dark mt-4" id="loader-parameters"></div>
 					</center>
                     <table class="table table-active bg-light table-bordered table-striped table-hover d-none" id="parameters"></table>
                 </div>
@@ -61,14 +61,12 @@
             <div class="modal-content bg-light">
                 <div class="modal-header">
                     <h5 class="modal-title">Reset CANBus</h5>
-                    <button type="button" class="close text-muted" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">CANBus Settings will be Reset to Default!</div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="setCANDefaults()"> Reset</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onClick="setCANDefaults()"> Reset</button>
                 </div>
             </div>
         </div>

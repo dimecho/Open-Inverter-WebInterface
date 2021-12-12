@@ -43,7 +43,7 @@
 
     function checkSoftware($software,$os,$app,$quite)
     {
-        $args = "";
+        $args = $software[$app]["download"]["version"];
         $path = checkHomePath($software[$app]["path"][$os],$os);
         
         if($app == "arm") {
@@ -57,26 +57,22 @@
                     return false;
                 }
             }
-		}else if($app == "eagle") {
-			if ($os === "windows") {
-                if(!is_file($software["designsparkpcb"]["path"]["windows"])){
-                    confirmDownload($software,$os,"designsparkpcb");
-                    return false;
-                }
+        }
+
+        for ($x = 0; $x <= 20; $x++) { //Any version between 0-20
+            $pathversion = str_replace("{x}", $x, $path);
+    		if(is_file($pathversion) || is_dir($pathversion)) {
+                if($_GET["args"])
+                    $args = $_GET["args"];
+                if(!$quite)
+                    echo "openExternalApp('" .$app. "','" . $args . "')";
+                return true;
             }
         }
 
-		if(is_file($path)) {
-            if($_GET["args"])
-                $args = $_GET["args"];
-            if(!$quite)
-                echo "openExternalApp('" .$app. "','" . $args . "')";
-            return true;
-        }else{
-            if(!$quite)
-                confirmDownload($software,$os,$app);
-			return false;
-        }
+        if(!$quite)
+            confirmDownload($software,$os,$app);
+        return false;
     }
 
     function checkARMCompiler($software,$os,$path,$remove)

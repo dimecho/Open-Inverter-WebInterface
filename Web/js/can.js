@@ -29,7 +29,7 @@ var can_app = [
     'Cantact',
     'Cangaroo',
     'USBtinViewer',
-    ''
+    'Arduino IDE'
 ];
 
 var can_firmware = [
@@ -73,7 +73,7 @@ $(document).ready(function () {
                     nvram.open('GET', '/nvram', true);
                     nvram.send();
                 }else{
-                    for (var i = 0; i < can_interface.length-1; i++) {
+                    for (var i = 0; i < can_interface.length; i++) {
                         $('#can-interface').append($('<option>',{value:i}).append(can_name[i]));
                     }
                     $('#can-interface-label').removeClass('d-none'); //.show();
@@ -100,9 +100,9 @@ function setCANImage() {
     var v = $('#can-interface').val();
 
 	img.attr('src', can_interface[v]);
-    img.attr('data-toggle', 'popover');
-    img.attr('data-placement', 'left');
-    img.attr('data-content', '<a href="' + can_order[v] + '" target=_blank>Order Here</a>');
+    img.attr('data-bs-toggle', 'popover');
+    img.attr('data-bs-placement', 'left');
+    img.attr('data-bs-content', '<a href="' + can_order[v] + '" target=_blank>Order Here</a>');
 
     /*
     $('.pop').popover({ trigger: 'manual' , html: true, animation:false})
@@ -121,19 +121,20 @@ function setCANImage() {
         }, 300);
     });
     */
-
-    if(can_app[v] != '' && os != 'mobile')
+    if(os != 'mobile')
     {
-        var can_app_button = $('<button>', {class:'btn btn-primary'}).append($('<i>', {class:'icons icon-list'}));
-        can_app_button.attr('onClick', 'checkSoftware("' + can_app[v].toLowerCase() + '")');
-        can_app_button.append(' Open ' + can_app[v] + ' App');
-        $('#can-app').empty().append(can_app_button);
-    }
-
-    if(can_firmware[v] != '' && os != 'mobile')
-    {
+        if(can_app[v] != '')
+        {
+            var can_app_button = $('<button>', {class:'btn btn-primary'}).append($('<i>', {class:'icons icon-list'}));
+            can_app_button.attr('onClick', 'checkSoftware("' + can_app[v].toLowerCase() + '")');
+            can_app_button.append(' Open ' + can_app[v]);
+            $('#can-app').empty().append(can_app_button);
+        }
+    
         var can_firmware_button = $('<button>', {class:'btn btn-warning'}).append($('<i>', {class:'icons icon-chip'}));
         can_firmware_button.append(' Update Firmware');
+        if(can_firmware[v] == '')
+            can_firmware_button.prop('disabled', true);
 
         $('#can-firmware').empty().append(can_firmware_button);
 
@@ -175,7 +176,7 @@ function canbitLimit(value) {
 
 function buildCANParameters() {
     
-    $('#loader-parameters').removeClass('d-none'); //.show();
+    document.getElementById('loader-parameters').classList.remove('d-none'); //.show();
 
     sendCommand('json', 0, function(json) {
     
@@ -196,8 +197,11 @@ function buildCANParameters() {
                 var cangain = 1;
     			var canrxid = 0;
 
-                if(json[key].canid)
+                if(json[key].canid){
                     canid = json[key].canid;
+                }else if(json[key].i){
+                    canid = json[key].i;
+                }
                 if(json[key].canoffset)
                     canoffset = json[key].canoffset;
                 if(json[key].canlength)
@@ -226,18 +230,18 @@ function buildCANParameters() {
     			var canrx = $('<button>', { class:'btn btn-sm mx-1', id:key + '-canrx' }).append('RX');
     			
     			var form_canid = $('<form>', { class:'form-inline' });
-                var input_canid = $('<input>', { type:'text', class:'form-control form-control-sm text-center', value:canid, id:key + '-canid' }).css({width:'50%'});
-    			var input_canid_hex = $('<input>', { type:'text', class:'form-control form-control-sm text-center', value:'0x' + toHex(canid), id:key + '-canidhex' }).css({width:'50%'});
+                var input_canid = $('<input>', { type:'text', class:'form-control-input form-control-sm text-center', value:canid, id:key + '-canid' }).css({width:'50%'});
+    			var input_canid_hex = $('<input>', { type:'text', class:'form-control-input form-control-sm text-center', value:'0x' + toHex(canid), id:key + '-canidhex' }).css({width:'50%'});
                 
                 var div_canoffset = $('<div>', { class:'input-group' });
-                var input_canoffset = $('<input>', { type:'text', class:'form-control form-control-sm text-center', value:canoffset, id:key });
+                var input_canoffset = $('<input>', { type:'text', class:'form-control-input form-control-sm text-center', value:canoffset, id:key });
                 
                 var div_canlength = $('<div>', { class:'input-group' });
-                var input_canlength = $('<input>', { type:'text', class:'form-control form-control-sm text-center', value:canlength, id:key + '-canlength' });
+                var input_canlength = $('<input>', { type:'text', class:'form-control-input form-control-sm text-center', value:canlength, id:key + '-canlength' });
                 
                 var form_cangain = $('<form>', { class:'form-inline' });
-    			var input_cangain = $('<input>', { type:'text', class:'form-control form-control-sm text-center', value:cangain, id:key + '-cangain' }).css({width:'50%'});
-    			var input_cangain_hex = $('<input>', { type:'text', class:'form-control form-control-sm text-center', value:'0x' + toHex(cangain), id:key + '-cangainhex' }).css({width:'50%'});
+    			var input_cangain = $('<input>', { type:'text', class:'form-control-input form-control-sm text-center', value:cangain, id:key + '-cangain' }).css({width:'50%'});
+    			var input_cangain_hex = $('<input>', { type:'text', class:'form-control-input form-control-sm text-center', value:'0x' + toHex(cangain), id:key + '-cangainhex' }).css({width:'50%'});
     			
                 if(json[key].isrx == true) { //RX
                     canrx.addClass('btn-primary');
@@ -368,13 +372,13 @@ function buildCANParameters() {
                 $('.btn').attr('style','font-size: 120%;');
             }
             
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
               return new bootstrap.Tooltip(tooltipTriggerEl)
             });
         }
-
-        $('#loader-parameters').addClass('d-none'); //.hide();
+        
+        document.getElementById('loader-parameters').classList.add('d-none'); //.hide();
 
         buildStatus();
     });

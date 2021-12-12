@@ -92,6 +92,14 @@ if (!(Test-Path .\tools\mklittlefs.exe)) {
 	Invoke-WebRequest -OutFile .\tools\x86_64-w64-mingw32-mklittlefs-295fe9b.zip -Uri "https://github.com/earlephilhower/mklittlefs/releases/download/3.0.0/x86_64-w64-mingw32-mklittlefs-295fe9b.zip"
 }
 
+Get-ChildItem .\tools -Filter *.zip | 
+Foreach-Object {
+    Expand-Archive -Path $_.FullName -DestinationPath .\tools -Force
+    Remove-Item $_.FullName -ErrorAction SilentlyContinue
+}
+Move-Item .\tools\mklittlefs\mklittlefs.exe -Destination .\tools -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force .\tools\mklittlefs -ErrorAction SilentlyContinue
+
 if (!(Test-Path "C:\ProgramData\chocolatey\bin\gzip.exe")) {
 	#Invoke-WebRequest -OutFile .\tools\gzip-1.3.12-1-bin.zip -Uri "http://sourceforge.mirrorservice.org/g/gn/gnuwin32/gzip/1.3.12-1/gzip-1.3.12-1-bin.zip"
   if(!(Test-Path "C:\ProgramData\chocolatey" -PathType Container)) {
@@ -101,16 +109,9 @@ if (!(Test-Path "C:\ProgramData\chocolatey\bin\gzip.exe")) {
     Elevate
     Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -File ""$PSScriptRoot\tools\chocolatey.ps1""" -NoNewWindow -Wait
   }
+  Start-Sleep -s 5
   Start-Process powershell -ArgumentList "choco install gzip -y" -NoNewWindow -Wait
 }
-
-Get-ChildItem .\tools -Filter *.zip | 
-Foreach-Object {
-    Expand-Archive -Path $_.FullName -DestinationPath .\tools -Force
-    Remove-Item $_.FullName -ErrorAction SilentlyContinue
-}
-Move-Item .\tools\mklittlefs\mklittlefs.exe -Destination .\tools -ErrorAction SilentlyContinue
-Remove-Item -Recurse -Force .\tools\mklittlefs-0.2.3-arduino-esp8266-win32 -ErrorAction SilentlyContinue
 
 #==============
 #Compress Files
@@ -125,13 +126,13 @@ Foreach-Object {
 Get-ChildItem .\data\js -Filter *.js | 
 Foreach-Object {
     Write-Host $_.FullName
-    Start-Process java -ArgumentList "-jar ""$PSScriptRoot\tools\closure-compiler-v20190929.jar"" --js_output_file ""$PSScriptRoot\data\js\$($_.Name)"" --js ""$PSScriptRoot\data\js\$($_.Name)""" -NoNewWindow -Wait
+    Start-Process java -ArgumentList "-jar ""$PSScriptRoot\tools\closure-compiler-v20200224.jar"" --js_output_file ""$PSScriptRoot\data\js\$($_.Name)"" --js ""$PSScriptRoot\data\js\$($_.Name)""" -NoNewWindow -Wait
 }
 
 Get-ChildItem .\data -Recurse -Exclude *.bin,*.php,*.key,*.cer -Filter *.* | 
 Foreach-Object {
     if (-Not (Test-Path $_.FullName -PathType Container)) {
-        Start-Process .\tools\bin\gzip.exe -ArgumentList $_.FullName -NoNewWindow -Wait
+        gzip.exe $_.FullName
         Move-Item "$($_.FullName).gz" -Destination $_.FullName
     }
 }
@@ -140,4 +141,4 @@ Foreach-Object {
 #Find Folder Size
 #================
 #Start-Process .\tools\mklittlefs.exe -ArgumentList "-c .\data -b 8192 -p 256 -s 643072 flash-littlefs.bin" -NoNewWindow -PassThru -Wait
-Start-Process .\tools\mklittlefs.exe -ArgumentList "-c .\data -b 8192 -p 256 -s 750000 flash-littlefs.bin" -NoNewWindow -PassThru -Wait
+Start-Process .\tools\mklittlefs.exe -ArgumentList "-c .\data -b 8192 -p 256 -s 800000 flash-littlefs.bin" -NoNewWindow -PassThru -Wait

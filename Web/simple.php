@@ -68,14 +68,12 @@
                 <div class="modal-content bg-light">
                     <div class="modal-header">
                         <h5 class="modal-title" id="alertify-header"></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="alertify-body"></div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal" id="alertify-cancel"></button>
-                        <button class="btn btn-success" type="button" data-dismiss="modal" id="alertify-ok"></button>
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal" id="alertify-cancel"></button>
+                        <button class="btn btn-success" type="button" data-bs-dismiss="modal" id="alertify-ok"></button>
                     </div>
                 </div>
             </div>
@@ -134,7 +132,7 @@
                         </div>
                     </div>
                      <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal" id="temp-cancel"></button>
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal" id="temp-cancel"></button>
                         <button class="btn btn-success" type="button" id="temp-ok"></button>
                     </div>
                 </div>

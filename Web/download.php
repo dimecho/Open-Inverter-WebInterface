@@ -230,9 +230,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="checksumTitle"><i class="icons icon-alert"></i> Warning: Wrong Checksum</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body container">
                         <div class="row">
@@ -251,10 +249,10 @@
                     <div class="modal-footer container">
                         <div class="row">
                             <div class="col" align="center">
-                                <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="icons icon-cancel"></i> Cancel</button>
+                                <button class="btn btn-danger" type="button" data-bs-dismiss="modal"><i class="icons icon-cancel"></i> Cancel</button>
                             </div>
                             <div class="col" align="center">
-                                <button class="btn btn-success" type="button" data-dismiss="modal" id="continue-install"><i class="icons icon-ok"></i> Continue Installing</button>
+                                <button class="btn btn-success" type="button" data-bs-dismiss="modal" id="continue-install"><i class="icons icon-ok"></i> Continue Installing</button>
                             </div>
                         </div>
                     </div>

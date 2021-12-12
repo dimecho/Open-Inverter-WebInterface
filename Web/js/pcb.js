@@ -100,7 +100,7 @@ function buildTable(title, csv, notes) {
                     var pdf = split[3];
 
                     if (pdf.length > 1) {
-                        //a = $('<button>', { id:split[4], class:'btn btn-primary', 'data-toggle':'modal', 'data-target':'#myModal' }).append('PDF');
+                        //a = $('<button>', { id:split[4], class:'btn btn-primary', 'data-bs-toggle':'modal', 'data-target':'#myModal' }).append('PDF');
                         a = $('<button>', { id: pdf, class: 'btn btn-primary' }).append('PDF');
                         a.on('click', function (event) {
                             //console.log(event.target.id);
@@ -135,7 +135,7 @@ function buildTable(title, csv, notes) {
 
                         var v = img;
                         img = bom + '/img/' + img + '.jpg';
-                        td2 = $('<td>',{ 'smd': smd, 'img': img, 'value': v, 'data-toggle': 'tooltip', 'title': '<img src="' + img + '">' });
+                        td2 = $('<td>',{ 'smd': smd, 'img': img, 'value': v, 'data-bs-toggle': 'tooltip', 'title': '<img src="' + img + '">' });
                     }
 
                     value = value.replace('uF', '&#181;F');
@@ -161,7 +161,7 @@ function buildTable(title, csv, notes) {
 
             setTheme();
             
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 //Test tooltip image for 404
                 tooltipTriggerEl.addEventListener('show.bs.tooltip', function () {

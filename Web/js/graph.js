@@ -252,17 +252,6 @@ var devmode = false;
 $(document).ready(function () {
 
 	buildMenu(function() {
-
-		/*
-	    $.ajax('serial.php?init=921600', {
-			success: function(data) {
-				console.log(data);
-				if (data.indexOf('921600') != -1) {
-					$.notify({ message: 'UART set to 921600 (1Mbps)' }, { type: 'success' });
-				}
-			}
-		});
-	    */
 		
 	    /*
 	    $(document).click(function (e) {
@@ -279,20 +268,23 @@ $(document).ready(function () {
 	    sendCommand('json', 0, function(j) {
 	    	json = j;
  			if(Object.keys(json).length > 0) {
+ 				/*
+ 				if(os == 'esp8266') {
+					var xhr = new XMLHttpRequest();
+				    xhr.onload = function() {
+				        if (xhr.status == 200) {
+				            var data = xhr.responseText;
+				            console.log(data);
+				            if (data.indexOf('921600') != -1) {
+								$.notify({ message: 'UART set to 921600 (1Mbps)' }, { type: 'success' });
+							}
+				        }
+				    }
+				    xhr.open('GET', 'serial.php?init=921600', true);
+		    		xhr.send();
+				}
+				*/
 	        	initChart();
-	        }else{
-                var xhr = new XMLHttpRequest();
-                xhr.responseType = 'json';
-		        xhr.onload = function() {
-		            if (xhr.status == 200) {
-		            	//json = JSON.parse(pxhr.responseText);
-		                json =  xhr.response;
-		            	devModeFlip();
-		            }
-		            initChart();
-		        };
-		        xhr.open('GET', 'js/parameters.json', true);
-		        xhr.send();
 	        }
 	    });
 
@@ -304,14 +296,11 @@ $(document).ready(function () {
 		ctxAxis = document.getElementById('chartAxis').getContext('2d');
 
 	    if(os === 'mobile') {
-
-	        Chart.defaults.global.animationSteps = 0;
+	        Chart.defaults.animationSteps = 0;
 	        canvas.height = 800;
 	        ctxFont = 40;
-
 	    }else{
-
-	        Chart.defaults.global.animationSteps = 12;
+	    	Chart.defaults.animationSteps = 12;
 	        canvas.height = 640;
 	    }
 
@@ -447,9 +436,8 @@ function newYAxis(key,id,options,side,visible) {
 
     var y_axis = {
         display: visible,
-        id: id,
         position: side,
-        scaleLabel: {
+        title: {
         	display: true,
         	fontColor: ctxFontColor,
             fontSize: ctxFont,
@@ -462,7 +450,7 @@ function newYAxis(key,id,options,side,visible) {
             suggestedMin: min, //auto scale
             suggestedMax: max //auto scale
         },
-        gridLines: {
+        grid: {
             drawOnChartArea: visible,
 			color: ctxGridColor,
 			zeroLineColor: ctxFontColor
@@ -470,7 +458,8 @@ function newYAxis(key,id,options,side,visible) {
         }
     };
 
-    options.scales.yAxes.push(y_axis);
+    //options.scales.yAxes.push(y_axis); //v2.x
+    options.scales[id] = y_axis; //v3.x
     //console.log(options);
 };
 
@@ -499,11 +488,11 @@ function buildPointsMenu() {
 		var row = $('<div>', { class: 'row' });
 		var col = $('<div>', { class: 'col' });
 		
-		var c = $('<input>', { class: 'form-control', type: 'checkbox', 'id': key });
+		var c = $('<input>', { class: 'form-check-input', type: 'checkbox', 'id': key });
 		col.append(c);
 		row.append(col);
 		
-		var l = $('<label>', { for: key }).append(key);
+		var l = $('<label>', { class: 'form-check-label', for: key }).append(key);
 		col = $('<div>', { class: 'col' });
 		col.append(l);
 		row.append(col);
@@ -546,13 +535,13 @@ function buildGraphMenu() {
     var export_buttons = $('#buildGraphExport'); //.empty();
 
 	var btn_points_i = $('<i>', { class: 'icons icon-ok' });
-	var btn_points = $('<button>', { class: 'btn btn-primary mr-4' }).append(btn_points_i).append(' Select Points');
-    var btn_start = $('<button>', { class: 'btn btn-success mr-4', onClick: 'startChart()' }).append('Start Graph');
-    var btn_stop = $('<button>', { class: 'btn btn-danger mr-4', onClick: 'stopChart()' }).append('Stop Graph');
-    var e_settings = $('<i>', { class: 'icons icon-status icon-settings p-2', 'data-toggle': 'tooltip', 'title': 'Settings' });
-    var e_pdf = $('<i>', { class: 'icons icon-status icon-pdf p-2', onClick: 'exportPDF(true)', 'data-toggle': 'tooltip', 'title': 'Export PDF' });
-    var e_img = $('<i>', { class: 'icons icon-status icon-png p-2', onClick: 'exportPDF()', 'data-toggle': 'tooltip', 'title': 'Export Image' });
-    var e_csv = $('<i>', { class: 'icons icon-status icon-csv p-2', onClick: 'exportCSV()', 'data-toggle': 'tooltip', 'title': 'Export CSV' });
+	var btn_points = $('<button>', { class: 'btn btn-primary me-4' }).append(btn_points_i).append(' Select Points');
+    var btn_start = $('<button>', { class: 'btn btn-success me-4', onClick: 'startChart()' }).append('Start Graph');
+    var btn_stop = $('<button>', { class: 'btn btn-danger me-4', onClick: 'stopChart()' }).append('Stop Graph');
+    var e_settings = $('<i>', { class: 'icons icon-status icon-settings p-2', 'data-bs-toggle': 'tooltip', 'title': 'Settings' });
+    var e_pdf = $('<i>', { class: 'icons icon-status icon-pdf p-2', onClick: 'exportPDF(true)', 'data-bs-toggle': 'tooltip', 'title': 'Export PDF' });
+    var e_img = $('<i>', { class: 'icons icon-status icon-png p-2', onClick: 'exportPDF()', 'data-bs-toggle': 'tooltip', 'title': 'Export Image' });
+    var e_csv = $('<i>', { class: 'icons icon-status icon-csv p-2', onClick: 'exportCSV()', 'data-bs-toggle': 'tooltip', 'title': 'Export CSV' });
 
     var z = $('#buildGraphZoom').empty();
     var input_zoom = $('<input>', { id: 'zoom', type: 'text', 'data-provide': 'slider'} );
@@ -710,7 +699,7 @@ function buildGraphMenu() {
         var nav = $('<nav>', { class: 'navbar navbar-toggleable-md navbar-light bg-faded' });
         var wrap = $('<div>', { class: 'container' });
         
-        var button = $('<button>', { class: 'navbar-toggler navbar-toggler-right', type: 'button', 'data-toggle': 'collapse', 'data-target': '#navbarsGraph', 'aria-controls': 'navbarsGraph', 'aria-expanded': false, 'aria-label': 'Navigation' });
+        var button = $('<button>', { class: 'navbar-toggler navbar-toggler-right', type: 'button', 'data-bs-toggle': 'collapse', 'data-bs-target': '#navbarsGraph', 'aria-controls': 'navbarsGraph', 'aria-expanded': false, 'aria-label': 'Navigation' });
         var span = $('<span>', { class: 'navbar-toggler-icon display-3' });
         button.append(span);
 		wrap.append(button);
@@ -753,7 +742,7 @@ function buildGraphMenu() {
 
         for (var i = 0; i < tabs.length; i++)
         {
-            var a = $('<a>', { class: 'nav-link', id: 'graph' + i + '-tab', href: '#graph' + i, 'data-toggle': 'tab', role: 'tab' }).append(tabs[i]);
+            var a = $('<a>', { class: 'nav-link', id: 'graph' + i + '-tab', href: '#graph' + i, 'data-bs-toggle': 'tab', role: 'tab' }).append(tabs[i]);
             if (i ===0) {
                 a.addClass('active');
             }
@@ -780,7 +769,7 @@ function buildGraphMenu() {
 
     pageLimit = graphDivision * pageLimit;
 
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 	var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 	  return new bootstrap.Tooltip(tooltipTriggerEl)
 	});
@@ -926,10 +915,16 @@ function initChart() {
     if (chart) chart.destroy();
 
     if(roundEdges == false) {
-		Chart.defaults.global.elements.line.tension = 0;
+		Chart.defaults.elements.line.tension = 0;
+		options = {
+	      animation: true,
+	    };
 	}
 	if(showAnimation == true) {
-		Chart.defaults.global.animation.duration = 800;
+		Chart.defaults.animation.duration = 800;
+		options = {
+	      animation: true,
+	    };
 	}
    	
     chart = new Chart(ctx, {
@@ -1157,13 +1152,6 @@ function initPWMChart(duration) {
 
     options = {
         //scaleUse2Y: true,
-        legend: {
-            display: true,
-            labels: {
-            	fontColor: ctxFontColor,
-                fontSize: ctxFont,
-            }
-        },
         elements: {
             point: {
                 radius: 0
@@ -1172,17 +1160,14 @@ function initPWMChart(duration) {
                 tension: 0
             }
         },
-        tooltips: {
-            enabled: false
-        },
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-            xAxes: [{
+           'x-axis-0': {
                 display: false,
                 position: 'bottom',
                 //stacked: true,
-                scaleLabel: {
+                title: {
                 	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     labelString: 'Time (ms)'
@@ -1196,11 +1181,11 @@ function initPWMChart(duration) {
                     maxRotation: 90
                 }
                 */
-            }],
-            yAxes: [{
+            },
+            'y-axis-0': {
                 position: 'left',
                 //stacked: true,
-                scaleLabel: {
+                title: {
                 	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     labelString: 'Pulse'
@@ -1214,72 +1199,81 @@ function initPWMChart(duration) {
                     suggestedMin: -1.5, //important
                     suggestedMax: 1.5 //important
                 },
-                gridLines: {
+                grid: {
 				  color: ctxGridColor
 				}
-            }]
+            }
         },
-        annotation: {
-    		drawTime: 'afterDraw',
-			annotations: [{
-                type: 'line',
-                id: 'a-line-0',
-                mode: 'vertical',
-                scaleID: 'x-axis-0',
-                value: 160,
-                borderColor: ctxFontColor,
-                borderWidth: 1,
-                borderDash: [4, 4],
-                label: {
-                  content: '90°',
-                  enabled: true,
-                  position: 'top'
-                }
-            },{
-                type: 'line',
-                id: 'a-line-1',
-                mode: 'vertical',
-                scaleID: 'x-axis-0',
-                value: 320,
-                borderColor: ctxFontColor,
-                borderWidth: 1,
-                borderDash: [4, 4],
-                label: {
-                  content: '180°',
-                  enabled: true,
-                  position: 'top'
-                }
-            },{
-                type: 'line',
-                id: 'a-line-2',
-                mode: 'vertical',
-                scaleID: 'x-axis-0',
-                value: 480,
-                borderColor: ctxFontColor,
-                borderWidth: 1,
-                borderDash: [4, 4],
-                label: {
-                  content: '270°',
-                  enabled: true,
-                  position: 'top'
-                }
-            },{
-                type: 'line',
-                id: 'a-line-3',
-                mode: 'vertical',
-                scaleID: 'x-axis-0',
-                value: 640,
-                borderColor: ctxFontColor,
-                borderWidth: 1,
-                borderDash: [4, 4],
-                label: {
-                  content: '360°',
-                  enabled: true,
-                  position: 'top'
-                }
-            }]
-		},
         plugins: {
+        	legend: {
+	            labels: {
+	            	fontColor: ctxFontColor,
+	                fontSize: ctxFont,
+	            }
+	        },
+	        tooltip: {
+	            enabled: false
+	        },
+        	annotation: {
+	    		drawTime: 'afterDraw',
+				annotations: [{
+	                type: 'line',
+	                id: 'a-line-0',
+	                mode: 'vertical',
+	                scaleID: 'x-axis-0',
+	                value: 160,
+	                borderColor: ctxFontColor,
+	                borderWidth: 1,
+	                borderDash: [4, 4],
+	                label: {
+	                  content: '90°',
+	                  enabled: true,
+	                  position: 'top'
+	                }
+	            },{
+	                type: 'line',
+	                id: 'a-line-1',
+	                mode: 'vertical',
+	                scaleID: 'x-axis-0',
+	                value: 320,
+	                borderColor: ctxFontColor,
+	                borderWidth: 1,
+	                borderDash: [4, 4],
+	                label: {
+	                  content: '180°',
+	                  enabled: true,
+	                  position: 'top'
+	                }
+	            },{
+	                type: 'line',
+	                id: 'a-line-2',
+	                mode: 'vertical',
+	                scaleID: 'x-axis-0',
+	                value: 480,
+	                borderColor: ctxFontColor,
+	                borderWidth: 1,
+	                borderDash: [4, 4],
+	                label: {
+	                  content: '270°',
+	                  enabled: true,
+	                  position: 'top'
+	                }
+	            },{
+	                type: 'line',
+	                id: 'a-line-3',
+	                mode: 'vertical',
+	                scaleID: 'x-axis-0',
+	                value: 640,
+	                borderColor: ctxFontColor,
+	                borderWidth: 1,
+	                borderDash: [4, 4],
+	                label: {
+	                  content: '360°',
+	                  enabled: true,
+	                  position: 'top'
+	                }
+	            }]
+			},
             datalabels: {
         		display: false
             }
@@ -1519,17 +1513,6 @@ function initCANChart(duration) {
     };
 
     options = {
-        legend: {
-            labels: {
-            	fontColor: ctxFontColor,
-                fontSize: ctxFont
-                /*
-                filter: function(item, chart) {
-		          return !item.text.includes('CAN L');
-		        }
-		        */
-            }
-        },
         elements: {
             point: {
                 radius: 0
@@ -1538,29 +1521,13 @@ function initCANChart(duration) {
       			tension: 0
         	}
         },
-        tooltips: {
-            enabled: false,
-            callbacks: {
-                label: function(tooltipItem, data) {
-                    var value = tooltipItem.yLabel;
-                    if(value == chart_can_zeroLineH) {
-                		return '0';
-                	//}else if(value == 2.4999 || value == 2.5001) {
-                	//	return '0';
-                	}else{
-                		return '1';
-                	}
-                }
-            }
-        },
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-            xAxes: [{
+            'x-axis-0': {
             	display: false,
-                id: 'x-axis-0',
                 position: 'bottom',
-                scaleLabel: {
+                title: {
                 	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     labelString: 'Time (μs)'
@@ -1572,14 +1539,13 @@ function initCANChart(duration) {
                     maxRotation: 90,
                     stepSize: 50
                 },
-                gridLines: {
+                grid: {
 				  	color: ctxGridColor
 				}
-            }],
-            yAxes: [{
-     			id: 'y-axis-0',
+            },
+            'y-axis-0': {
                 position: 'left',
-                scaleLabel: {
+                title: {
                 	display: true,
                 	fontColor: ctxFontColor,
                     fontSize: ctxFont,
@@ -1592,16 +1558,15 @@ function initCANChart(duration) {
                     suggestedMin: chart_can_zeroLineL - (chart_can_v + can_gain.max()*0.001 + 0.5),
                     suggestedMax: chart_can_zeroLineH + (chart_can_v + can_gain.max()*0.001 + 0.5)
                 },
-                gridLines: {
+                grid: {
                     drawOnChartArea: true,
                     color: ctxGridColor,
                     zeroLineColor: ctxFontColor,
                     //zeroLineWidth: 2
                 }
-            } /*,{
-                id: 'y-axis-1',
+            } /*,'y-axis-1': {
                 position: 'right',
-                scaleLabel: {
+                title: {
                 	display: true,
                 	fontColor: ctxFontColor,
                     fontSize: ctxFont,
@@ -1614,137 +1579,163 @@ function initCANChart(duration) {
                     suggestedMin: 0 - (can_gain.max() * 100 + 200),
                     suggestedMax: can_gain.max() * 100 + 200
                 },
-                gridLines: {
+                grid: {
                     drawOnChartArea: false,
                     color: ctxGridColor,
                     zeroLineColor: ctxFontColor,
                     //zeroLineWidth: 2
                 }
-            }*/]
+            }*/
         },
-        annotation: {
-    		drawTime: 'afterDraw',
-			annotations: [/*{
-				drawTime: 'beforeDatasetsDraw',
-				type: 'box',
-				id: 'a-box-0',
-				xScaleID: 'x-axis-0',
-				yScaleID: 'y-axis-0',
-				xMin: 1,
-				xMax: 16,
-				yMin: 2.38,
-				yMax: 2.62,
-				backgroundColor: 'rgba(192,192,192,0.5)',
-				borderColor: 'rgb(190,190,190)',
-				borderWidth: 1,
-				/
-				label: {
-					position: 'bottom',
-					//yAdjust: -20,
-					backgroundColor: 'red',
-					content: 'label',
-					enabled: true
-				}
-				/
-			},*/{
-                type: 'line',
-                id: 'a-line-0',
-                mode: 'vertical',
-                scaleID: 'x-axis-0',
-                value: 1,
-                borderColor: ctxFontColor,
-                borderWidth: 1,
-                borderDash: [4, 4],
-                label: {
-                  content: 'Start', //1
-                  enabled: true,
-                  position: 'top'
-                }
-            },{
-                type: 'line',
-                id: 'a-line-1',
-                mode: 'vertical',
-                scaleID: 'x-axis-0',
-                value: chart_can_datasets[0].segment[0],
-                borderColor: ctxFontColor,
-                borderWidth: 1,
-                borderDash: [4, 4],
-                label: {
-                  content: 'ID: ' + can_id[0], //8
-                  enabled: true,
-                  position: 'top'
-                }
-            },{
-                type: 'line',
-                id: 'a-line-2',
-                mode: 'vertical',
-                scaleID: 'x-axis-0',
-                value: chart_can_datasets[0].segment[1],
-                borderColor: ctxFontColor,
-                borderWidth: 1,
-                borderDash: [4, 4],
-                label: {
-                  content: 'Control', //3
-                  enabled: true,
-                  position: 'top'
-                }
-            },{
-                type: 'line',
-                id: 'a-line-3',
-                mode: 'vertical',
-                scaleID: 'x-axis-0',
-                value: chart_can_datasets[0].segment[2],
-                borderColor: ctxFontColor,
-                borderWidth: 1,
-                borderDash: [4, 4],
-                label: {
-                  content: 'Data: ' + can_value[0], //8+
-                  enabled: true,
-                  position: 'top'
-                }
-            },{
-                type: 'line',
-                id: 'a-line-4',
-                mode: 'vertical',
-                scaleID: 'x-axis-0',
-                value: chart_can_datasets[0].segment[3],
-                borderColor: ctxFontColor,
-                borderWidth: 1,
-                borderDash: [4, 4],
-                label: {
-                  content: 'CRC: ' + can_crc[0], //15
-                  enabled: true,
-                  position: 'top'
-                }
-            },{
-                type: 'line',
-                id: 'a-line-5',
-                mode: 'vertical',
-                scaleID: 'x-axis-0',
-                value: chart_can_datasets[0].segment[4]-1,
-                borderColor: ctxFontColor,
-                borderWidth: 1,
-                borderDash: [4, 4],
-                label: {
-                  content: 'End of Frame', //2+7
-                  enabled: true,
-                  position: 'top'
-                }
-            },{
-                type: 'line',
-                id: 'a-line-6',
-                mode: 'horizontal',
-                scaleID: 'y-axis-0',
-                value: 2.5,
-                borderColor: ctxFontColor,
-                borderWidth: 1,
-                borderDash: [4, 4],
-                label: {
-                	enabled: false
-                }
-            }]
-		},
         plugins: {
+        	legend: {
+	            labels: {
+	            	fontColor: ctxFontColor,
+	                fontSize: ctxFont
+	                /*
+	                filter: function(item, chart) {
+			          return !item.text.includes('CAN L');
+			        }
+			        */
+	            }
+	        },
+	        tooltip: {
+	            enabled: false,
+	            callbacks: {
+	                label: function(tooltipItem, data) {
+	                    var value = tooltipItem.yLabel;
+	                    if(value == chart_can_zeroLineH) {
+	                		return '0';
+	                	//}else if(value == 2.4999 || value == 2.5001) {
+	                	//	return '0';
+	                	}else{
+	                		return '1';
+	                	}
+	                }
+	            }
+	        },
+        	annotation: {
+	    		drawTime: 'afterDraw',
+				annotations: [/*{
+					drawTime: 'beforeDatasetsDraw',
+					type: 'box',
+					id: 'a-box-0',
+					xScaleID: 'x-axis-0',
+					yScaleID: 'y-axis-0',
+					xMin: 1,
+					xMax: 16,
+					yMin: 2.38,
+					yMax: 2.62,
+					backgroundColor: 'rgba(192,192,192,0.5)',
+					borderColor: 'rgb(190,190,190)',
+					borderWidth: 1,
+					/
+					label: {
+						position: 'bottom',
+						//yAdjust: -20,
+						backgroundColor: 'red',
+						content: 'label',
+						enabled: true
+					}
+					/
+				},*/{
+	                type: 'line',
+	                id: 'a-line-0',
+	                mode: 'vertical',
+	                scaleID: 'x-axis-0',
+	                value: 1,
+	                borderColor: ctxFontColor,
+	                borderWidth: 1,
+	                borderDash: [4, 4],
+	                label: {
+	                  content: 'Start', //1
+	                  enabled: true,
+	                  position: 'top'
+	                }
+	            },{
+	                type: 'line',
+	                id: 'a-line-1',
+	                mode: 'vertical',
+	                scaleID: 'x-axis-0',
+	                value: chart_can_datasets[0].segment[0],
+	                borderColor: ctxFontColor,
+	                borderWidth: 1,
+	                borderDash: [4, 4],
+	                label: {
+	                  content: 'ID: ' + can_id[0], //8
+	                  enabled: true,
+	                  position: 'top'
+	                }
+	            },{
+	                type: 'line',
+	                id: 'a-line-2',
+	                mode: 'vertical',
+	                scaleID: 'x-axis-0',
+	                value: chart_can_datasets[0].segment[1],
+	                borderColor: ctxFontColor,
+	                borderWidth: 1,
+	                borderDash: [4, 4],
+	                label: {
+	                  content: 'Control', //3
+	                  enabled: true,
+	                  position: 'top'
+	                }
+	            },{
+	                type: 'line',
+	                id: 'a-line-3',
+	                mode: 'vertical',
+	                scaleID: 'x-axis-0',
+	                value: chart_can_datasets[0].segment[2],
+	                borderColor: ctxFontColor,
+	                borderWidth: 1,
+	                borderDash: [4, 4],
+	                label: {
+	                  content: 'Data: ' + can_value[0], //8+
+	                  enabled: true,
+	                  position: 'top'
+	                }
+	            },{
+	                type: 'line',
+	                id: 'a-line-4',
+	                mode: 'vertical',
+	                scaleID: 'x-axis-0',
+	                value: chart_can_datasets[0].segment[3],
+	                borderColor: ctxFontColor,
+	                borderWidth: 1,
+	                borderDash: [4, 4],
+	                label: {
+	                  content: 'CRC: ' + can_crc[0], //15
+	                  enabled: true,
+	                  position: 'top'
+	                }
+	            },{
+	                type: 'line',
+	                id: 'a-line-5',
+	                mode: 'vertical',
+	                scaleID: 'x-axis-0',
+	                value: chart_can_datasets[0].segment[4]-1,
+	                borderColor: ctxFontColor,
+	                borderWidth: 1,
+	                borderDash: [4, 4],
+	                label: {
+	                  content: 'End of Frame', //2+7
+	                  enabled: true,
+	                  position: 'top'
+	                }
+	            },{
+	                type: 'line',
+	                id: 'a-line-6',
+	                mode: 'horizontal',
+	                scaleID: 'y-axis-0',
+	                value: 2.5,
+	                borderColor: ctxFontColor,
+	                borderWidth: 1,
+	                borderDash: [4, 4],
+	                label: {
+	                	enabled: false
+	                }
+	            }]
+			},
             datalabels: {
             	padding: 2,
 				align: function(context) {
@@ -1804,26 +1795,17 @@ function initFrequenciesChart(duration) {
 
     options = {
         //scaleUse2Y: true,
-        legend: {
-            labels: {
-            	fontColor: ctxFontColor,
-                fontSize: ctxFont
-            }
-        },
         elements: {
             point: {
                 radius: 0
             }
         },
-        tooltips: {
-            enabled: false
-        },
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-            xAxes: [{
+            'x-axis-0': {
                 position: 'bottom',
-                scaleLabel: {
+                title: {
                 	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     labelString: 'Time (hh:mm:ss)'
@@ -1835,13 +1817,22 @@ function initFrequenciesChart(duration) {
                     maxRotation: 90,
                     stepSize: 50
                 },
-                gridLines: {
+                grid: {
 					color: ctxGridColor
 				}
-            }],
-            yAxes: [] //Dynamically added
+            }
+            //y: [] //Dynamically added
         },
         plugins: {
+        	legend: {
+	            labels: {
+	            	fontColor: ctxFontColor,
+	                fontSize: ctxFont
+	            }
+	        },
+		    tooltip: {
+	            enabled: false
+	        },
             datalabels: {
             	color: ctxFontColor,
                 font: ctxFont,
@@ -1870,19 +1861,10 @@ function initAmperageChart(duration) {
     var step = ocurlim / 10;
 
     options = {
-        legend: {
-            labels: {
-            	fontColor: ctxFontColor,
-                fontSize: ctxFont
-            }
-        },
         elements: {
             point: {
                 radius: 0
             }
-        },
-        tooltips: {
-            enabled: false
         },
         /*
         tooltipEvents: [],
@@ -1895,9 +1877,9 @@ function initAmperageChart(duration) {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-            xAxes: [{
+            'x-axis-0': {
                 position: 'bottom',
-                scaleLabel: {
+                title: {
                 	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     labelString: 'Time (hh:mm:ss)'
@@ -1909,13 +1891,22 @@ function initAmperageChart(duration) {
                     maxRotation: 90,
                     stepSize: 50
                 },
-                gridLines: {
+                grid: {
 					color: ctxGridColor
 				}
-            }],
-            yAxes: [] //Dynamically added
+            }
+            //y: [] //Dynamically added
         },
         plugins: {
+        	legend: {
+	            labels: {
+	            	fontColor: ctxFontColor,
+	                fontSize: ctxFont
+	            }
+	        },
+	        tooltip: {
+	            enabled: false
+	        },
             datalabels: {
             	color: ctxFontColor,
                 font: ctxFont,
@@ -1938,26 +1929,17 @@ function initMotorChart(duration) {
     };
 
     options = {
-        legend: {
-            labels: {
-            	fontColor: ctxFontColor,
-                fontSize: ctxFont
-            }
-        },
         elements: {
             point: {
                 radius: 0
             }
         },
-        tooltips: {
-            enabled: false
-        },
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-            xAxes: [{
+            'x-axis-0': {
                 position: 'bottom',
-                scaleLabel: {
+                title: {
                 	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     labelString: 'Time (hh:mm:ss)'
@@ -1968,13 +1950,22 @@ function initMotorChart(duration) {
                     maxRotation: 90,
                     reverse: false
                 },
-                gridLines: {
+                grid: {
 				  color: ctxGridColor
 				}
-            }],
-            yAxes: [] //Dynamically added
+            }
+            //y: [] //Dynamically added
         },
         plugins: {
+        	legend: {
+	            labels: {
+	            	fontColor: ctxFontColor,
+	                fontSize: ctxFont
+	            }
+	        },
+	        tooltip: {
+	            enabled: false
+	        },
             datalabels: {
             	color: ctxFontColor,
                 font: ctxFont,
@@ -1998,26 +1989,17 @@ function initTemperatureChart(duration) {
     };
 
     options = {
-        legend: {
-            labels: {
-            	fontColor: ctxFontColor,
-                fontSize: ctxFont
-            }
-        },
         elements: {
             point: {
                 radius: 0
             }
         },
-        tooltips: {
-            enabled: false
-        },
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-            xAxes: [{
+            'x-axis-0': {
                 position: 'bottom',
-                scaleLabel: {
+                title: {
                 	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     labelString: 'Time (hh:mm:ss)'
@@ -2028,13 +2010,22 @@ function initTemperatureChart(duration) {
                     maxRotation: 90,
                     reverse: false
                 },
-                gridLines: {
+                grid: {
 					color: ctxGridColor
 				}
-            }],
-            yAxes: [] //Dynamically added
+            }
+            //y: [] //Dynamically added
         },
         plugins: {
+        	legend: {
+	            labels: {
+	            	fontColor: ctxFontColor,
+	                fontSize: ctxFont
+	            }
+	        },
+	        tooltip: {
+	            enabled: false
+	        },
             datalabels: {
             	color: ctxFontColor,
                 font: ctxFont,
@@ -2065,26 +2056,17 @@ function initVoltageChart(duration) {
     if (udclim < 100) step = udclim / 10;
 
     options = {
-        legend: {
-            labels: {
-            	fontColor: ctxFontColor,
-                fontSize: ctxFont
-            }
-        },
         elements: {
             point: {
                 radius: 0
             }
         },
-        tooltips: {
-            enabled: false
-        },
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-            xAxes: [{
+            'x-axis-0': {
                 position: 'bottom',
-                scaleLabel: {
+                title: {
                 	fontColor: ctxFontColor,
                     fontSize: ctxFont,
                     labelString: 'Time (hh:mm:ss)'
@@ -2095,13 +2077,22 @@ function initVoltageChart(duration) {
                     maxRotation: 90,
                     reverse: false
                 },
-                gridLines: {
+                grid: {
 				  color: ctxGridColor
 				}
-            }],
-            yAxes: [] //Dynamically added
+            }
+            //y: [] //Dynamically added
         },
         plugins: {
+        	legend: {
+	            labels: {
+	            	fontColor: ctxFontColor,
+	                fontSize: ctxFont
+	            }
+	        },
+	        tooltip: {
+	            enabled: false
+	        },
             datalabels: {
             	color: ctxFontColor,
                 font: ctxFont,
@@ -2252,8 +2243,8 @@ function updateChart(value, autosize, accuracy) {
                         step = 100;
                     }
 
-                    chart.options.scales.yAxes[0].ticks.suggestedMax = largest + step;
-                    chart.options.scales.yAxes[0].ticks.stepSize = step;
+                    chart.options.scales['y-axis-0'].ticks.suggestedMax = largest + step;
+                    chart.options.scales['y-axis-0'].ticks.stepSize = step;
                 }
                 
                 chart.update();

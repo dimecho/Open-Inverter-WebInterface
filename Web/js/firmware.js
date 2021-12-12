@@ -71,7 +71,7 @@ $(document).ready(function() {
 					tab.href = '#tab' + hardware_name[i].replace(' ','_').replace('.','_');
 					tab.id = i;
 					tab.textContent = hardware_name[i];
-					tab.setAttribute('data-toggle', 'tab');
+					tab.setAttribute('data-bs-toggle', 'tab');
 					tab.setAttribute('role', 'tab');
 					tab.onclick = function() {
 						//console.log(this.id);
@@ -250,8 +250,6 @@ function firmwareUpload(file) {
 
 	var oForm = document.getElementById('firmware-form');
 	var results = document.getElementById('firmware-result');
-	var results_show = document.getElementById('firmware-result-show');
-	
 	results.textContent = "";
 
 	if(os == 'esp8266') {
@@ -273,8 +271,8 @@ function firmwareUpload(file) {
 					if(xhrSubmit.readyState == 3) {
 					    var data = xhrSubmit.responseText; //xhrSubmit.response.substr(xhrSubmit.seenBytes);
 					    //console.log(data);
-					    
-					    if(results_show.checked)
+
+					    if(document.getElementById('firmware-result-show').checked)
 					    	results.textContent = data;
 
 					    if(data == '' || data.indexOf('Error') != -1) {
@@ -349,8 +347,8 @@ function progressBootloaderAnalisys(data) {
 };
 
 function progressFirmwareAnalisys(data) {
-
-	if(data.indexOf('shutdown command invoked') !=-1 || data.indexOf('jolly good') !=-1 || data.indexOf('Update Done') !=-1){
+	
+	if(data.indexOf('shutdown command invoked') !=-1 || data.indexOf('jolly good') !=-1 || data.indexOf('Update Done') !=-1 || data.indexOf('20000000:')){
         $.notify({ message: "Flash Complete" },{ type: "success" });
         setTimeout(function() {
             window.location.href = 'index.php';

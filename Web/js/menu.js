@@ -9,10 +9,8 @@ var hardware_name = [
     'Hardware v2.0',
     'Hardware v3.0',
     'Hardware Tesla',
-    'Hardware Tesla M3',
-    'Hardware Blue-Pill',
-    'Hardware Prius',
-    'Hardware Prius MG1'
+    'Hardware BluePill',
+    'Hardware Prius'
 ];
 var statusParam = [
     'opmode',
@@ -34,7 +32,8 @@ var statusParamDynamic = [
 ];
 var statusRefreshTimer;
 var saveReminderTimer;
-var saveReminder = false;
+var parameterTimer;
+var saveReminder = getCookie('serial.save');
 var synchronousPause = false;
 
 $(document).ready(function () {
@@ -388,16 +387,20 @@ function inputText(id)
 function saveParameter(notify) {
 
     clearTimeout(saveReminderTimer);
-    saveReminder = false;
 
     sendCommand('save', 0, function(data){
         if(notify) {
             if(data.indexOf('stored') != -1)
             {
+                deleteCookie('serial.save');
+
                 //TODO: CRC32 check on entire params list
 
-                $('#save-parameters').removeClass('btn-success');
-                $('#save-parameters').addClass('btn-secondary');
+                document.getElementById('save-parameters').classList.remove('btn-success');
+                document.getElementById('save-parameters').classList.add('btn-secondary');
+
+                document.getElementById('share-parameters').classList.remove('btn-secondary');
+                document.getElementById('share-parameters').classList.add('btn-success');
 
                 $.notify({ message: data },{ type: 'success' });
             }else{
@@ -668,12 +671,12 @@ function buildTips() {
 
                 for (var i = 0; i < row.length; i++) {
                     if (i === n) {
-                        img = $('<img>', { class: 'icons icon-light', 'data-toggle': 'tooltip', 'data-html': 'true', 'title': '<h8>Tip: ' + row[i] + '</h8>' });
+                        img = $('<img>', { class: 'icons icon-light', 'data-bs-toggle': 'tooltip', 'data-html': 'true', 'title': '<h8>Tip: ' + row[i] + '</h8>' });
                         opStatus.append(img);
                         break;
                     }
                 }
-                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
                 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                   return new bootstrap.Tooltip(tooltipTriggerEl)
                 });
@@ -702,7 +705,7 @@ function buildMenu(callback) {
             var nav = $('#mainMenu');
             var wrap = $('<div>', { class: 'container' }); // { class: 'd-flex mx-auto' });
             
-            var button = $('<button>', { class: 'navbar-toggler navbar-toggler-right', type: 'button', 'data-toggle': 'collapse', 'data-target': '#navbarResponsive', 'aria-controls': 'navbarResponsive', 'aria-expanded': false, 'aria-label': 'Menu' });
+            var button = $('<button>', { class: 'navbar-toggler navbar-toggler-right', type: 'button', 'data-bs-toggle': 'collapse', 'data-bs-target': '#navbarResponsive', 'aria-controls': 'navbarResponsive', 'aria-expanded': false, 'aria-label': 'Menu' });
             var span = $('<span>', { class: 'icons icon-menu' }); //navbar-toggler-icon' });
             button.append(span);
             wrap.append(button);
@@ -730,7 +733,7 @@ function buildMenu(callback) {
                 {
                     li.addClass('dropdown');
                     a.addClass('dropdown-toggle');
-                    a.attr('data-toggle','dropdown');
+                    a.attr('data-bs-toggle','dropdown');
                     a.attr('aria-haspopup',true);
                     a.attr('aria-expanded',false);
 
@@ -774,20 +777,20 @@ function buildMenu(callback) {
             }
             wrap.append(div);
 
-            var col = $('<div>', { class: 'spinner-grow spinner-grow-sm text-muted d-none', id: 'loader-status' }); //.hide();
+            var col = $('<div>', { class: 'spinner-grow spinner-grow-sm text-muted d-none pe-2', id: 'loader-status' }); //.hide();
             wrap.append(col);
 
-            var col = $('<div>', { class: 'col-auto mr-auto mb-auto mt-auto', id: 'opStatus' });
+            var col = $('<div>', { class: 'col-auto pe-2', id: 'opStatus' });
             wrap.append(col);
 
-            var col = $('<div>', { class: 'col-auto mb-auto mt-auto' });
+            var col = $('<div>', { class: 'col-auto' });
             var fwver = $('<span>', { class: 'd-none d-md-block badge bg-info border text-white invisible', id: 'fwVersion' });
-            var hwver = $('<span>', { class: 'd-none d-md-block badge bg-success border text-white invisible', id: 'hwVersion', 'data-toggle': 'tooltip', 'data-html': true, 'data-original-title': sn });
+            var hwver = $('<span>', { class: 'd-none d-md-block badge bg-success border text-white invisible', id: 'hwVersion', 'data-bs-toggle': 'tooltip', 'data-html': true, 'data-original-title': sn });
             col.append(fwver).append(hwver);
             wrap.append(col);
 
-            var col = $('<div>', { class: 'col-auto mb-auto mt-auto' });
-            var theme_icon = $('<i>', { class: 'd-none d-md-block icons icon-status icon-day-and-night text-dark', 'data-toggle': 'tooltip', 'data-html': true });
+            var col = $('<div>', { class: 'col-auto' });
+            var theme_icon = $('<i>', { class: 'd-none d-md-block icons icon-status icon-day-and-night text-dark', 'data-bs-toggle': 'tooltip', 'data-html': true });
             theme_icon.click(function() {
                 if(theme == '.slate') {
                     theme = '';
@@ -809,7 +812,7 @@ function buildMenu(callback) {
             setLanguage(page);
             setTheme();
 
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
               return new bootstrap.Tooltip(tooltipTriggerEl)
             });
@@ -862,10 +865,12 @@ function setTheme() {
         $('.icon-day-and-night').attr('data-original-title', '<h6 class="text-white">Dark Theme</h6>');
     }
     switchTheme('i.icon-status','text-white','text-dark');
+    switchTheme('input','text-white','text-dark');
     switchTheme('div','navbar-dark','navbar-light');
     switchTheme('div','bg-primary','bg-light');
     switchTheme('div','text-white','text-dark');
 	switchTheme('table','bg-primary','bg-light');
+    switchTheme('button', 'btn-close-white', 'btn-close-dark');
 };
 
 function loadTheme() {
@@ -898,6 +903,30 @@ function buildStatus(parameters) {
     {
         parameters = statusParam;
         opStatus.innerHTML = '';
+
+        var refresh = document.createElement('span');
+        var checkbox = document.createElement('input');
+        checkbox.className = 'form-check-input';
+        checkbox.setAttribute('type', 'checkbox');
+        var label = document.createElement('label');
+        label.className = 'form-check-label';
+        if(getCookie('status-refresh') != undefined) {
+            checkbox.checked = true;
+        }
+        checkbox.onclick = function()
+        {
+            if(this.checked) {
+                setCookie('status-refresh', this.checked, 360);
+                buildStatus();
+            }else{
+                deleteCookie('status-refresh');
+                clearTimeout(statusRefreshTimer);
+            }
+        }
+        label.textContent = 'Refresh';
+        refresh.appendChild(checkbox);
+        refresh.appendChild(label);
+        opStatus.appendChild(refresh);
     }
 
     synchronousPause = true;
@@ -909,28 +938,6 @@ function buildStatus(parameters) {
             //console.log(data);
 
             $('.tooltip').remove();
-
-            var refresh = document.createElement('div');
-            refresh.className = 'd-inline small';
-            var checkbox = document.createElement('input');
-            checkbox.className = 'form-check-input';
-            checkbox.setAttribute('type', 'checkbox');
-            if(getCookie('status-refresh') != undefined) {
-                checkbox.checked = true;
-            }
-            checkbox.onclick = function()
-            {
-                if(this.checked) {
-                    setCookie('status-refresh', this.checked, 360);
-                    buildStatus();
-                }else{
-                    deleteCookie('status-refresh');
-                    clearTimeout(statusRefreshTimer);
-                }
-            }
-            refresh.textContent = 'Refresh';
-            refresh.appendChild(checkbox);
-            opStatus.appendChild(refresh);
 
             var img = statusIcon('icon-key', '');
             if(data[0] !== '') {
@@ -1001,7 +1008,7 @@ function buildStatus(parameters) {
             }
             
             statusIconErrors(function() {
-                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
                 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                   return new bootstrap.Tooltip(tooltipTriggerEl)
                 });
@@ -1032,7 +1039,7 @@ function statusIcon(icon, value, color) {
         img = document.createElement('i');
         img.className = 'icons icon-status ' + icon;
         img.setAttribute('id', 'status-' + icon);
-        img.setAttribute('data-toggle', 'tooltip');
+        img.setAttribute('data-bs-toggle', 'tooltip');
         img.setAttribute('data-html', true);
 
         opStatus.appendChild(img);

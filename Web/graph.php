@@ -34,8 +34,8 @@
             </div>
             <div class="row mt-4"></div>
             <div class="row">
-                <div class="col-auto mr-auto mb-auto mt-auto" id="buildGraphButtons"></div>
-                <div class="col-auto text-right" id="buildGraphExport"></div>
+                <div class="col-auto me-auto mb-auto mt-auto" id="buildGraphButtons"></div>
+                <div class="col-auto text-end" id="buildGraphExport"></div>
             </div>
             <div class="row p-4">
                 <div class="col" id="buildGraphZoom"></div>
@@ -69,9 +69,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Chart Settings:</h5>
-                    <button type="button" class="close text-muted" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body container">
                     <div class="row">
@@ -123,7 +121,7 @@
                     <div class="row"><hr></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" onClick="graphSettings(true)">OK</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onClick="graphSettings(true)">OK</button>
                 </div>
             </div>
         </div>
@@ -132,15 +130,13 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close text-muted" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container" id="buildPointsMenu"></div>
                 </div>
                 <div class="modal-footer">
-                    <button class="browse btn btn-primary" type="button" data-dismiss="modal"><i class="icons icon-ok"></i> OK</button>
+                    <button class="browse btn btn-primary" type="button" data-bs-dismiss="modal"><i class="icons icon-ok"></i> OK</button>
                 </div>
             </div>
         </div>

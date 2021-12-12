@@ -53,9 +53,9 @@
                             <div class="col">
                                 <nav>
                                     <div class="nav nav-tabs" role="tablist">
-                                        <a class="nav-link active" href="#tabAnalog" id="text_analog" data-toggle="tab" role="tab">Analog</a>
-                                        <a class="nav-link d-none" href="#tabDigital" id="text_digital" data-toggle="tab" role="tab">Digital</a>
-                                        <a class="nav-link" href="#tabHardware" id="text_hardware" data-toggle="tab" role="tab">Hardware</a>
+                                        <a class="nav-link active" href="#tabAnalog" id="text_analog" data-bs-toggle="tab" role="tab">Analog</a>
+                                        <a class="nav-link d-none" href="#tabDigital" id="text_digital" data-bs-toggle="tab" role="tab">Digital</a>
+                                        <a class="nav-link" href="#tabHardware" id="text_hardware" data-bs-toggle="tab" role="tab">Hardware</a>
                                     </div>
                                 </nav>
                                 <div class="tab-content">
@@ -103,7 +103,7 @@
                                         </div>
                                         <div class="row text-center">
                                             <div class="col">
-                                                <input class="knob" data-displayinput="true" data-min="0" data-max="100" data-fgcolor="#222222" data-bgcolor="#FFFFFF" value="0">
+                                                <input class="knob text-dark" data-displayinput="true" data-min="0" data-max="100" data-fgcolor="#222222" data-bgcolor="#FFFFFF" value="0">
                                             </div>
                                         </div>
                                         <div class="row mt-4"></div>
@@ -212,9 +212,7 @@
             <div class="modal-content bg-light">
                 <div class="modal-header">
                     <h5 class="modal-title">Warning</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <h4><i class="icons icon-alert"></i> Warning: This test will <font color=red>ERASE FLASH</font></h4>
@@ -222,8 +220,8 @@
                         After the test is complete you will need to flash original bootloader and firmware.
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="icons icon-cancel"></i> Cancel</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal" onClick="startTest()"><i class="icons icon-ok"></i> Continue Test</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="icons icon-cancel"></i> Cancel</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" onClick="startTest()"><i class="icons icon-ok"></i> Continue Test</button>
                 </div>
             </div>
         </div>

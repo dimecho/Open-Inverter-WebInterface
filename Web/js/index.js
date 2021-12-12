@@ -15,10 +15,9 @@ $(document).ready(function () {
             var token = document.getElementById('parameters-token');
             var share = document.getElementById('parameters-share');
 
+            initializeSerial(115200,0);
+
             if(os == 'esp8266') {
-                
-                //initializeSerial(921600,0);
-                initializeSerial(115200,0);
 
                 var nvram = new XMLHttpRequest();
                 nvram.responseType = 'json';
@@ -33,7 +32,6 @@ $(document).ready(function () {
                 nvram.open('GET', '/nvram', true);
                 nvram.send();
             }else{
-                initializeSerial(115200,0);
 
                 //share.action = 'http://localhost/parameters/api.php'; //DEBUG
 				token.value = (getCookie('token') || '');
@@ -68,9 +66,13 @@ $(document).ready(function () {
         ctxDashColor = 'white';
     }
     
-    window.onbeforeunload = function() {
-        if(saveReminder == true)
-            return 'Are you sure you want to leave?';
+    if(saveReminder != undefined)
+    {
+        document.getElementById('save-parameters').classList.remove('btn-secondary');
+        document.getElementById('save-parameters').classList.add('btn-success');
+        
+        saveReminderTimer = setInterval(saveReminderCounter, 60000);
+        saveReminderCounter();
     }
 });
 
@@ -152,11 +154,12 @@ function initializeSerial(speed,loop) {
                     };
                     xhrRestart.open('GET', '/restart', true);
                     xhrRestart.send();
+                }else if(loop == 2) {
+                    $.notify({ message: 'Power Cycle Inverter' }, { type: 'warning' });
                 }else{
                     deleteCookie('boot');
                     e_loader.classList.add('d-none');
                     e_com.classList.remove('d-none');
-                    $.notify({ message: 'Power Cycle Inverter' }, { type: 'warning' });
                 }
             }else if(data.toUpperCase().indexOf('ERROR') != -1) {
                 e_loader.classList.add('d-none');
@@ -421,22 +424,10 @@ function boostSlipCalculator()
 
             options = {
                 //responsive: true,
-                legend: {
-                    labels: {
-                        fontColor: ctxFontColor,
-                        fontSize: ctxFont
-                    }
-                },
-                tooltips: {
-                    //enabled: true,
-                    filter: function(tooltipItem, data) {
-                        return !data.datasets[tooltipItem.datasetIndex].tooltipHidden; // custom added prop to dataset
-                    }
-                },
                 scales: {
-                    xAxes: [{
+                    'x-axis-0': {
                         position: 'bottom',
-                        scaleLabel: {
+                        title: {
                             fontColor: ctxFontColor,
                             fontSize: ctxFont,
                             labelString: 'udc (Volt)'
@@ -445,14 +436,13 @@ function boostSlipCalculator()
                             fontColor: ctxFontColor,
                             fontSize: ctxFont
                         },
-                        gridLines: {
+                        grid: {
                             color: ctxFontColor
                         }
-                    }],
-                    yAxes: [{
-                        id: 'y-axis-0',
+                    },
+                    'y-axis-0': {
                         position: 'right',
-                        scaleLabel: {
+                        title: {
                             labelString: 'boost',
                             fontSize: ctxFont,
                             fontColor: chart_boost_datasets.borderColor
@@ -465,50 +455,64 @@ function boostSlipCalculator()
                             suggestedMin: 0,
                             suggestedMax: boost_n + (boost_segment*2)
                         },
-                        gridLines: {
+                        grid: {
                             drawOnChartArea: true,
                             color: ctxFontColor
                         }
-                    },{
-                        id: 'y-axis-1',
+                    },
+                    'y-axis-1':{
                         position: 'left',
-                        scaleLabel: {
+                        title: {
                             labelString: 'fweak (Hz)',
                             fontSize: ctxFont,
                             fontColor: chart_fweak_datasets.borderColor
                         },
                         ticks: {
                             precision: 0,
-                            fixedStepSize: 1,
+                            stepSize: 1,
                             fontColor: ctxFontColor,
                             fontSize: ctxFont,
                             stepSize: fweak_segment,
                             suggestedMin: 0,
                             suggestedMax: fweak + (fweak_segment*2)
                         },
-                        gridLines: {
+                        grid: {
                             drawOnChartArea: true,
                             color: ctxFontColor
                         }
-                    }]
-                },
-                annotation: {
-                    annotations: [{
-                        type: 'line',
-                        id: 'a-line-0',
-                        mode: 'vertical',
-                        scaleID: 'x-axis-0',
-                        value: udcnom,
-                        borderColor: ctxDashColor,
-                        borderWidth: 1,
-                        borderDash: [4, 4],
-                        label: {
-                          content: 'udcnom',
-                          enabled: true,
-                          position: 'top'
-                        }
                     }
-                ]}
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            fontColor: ctxFontColor,
+                            fontSize: ctxFont
+                        }
+                    },
+                    tooltip: {
+                        //enabled: true,
+                        filter: function(tooltipItem, data) {
+                            return !data.datasets[tooltipItem.datasetIndex].tooltipHidden; // custom added prop to dataset
+                        }
+                    },
+                    annotation: {
+                        annotations: [{
+                            type: 'line',
+                            id: 'a-line-0',
+                            mode: 'vertical',
+                            scaleID: 'x-axis-0',
+                            value: udcnom,
+                            borderColor: ctxDashColor,
+                            borderWidth: 1,
+                            borderDash: [4, 4],
+                            label: {
+                              content: 'udcnom',
+                              enabled: true,
+                              position: 'top'
+                            }
+                        }]
+                    }
+                }
             };
 
             loader.hide();
@@ -617,18 +621,11 @@ function MTPACalculator()
 	        options = {
 	        	responsive: true,
 				maintainAspectRatio: true,
-	            legend: {
-	                labels: {
-	                    fontColor: ctxFontColor,
-	                    fontSize: ctxFont
-	                }
-	            },
 	            scales: {
-	                xAxes: [{
-	                    id: 'x-axis-0',
+	                'x-axis-0': {
 	                    position: 'bottom',
 	                    type: 'linear',
-	                    scaleLabel: {
+	                    title: {
 	                        display: true,
 	                        fontColor: ctxFontColor,
 	                        fontSize: ctxFont,
@@ -646,15 +643,14 @@ function MTPACalculator()
 			                    }
 			                }
 	                    },
-	                    gridLines: {
+	                    grid: {
 	                    	drawOnChartArea: false,
 	                        color: ctxFontColor
 	                    }
-	                }],
-	                yAxes: [{
-	                    id: 'y-axis-0',
+	                },
+	                'y-axis-0': {
 	                    position: 'left',
-	                    scaleLabel: {
+	                    title: {
 	                        display: true,
 	                        fontColor: ctxFontColor,
 	                        fontSize: ctxFont,
@@ -665,14 +661,14 @@ function MTPACalculator()
 	                        fontColor: ctxFontColor,
 	                        fontSize: ctxFont
 	                    },
-	                    gridLines: {
+	                    grid: {
 	                        drawOnChartArea: true,
 	                        color: ctxFontColor
 	                    }
-	                },{
-	                    id: 'y-axis-1',
+	                },
+                    'y-axis-1': {
 	                    position: 'right',
-	                    scaleLabel: {
+	                    title: {
 	                        display: true,
 	                        fontColor: ctxFontColor,
 	                        fontSize: ctxFont,
@@ -686,29 +682,37 @@ function MTPACalculator()
                             suggestedMin: 0,
                             suggestedMax: 200
 	                    },
-	                    gridLines: {
+	                    grid: {
 	                        drawOnChartArea: false
 	                    }
-	                }]
+	                }
     			}, 
-    			annotation: {
-		        	//drawTime: 'afterDatasetsDraw',
-					annotations: [{
-						type: 'line',
-                        id: 'a-line-0',
-                        mode: 'horizontal',
-                        scaleID: 'y-axis-1',
-                        value: fwkp,
-                        borderColor: 'rgb(255, 205, 86)',
-                        borderWidth: 2,
-                        label: {
-                          content: 'fwkp=' + fwkp,
-                          enabled: true,
-                          yAdjust: -12,
-                          position: 'right'
+                plugins: {
+                    legend: {
+                        labels: {
+                            fontColor: ctxFontColor,
+                            fontSize: ctxFont
                         }
-					}]
-				}
+                    },
+        			annotation: {
+    		        	//drawTime: 'afterDatasetsDraw',
+    					annotations: [{
+    						type: 'line',
+                            id: 'a-line-0',
+                            mode: 'horizontal',
+                            scaleID: 'y-axis-1',
+                            value: fwkp,
+                            borderColor: 'rgb(255, 205, 86)',
+                            borderWidth: 2,
+                            label: {
+                              content: 'fwkp=' + fwkp,
+                              enabled: true,
+                              yAdjust: -12,
+                              position: 'right'
+                            }
+    					}]
+    				}
+                }
 	        };
 
 	        loader.hide();
@@ -905,19 +909,20 @@ function buildParameters(speed, loop)
 	                if(os === 'mobile') {
 	                    a.attr('type','number');
 	                }
-	                a.on('change paste', function() {
+	                a.on('input', function() {
 	                    var element = $(this);
 	                    if(element.val() != '') {
 	                        validateInput(json,element.attr('id'), element.val(), function(r) {
 	                            if(r === true) {
-	                                $('#share-parameters').removeClass('btn-secondary');
-	                                $('#share-parameters').addClass('btn-success');
-                                    $('#save-parameters').removeClass('btn-secondary');
-                                    $('#save-parameters').addClass('btn-success');
-	                                setParameter(element.attr('id'),element.val(),false,true);
-	                                clearTimeout(saveReminderTimer);
-	                                saveReminderTimer = setInterval(saveReminderCounter, 60000);
-	                                saveReminder = true;
+                                    clearTimeout(parameterTimer);
+                                    parameterTimer = setTimeout(function () {
+                                        document.getElementById('save-parameters').classList.remove('btn-secondary');
+                                        document.getElementById('save-parameters').classList.add('btn-success');
+                                        setParameter(element.attr('id'),element.val(),false,true);
+                                        clearTimeout(saveReminderTimer);
+                                        saveReminderTimer = setInterval(saveReminderCounter, 60000);
+                                        setCookie('serial.save', true, 1);
+                                    }, 500);
 	                            }
 	                        });
 	                    }
@@ -929,7 +934,7 @@ function buildParameters(speed, loop)
 	                {
 	                    var category = json[key].category;
 	                    
-	                    category_icon.attr('data-toggle', 'tooltip');
+	                    category_icon.attr('data-bs-toggle', 'tooltip');
 	                    category_icon.attr('data-html', true);
 	                    category_icon.attr('title', '<h6>' + category + '</h6>');
 
@@ -1008,7 +1013,7 @@ function buildParameters(speed, loop)
 
 	                if(tooltip != '')
 	                {
-	                    td2.attr('data-toggle', 'tooltip');
+	                    td2.attr('data-bs-toggle', 'tooltip');
 	                    td2.attr('data-html', true);
 	                    td2.attr('title', '<h6>' + tooltip + '</h6>');
 	                }
@@ -1020,13 +1025,13 @@ function buildParameters(speed, loop)
 
 	            $('#saveload').removeClass('d-none');//.show();
 
-	            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+	            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 	            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 	              return new bootstrap.Tooltip(tooltipTriggerEl,{ template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner large"></div></div>',
 	                container: 'body', placement: 'right', html: true})
 	            });
 
-	            $('#loader-parameters').addClass('d-none'); //.hide();
+                document.getElementById('loader-parameters').classList.add('d-none'); //.hide();
             });
         }
     };
@@ -1124,40 +1129,33 @@ function checkWebUpdates()
                     var version = parseFloat(split[0]);
                     var build = parseFloat(split[1]);
 
-                    var vxhr = new XMLHttpRequest();
-			        vxhr.onload = function() {
-			            if (vxhr.status == 200) {
-			                var _split = vxhr.responseText.split('\n');
-                            var _version = parseFloat(_split[0]);
-                            var _build = parseFloat(_split[1]);
+	                _split = getCookie('version').split('.');
+                    var _version = parseFloat(_split[0]);
+                    var _build = parseFloat(_split[2]);
 
-                            //console.log('Old Web Interface:' + _version + ' Build:' + _build);
-                            //console.log('New Web Interface:' + version + ' Build:' + build);
+                    //console.log('Old Web Interface:' + _version + ' Build:' + _build);
+                    //console.log('New Web Interface:' + version + ' Build:' + build);
 
-                            if(version > _version || build > _build)
-                            {
-                                var url = 'https://github.com/dimecho/Open-Inverter-WebInterface/releases/download/';
-                                if(os === 'mac'){
-                                    url += version + 'Huebner.Inverter.dmg';
-                                }else if(os === 'windows'){
-                                    url += version + 'Huebner.Inverter.Windows.zip';
-                                }else if(os === 'linux'){
-                                    url += version + 'Huebner.Inverter.Linux.tgz';
-                                }else if(os === 'esp8266'){
-                                    url += version + 'Huebner.Inverter.ESP8266.zip';
-                                }
-                                $.notify({
-                                    icon: 'icons icon-download',
-                                    title: 'New Web Interface',
-                                    message: "Available <a href='" + url + "' target='_blank'>Download</a>"
-                                }, {
-                                    type: 'success'
-                                });
-                            }
-			            }
-			        };
-			        vxhr.open('GET', 'version.txt', true);
-			        vxhr.send();
+                    if(version > _version || build > _build)
+                    {
+                        var url = 'https://github.com/dimecho/Open-Inverter-WebInterface/releases/download/';
+                        if(os === 'mac'){
+                            url += version + 'Huebner.Inverter.dmg';
+                        }else if(os === 'windows'){
+                            url += version + 'Huebner.Inverter.Windows.zip';
+                        }else if(os === 'linux'){
+                            url += version + 'Huebner.Inverter.Linux.tgz';
+                        }else if(os === 'esp8266'){
+                            url += version + 'Huebner.Inverter.ESP8266.zip';
+                        }
+                        $.notify({
+                            icon: 'icons icon-download',
+                            title: 'New Web Interface',
+                            message: "Available <a href='" + url + "' target='_blank'>Download</a>"
+                        }, {
+                            type: 'success'
+                        });
+                    }
                 } catch(e) {}
             }
         };

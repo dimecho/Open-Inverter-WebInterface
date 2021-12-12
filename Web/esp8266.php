@@ -76,7 +76,7 @@
 					    </td>
                     </tr>
                 </table>
-			    <table class="table table-active table-bordered d-none" id="esp8266-nvram">
+			    <table class="table table-active bg-light table-bordered d-none" id="esp8266-nvram">
                     <tr>
                         <td>
                         	<div class="spinner-border text-dark" align="center"></div>
@@ -159,7 +159,7 @@
 									<div class="form-check">
 									  <label class="form-check-label">
 									  	<input type="hidden" id="WiFiDHCP" name="WiFiDHCP" value="0">
-									    <input type="checkbox" id="WiFiDHCPCheckbox" class="form-check-input" onclick="HiddenCheck('WiFiDHCP',this)">
+									    <input type="checkbox" id="WiFiDHCPCheckbox" class="form-check" onclick="HiddenCheck('WiFiDHCP',this)">
 									    	Enable DHCP
 									  </label>
 									</div>
@@ -210,7 +210,7 @@
                         </td>
                     </tr>
                 </table>
-				<table class="table table-active table-bordered d-none" id="esp8266-flash-select">
+				<table class="table table-active bg-light table-bordered d-none" id="esp8266-flash-select">
 					<tr align="center">
 						<td align="center">
 							<button class="btn btn-primary" type="button" id="browseLittleFS" disabled><i class="icons icon-chip"></i> Flash LittleFS</button>

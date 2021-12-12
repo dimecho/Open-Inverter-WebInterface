@@ -1,5 +1,4 @@
 var knobValue = 0;
-var knobTimer;
 var display;
 var testRequest;
 var testTimer;
@@ -47,10 +46,10 @@ $(document).ready(function () {
         change: function change(value) {
             if (value <= knobValue + 5) { //Avoid hard jumps
                 //console.log(value);
-                clearTimeout(knobTimer);
-                knobTimer = setTimeout(function () {
-                    setParameter('fslipspnt', value);
-                }, 80);
+                clearTimeout(parameterTimer);
+                parameterTimer = setTimeout(function () {
+                    setParameter('fslipspnt', Math.round(value));
+                }, 500);
                 knobValue = value;
             } else {
                 console.log('!' + value + '>' + knobValue);
@@ -357,3 +356,5 @@ function setHardwareImage() {
 	}
 	//$('#hardware-image').removeClass('d-none'); //.show();
 };
+
+function firmwareUpdateRun() {};
